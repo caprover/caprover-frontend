@@ -38,7 +38,8 @@ export default class AppLogsView extends ApiComponent<
     const separators = [
       "\u0000\u0000\u0000\u0000",
       "\u0001\u0000\u0000\u0000",
-      "\u0002\u0000\u0000\u0000"
+      "\u0002\u0000\u0000\u0000",
+      "\u0003\u0000\u0000\u0000" // This is not in the Docker docs, but can actually happen when the log stream is broken https://github.com/caprover/caprover/issues/366
     ];
     const ansiRegex = Utils.getAnsiColorRegex();
     this.apiManager
