@@ -49,8 +49,23 @@ export default class AppLogsView extends ApiComponent<
             .split(new RegExp(separators.join("|"), "g"))
             .map(s => {
               // See https://docs.docker.com/engine/api/v1.30/#operation/ContainerAttach for logs headers
-              return s.substring(4, s.length);
-              // add sorting if needed: new Date(s.substring(4+30, s.length)).getTime()
+
+              let time = 0;
+
+              try {
+                time = new Date(s.substring(4, 4 + 30)).getTime();
+              } catch (err) {
+                // ignore... it's just a failure in fetching logs. Ignore to avoid additional noise in console
+              }
+
+              return {
+                text: s.substring(4, s.length),
+                time: time
+              };
+            })
+            .sort((a, b) => (a.time > b.time ? 1 : b.time > a.time ? -1 : 0))
+            .map(a => {
+              return a.text;
             })
             .join("")
             .replace(ansiRegex, "")
