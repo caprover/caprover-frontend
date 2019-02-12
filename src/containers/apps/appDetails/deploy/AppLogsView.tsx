@@ -97,7 +97,7 @@ export default class AppLogsView extends ApiComponent<
           if (!self.willUnmountSoon) {
             self.fetchLogs();
           }
-        }, 2200);
+        }, 2200); // Just a random number to avoid hitting at the same time as build log fetch!
       });
   }
 
