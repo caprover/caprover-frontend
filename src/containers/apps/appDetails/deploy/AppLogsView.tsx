@@ -35,42 +35,42 @@ export default class AppLogsView extends ApiComponent<
 
   fetchLogs() {
     const self = this;
+
+    // See https://docs.docker.com/engine/api/v1.30/#operation/ContainerAttach for logs headers
     const separators = [
-      "\u0000\u0000\u0000\u0000",
-      "\u0001\u0000\u0000\u0000",
-      "\u0002\u0000\u0000\u0000",
-      "\u0003\u0000\u0000\u0000" // This is not in the Docker docs, but can actually happen when the log stream is broken https://github.com/caprover/caprover/issues/366
+      "00000000",
+      "01000000",
+      "02000000",
+      "03000000" // This is not in the Docker docs, but can actually happen when the log stream is broken https://github.com/caprover/caprover/issues/366
     ];
     const ansiRegex = Utils.getAnsiColorRegex();
     this.apiManager
-      .fetchAppLogs(this.props.appName)
+      .fetchAppLogsInHex(this.props.appName)
       .then(function(logInfo: { logs: string }) {
-        const logsProcessed = utf8.decode(
-          logInfo.logs
-            .split(new RegExp(separators.join("|"), "g"))
-            .map(s => {
-              // See https://docs.docker.com/engine/api/v1.30/#operation/ContainerAttach for logs headers
+        const logsProcessed = logInfo.logs
+          .split(new RegExp(separators.join("|"), "g"))
+          .map(rawRow => {
+            let time = 0;
 
-              let time = 0;
+            let textUtf8 = Utils.convertHexStringToUtf8(rawRow);
 
-              try {
-                time = new Date(s.substring(4, 4 + 30)).getTime();
-              } catch (err) {
-                // ignore... it's just a failure in fetching logs. Ignore to avoid additional noise in console
-              }
+            try {
+              time = new Date(textUtf8.substring(0, 30)).getTime();
+            } catch (err) {
+              // ignore... it's just a failure in fetching logs. Ignore to avoid additional noise in console
+            }
 
-              return {
-                text: s.substring(4, s.length),
-                time: time
-              };
-            })
-            .sort((a, b) => (a.time > b.time ? 1 : b.time > a.time ? -1 : 0))
-            .map(a => {
-              return a.text;
-            })
-            .join("")
-            .replace(ansiRegex, "")
-        );
+            return {
+              text: textUtf8,
+              time: time
+            };
+          })
+          .sort((a, b) => (a.time > b.time ? 1 : b.time > a.time ? -1 : 0))
+          .map(a => {
+            return a.text;
+          })
+          .join("")
+          .replace(ansiRegex, "");
 
         if (logsProcessed === self.state.appLogsStringified) {
           return;
@@ -97,6 +97,7 @@ export default class AppLogsView extends ApiComponent<
           }, 100);
       })
       .catch(function(error) {
+        console.log(error);
         self.setState({ appLogsStringified: "fetching app log failed..." });
       });
   }
