@@ -21,7 +21,19 @@ export default {
 
     return new RegExp(pattern, "g");
   },
+
   isMobile() {
     return (window.innerWidth < 768)
+  }
+
+  convertHexStringToUtf8(raw: string) {
+    return !raw
+      ? ""
+      : decodeURIComponent(
+          raw
+            .substring(8, raw.length)
+            .replace(/\s+/g, "")
+            .replace(/[0-9a-f]{2}/g, "%$&")
+        );
   }
 };

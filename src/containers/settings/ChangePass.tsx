@@ -34,11 +34,13 @@ export default class ChangePass extends ApiComponent<
 
     this.apiManager
       .changePass(this.state.old, this.state.new1)
+      .then(function() {
+        message.success("Password changed successfully!");
+      })
       .catch(Toaster.createCatcher())
       .then(function() {
         self.apiManager.getAuthToken(self.state.new1);
         self.setState({ isLoading: false });
-        message.success("Password changed successfully!");
       });
   }
 
