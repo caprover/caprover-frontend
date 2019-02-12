@@ -217,7 +217,7 @@ class PageRoot extends ApiComponent<
             breakpoint="lg" 
             collapsible 
             width={200} 
-            collapsedWidth={self.props.isMobile ? 0 : 50} 
+            collapsedWidth={self.props.isMobile ? 0 : 80} 
             style={{ zIndex: 2 }} 
             onCollapse={self.toggleSider}
           >
