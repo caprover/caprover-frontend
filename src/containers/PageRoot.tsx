@@ -58,7 +58,7 @@ class PageRoot extends ApiComponent<
   RootPageInterface,
   {
     versionInfo: IVersionInfo | undefined;
-    collapsed: Boolean;
+    collapsed: boolean;
   }
 > {
   private mainContainer: RefObject<HTMLDivElement>;
@@ -218,7 +218,7 @@ class PageRoot extends ApiComponent<
             collapsible 
             width={200} 
             collapsedWidth={self.props.isMobile ? 0 : 50} 
-            style={{ background: "#fff", zIndex: 2 }} 
+            style={{ zIndex: 2 }} 
             onCollapse={self.toggleSider}
           >
             <Menu

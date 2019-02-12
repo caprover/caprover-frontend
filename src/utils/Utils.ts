@@ -21,7 +21,7 @@ export default {
 
     return new RegExp(pattern, "g");
   },
-  getResponsive() {
+  isMobile() {
     return (window.innerWidth < 768)
   }
 };
