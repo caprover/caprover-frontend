@@ -16,7 +16,6 @@ export default class AppLogsView extends ApiComponent<
     isWrapped: boolean;
   }
 > {
-  private fetchLogsInterval: any;
   constructor(props: any) {
     super(props);
     this.state = {
@@ -24,13 +23,6 @@ export default class AppLogsView extends ApiComponent<
       expandedLogs: true,
       appLogsStringified: ""
     };
-  }
-
-  componentWillUnmount() {
-    if (super.componentWillUnmount) super.componentWillUnmount();
-    if (this.fetchLogsInterval) {
-      clearInterval(this.fetchLogsInterval);
-    }
   }
 
   fetchLogs() {
@@ -99,15 +91,19 @@ export default class AppLogsView extends ApiComponent<
       .catch(function(error) {
         console.log(error);
         self.setState({ appLogsStringified: "fetching app log failed..." });
+      })
+      .then(function() {
+        setTimeout(() => {
+          if (!self.willUnmountSoon) {
+            self.fetchLogs();
+          }
+        }, 2200);
       });
   }
 
   componentDidMount() {
     const self = this;
     this.fetchLogs();
-    this.fetchLogsInterval = setInterval(function() {
-      self.fetchLogs();
-    }, 3300); // Just a random number to avoid hitting at the same time as build log fetch!
   }
 
   onExpandLogClicked() {
