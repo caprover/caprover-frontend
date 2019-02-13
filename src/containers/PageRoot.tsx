@@ -16,6 +16,7 @@ import OneClickAppConfigPage from "./apps/oneclick/OneClickAppConfigPage";
 import ApiComponent from "./global/ApiComponent";
 import Toaster from "../utils/Toaster";
 import { IVersionInfo } from "../models/IVersionInfo";
+import * as GlobalActions from "../actions/GlobalActions";
 import { connect } from "react-redux";
 
 const { Header, Content, Sider } = Layout;
@@ -45,12 +46,12 @@ const MENU_ITEMS = [
     key: "settings",
     name: "Settings",
     icon: "setting"
-  },
-]
-
+  }
+];
 
 interface RootPageInterface extends RouteComponentProps<any> {
   rootElementKey: string;
+  emitSizeChanged: () => void;
   isMobile: boolean;
 }
 
@@ -72,8 +73,18 @@ class PageRoot extends ApiComponent<
     };
   }
 
+  updateDimensions = () => this.props.emitSizeChanged();
+
+  componentWillUnmount() {
+    if (super.componentWillUnmount) super.componentWillUnmount();
+    this.updateDimensions();
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
   componentDidMount() {
     const self = this;
+
+    window.addEventListener("resize", this.updateDimensions);
 
     if (!ApiManager.isLoggedIn()) {
       this.goToLogin();
@@ -143,82 +154,82 @@ class PageRoot extends ApiComponent<
   }
 
   toggleSider = () => {
-    this.setState({ collapsed: !this.state.collapsed })
-  }
+    this.setState({ collapsed: !this.state.collapsed });
+  };
 
   render() {
     const self = this;
-    console.log(this.state.collapsed)
     return (
       <Layout className="full-screen-bg">
-        { !self.props.isMobile && 
-        <Header className="header">
-          <div>
-            <Row>
-              <Col span={12}>
-                <div>
-                  <h3 style={{ color: "#fff" }}>
-                    <img
-                      src="/icon-512x512.png"
-                      style={{
-                        height: 45,
-                        marginRight: 10
-                      }}
-                    />
-                    CapRover
-                    {self.createUpdateAvailableIfNeeded()}
-                  </h3>
-                </div>
-              </Col>
-              <Col span={12}>
-                <Row type="flex" justify="end">
-                  <a
-                    href="https://github.com/caprover/caprover"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ marginRight: 20 }}
-                  >
-                    GitHub
-                  </a>
-
-                  <a
-                    href="https://caprover.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ marginRight: 70 }}
-                  >
-                    Docs
-                  </a>
-                  <span>
-                    <span
-                      style={{
-                        border: "1px solid #1b8ad3",
-                        borderRadius: 5,
-                        padding: 8
-                      }}
+        {!self.props.isMobile && (
+          <Header className="header">
+            <div>
+              <Row>
+                <Col span={12}>
+                  <div>
+                    <h3 style={{ color: "#fff" }}>
+                      <img
+                        src="/icon-512x512.png"
+                        style={{
+                          height: 45,
+                          marginRight: 10
+                        }}
+                      />
+                      CapRover
+                      {self.createUpdateAvailableIfNeeded()}
+                    </h3>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <Row type="flex" justify="end">
+                    <a
+                      href="https://github.com/caprover/caprover"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ marginRight: 20 }}
                     >
-                      <ClickableLink
-                        onLinkClicked={() => {
-                          self.apiManager.setAuthToken("");
-                          self.goToLogin();
+                      GitHub
+                    </a>
+
+                    <a
+                      href="https://caprover.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ marginRight: 70 }}
+                    >
+                      Docs
+                    </a>
+                    <span>
+                      <span
+                        style={{
+                          border: "1px solid #1b8ad3",
+                          borderRadius: 5,
+                          padding: 8
                         }}
                       >
-                        Logout <Icon type="logout" />
-                      </ClickableLink>
+                        <ClickableLink
+                          onLinkClicked={() => {
+                            self.apiManager.setAuthToken("");
+                            self.goToLogin();
+                          }}
+                        >
+                          Logout <Icon type="logout" />
+                        </ClickableLink>
+                      </span>
                     </span>
-                  </span>
-                </Row>
-              </Col>
-            </Row>
-          </div>
-        </Header>}
+                  </Row>
+                </Col>
+              </Row>
+            </div>
+          </Header>
+        )}
         <Layout>
-          <Sider 
-            breakpoint="lg" 
-            collapsible 
-            width={200} 
-            collapsedWidth={self.props.isMobile ? 0 : 80} 
-            style={{ zIndex: 2 }} 
+          <Sider
+            breakpoint="lg"
+            collapsible
+            width={200}
+            collapsedWidth={self.props.isMobile ? 0 : 80}
+            style={{ zIndex: 2 }}
             onCollapse={self.toggleSider}
           >
             <Menu
@@ -231,90 +242,89 @@ class PageRoot extends ApiComponent<
               defaultSelectedKeys={["dashboard"]}
               style={{ height: "100%", borderRight: 0 }}
             >
-            {self.props.isMobile && 
-            <Menu.Item>
-                <h3 style={{ color: "#fff" }}>
-                  <img
-                    src="/icon-512x512.png"
+              {self.props.isMobile && (
+                <Menu.Item>
+                  <h3 style={{ color: "#fff" }}>
+                    <img
+                      src="/icon-512x512.png"
+                      style={{
+                        height: 30,
+                        marginRight: 10
+                      }}
+                    />
+                    CapRover
+                  </h3>
+                </Menu.Item>
+              )}
+
+              {MENU_ITEMS.map(item => (
+                <Menu.Item key={item.key}>
+                  <span>
+                    <Icon type={item.icon} />
+                    <span>{item.name}</span>
+                  </span>
+                </Menu.Item>
+              ))}
+
+              {self.props.isMobile && (
+                <Fragment>
+                  <div
                     style={{
-                      height: 30,
-                      marginRight: 10
+                      backgroundColor: "rgba(255, 255, 255, 0.65)",
+                      height: 1,
+                      width: "80%",
+                      margin: "15px auto"
                     }}
                   />
-                  CapRover
-                </h3>
-            </Menu.Item>}
-
-            {MENU_ITEMS.map(item => (
-              <Menu.Item key={item.key}>
-                <span>
-                  <Icon type={item.icon} />
-                  <span>{item.name}</span>
-                </span>
-              </Menu.Item>
-            ))}
-
-
-
-            {self.props.isMobile && 
-            <Fragment>
-                <div 
-                  style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.65)",
-                    height: 1,
-                    width: "80%",
-                    margin: "15px auto"
-                  }}
-                />
-                <div 
-                  className="ant-menu-item" 
-                  role="menuitem"
-                  style={{ paddingLeft: 24 }}
-                >
+                  <div
+                    className="ant-menu-item"
+                    role="menuitem"
+                    style={{ paddingLeft: 24 }}
+                  >
                     <a
                       href="https://github.com/caprover/caprover"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                    <Icon type="github" />
+                      <Icon type="github" />
                       GitHub
                     </a>
-                </div>
+                  </div>
 
-                <div 
-                  className="ant-menu-item" 
-                  role="menuitem"
-                  style={{ paddingLeft: 24 }}
-                >
-                  <a
-                    href="https://caprover.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <div
+                    className="ant-menu-item"
+                    role="menuitem"
+                    style={{ paddingLeft: 24 }}
                   >
-                  <Icon type="file-text" />
-                    Docs
-                  </a>
-                </div>
+                    <a
+                      href="https://caprover.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Icon type="file-text" />
+                      Docs
+                    </a>
+                  </div>
 
-                <div 
-                  className="ant-menu-item" 
-                  role="menuitem"
-                  style={{ paddingLeft: 24 }}
-                >
-                  <ClickableLink
-                    onLinkClicked={() => {
-                      self.apiManager.setAuthToken("");
-                      self.goToLogin();
-                    }}
-                  > <Icon type="logout" />
-                    Logout
-                  </ClickableLink>
-                </div>
-            </Fragment>}
-
+                  <div
+                    className="ant-menu-item"
+                    role="menuitem"
+                    style={{ paddingLeft: 24 }}
+                  >
+                    <ClickableLink
+                      onLinkClicked={() => {
+                        self.apiManager.setAuthToken("");
+                        self.goToLogin();
+                      }}
+                    >
+                      {" "}
+                      <Icon type="logout" />
+                      Logout
+                    </ClickableLink>
+                  </div>
+                </Fragment>
+              )}
             </Menu>
-
-
           </Sider>
           <Content>
             <div
@@ -325,7 +335,11 @@ class PageRoot extends ApiComponent<
                 paddingBottom: 36,
                 height: "100%",
                 overflowY: "scroll",
-                marginRight: self.state.collapsed ? 0 : self.props.isMobile ? -200 : 0,
+                marginRight: self.state.collapsed
+                  ? 0
+                  : self.props.isMobile
+                  ? -200
+                  : 0,
                 transition: "margin-right 0.3s ease"
               }}
               id="main-content-layout"
@@ -366,5 +380,7 @@ function mapStateToProps(state: any) {
 
 export default connect(
   mapStateToProps,
-  undefined
+  {
+    emitSizeChanged: GlobalActions.emitSizeChanged
+  }
 )(PageRoot);
