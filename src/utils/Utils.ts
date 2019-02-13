@@ -22,6 +22,10 @@ export default {
     return new RegExp(pattern, "g");
   },
 
+  isMobile() {
+    return (window.innerWidth < 768)
+  },
+
   convertHexStringToUtf8(raw: string) {
     return !raw
       ? ""
