@@ -165,7 +165,7 @@ export default class AppConfigs extends Component<
 
         <br />
 
-        <Button type="default" onClick={() => self.addEnvVarClicked()}>
+        <Button block={this.props.isMobile} type="default" onClick={() => self.addEnvVarClicked()}>
           Add Key/Value Pair
         </Button>
       </div>
@@ -419,7 +419,7 @@ export default class AppConfigs extends Component<
 
         <br />
 
-        <Button type="default" onClick={() => this.addPortMappingClicked()}>
+        <Button block={this.props.isMobile} type="default" onClick={() => this.addPortMappingClicked()}>
           Add Port Mapping
         </Button>
         <br />
@@ -428,7 +428,7 @@ export default class AppConfigs extends Component<
         {this.createVolSection()}
         <br />
         <Row>
-          <Col span={6} style={{ width: 300 }}>
+          <Col span={6} style={{ width: this.props.isMobile ? '100%' : 300 }}>
             <Tooltip title="Number of running instances of this app">
               <Input
                 addonBefore="Instance Count"

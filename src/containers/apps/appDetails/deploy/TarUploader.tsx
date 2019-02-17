@@ -77,7 +77,7 @@ export default class TarUploader extends ApiComponent<
     return (
       <div>
         <Row type="flex" justify="center">
-          <Col span={12}>
+          <Col xs={{ span: 24 }} lg={{ span: 12 }}>
             <Upload.Dragger
               name="files"
               accept="*/*"

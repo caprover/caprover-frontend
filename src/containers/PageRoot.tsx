@@ -148,7 +148,6 @@ class PageRoot extends ApiComponent<
 
   render() {
     const self = this;
-    console.log(this.state.collapsed)
     return (
       <Layout className="full-screen-bg">
         { !self.props.isMobile && 

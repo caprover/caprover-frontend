@@ -227,8 +227,8 @@ export default class Dashboard extends ApiComponent<
   createSetupPanel() {
     const self = this;
     return (
-      <Row>
-        <Col span={14} offset={5}>
+      <Row type="flex" justify="center">
+        <Col xs={{ span: 20 }} lg={{ span: 16 }}>
           <Card title="CapRover Root Domain Configurations">
             <div>
               <p>
@@ -327,8 +327,8 @@ export default class Dashboard extends ApiComponent<
     }
 
     return (
-      <Row>
-        <Col span={18} offset={3}>
+      <Row type="flex" justify="center">
+        <Col xs={{ span: 20 }} lg={{ span: 16 }}>
           <Card title="CapRover Initial Setup">
             <div>
               <h3>Congratulations! 🎉🎉</h3>

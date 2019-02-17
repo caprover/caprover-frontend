@@ -49,7 +49,7 @@ export default class OneClickAppDeployProgress extends Component<{
       <div>
         <div>
           <Row type="flex" justify="center">
-            <Col span={16}>
+            <Col xs={{ span: 20 }} lg={{ span: 16 }}>
               <Card title={`Deploying your ${this.props.appName}`}>
                 <p>
                   This process takes a few minutes to complete. DO NOT refresh

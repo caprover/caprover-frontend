@@ -13,7 +13,7 @@ export default class GitRepoForm extends Component<{
       <div>
         <form action="/" autoComplete="off">
           <Row gutter={20}>
-            <Col span={12}>
+            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
               <Input
                 style={{ marginBottom: 20 }}
                 value={this.props.gitRepoValues.repo}
@@ -31,7 +31,7 @@ export default class GitRepoForm extends Component<{
                 }}
               />
             </Col>
-            <Col span={12}>
+            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
               <Input
                 style={{ marginBottom: 20 }}
                 value={this.props.gitRepoValues.branch}
@@ -49,7 +49,7 @@ export default class GitRepoForm extends Component<{
                 }}
               />
             </Col>
-            <Col span={12}>
+            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
               <Input
                 style={{ marginBottom: 20 }}
                 value={this.props.gitRepoValues.user}
@@ -63,7 +63,7 @@ export default class GitRepoForm extends Component<{
                 }}
               />
             </Col>
-            <Col span={12}>
+            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
               <PasswordField
                 defaultValue={this.props.gitRepoValues.password}
                 addonBefore="Password"

@@ -16,6 +16,7 @@ import AppLogsView from "./AppLogsView";
 
 interface IDeploymentTabProps extends AppDetailsTabProps {
   onUpdateConfigAndSave: () => void;
+  isMobile: boolean;
 }
 export default class Deployment extends ApiComponent<
   IDeploymentTabProps,
@@ -128,6 +129,7 @@ export default class Deployment extends ApiComponent<
         <div style={{ height: 20 }} />
 
         <AppVersionTable
+          isMobile={this.props.isMobile}
           onVersionRollbackRequested={versionToRevert =>
             self.onVersionRollbackRequested(versionToRevert)
           }
@@ -222,10 +224,11 @@ export default class Deployment extends ApiComponent<
             this.props.updateApiData(newApiData);
           }}
         />
-        <Row type="flex" justify="end">
+        <Row type="flex" justify="end" style={{ marginTop: this.props.isMobile ? 15 : 0 }}>
           <Button
             disabled={!hasPushToken}
-            style={{ marginRight: 10 }}
+            style={{ marginRight: this.props.isMobile ? 0 : 10 }}
+            block={this.props.isMobile}
             onClick={() => {
               self.apiManager
                 .forceBuild(webhookPushUrlRelativePath)
@@ -240,6 +243,8 @@ export default class Deployment extends ApiComponent<
           <Button
             disabled={!repoInfo.repo}
             type="primary"
+            style={{ marginTop: this.props.isMobile ? 15 : 0 }}
+            block={this.props.isMobile}
             onClick={() => self.props.onUpdateConfigAndSave()}
           >
             Save &amp; Update
@@ -263,9 +268,10 @@ export default class Deployment extends ApiComponent<
         />
         <div style={{ height: 20 }} />
         <Row>
-          <Col span={6} style={{ width: 400 }}>
+          <Col xs={{ span: 24 }} lg={{ span: 6 }} style={{ width: this.props.isMobile ? "100%" : 400 }}>
+          {this.props.isMobile && "captain-definition Relative Path"}
             <Input
-              addonBefore="captain-definition Relative Path"
+              addonBefore={!this.props.isMobile && "captain-definition Relative Path"}
               type="text"
               defaultValue={app.captainDefinitionRelativeFilePath + ""}
               disabled={!this.state.forceEditableCaptainDefinitionPath}
@@ -277,11 +283,12 @@ export default class Deployment extends ApiComponent<
               }}
             />
           </Col>
-          <Col span={12}>
-            <div style={{ paddingLeft: 24 }}>
+          <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+            <div style={{ paddingLeft: this.props.isMobile ? 0 : 24, marginTop: this.props.isMobile ? 8: 0 }}>
               <Tooltip title="You shouldn't need to change this path unless you have a repository with multiple captain-definition files (mono repos). Read docs for captain definition before editing this">
                 <Button
                   type="default"
+                  block={this.props.isMobile}
                   disabled={this.state.forceEditableCaptainDefinitionPath}
                   onClick={() =>
                     this.setState({ forceEditableCaptainDefinitionPath: true })
@@ -291,7 +298,8 @@ export default class Deployment extends ApiComponent<
                 </Button>
               </Tooltip>
               <Button
-                style={{ marginLeft: 20 }}
+                style={{ marginLeft: this.props.isMobile ? 0 : 20, marginTop: this.props.isMobile ? 8: 0 }}
+                block={this.props.isMobile}
                 disabled={!this.state.forceEditableCaptainDefinitionPath}
                 type="primary"
                 onClick={() => self.props.onUpdateConfigAndSave()}
