@@ -332,7 +332,7 @@ export default class AppConfigs extends Component<
         <br />
 
         <Row>
-          <Col span={6} style={{ width: 300 }}>
+        <Col span={6} style={{ width: this.props.isMobile ? '100%' : 300 }}>
             <Tooltip title="Leave empty for automatic placement">
               <Input
                 addonBefore="Node ID"

@@ -299,7 +299,7 @@ export default class HttpSettings extends Component<
                   onClick={() => this.onConnectNewDomainClicked(this.state.newDomain)} 
                   type="primary"
                 >
-                  Create New App
+                  Connect New Domain
                 </Button>
             </Fragment>
             :
