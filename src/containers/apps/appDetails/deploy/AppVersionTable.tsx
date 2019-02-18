@@ -13,7 +13,7 @@ export default class AppVersionTable extends Component<{
   isMobile: boolean;
 }> {
 
-  getVersionRender(version: number, versionDetails: IAppVersion){
+  getStateRender(version: number, versionDetails: IAppVersion){
     if (version === this.props.deployedVersion) {
       return (
         <Tooltip title="Current Version">
@@ -56,7 +56,7 @@ export default class AppVersionTable extends Component<{
         key: "revertColumn", // arbitrary unique name for the column
         align: "center",
         dataIndex: "version" as "version",
-        render: (version: number, versionDetails: IAppVersion) => this.getVersionRender(version, versionDetails)
+        render: (version: number, versionDetails: IAppVersion) => this.getStateRender(version, versionDetails)
       },
       {
         title: "Version",
@@ -163,7 +163,7 @@ export default class AppVersionTable extends Component<{
               <b>Git hash:</b> {version.gitHash || "n/a"}
             </div>
             <div>
-              <b>State:</b> {this.getVersionRender(version.version, version)}
+              <b>State:</b> {this.getStateRender(version.version, version)}
             </div>
             </Card>
           ))
