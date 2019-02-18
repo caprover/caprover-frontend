@@ -84,7 +84,7 @@ export default class OneClickVariablesSection extends Component<
           </div>
 
           <Row>
-            <Col span={12}>
+            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
               <Input
                 type="text"
                 placeholder={variable.defaultValue}

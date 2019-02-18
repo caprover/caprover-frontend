@@ -7,12 +7,12 @@ import {
   Icon,
   Tooltip,
   Tabs,
-  Checkbox,
   Button,
   Input,
   Affix,
   Modal
 } from "antd";
+import { connect } from "react-redux";
 import ApiComponent from "../../global/ApiComponent";
 import Toaster from "../../../utils/Toaster";
 import CenteredSpinner from "../../global/CenteredSpinner";
@@ -43,13 +43,15 @@ export interface AppDetailsTabProps {
   updateApiData: Function;
   reFetchData: () => void;
   setLoading: (value: boolean) => void;
+  isMobile: boolean;
 }
 
 interface PropsInterface extends RouteComponentProps<any> {
   mainContainer: RefObject<HTMLDivElement>;
+  isMobile: boolean;
 }
 
-export default class AppDetails extends ApiComponent<
+class AppDetails extends ApiComponent<
   PropsInterface,
   {
     isLoading: boolean;
@@ -209,6 +211,7 @@ export default class AppDetails extends ApiComponent<
                 key={WEB_SETTINGS}
               >
                 <HttpSettings
+                  isMobile={this.props.isMobile}
                   setLoading={value => this.setState({ isLoading: value })}
                   reFetchData={() => this.reFetchData()}
                   apiData={this.state.apiData!}
@@ -223,6 +226,7 @@ export default class AppDetails extends ApiComponent<
                 key={APP_CONFIGS}
               >
                 <AppConfigs
+                  isMobile={this.props.isMobile}
                   setLoading={value => this.setState({ isLoading: value })}
                   reFetchData={() => this.reFetchData()}
                   apiData={this.state.apiData!}
@@ -237,6 +241,7 @@ export default class AppDetails extends ApiComponent<
                 key={DEPLOYMENT}
               >
                 <Deployment
+                  isMobile={this.props.isMobile}
                   setLoading={value => this.setState({ isLoading: value })}
                   reFetchData={() => this.reFetchData()}
                   apiData={this.state.apiData!}
@@ -272,24 +277,32 @@ export default class AppDetails extends ApiComponent<
                   <Col span={8}>
                     <div style={{ textAlign: "center" }}>
                       <Button
-                        style={{ minWidth: 135 }}
+                        style={{ minWidth: self.props.isMobile ? 35 : 135 }}
                         type="danger"
                         size="large"
                         onClick={() => self.onDeleteAppClicked()}
                       >
-                        Delete App
+                        {self.props.isMobile ? 
+                          <Icon type="delete" />
+                          :
+                          "Delete App"
+                        }
                       </Button>
                     </div>
                   </Col>
                   <Col span={8}>
                     <div style={{ textAlign: "center" }}>
                       <Button
-                        style={{ minWidth: 135 }}
+                        style={{ minWidth: self.props.isMobile ? 35 : 135 }}
                         type="primary"
                         size="large"
                         onClick={() => self.onUpdateConfigAndSave()}
                       >
-                        Save &amp; Update
+                      {self.props.isMobile ? 
+                        <Icon type="save" />
+                        :
+                        "Save & Update"
+                      }
                       </Button>
                     </div>
                   </Col>
@@ -336,3 +349,15 @@ export default class AppDetails extends ApiComponent<
       });
   }
 }
+
+
+function mapStateToProps(state: any) {
+  return {
+    isMobile: state.globalReducer.isMobile
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  undefined
+)(AppDetails);

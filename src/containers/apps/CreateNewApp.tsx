@@ -1,14 +1,13 @@
-import React, { Component } from "react";
-import { Row, Col, Card, Checkbox, Button, Icon, Tooltip } from "antd";
-import ApiComponent from "../global/ApiComponent";
-import Toaster from "../../utils/Toaster";
+import React, { Component, Fragment } from "react";
+import { Row, Col, Card, Checkbox, Button, Icon, Tooltip, Input } from "antd";
 import Search from "antd/lib/input/Search";
-import CenteredSpinner from "../global/CenteredSpinner";
+import { connect } from "react-redux";
 
-export default class CreateNewApp extends Component<
+class CreateNewApp extends Component<
   {
     onCreateNewAppClicked: (appName: string, hasPersistency: boolean) => void;
     onCreateOneClickAppClicked: () => void;
+    isMobile: boolean;
   },
   { appName: string; hasPersistency: boolean }
 > {
@@ -35,8 +34,8 @@ export default class CreateNewApp extends Component<
     const self = this;
 
     return (
-      <Row>
-        <Col span={10} offset={7}>
+      <Row type="flex" justify="center">
+        <Col xs={{ span: 20 }} lg={{ span: 10 }}>
           <Card
             title={
               <span>
@@ -46,15 +45,22 @@ export default class CreateNewApp extends Component<
             }
           >
             <Row>
-              <Search
-                placeholder="my-amazing-app"
-                enterButton="Create New App"
-                onChange={e => self.setState({ appName: e.target.value })}
-                onSearch={value => self.onCreateNewAppClicked()}
-              />
+              {self.props.isMobile ? 
+                <Fragment>
+                    <Input placeholder="my-amazing-app" onChange={e => self.setState({ appName: e.target.value })} />
+                    <Button style={{marginTop: 8}} block onClick={() => self.onCreateNewAppClicked()} type="primary">Create New App</Button>
+                </Fragment>
+                :
+                <Search
+                  placeholder="my-amazing-app"
+                  enterButton="Create New App"
+                  onChange={e => self.setState({ appName: e.target.value })}
+                  onSearch={value => self.onCreateNewAppClicked()}
+                />
+              }
             </Row>
             <br />
-            <Row type="flex" justify="end">
+            <Row type="flex" justify={self.props.isMobile ? "start" : "end"} >
               <Checkbox
                 onChange={(e: any) =>
                   self.setState({ hasPersistency: !!e.target.checked })
@@ -93,3 +99,16 @@ export default class CreateNewApp extends Component<
     );
   }
 }
+
+
+function mapStateToProps(state: any) {
+  return {
+    isMobile: state.globalReducer.isMobile
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  undefined
+)(CreateNewApp);
+

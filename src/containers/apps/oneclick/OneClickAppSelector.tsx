@@ -67,7 +67,7 @@ export default class OneClickAppSelector extends Component<
     return (
       <div>
         <Row type="flex" justify="center">
-          <Col span={16}>
+          <Col xs={{ span: 20 }} lg={{ span: 16 }}>
             <Card title="One Click Apps">
               <p>
                 Choose an app, a database or a bundle (app+database) from the

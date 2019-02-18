@@ -35,7 +35,7 @@ export default class Apps extends ApiComponent<
     this.props.history.push(`/apps/oneclick/`);
   }
 
-  onCreateNewAppClicked(appName: string, hasPersistentData: boolean) {
+  onCreateNewAppClicked(appName: string, hasPersistentData: boolean){
     const self = this;
 
     Promise.resolve() //

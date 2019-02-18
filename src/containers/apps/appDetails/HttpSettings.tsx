@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import {
   message,
   Row,
@@ -17,10 +17,15 @@ const Search = Input.Search;
 
 export default class HttpSettings extends Component<
   AppDetailsTabProps,
-  { dummyVar: undefined }
+  { 
+    newDomain: string; 
+  }
 > {
   constructor(props: any) {
     super(props);
+    this.state = {
+      newDomain: ""
+    }
   }
 
   render() {
@@ -226,29 +231,35 @@ export default class HttpSettings extends Component<
     const app = this.props.apiData!.appDefinition;
     const rootDomain = this.props.apiData!.rootDomain;
 
+    const enableHttpsButton = (
+      <Tooltip
+        title={
+          app.hasDefaultSubDomainSsl
+            ? "Already activated"
+            : "Click to activate HTTPS for this domain"
+        }
+      >
+        <Button
+          disabled={app.hasDefaultSubDomainSsl}
+          block={this.props.isMobile}
+          style={{ marginRight: this.props.isMobile ? 0 : 20, marginTop: this.props.isMobile ? 8 : 0 }}
+          onClick={() => {
+            this.enableDefaultHttps();
+          }}
+          type="primary"
+          size="small"
+        >
+          Enable HTTPS
+        </Button>
+      </Tooltip>
+    )
+
+
     return (
       <div>
         <Row>
           <p>Your app is available to public at:</p>
-          <Tooltip
-            title={
-              app.hasDefaultSubDomainSsl
-                ? "Already activated"
-                : "Click to activate HTTPS for this domain"
-            }
-          >
-            <Button
-              disabled={app.hasDefaultSubDomainSsl}
-              style={{ marginRight: 20 }}
-              onClick={() => {
-                this.enableDefaultHttps();
-              }}
-              type="primary"
-              size="small"
-            >
-              Enable HTTPS
-            </Button>
-          </Tooltip>
+          {!this.props.isMobile && enableHttpsButton}
           <a
             href={
               "http" +
@@ -268,17 +279,36 @@ export default class HttpSettings extends Component<
               "." +
               rootDomain}
           </a>
+          {this.props.isMobile && enableHttpsButton}
         </Row>
         <br />
         <hr />
         <br />
         <Row>
-          <Col span={15}>
+          <Col xs={{ span: 24 }} lg={{ span: 15 }}>
+
+          {this.props.isMobile ? 
+            <Fragment>
+                <Input 
+                  placeholder="www.the-best-app-in-the-world.com" 
+                  onChange={e => this.setState({ newDomain: e.target.value })} 
+                />
+                <Button 
+                  style={{ marginTop: 8 }} 
+                  block 
+                  onClick={() => this.onConnectNewDomainClicked(this.state.newDomain)} 
+                  type="primary"
+                >
+                  Create New App
+                </Button>
+            </Fragment>
+            :
             <Search
               placeholder="www.the-best-app-in-the-world.com"
               enterButton="Connect New Domain"
               onSearch={value => this.onConnectNewDomainClicked(value)}
             />
+          }
           </Col>
           &nbsp;&nbsp;&nbsp;
           <Tooltip title="Make sure the new domain points to this IP, otherwise verification will fail.">
@@ -297,10 +327,10 @@ export default class HttpSettings extends Component<
         <br />
 
         <Row>
-          <Col span={6} style={{ width: 300 }}>
+          <Col xs={{ span: 24 }} lg={{ span: 6 }} style={{ width: this.props.isMobile ? "100%" : 300 }}>
             <Tooltip title="HTTP port inside the container. Default is 80. Change only if the app is running in a different port. This is used only for HTTP apps, not databases.">
               <Input
-                addonBefore="Container HTTP Port"
+                addonBefore={`Container ${this.props.isMobile ? " " : "HTTP "}Port`}
                 type="number"
                 defaultValue={app.containerHttpPort + ""}
                 onChange={e => {

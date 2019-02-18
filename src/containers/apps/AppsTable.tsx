@@ -3,28 +3,23 @@ import {
   Row,
   Col,
   Card,
-  Checkbox,
-  Button,
   Icon,
-  Tooltip,
   Input,
   Table
 } from "antd";
-import ApiComponent from "../global/ApiComponent";
-import Toaster from "../../utils/Toaster";
-import Search from "antd/lib/input/Search";
-import CenteredSpinner from "../global/CenteredSpinner";
 import { IAppDef } from "./AppDefinition";
 import ClickableLink from "../global/ClickableLink";
 import { History } from "history";
 import { ColumnProps } from "antd/lib/table";
+import { connect } from "react-redux";
 
-export default class AppsTable extends Component<
+class AppsTable extends Component<
   {
     history: History;
     apps: IAppDef[];
     rootDomain: string;
     defaultNginxConfig: string;
+    isMobile: boolean;
   },
   { searchTerm: string }
 > {
@@ -131,36 +126,96 @@ export default class AppsTable extends Component<
       return app.appName!.indexOf(self.state.searchTerm) >= 0;
     });
 
+    const searchAppInput = 
+    <Input
+      placeholder="Search by Name"
+      type="text"
+      onChange={event =>
+        self.setState({
+          searchTerm: (event.target.value || "").trim()
+        })
+      }
+    />
+
     return (
-      <Row>
-        <Col span={18} offset={3} style={{ paddingBottom: 300 }}>
+      <Row type="flex" justify="center">
+      <Col xs={{ span: 20 }} lg={{ span: 16 }} style={{ paddingBottom: 300 }}>
           <Card
-            extra={
-              <Input
-                placeholder="Search by Name"
-                type="text"
-                onChange={event =>
-                  self.setState({
-                    searchTerm: (event.target.value || "").trim()
-                  })
-                }
-              />
-            }
+            extra={ !!!self.props.isMobile && searchAppInput }
             title={
-              <span>
-                <Icon type="code" />
-                &nbsp;&nbsp;&nbsp;Your Apps
-              </span>
+              <React.Fragment>
+                <span>
+                  <Icon type="code" />
+                  &nbsp;&nbsp;&nbsp;Your Apps
+                </span>
+                <br/>
+                { self.props.isMobile && searchAppInput }
+              </React.Fragment>
             }
           >
+          
             <Row>
+              {self.props.isMobile ?
+              appsToRender.map(({
+                appName = "", 
+                hasPersistentData, 
+                notExposeAsWebApp, 
+                instanceCount,
+                hasDefaultSubDomainSsl
+              }) => (
+                <Card
+                  type="inner"
+                  title={appName}
+                  key={appName}
+                  extra={
+                    <ClickableLink onLinkClicked={() => self.onAppClicked(appName)}>
+                      Details
+                    </ClickableLink>
+                  }
+                >
+                  <p>Persistant Data: { 
+                    !hasPersistentData ? null : 
+                      <span>
+                        <Icon type="check" />
+                      </span>
+                    }
+                  </p>
+                  <p>Exposed Webapp: {
+                    !!notExposeAsWebApp ? null : 
+                      <span>
+                        <Icon type="check" />
+                      </span> 
+                    }
+                  </p>
+                  <p>Instance Count: {instanceCount}</p>
+                  <p>Open in Browser: {
+                    !!notExposeAsWebApp ? null :
+                      <a
+                        href={
+                          "http" +
+                          (hasDefaultSubDomainSsl ? "s" : "") +
+                          "://" +
+                          appName +
+                          "." +
+                          self.props.rootDomain
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Icon type="link" />{" "}
+                      </a>
+                    }
+                  </p>
+                </Card>
+              ))
+              :
               <Table<IAppDef>
                 rowKey="appName"
                 columns={self.createColumns()}
                 dataSource={appsToRender}
                 pagination={false}
                 size="middle"
-              />
+              />}
             </Row>
           </Card>
         </Col>
@@ -168,3 +223,14 @@ export default class AppsTable extends Component<
     );
   }
 }
+
+function mapStateToProps(state: any) {
+  return {
+    isMobile: state.globalReducer.isMobile
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  undefined
+)(AppsTable);
