@@ -4,20 +4,28 @@ import ChangePass from "./ChangePass";
 import CheckUpdate from "./CheckUpdate";
 import NginxConfig from "./NginxConfig";
 import DiskCleanup from "./DiskCleanup";
+import BackupCreator from "./BackupCreator";
 
 export default class Settings extends Component {
   render() {
     return (
       <div>
         <Row type="flex" justify="space-around">
-          <Col span={8}>
+          <Col span={12}>
             <div style={{ margin: 10 }}>
               <Card title="Check for Updates">
                 <CheckUpdate />
               </Card>
             </div>
           </Col>
-          <Col span={16}>
+          <Col span={12}>
+            <div style={{ margin: 10 }}>
+              <Card title="Backup">
+                <BackupCreator />
+              </Card>
+            </div>
+          </Col>
+          <Col span={24}>
             <div style={{ margin: 10 }}>
               <Card title="NGINX Configurations">
                 <NginxConfig />

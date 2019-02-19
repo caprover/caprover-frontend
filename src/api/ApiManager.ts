@@ -104,7 +104,11 @@ export default class ApiManager {
 
     return Promise.resolve() //
       .then(
-        http.fetch(http.GET, `/user/apps/appData/${appName}/logs?encoding=hex`, {})
+        http.fetch(
+          http.GET,
+          `/user/apps/appData/${appName}/logs?encoding=hex`,
+          {}
+        )
       );
   }
 
@@ -291,6 +295,17 @@ export default class ApiManager {
 
     return Promise.resolve() //
       .then(http.fetch(http.GET, "/user/system/versioninfo", {}));
+  }
+
+  createBackup(): Promise<void> {
+    const http = this.http;
+
+    return Promise.resolve() //
+      .then(
+        http.fetch(http.POST_DOWNLOAD, "/user/system/createbackup", {
+          postDownloadFileName: "backup.tar"
+        })
+      );
   }
 
   performUpdate(latestVersion: string) {
