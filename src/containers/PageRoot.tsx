@@ -1,7 +1,7 @@
 import React, { RefObject, Fragment } from "react";
 import { RouteComponentProps, Switch, Route } from "react-router";
 import ApiManager from "../api/ApiManager";
-import { Layout, Menu, Icon, Row, Col } from "antd";
+import { Layout, Menu, Icon, Row, Col, Button } from "antd";
 import ClickableLink from "./global/ClickableLink";
 import Dashboard from "./Dashboard";
 import LoggedInCatchAll from "./LoggedInCatchAll";
@@ -81,8 +81,16 @@ class PageRoot extends ApiComponent<
     window.removeEventListener("resize", this.updateDimensions);
   }
 
+  componentDidUpdate(prevProps: any) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.location.pathname !== prevProps.location.pathname && this.props.isMobile) {
+      this.setState({ collapsed: true })
+    }
+  }
+
   componentDidMount() {
     const self = this;
+    this.updateDimensions();
 
     window.addEventListener("resize", this.updateDimensions);
 
@@ -106,7 +114,7 @@ class PageRoot extends ApiComponent<
     const self = this;
 
     if (!self.state.versionInfo || !self.state.versionInfo.canUpdate) {
-      return <span />;
+      return null;
     }
 
     return (
@@ -161,11 +169,26 @@ class PageRoot extends ApiComponent<
     const self = this;
     return (
       <Layout className="full-screen-bg">
-        {!self.props.isMobile && (
-          <Header className="header">
+          <Header 
+            className="header" 
+            style={{ 
+              padding: `0 ${this.props.isMobile ? 15 : 50 }px`,
+            }}          
+          >
             <div>
               <Row>
-                <Col span={12}>
+                {
+                  this.props.isMobile && 
+                  <Col span={4}>
+                    <Button 
+                      ghost  
+                      icon="bars" 
+                      onClick={this.toggleSider}
+                    />
+                  </Col>
+                }
+                {this.props.isMobile && self.createUpdateAvailableIfNeeded() ||
+                <Col lg={{ span: 12 }} xs={{ span: 20 }}>
                   <div>
                     <h3 style={{ color: "#fff" }}>
                       <img
@@ -179,83 +202,73 @@ class PageRoot extends ApiComponent<
                       {self.createUpdateAvailableIfNeeded()}
                     </h3>
                   </div>
-                </Col>
-                <Col span={12}>
-                  <Row type="flex" justify="end">
-                    <a
-                      href="https://github.com/caprover/caprover"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ marginRight: 20 }}
-                    >
-                      GitHub
-                    </a>
-
-                    <a
-                      href="https://caprover.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ marginRight: 70 }}
-                    >
-                      Docs
-                    </a>
-                    <span>
-                      <span
-                        style={{
-                          border: "1px solid #1b8ad3",
-                          borderRadius: 5,
-                          padding: 8
-                        }}
+                </Col>}
+                {!self.props.isMobile && 
+                  <Col span={12}>
+                    <Row type="flex" justify="end">
+                      <a
+                        href="https://github.com/caprover/caprover"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ marginRight: 20 }}
                       >
-                        <ClickableLink
-                          onLinkClicked={() => {
-                            self.apiManager.setAuthToken("");
-                            self.goToLogin();
+                        GitHub
+                      </a>
+
+                      <a
+                        href="https://caprover.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ marginRight: 70 }}
+                      >
+                        Docs
+                      </a>
+                      <span>
+                        <span
+                          style={{
+                            border: "1px solid #1b8ad3",
+                            borderRadius: 5,
+                            padding: 8
                           }}
                         >
-                          Logout <Icon type="logout" />
-                        </ClickableLink>
+                          <ClickableLink
+                            onLinkClicked={() => {
+                              self.apiManager.setAuthToken("");
+                              self.goToLogin();
+                            }}
+                          >
+                            Logout <Icon type="logout" />
+                          </ClickableLink>
+                        </span>
                       </span>
-                    </span>
-                  </Row>
-                </Col>
+                    </Row>
+                  </Col>
+                }
               </Row>
             </div>
           </Header>
-        )}
+
         <Layout>
           <Sider
             breakpoint="lg"
+            trigger={this.props.isMobile && null}
             collapsible
+            collapsed={this.state.collapsed}
             width={200}
             collapsedWidth={self.props.isMobile ? 0 : 80}
             style={{ zIndex: 2 }}
-            onCollapse={self.toggleSider}
+            onCollapse={this.toggleSider}
           >
             <Menu
-              selectedKeys={[self.props.location.pathname.substring(1)]}
+              selectedKeys={[this.props.location.pathname.substring(1)]}
               onSelect={(param: SelectParam) => {
-                self.onSelectMenu(param);
+                this.onSelectMenu(param);
               }}
               theme="dark"
               mode="inline"
               defaultSelectedKeys={["dashboard"]}
               style={{ height: "100%", borderRight: 0 }}
             >
-              {self.props.isMobile && (
-                <Menu.Item>
-                  <h3 style={{ color: "#fff" }}>
-                    <img
-                      src="/icon-512x512.png"
-                      style={{
-                        height: 30,
-                        marginRight: 10
-                      }}
-                    />
-                    CapRover
-                  </h3>
-                </Menu.Item>
-              )}
 
               {MENU_ITEMS.map(item => (
                 <Menu.Item key={item.key}>
@@ -266,7 +279,7 @@ class PageRoot extends ApiComponent<
                 </Menu.Item>
               ))}
 
-              {self.props.isMobile && (
+              {this.props.isMobile && (
                 <Fragment>
                   <div
                     style={{
@@ -313,8 +326,8 @@ class PageRoot extends ApiComponent<
                   >
                     <ClickableLink
                       onLinkClicked={() => {
-                        self.apiManager.setAuthToken("");
-                        self.goToLogin();
+                        this.apiManager.setAuthToken("");
+                        this.goToLogin();
                       }}
                     >
                       {" "}
