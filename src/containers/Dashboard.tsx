@@ -228,7 +228,7 @@ export default class Dashboard extends ApiComponent<
     const self = this;
     return (
       <Row type="flex" justify="center">
-        <Col xs={{ span: 20 }} lg={{ span: 16 }}>
+        <Col xs={{ span: 23 }} lg={{ span: 16 }}>
           <Card title="CapRover Root Domain Configurations">
             <div>
               <p>
@@ -328,7 +328,7 @@ export default class Dashboard extends ApiComponent<
 
     return (
       <Row type="flex" justify="center">
-        <Col xs={{ span: 20 }} lg={{ span: 16 }}>
+        <Col xs={{ span: 23 }} lg={{ span: 16 }}>
           <Card title="CapRover Initial Setup">
             <div>
               <h3>Congratulations! 🎉🎉</h3>

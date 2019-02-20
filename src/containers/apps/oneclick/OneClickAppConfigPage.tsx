@@ -110,7 +110,7 @@ export default class OneClickAppConfigPage extends Component<
     return (
       <div>
         <Row type="flex" justify="center">
-          <Col  xs={{ span: 20 }} lg={{ span: 16 }}>
+          <Col  xs={{ span: 23 }} lg={{ span: 16 }}>
             <Card title={`Setup your ${this.props.match.params.appName}`}>
               <h2>{this.props.match.params.appName}</h2>
               <p

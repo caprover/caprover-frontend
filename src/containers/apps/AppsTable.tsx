@@ -139,7 +139,7 @@ class AppsTable extends Component<
 
     return (
       <Row type="flex" justify="center">
-      <Col xs={{ span: 20 }} lg={{ span: 16 }} style={{ paddingBottom: 300 }}>
+      <Col xs={{ span: 23 }} lg={{ span: 16 }} style={{ paddingBottom: 300 }}>
           <Card
             extra={ !!!self.props.isMobile && searchAppInput }
             title={

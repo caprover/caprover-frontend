@@ -35,7 +35,7 @@ class CreateNewApp extends Component<
 
     return (
       <Row type="flex" justify="center">
-        <Col xs={{ span: 20 }} lg={{ span: 10 }}>
+        <Col xs={{ span: 23 }} lg={{ span: 10 }}>
           <Card
             title={
               <span>
