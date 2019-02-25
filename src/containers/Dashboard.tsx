@@ -181,10 +181,37 @@ export default class Dashboard extends ApiComponent<
       });
   }
 
-  updateRootDomain(rootDomain: string) {
+  updateRootDomainClicked(rootDomain: string) {
     const self = this;
+    if (!self.state.apiData.hasRootSsl) {
+      self.performUpdateRootDomain(rootDomain, false);
+      return;
+    }
+
+    Modal.confirm({
+      title: "Force Change Root Domain",
+      content: (
+        <div>
+          <p>
+            You have already enabled SSL for your root domain. Changing the root
+            domain URL will invalidate HTTPS on root domain and all default
+            subdomains for apps if you have any apps.
+          </p>
+          <p>You can still re-enable HTTPS after changing the root domain.</p>
+        </div>
+      ),
+      onOk() {
+        self.performUpdateRootDomain(rootDomain, true);
+      },
+      onCancel() {
+        // do nothing
+      }
+    });
+  }
+
+  performUpdateRootDomain(rootDomain: string, force: boolean) {
     this.apiManager
-      .updateRootDomain(rootDomain)
+      .updateRootDomain(rootDomain, force)
       .then(function(data: any) {
         Modal.success({
           title: "Root Domain Updated",
@@ -276,11 +303,10 @@ export default class Dashboard extends ApiComponent<
                 <div>
                   <Search
                     addonBefore="[wildcard]&nbsp;."
-                    disabled={self.state.apiData.hasRootSsl}
                     placeholder="my-root.example.com"
                     defaultValue={self.state.apiData.rootDomain + ""}
                     enterButton="Update Domain"
-                    onSearch={value => self.updateRootDomain(value)}
+                    onSearch={value => self.updateRootDomainClicked(value)}
                   />
                 </div>
               </div>

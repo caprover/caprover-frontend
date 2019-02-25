@@ -62,12 +62,15 @@ export default class ApiManager {
       .then(http.fetch(http.GET, "/user/system/info", {}));
   }
 
-  updateRootDomain(rootDomain: string) {
+  updateRootDomain(rootDomain: string, force: boolean) {
     const http = this.http;
 
     return Promise.resolve() //
       .then(
-        http.fetch(http.POST, "/user/system/changerootdomain", { rootDomain })
+        http.fetch(http.POST, "/user/system/changerootdomain", {
+          rootDomain,
+          force
+        })
       );
   }
 
