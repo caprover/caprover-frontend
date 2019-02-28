@@ -22,7 +22,16 @@ export default class BackupCreator extends ApiComponent<
     self.setState({ isLoading: true });
     self.apiManager
       .createBackup()
-      .then(function() {
+      .then(function(data) {
+        let link = document.createElement("a"); //create 'a' element
+        link.setAttribute(
+          "href",
+          self.apiManager.getApiBaseUrl() +
+            "/downloads/?namespace=captain&downloadToken=" +
+            encodeURIComponent(data.downloadToken)
+        ); //replace "file" with link to file you want to download
+        link.click(); //virtually click <a> element to initiate download
+
         message.success("Downloading backup started...");
       })
       .catch(Toaster.createCatcher())
@@ -48,8 +57,8 @@ export default class BackupCreator extends ApiComponent<
           certs and etc.
         </p>
         <p>
-          See the documents for more details on how to restore your server using the
-          backup file.
+          See the documents for more details on how to restore your server using
+          the backup file.
         </p>
         <p>Note that this is, currently, an EXPERIMENTAL FEATURE.</p>
         <br />

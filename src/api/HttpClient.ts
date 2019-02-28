@@ -1,7 +1,6 @@
 import axios from "axios";
 import ErrorFactory from "../utils/ErrorFactory";
 import Logger from "../utils/Logger";
-import FileDownloader from "../utils/FileDownloader";
 
 var TOKEN_HEADER = "x-captain-auth";
 var NAMESPACE = "x-namespace";
@@ -10,7 +9,6 @@ var CAPTAIN = "captain";
 export default class HttpClient {
   public readonly GET = "GET";
   public readonly POST = "POST";
-  public readonly POST_DOWNLOAD = "POST_DOWNLOAD";
   public isDestroyed = false;
 
   constructor(
@@ -39,7 +37,7 @@ export default class HttpClient {
   }
 
   fetch(
-    method: "GET" | "POST" | "POST_DOWNLOAD",
+    method: "GET" | "POST",
     endpoint: string,
     variables: any
   ) {
@@ -57,22 +55,6 @@ export default class HttpClient {
         })
         .then(function(axiosResponse) {
           const data = axiosResponse.data; // this is an axios thing!
-
-          if (
-            method === "POST_DOWNLOAD" &&
-            !data.status &&
-            axiosResponse.status === 200
-          ) {
-            FileDownloader.downloadFile(
-              data,
-              variables.postDownloadFileName || "file",
-              axiosResponse.headers["content-type"]
-            );
-
-            return {
-              status: ErrorFactory.OKAY
-            };
-          }
 
           if (data.status === ErrorFactory.STATUS_AUTH_TOKEN_INVALID) {
             return self
@@ -122,13 +104,13 @@ export default class HttpClient {
   }
 
   fetchInternal(
-    method: "GET" | "POST" | "POST_DOWNLOAD",
+    method: "GET" | "POST",
     endpoint: string,
     variables: any
   ) {
     if (method === this.GET) return this.getReq(endpoint, variables);
 
-    if (method === this.POST || method === this.POST_DOWNLOAD)
+    if (method === this.POST)
       return this.postReq(endpoint, variables);
 
     throw new Error("Unknown method: " + method);

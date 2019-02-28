@@ -30,6 +30,10 @@ export default class ApiManager {
     });
   }
 
+  getApiBaseUrl() {
+    return URL;
+  }
+
   destroy() {
     this.http.destroy();
   }
@@ -300,12 +304,12 @@ export default class ApiManager {
       .then(http.fetch(http.GET, "/user/system/versioninfo", {}));
   }
 
-  createBackup(): Promise<void> {
+  createBackup(): Promise<{ downloadToken: string }> {
     const http = this.http;
 
     return Promise.resolve() //
       .then(
-        http.fetch(http.POST_DOWNLOAD, "/user/system/createbackup", {
+        http.fetch(http.POST, "/user/system/createbackup", {
           postDownloadFileName: "backup.tar"
         })
       );
