@@ -29,8 +29,8 @@ export default class BackupCreator extends ApiComponent<
           self.apiManager.getApiBaseUrl() +
             "/downloads/?namespace=captain&downloadToken=" +
             encodeURIComponent(data.downloadToken)
-        ); //replace "file" with link to file you want to download
-        link.click(); //virtually click <a> element to initiate download
+        );
+        link.click();
 
         message.success("Downloading backup started...");
       })
