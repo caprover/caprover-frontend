@@ -101,6 +101,7 @@ export default class Deployment extends ApiComponent<
           user: "",
           password: "",
           branch: "",
+          sshKey: "",
           repo: ""
         };
 
