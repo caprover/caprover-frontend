@@ -1,17 +1,48 @@
 import React, { Component } from "react";
-import { Form, Icon, Input, Button, Checkbox, Card } from "antd";
+import {
+  Form,
+  Icon,
+  Input,
+  Button,
+  Checkbox,
+  Card,
+  Radio,
+  Collapse
+} from "antd";
 import ApiComponent from "./global/ApiComponent";
 import Toaster from "../utils/Toaster";
 import ApiManager from "../api/ApiManager";
 import { RouteComponentProps } from "react-router";
+import RadioGroup from "antd/lib/radio/group";
+import StorageHelper from "../utils/StorageHelper";
 const FormItem = Form.Item;
 
-export default class Login extends ApiComponent<RouteComponentProps<any>> {
+const NO_SESSION = 1;
+const SESSION_STORAGE = 2;
+const LOCAL_STORAGE = 3;
+
+export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      loginOption: NO_SESSION
+    };
+  }
+
   onLoginRequested(password: string) {
     const self = this;
     this.apiManager
       .getAuthToken(password)
       .then(function() {
+        if (self.state.loginOption === SESSION_STORAGE) {
+          StorageHelper.setAuthKeyInSessionStorage(
+            ApiManager.getAuthTokenString()
+          );
+        } else if (self.state.loginOption === LOCAL_STORAGE) {
+          StorageHelper.setAuthKeyInLocalStorage(
+            ApiManager.getAuthTokenString()
+          );
+        }
         self.props.history.push("/");
       })
       .catch(Toaster.createCatcher());
@@ -29,11 +60,12 @@ export default class Login extends ApiComponent<RouteComponentProps<any>> {
             transform: "translate(-50%,-50%)"
           }}
         >
-          <Card title="CapRover" style={{ width: 300 }}>
+          <Card title="CapRover Login" style={{ width: 350 }}>
             <WrappedNormalLoginForm
-              onLoginRequested={(password: string) =>
-                self.onLoginRequested(password)
-              }
+              onLoginRequested={(password: string, loginOption: number) => {
+                self.setState({ loginOption });
+                self.onLoginRequested(password);
+              }}
             />
           </Card>
         </div>
@@ -42,18 +74,32 @@ export default class Login extends ApiComponent<RouteComponentProps<any>> {
   }
 }
 
+const radioStyle = {
+  display: "block",
+  height: "30px",
+  lineHeight: "30px"
+};
+
 class NormalLoginForm extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      loginOption: NO_SESSION
+    };
+  }
+
   handleSubmit = (e: any) => {
     const self = this;
     e.preventDefault();
     this.props.form.validateFields((err: any, values: any) => {
       if (!err) {
-        self.props.onLoginRequested(values.password);
+        self.props.onLoginRequested(values.password, self.state.loginOption);
       }
     });
   };
 
   render() {
+    const self = this;
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
@@ -76,6 +122,28 @@ class NormalLoginForm extends React.Component<any, any> {
           >
             Login
           </Button>
+        </FormItem>
+        <FormItem>
+          <Collapse>
+            <Collapse.Panel header="Remember Me" key="1">
+              <RadioGroup
+                onChange={e => {
+                  self.setState({ loginOption: e.target.value });
+                }}
+                value={this.state.loginOption}
+              >
+                <Radio style={radioStyle} value={NO_SESSION}>
+                  No session persistence (Most Secure)
+                </Radio>
+                <Radio style={radioStyle} value={SESSION_STORAGE}>
+                  Use sessionStorage
+                </Radio>
+                <Radio style={radioStyle} value={LOCAL_STORAGE}>
+                  Use localStorage (Most Persistent)
+                </Radio>
+              </RadioGroup>
+            </Collapse.Panel>
+          </Collapse>
         </FormItem>
       </Form>
     );
