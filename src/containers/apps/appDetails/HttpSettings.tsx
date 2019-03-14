@@ -7,7 +7,8 @@ import {
   Col,
   Icon,
   Tooltip,
-  Checkbox
+  Checkbox,
+  Modal
 } from "antd";
 import Toaster from "../../../utils/Toaster";
 import Utils from "../../../utils/Utils";
@@ -17,15 +18,19 @@ const Search = Input.Search;
 
 export default class HttpSettings extends Component<
   AppDetailsTabProps,
-  { 
-    newDomain: string; 
+  {
+    newDomain: string;
+    dialogHttpUser: string;
+    dialogHttpPass: string;
   }
 > {
   constructor(props: any) {
     super(props);
     this.state = {
-      newDomain: ""
-    }
+      newDomain: "",
+      dialogHttpUser: "",
+      dialogHttpPass: ""
+    };
   }
 
   render() {
@@ -228,8 +233,12 @@ export default class HttpSettings extends Component<
   }
 
   createHttpDetailsSettingsContent() {
+    const self = this;
     const app = this.props.apiData!.appDefinition;
     const rootDomain = this.props.apiData!.rootDomain;
+    const basicAuthUsername = self.props.apiData.appDefinition.httpAuth
+      ? self.props.apiData.appDefinition.httpAuth.user
+      : "";
 
     const enableHttpsButton = (
       <Tooltip
@@ -242,7 +251,10 @@ export default class HttpSettings extends Component<
         <Button
           disabled={app.hasDefaultSubDomainSsl}
           block={this.props.isMobile}
-          style={{ marginRight: this.props.isMobile ? 0 : 20, marginTop: this.props.isMobile ? 8 : 0 }}
+          style={{
+            marginRight: this.props.isMobile ? 0 : 20,
+            marginTop: this.props.isMobile ? 8 : 0
+          }}
           onClick={() => {
             this.enableDefaultHttps();
           }}
@@ -252,8 +264,7 @@ export default class HttpSettings extends Component<
           Enable HTTPS
         </Button>
       </Tooltip>
-    )
-
+    );
 
     return (
       <div>
@@ -286,29 +297,30 @@ export default class HttpSettings extends Component<
         <br />
         <Row>
           <Col xs={{ span: 24 }} lg={{ span: 15 }}>
-
-          {this.props.isMobile ? 
-            <Fragment>
-                <Input 
-                  placeholder="www.the-best-app-in-the-world.com" 
-                  onChange={e => this.setState({ newDomain: e.target.value })} 
+            {this.props.isMobile ? (
+              <Fragment>
+                <Input
+                  placeholder="www.the-best-app-in-the-world.com"
+                  onChange={e => this.setState({ newDomain: e.target.value })}
                 />
-                <Button 
-                  style={{ marginTop: 8 }} 
-                  block 
-                  onClick={() => this.onConnectNewDomainClicked(this.state.newDomain)} 
+                <Button
+                  style={{ marginTop: 8 }}
+                  block
+                  onClick={() =>
+                    this.onConnectNewDomainClicked(this.state.newDomain)
+                  }
                   type="primary"
                 >
                   Connect New Domain
                 </Button>
-            </Fragment>
-            :
-            <Search
-              placeholder="www.the-best-app-in-the-world.com"
-              enterButton="Connect New Domain"
-              onSearch={value => this.onConnectNewDomainClicked(value)}
-            />
-          }
+              </Fragment>
+            ) : (
+              <Search
+                placeholder="www.the-best-app-in-the-world.com"
+                enterButton="Connect New Domain"
+                onSearch={value => this.onConnectNewDomainClicked(value)}
+              />
+            )}
           </Col>
           &nbsp;&nbsp;&nbsp;
           <Tooltip title="Make sure the new domain points to this IP, otherwise verification will fail.">
@@ -327,10 +339,16 @@ export default class HttpSettings extends Component<
         <br />
 
         <Row>
-          <Col xs={{ span: 24 }} lg={{ span: 6 }} style={{ width: this.props.isMobile ? "100%" : 300 }}>
+          <Col
+            xs={{ span: 24 }}
+            lg={{ span: 6 }}
+            style={{ width: this.props.isMobile ? "100%" : 300 }}
+          >
             <Tooltip title="HTTP port inside the container. Default is 80. Change only if the app is running in a different port. This is used only for HTTP apps, not databases.">
               <Input
-                addonBefore={`Container ${this.props.isMobile ? " " : "HTTP "}Port`}
+                addonBefore={`Container ${
+                  this.props.isMobile ? " " : "HTTP "
+                }Port`}
                 type="number"
                 defaultValue={app.containerHttpPort + ""}
                 onChange={e => {
@@ -363,8 +381,110 @@ export default class HttpSettings extends Component<
             <Icon type="info-circle" />
           </Tooltip>
         </Row>
+        <br />
+        <br />
+        <Row>
+          <Button
+            style={{ marginRight: 20 }}
+            type="default"
+            onClick={() => self.onEditHttpAuthClicked()}
+          >
+            Edit HTTP Basic Auth
+          </Button>
+          {this.props.isMobile && <div style={{ marginTop: 10 }} />}
+          <span>
+            Current State: <b>{!basicAuthUsername ? "inactive" : "active"}</b>{" "}
+            {basicAuthUsername
+              ? `[user: ${basicAuthUsername} @ password: <HIDDEN>]`
+              : ""}
+          </span>
+        </Row>
       </div>
     );
+  }
+
+  onEditHttpAuthClicked() {
+    const self = this;
+    const IGNORE = "IGNORE";
+    const CONFIRM = "CONFIRM";
+
+    const auth = self.props.apiData.appDefinition.httpAuth;
+
+    self.setState({
+      dialogHttpPass: auth ? auth.password || "" : "",
+      dialogHttpUser: auth ? auth.user || "" : ""
+    });
+
+    Promise.resolve()
+      .then(function() {
+        return new Promise(function(resolve, reject) {
+          Modal.confirm({
+            title: "Edit HTTP Basic Auth",
+            content: (
+              <div style={{ paddingTop: 30 }}>
+                <p>
+                  HTTP Basic authentication is the simplest technique for
+                  enforcing access controls to web resources.
+                </p>
+                <p>
+                  You can use this technique to restrict access to HTTP apps,
+                  specially those you create via One-Click app generator such as
+                  phpMyAdmin and etc.
+                </p>
+                <p>
+                  <Input
+                    placeholder="username"
+                    type="text"
+                    defaultValue={self.state.dialogHttpUser}
+                    onChange={event =>
+                      self.setState({
+                        dialogHttpUser: (event.target.value || "").trim()
+                      })
+                    }
+                  />
+                </p>
+                <p>
+                  <Input
+                    placeholder="password"
+                    type="text"
+                    defaultValue={self.state.dialogHttpPass}
+                    onChange={event =>
+                      self.setState({
+                        dialogHttpPass: (event.target.value || "").trim()
+                      })
+                    }
+                  />
+                </p>
+              </div>
+            ),
+            onOk() {
+              resolve(CONFIRM);
+            },
+            onCancel() {
+              resolve(IGNORE);
+            }
+          });
+        });
+      })
+      .then(function(data: any) {
+        if (data === IGNORE) return;
+
+        const newApiData = Utils.copyObject(self.props.apiData);
+        const enteredUser = self.state.dialogHttpUser;
+        const enteredPassword = self.state.dialogHttpPass;
+
+        if (!enteredUser || !enteredPassword) {
+          newApiData.appDefinition.httpAuth = undefined;
+        } else {
+          newApiData.appDefinition.httpAuth = newApiData.appDefinition
+            .httpAuth || { user: "" };
+
+          newApiData.appDefinition.httpAuth.user = enteredUser;
+          newApiData.appDefinition.httpAuth.password = enteredPassword;
+        }
+
+        self.props.updateApiData(newApiData);
+      });
   }
 
   createHttpSettingsContent() {

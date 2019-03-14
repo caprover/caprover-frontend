@@ -58,6 +58,11 @@ interface IAppDefinitionBase {
   hasPersistentData: boolean;
   hasDefaultSubDomainSsl: boolean;
   containerHttpPort: number;
+  httpAuth?: {
+      user: string
+      password?: string
+      passwordHashed?: string
+  }
   captainDefinitionRelativeFilePath: string;
 
   forceSsl: boolean;
