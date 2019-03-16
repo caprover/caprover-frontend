@@ -211,8 +211,8 @@ export default class HttpSettings extends Component<
     return (
       <div>
         <p>
-          Note that templates are build using EJS template pattern. Do not
-          change the areas between &lt;&percnt; and &percnt;&gt; unless you
+          Templates are built using EJS template pattern. Do not change the
+          areas between <code>&lt;%</code> and <code>%&gt;</code> , unless you
           really know what you're doing! To revert to default, simply remove all
           the content.
         </p>
@@ -240,38 +240,34 @@ export default class HttpSettings extends Component<
       ? self.props.apiData.appDefinition.httpAuth.user
       : "";
 
-    const enableHttpsButton = (
-      <Tooltip
-        title={
-          app.hasDefaultSubDomainSsl
-            ? "Already activated"
-            : "Click to activate HTTPS for this domain"
-        }
-      >
-        <Button
-          disabled={app.hasDefaultSubDomainSsl}
-          block={this.props.isMobile}
-          style={{
-            marginRight: this.props.isMobile ? 0 : 20,
-            marginTop: this.props.isMobile ? 8 : 0
-          }}
-          onClick={() => {
-            this.enableDefaultHttps();
-          }}
-          type="primary"
-          size="small"
-        >
-          Enable HTTPS
-        </Button>
-      </Tooltip>
-    );
-
     return (
       <div>
+        <p>Your app is available to public at:</p>
         <Row>
-          <p>Your app is available to public at:</p>
-          {!this.props.isMobile && enableHttpsButton}
+          <Button.Group size="small">
+            <Tooltip
+              title={
+                app.hasDefaultSubDomainSsl
+                  ? "Already activated"
+                  : "Click to activate HTTPS for this domain"
+              }
+            >
+              <Button
+                disabled={app.hasDefaultSubDomainSsl}
+                block={this.props.isMobile}
+                onClick={() => {
+                  this.enableDefaultHttps();
+                }}
+                type="primary"
+              >
+                Enable HTTPS
+              </Button>
+            </Tooltip>
+          </Button.Group>
           <a
+            style={{
+              marginLeft: 20
+            }}
             href={
               "http" +
               (app.hasDefaultSubDomainSsl ? "s" : "") +
@@ -290,10 +286,8 @@ export default class HttpSettings extends Component<
               "." +
               rootDomain}
           </a>
-          {this.props.isMobile && enableHttpsButton}
         </Row>
-        <br />
-        <hr />
+        {this.createCustomDomainRows()}
         <br />
         <Row>
           <Col xs={{ span: 24 }} lg={{ span: 15 }}>
@@ -330,8 +324,6 @@ export default class HttpSettings extends Component<
           </Tooltip>
         </Row>
 
-        <br />
-        {this.createCustomDomainRows()}
         <br />
         <br />
         {this.createCustomNginx()}
