@@ -1,5 +1,6 @@
 import HttpClient from "./HttpClient";
 import Logger from "../utils/Logger";
+import StorageHelper from "../utils/StorageHelper";
 import { IAppDef } from "../containers/apps/AppDefinition";
 import { IRegistryInfo } from "../models/IRegistryInfo";
 import Utils from "../utils/Utils";
@@ -17,9 +18,7 @@ export default class ApiManager {
     .REACT_APP_DEFAULT_PASSWORD
     ? process.env.REACT_APP_DEFAULT_PASSWORD + ""
     : "captain42";
-  private static authToken: string = !!process.env.REACT_APP_IS_DEBUG
-    ? "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5hbWVzcGFjZSI6ImNhcHRhaW4iLCJ0b2tlblZlcnNpb24iOiI5NmRjM2U1MC00ZDk3LTRkNmItYTIzMS04MmNiZjY0ZTA2NTYifSwiaWF0IjoxNTQ1OTg0MDQwLCJleHAiOjE1ODE5ODQwNDB9.uGJyhb2JYsdw9toyMKX28bLVuB0PhnS2POwEjKpchww"
-    : "";
+  private static authToken = StorageHelper.getAuthKeyFromStorage() || "";
 
   private http: HttpClient;
 
@@ -30,12 +29,21 @@ export default class ApiManager {
     });
   }
 
+  getApiBaseUrl() {
+    return URL;
+  }
+
   destroy() {
     this.http.destroy();
   }
 
+  static getAuthTokenString() {
+    return ApiManager.authToken;
+  }
+
   setAuthToken(authToken: string) {
     ApiManager.authToken = authToken;
+    if (!authToken) StorageHelper.clearAuthKeys();
     this.http.setAuthToken(authToken);
   }
 
@@ -62,12 +70,15 @@ export default class ApiManager {
       .then(http.fetch(http.GET, "/user/system/info", {}));
   }
 
-  updateRootDomain(rootDomain: string) {
+  updateRootDomain(rootDomain: string, force: boolean) {
     const http = this.http;
 
     return Promise.resolve() //
       .then(
-        http.fetch(http.POST, "/user/system/changerootdomain", { rootDomain })
+        http.fetch(http.POST, "/user/system/changerootdomain", {
+          rootDomain,
+          force
+        })
       );
   }
 
@@ -161,6 +172,7 @@ export default class ApiManager {
     var customNginxConfig = appDefinition.customNginxConfig;
     var preDeployFunction = appDefinition.preDeployFunction;
     var containerHttpPort = appDefinition.containerHttpPort;
+    var httpAuth = appDefinition.httpAuth;
     const http = this.http;
 
     return Promise.resolve() //
@@ -178,6 +190,7 @@ export default class ApiManager {
           nodeId: nodeId,
           preDeployFunction: preDeployFunction,
           containerHttpPort: containerHttpPort,
+          httpAuth: httpAuth,
           envVars: envVars
         })
       );
@@ -297,12 +310,12 @@ export default class ApiManager {
       .then(http.fetch(http.GET, "/user/system/versioninfo", {}));
   }
 
-  createBackup(): Promise<void> {
+  createBackup(): Promise<{ downloadToken: string }> {
     const http = this.http;
 
     return Promise.resolve() //
       .then(
-        http.fetch(http.POST_DOWNLOAD, "/user/system/createbackup", {
+        http.fetch(http.POST, "/user/system/createbackup", {
           postDownloadFileName: "backup.tar"
         })
       );
