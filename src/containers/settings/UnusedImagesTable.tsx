@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { Table } from "antd";
+import { Table, Card, Checkbox } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import { IUnusedImage } from "./DiskCleanup";
 
 export default class UnusedImagesTable extends Component<{
+  isMobile: boolean;
   unusedImages: IUnusedImage[];
+  selectedImagesForDelete: string[];
   updateModel: (selectedIds: string[]) => void;
 }> {
   getCols(): ColumnProps<{ imageName: string; imageId: string }>[] {
@@ -55,6 +57,7 @@ export default class UnusedImagesTable extends Component<{
     const self = this;
     const rowSelection = {
       onChange: (selectedRowKeys: any, selectedRows: any[]) => {
+        console.log(selectedRowKeys)
         self.props.updateModel(selectedRowKeys);
       },
       getCheckboxProps: (record: any) => ({
@@ -66,6 +69,39 @@ export default class UnusedImagesTable extends Component<{
   }
 
   render() {
+    if(this.props.isMobile){
+      return (this.getData().map(({key, imageId, imageName}, i) =>  (
+        <Card
+          type="inner"
+          key={key}
+          style={{ marginBottom: 8, wordWrap: "break-word" }}
+          title={
+              <Checkbox 
+                checked={this.props.selectedImagesForDelete.indexOf(imageId) > -1}
+                onChange={(e: any) => {
+                  const selectedId = [...this.props.selectedImagesForDelete]
+                  const imageIndex = selectedId.indexOf(imageId)
+                  if(imageIndex > -1){
+                    selectedId.splice(imageIndex, 1) 
+                  } else {
+                    selectedId.push(imageId)
+                  }
+                  this.props.updateModel(selectedId);
+                }}
+                >
+                  {imageName ? imageName.split("\n")[0] :  "No Name"}
+                </Checkbox>
+            }
+        >
+        <div>
+          <b>Image ID:</b> {imageId}
+        </div>
+        <div>
+          <b>Associated Tag:</b> {imageName || "n/a"}
+        </div>
+        </Card>
+      )))
+    }
     return (
       <div>
         <Table

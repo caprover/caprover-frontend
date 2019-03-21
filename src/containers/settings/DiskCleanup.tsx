@@ -21,7 +21,9 @@ export interface IUnusedImage {
 }
 
 export default class DiskCleanup extends ApiComponent<
-  {},
+  {
+    isMobile: boolean;
+  },
   {
     isLoading: boolean;
     mostRecentLimit: number;
@@ -158,6 +160,7 @@ export default class DiskCleanup extends ApiComponent<
               <Button
                 disabled={!hasSelectedImagesForRemoval}
                 type="primary"
+                block={this.props.isMobile}
                 onClick={() => {
                   self.onRemoveImagesClicked();
                 }}
@@ -177,6 +180,8 @@ export default class DiskCleanup extends ApiComponent<
           <div style={{ height: 20 }} />
           <UnusedImagesTable
             unusedImages={unusedImages}
+            isMobile={this.props.isMobile}
+            selectedImagesForDelete={this.state.selectedImagesForDelete}
             updateModel={selectedImagesForDelete =>
               this.setState({ selectedImagesForDelete })
             }

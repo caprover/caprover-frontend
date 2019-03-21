@@ -17,7 +17,10 @@ import { emitDefaultRegistryChanged } from "../../actions/DefaultRegistryActions
 import ErrorRetry from "../global/ErrorRetry";
 
 class DockerRegistries extends ApiComponent<
-  { emitDefaultRegistryChanged: Function },
+  { 
+    emitDefaultRegistryChanged: Function;
+    isMobile: boolean;
+   },
   { apiData: IRegistryApi | undefined; isLoading: boolean }
 > {
   constructor(props: any) {
@@ -163,6 +166,7 @@ class DockerRegistries extends ApiComponent<
 
           <DockerRegistryTable
             apiData={self.state.apiData!}
+            isMobile={this.props.isMobile}
             deleteRegistry={id => {
               self.deleteRegistry(id);
             }}
@@ -174,6 +178,7 @@ class DockerRegistries extends ApiComponent<
         <div style={{ height: 50 }} />
         <DockerRegistryAdd
           apiData={self.state.apiData!}
+          isMobile={this.props.isMobile}
           addDockerRegistry={dockerRegistry =>
             self.addDockerRegistry(dockerRegistry)
           }
@@ -185,7 +190,8 @@ class DockerRegistries extends ApiComponent<
 
 function mapStateToProps(state: any) {
   return {
-    defaultRegistryId: state.registryReducer.defaultRegistryId
+    defaultRegistryId: state.registryReducer.defaultRegistryId,
+    isMobile: state.globalReducer.isMobile
   };
 }
 

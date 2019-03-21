@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Icon, message, Modal, Input, Tooltip } from "antd";
+import { Table, Icon, message, Modal, Input, Tooltip, Card } from "antd";
 import {
   IRegistryApi,
   IRegistryInfo,
@@ -16,6 +16,7 @@ const DELETING_MODAL = "DELETING_MODAL";
 export default class DockerRegistryTable extends Component<
   {
     apiData: IRegistryApi;
+    isMobile: boolean;
     editRegistry: (dockerRegistry: IRegistryInfo) => void;
     deleteRegistry: (regId: string) => void;
   },
@@ -218,12 +219,56 @@ export default class DockerRegistryTable extends Component<
         </Modal>
         <h3>Docker Registries</h3>
         <div>
-          <Table
-            rowKey="id"
-            pagination={false}
-            columns={this.getCols()}
-            dataSource={this.props.apiData.registries}
-          />
+          {this.props.isMobile ? 
+          this.props.apiData.registries.map(registry => (
+            <Card
+            type="inner"
+            key={registry.registryPassword}
+            style={{ marginBottom: 8, wordWrap: "break-word" }}
+            title={registry.registryDomain}
+          >
+            <div>
+              <b>User:</b> {registry.registryImagePrefix}
+            </div>
+            <div>
+              <b>Password:</b> Edit to see.
+            </div>
+            <div>
+              <b>Domain:</b> {registry.registryDomain}
+            </div>
+            <div>
+              <b>Image Prefix:</b> {registry.registryUser}
+            </div>
+            <div>
+              <b>Actions:</b> 
+              <span>
+                <ClickableLink
+                  onLinkClicked={() => {
+                    self.editRegistry(registry);
+                  }}
+                >
+                  <Icon type="form" />
+                </ClickableLink>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <ClickableLink
+                  onLinkClicked={() => {
+                    self.deleteRegistry(registry.id);
+                  }}
+                >
+                  <Icon type="delete" />
+                </ClickableLink>
+              </span>
+            </div>
+          </Card>
+          ))
+        :
+        <Table
+          rowKey="id"
+          pagination={false}
+          columns={this.getCols()}
+          dataSource={this.props.apiData.registries}
+        />
+        }
         </div>
       </div>
     );

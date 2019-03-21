@@ -10,7 +10,10 @@ export interface INodeToAdd {
 }
 
 export default class AddNode extends Component<
-  { onAddNodeClicked: (nodeToAdd: INodeToAdd) => void },
+  { 
+    isMobile: boolean;
+    onAddNodeClicked: (nodeToAdd: INodeToAdd) => void;
+  },
   {
     nodeToAdd: INodeToAdd;
   }
@@ -41,7 +44,7 @@ export default class AddNode extends Component<
       <div>
         <Card style={{ marginTop: 16 }} type="inner" title="Attach New Node">
           <Row type="flex" justify="space-between">
-            <Col span={11}>
+            <Col lg={{ span: 11 }} xs={{ span: 24 }}>
               <Input
                 style={{ marginBottom: 10 }}
                 addonBefore="New node IP Address"
@@ -53,7 +56,7 @@ export default class AddNode extends Component<
                 }
               />
             </Col>
-            <Col span={11}>
+            <Col lg={{ span: 11 }} xs={{ span: 24 }}>
               <Input
                 style={{ marginBottom: 10 }}
                 addonBefore="CapRover IP Address"
@@ -102,6 +105,7 @@ export default class AddNode extends Component<
           <Row type="flex" justify="end">
             <Button
               type="primary"
+              block={this.props.isMobile}
               onClick={() => self.props.onAddNodeClicked(self.state.nodeToAdd)}
             >
               <Icon type="cluster" /> &nbsp; Join Cluster

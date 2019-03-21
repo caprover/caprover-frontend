@@ -5,7 +5,9 @@ import CenteredSpinner from "../global/CenteredSpinner";
 import Toaster from "../../utils/Toaster";
 
 export default class BackupCreator extends ApiComponent<
-  {},
+  {
+    isMobile: boolean;
+  },
   {
     isLoading: boolean;
   }
@@ -55,7 +57,7 @@ export default class BackupCreator extends ApiComponent<
         <br />
 
         <Row type="flex" justify="end">
-          <Button type="primary" onClick={() => this.onCreateBackupClicked()}>
+          <Button type="primary" block={this.props.isMobile} onClick={() => this.onCreateBackupClicked()}>
             <span>
               <Icon type="cloud-download" />
             </span>{" "}

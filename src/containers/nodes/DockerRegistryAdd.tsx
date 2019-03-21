@@ -15,6 +15,7 @@ export default class DockerRegistryAdd extends Component<
   {
     apiData: IRegistryApi;
     addDockerRegistry: (dockerRegistry: IRegistryInfo) => void;
+    isMobile: boolean;
   },
   {
     modalShowing: "ADDING_LOCAL" | "ADDING_REMOTE" | undefined;
@@ -150,6 +151,7 @@ export default class DockerRegistryAdd extends Component<
         <div className={hasSelfHostedRegistry ? "hide-on-demand" : ""}>
           <Row type="flex" justify="end">
             <Button
+              block={this.props.isMobile}
               onClick={() => self.setState({ modalShowing: ADDING_LOCAL })}
             >
               Add Self-Hosted Registry
@@ -160,6 +162,7 @@ export default class DockerRegistryAdd extends Component<
         <div style={{ height: 20 }} />
         <Row type="flex" justify="end">
           <Button
+            block={this.props.isMobile}
             onClick={() =>
               self.setState({
                 modalShowing: ADDING_REMOTE,

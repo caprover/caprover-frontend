@@ -5,7 +5,9 @@ import Toaster from "../../utils/Toaster";
 import CenteredSpinner from "../global/CenteredSpinner";
 
 export default class ChangePass extends ApiComponent<
-  {},
+  {
+    isMobile: boolean;
+  },
   { isLoading: boolean; old: string; new1: string; new2: string }
 > {
   constructor(props: any) {
@@ -69,7 +71,11 @@ export default class ChangePass extends ApiComponent<
         />
         <div style={{ height: 40 }} />
         <Row type="flex" justify="end">
-          <Button onClick={() => this.onChangePasswordClicked()} type="primary">
+          <Button 
+            block={this.props.isMobile}
+            onClick={() => this.onChangePasswordClicked()} 
+            type="primary"
+          >
             Change Password
           </Button>
         </Row>

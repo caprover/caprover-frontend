@@ -101,7 +101,7 @@ class NetDataInfo extends ApiComponent<
               </div>
 
               <div className={!netDataInfo.isEnabled ? "hide-on-demand" : ""}>
-                <Row type="flex" justify="end">
+                <Row type="flex" justify="end" gutter={20}>
                   <Col lg={{ span: 4 }} xs={{ span: 24 }}>
                     <Button
                       style={{ marginRight: 50, marginBottom: 8 }}
