@@ -102,39 +102,38 @@ class NetDataInfo extends ApiComponent<
 
               <div className={!netDataInfo.isEnabled ? "hide-on-demand" : ""}>
                 <Row type="flex" justify="end" gutter={20}>
-                  <Col lg={{ span: 4 }} xs={{ span: 24 }}>
+                  <Button
+                    style={{
+                      marginRight: self.props.isMobile ? 0 : 40,
+                      marginBottom: self.props.isMobile ? 8 : 0
+                    }}
+                    block={self.props.isMobile}
+                    onClick={() => self.toggleNetDataClicked(false)}
+                    type="danger"
+                  >
+                    <span>
+                      Turn NetData Off &nbsp;
+                      <Icon type="poweroff" />
+                    </span>
+                  </Button>
+                  <a
+                    type="submit"
+                    href={"//" + netDataInfo.netDataUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ width: this.props.isMobile ? "100%" : "auto" }}
+                  >
                     <Button
-                      style={{ marginRight: 50, marginBottom: 8 }}
-                      block
-                      onClick={() => self.toggleNetDataClicked(false)}
-                      type="danger"
+                      block={self.props.isMobile}
+                      //onClick={() => self.onStartNetDataClicked()}
+                      type="primary"
                     >
                       <span>
-                        Turn NetData Off &nbsp;
-                        <Icon type="poweroff" />
+                        Open NetData &nbsp;
+                        <Icon type="area-chart" />
                       </span>
                     </Button>
-                  </Col>
-                  <Col lg={{ span: 4 }} xs={{ span: 24 }}>
-                    <a
-                      type="submit"
-                      href={"//" + netDataInfo.netDataUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ width: this.props.isMobile ? "100%": "auto" }}
-                    >
-                      <Button
-                        block
-                        //onClick={() => self.onStartNetDataClicked()}
-                        type="primary"
-                      >
-                        <span>
-                          Open NetData &nbsp;
-                          <Icon type="area-chart" />
-                        </span>
-                      </Button>
-                    </a>
-                  </Col>
+                  </a>
                 </Row>
                 <div style={{ height: 30 }} />
                 <hr />
@@ -179,4 +178,3 @@ export default connect(
   mapStateToProps,
   undefined
 )(NetDataInfo);
-

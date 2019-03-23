@@ -223,7 +223,7 @@ export default class DockerRegistryTable extends Component<
           this.props.apiData.registries.map(registry => (
             <Card
             type="inner"
-            key={registry.registryPassword}
+            key={registry.id}
             style={{ marginBottom: 8, wordWrap: "break-word" }}
             title={registry.registryDomain}
           >
