@@ -1,53 +1,61 @@
 import React, { Component } from "react";
 import { Row, Col, Card } from "antd";
+import { connect } from "react-redux";
 import ChangePass from "./ChangePass";
 import CheckUpdate from "./CheckUpdate";
 import NginxConfig from "./NginxConfig";
 import DiskCleanup from "./DiskCleanup";
 import BackupCreator from "./BackupCreator";
 
-export default class Settings extends Component {
+class Settings extends Component <
+{
+  isMobile: boolean;
+},
+{}
+> {
   render() {
     return (
       <div>
-        <Row type="flex" justify="space-around">
-          <Col span={12}>
-            <div style={{ margin: 10 }}>
-              <Card title="Check for Updates">
-                <CheckUpdate />
+        <Row type="flex" justify="center" gutter={20}>
+          <Col style={{ marginBottom: 20 }} lg={{ span: 10 }} xs={{ span: 23 }}>
+              <Card style={{ height: "100%" }} title="Check for Updates">
+                <CheckUpdate isMobile={this.props.isMobile}/>
               </Card>
-            </div>
           </Col>
-          <Col span={12}>
-            <div style={{ margin: 10 }}>
-              <Card title="Backup">
-                <BackupCreator />
+          <Col style={{ marginBottom: 20 }} lg={{ span: 10 }} xs={{ span: 23 }}>
+              <Card style={{ height: "100%" }} title="Backup">
+                <BackupCreator isMobile={this.props.isMobile}/>
               </Card>
-            </div>
           </Col>
-          <Col span={24}>
-            <div style={{ margin: 10 }}>
-              <Card title="NGINX Configurations">
-                <NginxConfig />
+          <Col style={{ marginBottom: 20 }} lg={{ span: 20 }} xs={{ span: 23 }}>
+              <Card style={{ height: "100%" }} title="NGINX Configurations">
+                <NginxConfig isMobile={this.props.isMobile}/>
               </Card>
-            </div>
           </Col>
-          <Col span={8}>
-            <div style={{ margin: 10 }}>
-              <Card title="Change Password">
-                <ChangePass />
+          <Col style={{ marginBottom: 20 }} lg={{ span: 6 }} xs={{ span: 23 }}>
+              <Card style={{ height: "100%" }} title="Change Password">
+                <ChangePass isMobile={this.props.isMobile}/>
               </Card>
-            </div>
           </Col>
-          <Col span={16}>
-            <div style={{ margin: 10 }}>
-              <Card title="Disk Cleanup">
-                <DiskCleanup />
+          <Col style={{ marginBottom: 20 }} lg={{ span: 14 }} xs={{ span: 23 }}>
+              <Card style={{ height: "100%" }} title="Disk Cleanup">
+                <DiskCleanup isMobile={this.props.isMobile}/>
               </Card>
-            </div>
           </Col>
         </Row>
       </div>
     );
   }
 }
+
+
+function mapStateToProps(state: any) {
+  return {
+    isMobile: state.globalReducer.isMobile
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null
+)(Settings);

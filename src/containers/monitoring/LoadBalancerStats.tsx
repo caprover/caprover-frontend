@@ -13,6 +13,7 @@ class LoadBalancerStatsCard extends Component<any, any> {
           height: 240,
           overflow: "hidden",
           borderRadius: 5,
+          marginBottom: 8,
           border: "1px solid #dddddd",
           backgroundColor: "#fbfbfb"
         }}
@@ -97,11 +98,11 @@ export default class LoadBalancerStats extends ApiComponent<
 
     return (
       <div>
-        <Row>
-          <Col span={22} offset={1}>
+        <Row type="flex" justify="center">
+          <Col xs={{ span: 23 }} lg={{ span: 22 }}>
             <Card title="Load Balancer Stats">
-              <Row type="flex" gutter={10}>
-                <Col span={6}>
+              <Row type="flex" gutter={10} justify="center">
+                <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                   <Tooltip title="Constantly going up as refreshing the values">
                     <div>
                       <LoadBalancerStatsCard
@@ -115,7 +116,7 @@ export default class LoadBalancerStats extends ApiComponent<
                     </div>
                   </Tooltip>
                 </Col>
-                <Col span={6}>
+                <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                   <LoadBalancerStatsCard
                     icon="cluster"
                     color="#23ae89"
@@ -125,7 +126,7 @@ export default class LoadBalancerStats extends ApiComponent<
                     text2={`${this.state.apiData.accepted} accepted`}
                   />
                 </Col>
-                <Col span={6}>
+                <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                   <LoadBalancerStatsCard
                     icon="sync"
                     color="#d3a938"
@@ -136,7 +137,7 @@ export default class LoadBalancerStats extends ApiComponent<
                     text2={`${this.state.apiData.writing} writing`}
                   />
                 </Col>
-                <Col span={6}>
+                <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                   <LoadBalancerStatsCard
                     icon="clock-circle"
                     color="#ae2323"

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import ApiComponent from "../global/ApiComponent";
 import { Card, Col, Row, Button, Icon, message } from "antd";
 import Toaster from "../../utils/Toaster";
@@ -8,8 +9,10 @@ import NetDataSettingsForm from "./NetDataSettingsForm";
 import Utils from "../../utils/Utils";
 import ErrorRetry from "../global/ErrorRetry";
 
-export default class NetDataInfo extends ApiComponent<
-  {},
+class NetDataInfo extends ApiComponent<
+  {
+    isMobile: boolean;
+  },
   { apiData: any; isLoading: boolean }
 > {
   constructor(props: any) {
@@ -77,8 +80,8 @@ export default class NetDataInfo extends ApiComponent<
 
     return (
       <div>
-        <Row>
-          <Col span={18} offset={3}>
+        <Row type="flex" justify="center">
+          <Col xs={{ span: 23 }} lg={{ span: 18 }}>
             <Card title="NetData Monitoring Tool">
               <NetDataDescription />
               <hr />
@@ -98,34 +101,40 @@ export default class NetDataInfo extends ApiComponent<
               </div>
 
               <div className={!netDataInfo.isEnabled ? "hide-on-demand" : ""}>
-                <Row type="flex" justify="end">
-                  <Button
-                    style={{ marginRight: 50 }}
-                    onClick={() => self.toggleNetDataClicked(false)}
-                    type="danger"
-                  >
-                    <span>
-                      Turn NetData Off &nbsp;
-                      <Icon type="poweroff" />
-                    </span>
-                  </Button>
-
-                  <a
-                    type="submit"
-                    href={"//" + netDataInfo.netDataUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                <Row type="flex" justify="end" gutter={20}>
+                  <Col lg={{ span: 4 }} xs={{ span: 24 }}>
                     <Button
-                      //onClick={() => self.onStartNetDataClicked()}
-                      type="primary"
+                      style={{ marginRight: 50, marginBottom: 8 }}
+                      block
+                      onClick={() => self.toggleNetDataClicked(false)}
+                      type="danger"
                     >
                       <span>
-                        Open NetData &nbsp;
-                        <Icon type="area-chart" />
+                        Turn NetData Off &nbsp;
+                        <Icon type="poweroff" />
                       </span>
                     </Button>
-                  </a>
+                  </Col>
+                  <Col lg={{ span: 4 }} xs={{ span: 24 }}>
+                    <a
+                      type="submit"
+                      href={"//" + netDataInfo.netDataUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ width: this.props.isMobile ? "100%": "auto" }}
+                    >
+                      <Button
+                        block
+                        //onClick={() => self.onStartNetDataClicked()}
+                        type="primary"
+                      >
+                        <span>
+                          Open NetData &nbsp;
+                          <Icon type="area-chart" />
+                        </span>
+                      </Button>
+                    </a>
+                  </Col>
                 </Row>
                 <div style={{ height: 30 }} />
                 <hr />
@@ -159,3 +168,15 @@ export default class NetDataInfo extends ApiComponent<
     );
   }
 }
+
+function mapStateToProps(state: any) {
+  return {
+    isMobile: state.globalReducer.isMobile
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  undefined
+)(NetDataInfo);
+

@@ -1,5 +1,9 @@
 /**/
 
+#main-content-layout{
+    overflow-x: hidden;
+}
+
 .full-screen-bg {
     background-color: #f5f5f5;
     width: 100%;

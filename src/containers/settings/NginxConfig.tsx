@@ -8,7 +8,9 @@ import ReloadCaptainModal from "./ReloadCaptainModal";
 import ErrorRetry from "../global/ErrorRetry";
 
 export default class NginxConfig extends ApiComponent<
-  {},
+  {
+    isMobile: boolean;
+  },
   {
     nginxConfig: any;
     isLoading: boolean;
@@ -152,6 +154,7 @@ export default class NginxConfig extends ApiComponent<
           <Row type="flex" justify="end">
             <Button
               type="default"
+              block={this.props.isMobile}
               onClick={() => self.onLoadDefaultNginxConfigClicked()}
             >
               Load Default and Edit
@@ -163,6 +166,7 @@ export default class NginxConfig extends ApiComponent<
           <Row type="flex" justify="end">
             <Button
               type="primary"
+              block={this.props.isMobile}
               onClick={() => self.onUpdateNginxConfigClicked()}
             >
               <span>

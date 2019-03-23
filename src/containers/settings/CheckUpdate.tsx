@@ -8,7 +8,9 @@ import { IVersionInfo } from "../../models/IVersionInfo";
 import ErrorRetry from "../global/ErrorRetry";
 
 export default class CheckUpdate extends ApiComponent<
-  {},
+  {
+    isMobile: boolean;
+  },
   {
     versionInfo: IVersionInfo | undefined;
     isRefreshTimerActivated: boolean;
@@ -88,6 +90,7 @@ export default class CheckUpdate extends ApiComponent<
           <Row type="flex" justify="end">
             <Button
               type="primary"
+              block={this.props.isMobile}
               onClick={() => this.onPerformUpdateClicked()}
             >
               <span>

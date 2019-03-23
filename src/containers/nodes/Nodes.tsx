@@ -10,6 +10,7 @@ import ErrorRetry from "../global/ErrorRetry";
 class CurrentNodes extends ApiComponent<
   {
     defaultRegistryId: string | undefined;
+    isMobile: boolean;
   },
   {
     isLoading: boolean;
@@ -85,53 +86,53 @@ class CurrentNodes extends ApiComponent<
           <hr />
           <div style={{ height: 10 }} />
           <Row>
-            <Col span={12}>
+            <Col lg={{ span: 12 }} xs={{ span: 24 }}>
               <b>Type: </b>
               {node.isLeader ? "Leader (Main Node)" : node.type}
             </Col>
-            <Col span={12}>
+            <Col lg={{ span: 12 }} xs={{ span: 24 }}>
               <b>IP: </b>
               {node.ip}
             </Col>
           </Row>
           <Row>
-            <Col span={12}>
+            <Col lg={{ span: 12 }} xs={{ span: 24 }}>
               <b>State: </b>
               {node.state}
             </Col>
-            <Col span={12}>
+            <Col lg={{ span: 12 }} xs={{ span: 24 }}>
               <b>Status: </b>
               {node.status}
             </Col>
           </Row>
           <br />
           <Row>
-            <Col span={12}>
+            <Col lg={{ span: 12 }} xs={{ span: 24 }}>
               <b>RAM: </b>
               {(node.memoryBytes / 1073741824).toFixed(2)} GB
             </Col>
-            <Col span={12}>
+            <Col lg={{ span: 12 }} xs={{ span: 24 }}>
               <b>OS: </b>
               {node.operatingSystem}
             </Col>
           </Row>
           <Row>
-            <Col span={12}>
+            <Col lg={{ span: 12 }} xs={{ span: 24 }}>
               <b>CPU: </b>
               {(node.nanoCpu / 1000000000).toFixed(0)} cores
             </Col>
-            <Col span={12}>
+            <Col lg={{ span: 12 }} xs={{ span: 24 }}>
               <b>Architecture: </b>
               {node.architecture}
             </Col>
           </Row>
           <br />
           <Row>
-            <Col span={12}>
+            <Col lg={{ span: 12 }} xs={{ span: 24 }}>
               <b>Hostname: </b>
               {node.hostname}
             </Col>
-            <Col span={12}>
+            <Col lg={{ span: 12 }} xs={{ span: 24 }}>
               <b>Docker Version: </b>
               {node.dockerEngineVersion}
             </Col>
@@ -171,6 +172,7 @@ class CurrentNodes extends ApiComponent<
       <div>
         {this.props.defaultRegistryId ? (
           <AddNode
+            isMobile={this.props.isMobile}
             onAddNodeClicked={nodeToAdd => {
               self.addNode(nodeToAdd);
             }}
@@ -192,7 +194,7 @@ class CurrentNodes extends ApiComponent<
         <div style={{ height: 30 }} />
 
         <Row type="flex" justify="center">
-          <Col span={14}>{self.createNodes()}</Col>
+          <Col lg={{ span: 14 }} xs={{ span: 23 }}>{self.createNodes()}</Col>
         </Row>
       </div>
     );
@@ -201,7 +203,8 @@ class CurrentNodes extends ApiComponent<
 
 function mapStateToProps(state: any) {
   return {
-    defaultRegistryId: state.registryReducer.defaultRegistryId
+    defaultRegistryId: state.registryReducer.defaultRegistryId,
+    isMobile: state.globalReducer.isMobile
   };
 }
 

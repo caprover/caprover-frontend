@@ -8,7 +8,7 @@ export default class Cluster extends Component {
     return (
       <div>
         <Row type="flex" justify="center">
-          <Col span={20}>
+          <Col lg={{ span: 20 }} xs={{ span: 23}}>
             <Card title="Docker Registry Configuration">
               <DockerRegistries />
             </Card>
@@ -16,7 +16,7 @@ export default class Cluster extends Component {
         </Row>
         <div style={{ height: 35 }} />
         <Row type="flex" justify="center">
-          <Col span={20}>
+          <Col lg={{ span: 20 }} xs={{ span: 23}}>
             <Card title="Nodes">
               <Nodes />
             </Card>

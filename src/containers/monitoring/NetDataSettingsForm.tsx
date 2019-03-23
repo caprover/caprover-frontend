@@ -37,10 +37,10 @@ export default class NetDataSettingsForm extends Component<{
         <br />
         <h4>Email (SMTP)</h4>
 
-        <Row>
-          <Col span={20} offset={2}>
+        <Row type="flex" justify="center">
+          <Col xs={{ span: 23 }} lg={{ span: 20 }}>
             <Row type="flex" gutter={20} align="middle">
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 Recipient Email
                 <Input
                   type="text"
@@ -50,7 +50,7 @@ export default class NetDataSettingsForm extends Component<{
                 />
               </Col>
 
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 Server Tag
                 <Input
                   type="text"
@@ -62,7 +62,7 @@ export default class NetDataSettingsForm extends Component<{
                 />
               </Col>
 
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 SMTP Server
                 <Input
                   type="text"
@@ -74,7 +74,7 @@ export default class NetDataSettingsForm extends Component<{
                 />
               </Col>
 
-              <Col className="netdata-field" span={6}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 6 }}>
                 SMTP Port
                 <Input
                   type="number"
@@ -86,7 +86,7 @@ export default class NetDataSettingsForm extends Component<{
                 />
               </Col>
 
-              <Col className="netdata-field" span={6}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 6 }}>
                 Unsecure
                 <Checkbox
                   checked={!!netDataInfo.data.smtp.allowNonTls}
@@ -98,7 +98,7 @@ export default class NetDataSettingsForm extends Component<{
                 </Checkbox>
               </Col>
 
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 SMTP Username
                 <Input
                   type="text"
@@ -110,7 +110,7 @@ export default class NetDataSettingsForm extends Component<{
                 />
               </Col>
 
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 SMTP password
                 <PasswordField
                   defaultValue={netDataInfo.data.smtp.password}
@@ -124,10 +124,10 @@ export default class NetDataSettingsForm extends Component<{
         </Row>
         <br />
         <h4>Slack</h4>
-        <Row>
-          <Col span={20} offset={2}>
+        <Row type="flex" justify="center">
+          <Col xs={{ span: 24 }} lg={{ span: 20 }}>
             <Row type="flex" gutter={20} align="middle">
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 Slack Webhook
                 <Input
                   type="text"
@@ -138,7 +138,7 @@ export default class NetDataSettingsForm extends Component<{
                   }
                 />
               </Col>
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 Slack Channel
                 <Input
                   type="text"
@@ -154,10 +154,10 @@ export default class NetDataSettingsForm extends Component<{
         </Row>
         <br />
         <h4>Telegram</h4>
-        <Row>
-          <Col span={20} offset={2}>
+        <Row type="flex" justify="center">
+          <Col xs={{ span: 24 }} lg={{ span: 20 }} >
             <Row type="flex" gutter={20} align="middle">
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 Bot Token
                 <Input
                   type="text"
@@ -168,7 +168,7 @@ export default class NetDataSettingsForm extends Component<{
                   }
                 />
               </Col>
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 Chat ID
                 <Input
                   type="text"
@@ -184,10 +184,10 @@ export default class NetDataSettingsForm extends Component<{
         </Row>
         <br />
         <h4>Push Bullet</h4>
-        <Row>
-          <Col span={20} offset={2}>
+        <Row type="flex" justify="center">
+          <Col xs={{ span: 24 }} lg={{ span: 20 }} >
             <Row type="flex" gutter={20} align="middle">
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 Push Bullet API token
                 <Input
                   type="text"
@@ -198,7 +198,7 @@ export default class NetDataSettingsForm extends Component<{
                   }
                 />
               </Col>
-              <Col className="netdata-field" span={12}>
+              <Col className="netdata-field" xs={{ span: 24 }} lg={{ span: 12 }}>
                 Default Email (fallback receiver)
                 <Input
                   type="text"
