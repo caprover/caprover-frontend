@@ -74,7 +74,7 @@ export default class Dashboard extends ApiComponent<
               onOk() {
                 if (isUsingHttp) {
                   window.location.replace(
-                    "https://" + self.state.apiData.rootDomain
+                    "https://captain." + self.state.apiData.rootDomain
                   );
                 }
               },
