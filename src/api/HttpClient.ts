@@ -73,6 +73,7 @@ export default class HttpClient {
         .then(function(data) {
           if (
             data.status !== ErrorFactory.OKAY &&
+            data.status !== ErrorFactory.OK_PARTIALLY &&
             data.status !== ErrorFactory.OKAY_BUILD_STARTED
           ) {
             throw ErrorFactory.createError(

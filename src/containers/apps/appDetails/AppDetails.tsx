@@ -10,7 +10,8 @@ import {
   Button,
   Input,
   Affix,
-  Modal
+  Modal,
+  Checkbox
 } from "antd";
 import { connect } from "react-redux";
 import ApiComponent from "../../global/ApiComponent";
@@ -25,6 +26,7 @@ import AppConfigs from "./AppConfigs";
 import Deployment from "./deploy/Deployment";
 import Utils from "../../../utils/Utils";
 import ErrorRetry from "../../global/ErrorRetry";
+import { IHashMapGeneric } from "../../../models/IHashMapGeneric";
 const TabPane = Tabs.TabPane;
 
 const WEB_SETTINGS = "WEB_SETTINGS";
@@ -62,6 +64,7 @@ class AppDetails extends ApiComponent<
 > {
   private reRenderTriggered = false;
   private confirmedAppNameToDelete: string = "";
+  private volumesToDelete: IHashMapGeneric<boolean> = {};
 
   constructor(props: any) {
     super(props);
@@ -84,6 +87,19 @@ class AppDetails extends ApiComponent<
 
     self.confirmedAppNameToDelete = "";
 
+    const allVolumes: string[] = [];
+
+    self.volumesToDelete = {};
+
+    if (appDef.volumes) {
+      appDef.volumes.forEach(v => {
+        if (v.volumeName) {
+          allVolumes.push(v.volumeName);
+          self.volumesToDelete[v.volumeName] = true;
+        }
+      });
+    }
+
     Modal.confirm({
       title: "Confirm Permanent Delete?",
       content: (
@@ -94,21 +110,29 @@ class AppDetails extends ApiComponent<
             Please note that this is
             <b> not reversible</b>.
           </p>
-          <p className={appDef.hasPersistentData ? "" : "hide-on-demand"}>
-            <b>IMPORTANT:</b>
-            <i> {appDef.appName}</i> is an app with persistent data. After
-            deleting the app from CapRover, you will have to manually SSH to
-            your server, and delete Persistent Directories on your server. Refer
-            to the{" "}
-            <a
-              href="https://caprover.com/docs/app-configuration.html#removing-persistent-apps"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentations
-            </a>{" "}
-            for more details.
+          <p className={allVolumes.length ? "" : "hide-on-demand"}>
+            Please select the volumes you want to delete. Note that if any of
+            the volumes are being used by other CapRover apps, they will not be
+            deleted even if you select them. <b>Note: </b>deleting volumes takes
+            more than 10 seconds, please be patient
           </p>
+          {allVolumes.map(v => {
+            return (
+              <div key={v}>
+                <Checkbox
+                  defaultChecked={!!self.volumesToDelete[v]}
+                  onChange={(e: any) => {
+                    self.volumesToDelete[v] = !self.volumesToDelete[v];
+                  }}
+                >
+                  {v}
+                </Checkbox>
+              </div>
+            );
+          })}
+          <br />
+          <br />
+
           <p>Confirm App Name:</p>
           <Input
             type="text"
@@ -125,10 +149,48 @@ class AppDetails extends ApiComponent<
           return;
         }
 
+        const volumes: string[] = [];
+        Object.keys(self.volumesToDelete).forEach(v => {
+          if (self.volumesToDelete[v]) {
+            volumes.push(v);
+          }
+        });
+
         self.setState({ isLoading: true });
         self.apiManager
-          .deleteApp(appDef.appName!)
-          .then(function() {
+          .deleteApp(appDef.appName!, volumes)
+          .then(function(data) {
+            const volumesFailedToDelete = data.volumesFailedToDelete as string[];
+            if (volumesFailedToDelete && volumesFailedToDelete.length) {
+              Modal.info({
+                title: "Some volumes weren't deleted!",
+                content: (
+                  <div>
+                    <p>
+                      Some volumes weren't deleted because they were probably
+                      being used by other containers. Sometimes, this is because
+                      of a temporary delay when the original container deletion
+                      was done with a delay. Please see{" "}
+                      <a
+                        href="https://caprover.com/docs/app-configuration.html#removing-persistent-apps"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        documentations
+                      </a>{" "}
+                      and delete them manually if needed. Skipped volumes are:
+                    </p>
+                    <ul>
+                      {volumesFailedToDelete.map(v => (
+                        <li>
+                          <code>{v}</code>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+              });
+            }
             message.success("App deleted!");
           })
           .then(function() {
@@ -282,11 +344,11 @@ class AppDetails extends ApiComponent<
                         size="large"
                         onClick={() => self.onDeleteAppClicked()}
                       >
-                        {self.props.isMobile ? 
+                        {self.props.isMobile ? (
                           <Icon type="delete" />
-                          :
+                        ) : (
                           "Delete App"
-                        }
+                        )}
                       </Button>
                     </div>
                   </Col>
@@ -298,11 +360,11 @@ class AppDetails extends ApiComponent<
                         size="large"
                         onClick={() => self.onUpdateConfigAndSave()}
                       >
-                      {self.props.isMobile ? 
-                        <Icon type="save" />
-                        :
-                        "Save & Update"
-                      }
+                        {self.props.isMobile ? (
+                          <Icon type="save" />
+                        ) : (
+                          "Save & Update"
+                        )}
                       </Button>
                     </div>
                   </Col>
@@ -349,7 +411,6 @@ class AppDetails extends ApiComponent<
       });
   }
 }
-
 
 function mapStateToProps(state: any) {
   return {
