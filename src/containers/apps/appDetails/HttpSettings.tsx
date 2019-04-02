@@ -342,7 +342,9 @@ export default class HttpSettings extends Component<
                   this.props.isMobile ? " " : "HTTP "
                 }Port`}
                 type="number"
-                defaultValue={app.containerHttpPort + ""}
+                defaultValue={
+                  app.containerHttpPort ? app.containerHttpPort + "" : ""
+                }
                 onChange={e => {
                   const newApiData = Utils.copyObject(this.props.apiData);
                   newApiData.appDefinition.containerHttpPort = Number(
