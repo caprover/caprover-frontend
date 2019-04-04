@@ -172,6 +172,7 @@ export default class ApiManager {
     var customNginxConfig = appDefinition.customNginxConfig;
     var preDeployFunction = appDefinition.preDeployFunction;
     var containerHttpPort = appDefinition.containerHttpPort;
+    var description = appDefinition.description;
     var httpAuth = appDefinition.httpAuth;
     const http = this.http;
 
@@ -190,6 +191,7 @@ export default class ApiManager {
           nodeId: nodeId,
           preDeployFunction: preDeployFunction,
           containerHttpPort: containerHttpPort,
+          description: description,
           httpAuth: httpAuth,
           envVars: envVars
         })
