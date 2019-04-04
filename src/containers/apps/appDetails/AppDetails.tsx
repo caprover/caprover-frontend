@@ -81,6 +81,33 @@ class AppDetails extends ApiComponent<
     this.props.history.push("/apps");
   }
 
+  viewDescription() {
+    const self = this;
+    const app = self.state.apiData!.appDefinition;
+    const tempVal = { tempDescription: app.description };
+    Modal.confirm({
+      title: "App Description:",
+      content: (
+        <div>
+          <Input.TextArea
+            style={{ marginTop: 15 }}
+            placeholder="Use app description to take some notes for your app"
+            rows={12}
+            defaultValue={app.description}
+            onChange={e => {
+              tempVal.tempDescription = e.target.value;
+            }}
+          />
+        </div>
+      ),
+      onOk() {
+        const changed = app.description !== tempVal.tempDescription;
+        app.description = tempVal.tempDescription;
+        if (changed) self.onUpdateConfigAndSave();
+      }
+    });
+  }
+
   onDeleteAppClicked() {
     const self = this;
     const appDef = Utils.copyObject(self.state.apiData!.appDefinition);
@@ -257,8 +284,11 @@ class AppDetails extends ApiComponent<
             }
             title={
               <span>
-                <Icon type="code" />
-                &nbsp;&nbsp;&nbsp;{app.appName}
+                {app.appName}
+                &nbsp;&nbsp;&nbsp;
+                <ClickableLink onLinkClicked={() => self.viewDescription()}>
+                  <Icon type="edit" />
+                </ClickableLink>
               </span>
             }
           >
