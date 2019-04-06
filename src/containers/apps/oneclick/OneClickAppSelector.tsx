@@ -87,6 +87,7 @@ export default class OneClickAppSelector extends Component<
               <Row type="flex" justify="end" align="middle">
                 <b>One-Click Apps List: &nbsp;&nbsp;</b>
                 <Select
+                  showSearch
                   style={{ minWidth: 180 }}
                   onChange={value => {
                     self.setState({ selectedApp: value.toString() });
