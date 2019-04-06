@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import ApiComponent from "../../global/ApiComponent";
 import OneClickAppsApi from "../../../api/OneClickAppsApi";
 import Toaster from "../../../utils/Toaster";
-import { Row, Col, Card, Select, Button, Icon, Input } from "antd";
+import { Row, Col, Card, Select, Button, Icon, Input, Alert } from "antd";
 import CenteredSpinner from "../../global/CenteredSpinner";
 import { RouteComponentProps } from "react-router";
 import { IOneClickAppIdentifier } from "../../../models/IOneClickAppModels";
+import Utils from "../../../utils/Utils";
 
 export const TEMPLATE_ONE_CLICK_APP = "TEMPLATE_ONE_CLICK_APP";
 
@@ -83,6 +84,14 @@ export default class OneClickAppSelector extends Component<
                   CapRover One Click Apps Repository
                 </a>
               </p>
+              {Utils.isSafari() ? (
+                <Alert
+                  message="You seem to be using Safari. Deployment of one-click apps may be unstable on Safari. Using Chrome is recommended"
+                  type="warning"
+                />
+              ) : (
+                <div />
+              )}
               <div style={{ height: 50 }} />
               <Row type="flex" justify="end" align="middle">
                 <b>One-Click Apps List: &nbsp;&nbsp;</b>

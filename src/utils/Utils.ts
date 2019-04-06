@@ -26,6 +26,14 @@ export default {
     return (window.innerWidth < 768)
   },
 
+  isSafari(){
+
+    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) //
+      ||  !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+
+    return isSafari
+  },
+
   convertHexStringToUtf8(raw: string) {
     return !raw
       ? ""
