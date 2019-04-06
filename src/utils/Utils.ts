@@ -23,15 +23,22 @@ export default {
   },
 
   isMobile() {
-    return (window.innerWidth < 768)
+    return window.innerWidth < 768;
   },
 
-  isSafari(){
+  isSafari() {
+    var isSafari = false;
 
-    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) //
-      ||  !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+    try {
+      isSafari =
+        /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || //
+        !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+    } catch (error) {
+      // Don't let the error to ruin everything!
+      console.log(error);
+    }
 
-    return isSafari
+    return isSafari;
   },
 
   convertHexStringToUtf8(raw: string) {
