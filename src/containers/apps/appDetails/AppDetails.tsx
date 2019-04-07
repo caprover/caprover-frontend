@@ -44,6 +44,7 @@ export interface AppDetailsTabProps {
   apiData: SingleAppApiData;
   apiManager: ApiManager;
   updateApiData: Function;
+  onUpdateConfigAndSave: () => void;
   reFetchData: () => void;
   setLoading: (value: boolean) => void;
   isMobile: boolean;
@@ -322,6 +323,7 @@ class AppDetails extends ApiComponent<
                   updateApiData={(newData: any) =>
                     this.setState({ apiData: newData })
                   }
+                  onUpdateConfigAndSave={() => self.onUpdateConfigAndSave()}
                 />
               </TabPane>
               <TabPane
@@ -337,6 +339,7 @@ class AppDetails extends ApiComponent<
                   updateApiData={(newData: any) =>
                     this.setState({ apiData: newData })
                   }
+                  onUpdateConfigAndSave={() => self.onUpdateConfigAndSave()}
                 />
               </TabPane>
               <TabPane

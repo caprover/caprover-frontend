@@ -41,6 +41,16 @@ export default {
     return isSafari;
   },
 
+  getDelayedPromise(time: number) {
+      if (!time) return Promise.resolve()
+
+      return new Promise<void>((res, rej) => {
+          setTimeout(() => {
+              res()
+          }, time)
+      })
+  },
+
   convertHexStringToUtf8(raw: string) {
     return !raw
       ? ""

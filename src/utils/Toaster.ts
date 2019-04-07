@@ -8,6 +8,7 @@ export default class Toaster {
       errorMessage = `${error.captainStatus} : ${errorDescription}`;
     }
     message.error(errorMessage);
+    if (!!process.env.REACT_APP_IS_DEBUG) console.error(error);
   }
 
   static createCatcher(functionToRun?: Function) {

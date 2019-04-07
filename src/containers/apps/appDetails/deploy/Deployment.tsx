@@ -14,12 +14,8 @@ import AppVersionTable from "./AppVersionTable";
 import Toaster from "../../../../utils/Toaster";
 import AppLogsView from "./AppLogsView";
 
-interface IDeploymentTabProps extends AppDetailsTabProps {
-  onUpdateConfigAndSave: () => void;
-  isMobile: boolean;
-}
 export default class Deployment extends ApiComponent<
-  IDeploymentTabProps,
+  AppDetailsTabProps,
   {
     dummyVar: undefined;
     forceEditableCaptainDefinitionPath: boolean;
@@ -225,7 +221,11 @@ export default class Deployment extends ApiComponent<
             this.props.updateApiData(newApiData);
           }}
         />
-        <Row type="flex" justify="end" style={{ marginTop: this.props.isMobile ? 15 : 0 }}>
+        <Row
+          type="flex"
+          justify="end"
+          style={{ marginTop: this.props.isMobile ? 15 : 0 }}
+        >
           <Button
             disabled={!hasPushToken}
             style={{ marginRight: this.props.isMobile ? 0 : 10 }}
@@ -269,10 +269,16 @@ export default class Deployment extends ApiComponent<
         />
         <div style={{ height: 20 }} />
         <Row>
-          <Col xs={{ span: 24 }} lg={{ span: 6 }} style={{ width: this.props.isMobile ? "100%" : 400 }}>
-          {this.props.isMobile && "captain-definition Relative Path"}
+          <Col
+            xs={{ span: 24 }}
+            lg={{ span: 6 }}
+            style={{ width: this.props.isMobile ? "100%" : 400 }}
+          >
+            {this.props.isMobile && "captain-definition Relative Path"}
             <Input
-              addonBefore={!this.props.isMobile && "captain-definition Relative Path"}
+              addonBefore={
+                !this.props.isMobile && "captain-definition Relative Path"
+              }
               type="text"
               defaultValue={app.captainDefinitionRelativeFilePath + ""}
               disabled={!this.state.forceEditableCaptainDefinitionPath}
@@ -285,7 +291,12 @@ export default class Deployment extends ApiComponent<
             />
           </Col>
           <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-            <div style={{ paddingLeft: this.props.isMobile ? 0 : 24, marginTop: this.props.isMobile ? 8: 0 }}>
+            <div
+              style={{
+                paddingLeft: this.props.isMobile ? 0 : 24,
+                marginTop: this.props.isMobile ? 8 : 0
+              }}
+            >
               <Tooltip title="You shouldn't need to change this path unless you have a repository with multiple captain-definition files (mono repos). Read docs for captain definition before editing this">
                 <Button
                   type="default"
@@ -299,7 +310,10 @@ export default class Deployment extends ApiComponent<
                 </Button>
               </Tooltip>
               <Button
-                style={{ marginLeft: this.props.isMobile ? 0 : 20, marginTop: this.props.isMobile ? 8: 0 }}
+                style={{
+                  marginLeft: this.props.isMobile ? 0 : 20,
+                  marginTop: this.props.isMobile ? 8 : 0
+                }}
                 block={this.props.isMobile}
                 disabled={!this.state.forceEditableCaptainDefinitionPath}
                 type="primary"

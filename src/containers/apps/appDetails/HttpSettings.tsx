@@ -478,6 +478,12 @@ export default class HttpSettings extends Component<
         }
 
         self.props.updateApiData(newApiData);
+
+        // Make sure state is saved!
+        return Utils.getDelayedPromise(300) //
+          .then(function() {
+            self.props.onUpdateConfigAndSave();
+          });
       });
   }
 
