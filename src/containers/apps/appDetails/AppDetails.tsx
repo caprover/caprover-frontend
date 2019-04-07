@@ -11,7 +11,8 @@ import {
   Input,
   Affix,
   Modal,
-  Checkbox
+  Checkbox,
+  Popover
 } from "antd";
 import { connect } from "react-redux";
 import ApiComponent from "../../global/ApiComponent";
@@ -287,7 +288,17 @@ class AppDetails extends ApiComponent<
                 {app.appName}
                 &nbsp;&nbsp;&nbsp;
                 <ClickableLink onLinkClicked={() => self.viewDescription()}>
-                  <Icon type="edit" />
+                  <Popover
+                    placement="bottom"
+                    content={
+                      <div style={{ maxWidth: 300, whiteSpace: "pre-line" }}>
+                        {app.description || "Click to edit app description..."}
+                      </div>
+                    }
+                    title="App description"
+                  >
+                    <Icon type="edit" />
+                  </Popover>
                 </ClickableLink>
               </span>
             }
