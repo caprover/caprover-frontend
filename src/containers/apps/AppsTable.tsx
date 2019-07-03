@@ -44,7 +44,12 @@ class AppsTable extends Component<
           <ClickableLink onLinkClicked={() => self.onAppClicked(appName)}>
             {appName}
           </ClickableLink>
-        )
+        ),
+        sorter: (a:IAppDef , b: IAppDef) => {
+          return a.appName ? a.appName.localeCompare(b.appName || '') : 0;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['descend', 'ascend'],
       },
       {
         title: "Persistent Data	",
@@ -126,7 +131,7 @@ class AppsTable extends Component<
       return app.appName!.indexOf(self.state.searchTerm) >= 0;
     });
 
-    const searchAppInput = 
+    const searchAppInput =
     <Input
       placeholder="Search by Name"
       type="text"
@@ -153,13 +158,13 @@ class AppsTable extends Component<
               </React.Fragment>
             }
           >
-          
+
             <Row>
               {self.props.isMobile ?
               appsToRender.map(({
-                appName = "", 
-                hasPersistentData, 
-                notExposeAsWebApp, 
+                appName = "",
+                hasPersistentData,
+                notExposeAsWebApp,
                 instanceCount,
                 hasDefaultSubDomainSsl
               }) => (
@@ -173,18 +178,18 @@ class AppsTable extends Component<
                     </ClickableLink>
                   }
                 >
-                  <p>Persistant Data: { 
-                    !hasPersistentData ? null : 
+                  <p>Persistant Data: {
+                    !hasPersistentData ? null :
                       <span>
                         <Icon type="check" />
                       </span>
                     }
                   </p>
                   <p>Exposed Webapp: {
-                    !!notExposeAsWebApp ? null : 
+                    !!notExposeAsWebApp ? null :
                       <span>
                         <Icon type="check" />
-                      </span> 
+                      </span>
                     }
                   </p>
                   <p>Instance Count: {instanceCount}</p>
