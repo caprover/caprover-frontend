@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  Row,
-  Col,
-  Card,
-  Icon,
-  Input,
-  Table
-} from "antd";
+import { Row, Col, Card, Icon, Input, Table } from "antd";
 import { IAppDef } from "./AppDefinition";
 import ClickableLink from "../global/ClickableLink";
 import { History } from "history";
@@ -45,11 +38,11 @@ class AppsTable extends Component<
             {appName}
           </ClickableLink>
         ),
-        sorter: (a:IAppDef , b: IAppDef) => {
-          return a.appName ? a.appName.localeCompare(b.appName || '') : 0;
+        sorter: (a: IAppDef, b: IAppDef) => {
+          return a.appName ? a.appName.localeCompare(b.appName || "") : 0;
         },
-        defaultSortOrder: 'ascend',
-        sortDirections: ['descend', 'ascend'],
+        defaultSortOrder: "ascend",
+        sortDirections: ["descend", "ascend"]
       },
       {
         title: "Persistent Data	",
@@ -131,96 +124,104 @@ class AppsTable extends Component<
       return app.appName!.indexOf(self.state.searchTerm) >= 0;
     });
 
-    const searchAppInput =
-    <Input
-      placeholder="Search by Name"
-      type="text"
-      onChange={event =>
-        self.setState({
-          searchTerm: (event.target.value || "").trim()
-        })
-      }
-    />
+    const searchAppInput = (
+      <Input
+        placeholder="Search by Name"
+        type="text"
+        onChange={event =>
+          self.setState({
+            searchTerm: (event.target.value || "").trim()
+          })
+        }
+      />
+    );
 
     return (
       <Row type="flex" justify="center">
-      <Col xs={{ span: 23 }} lg={{ span: 16 }} style={{ paddingBottom: 300 }}>
+        <Col xs={{ span: 23 }} lg={{ span: 16 }} style={{ paddingBottom: 300 }}>
           <Card
-            extra={ !!!self.props.isMobile && searchAppInput }
+            extra={!!!self.props.isMobile && searchAppInput}
             title={
               <React.Fragment>
                 <span>
                   <Icon type="code" />
                   &nbsp;&nbsp;&nbsp;Your Apps
                 </span>
-                <br/>
-                { self.props.isMobile && searchAppInput }
+                <br />
+                {self.props.isMobile && searchAppInput}
               </React.Fragment>
             }
           >
-
             <Row>
-              {self.props.isMobile ?
-              appsToRender.map(({
-                appName = "",
-                hasPersistentData,
-                notExposeAsWebApp,
-                instanceCount,
-                hasDefaultSubDomainSsl
-              }) => (
-                <Card
-                  type="inner"
-                  title={appName}
-                  key={appName}
-                  extra={
-                    <ClickableLink onLinkClicked={() => self.onAppClicked(appName)}>
-                      Details
-                    </ClickableLink>
-                  }
-                >
-                  <p>Persistant Data: {
-                    !hasPersistentData ? null :
-                      <span>
-                        <Icon type="check" />
-                      </span>
-                    }
-                  </p>
-                  <p>Exposed Webapp: {
-                    !!notExposeAsWebApp ? null :
-                      <span>
-                        <Icon type="check" />
-                      </span>
-                    }
-                  </p>
-                  <p>Instance Count: {instanceCount}</p>
-                  <p>Open in Browser: {
-                    !!notExposeAsWebApp ? null :
-                      <a
-                        href={
-                          "http" +
-                          (hasDefaultSubDomainSsl ? "s" : "") +
-                          "://" +
-                          appName +
-                          "." +
-                          self.props.rootDomain
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Icon type="link" />{" "}
-                      </a>
-                    }
-                  </p>
-                </Card>
-              ))
-              :
-              <Table<IAppDef>
-                rowKey="appName"
-                columns={self.createColumns()}
-                dataSource={appsToRender}
-                pagination={false}
-                size="middle"
-              />}
+              {self.props.isMobile ? (
+                appsToRender.map(
+                  ({
+                    appName = "",
+                    hasPersistentData,
+                    notExposeAsWebApp,
+                    instanceCount,
+                    hasDefaultSubDomainSsl
+                  }) => (
+                    <Card
+                      type="inner"
+                      title={appName}
+                      key={appName}
+                      extra={
+                        <ClickableLink
+                          onLinkClicked={() => self.onAppClicked(appName)}
+                        >
+                          Details
+                        </ClickableLink>
+                      }
+                    >
+                      <p>
+                        Persistant Data:{" "}
+                        {!hasPersistentData ? null : (
+                          <span>
+                            <Icon type="check" />
+                          </span>
+                        )}
+                      </p>
+                      <p>
+                        Exposed Webapp:{" "}
+                        {!!notExposeAsWebApp ? null : (
+                          <span>
+                            <Icon type="check" />
+                          </span>
+                        )}
+                      </p>
+                      <p>Instance Count: {instanceCount}</p>
+                      <p>
+                        Open in Browser:{" "}
+                        {!!notExposeAsWebApp ? null : (
+                          <a
+                            href={
+                              "http" +
+                              (hasDefaultSubDomainSsl ? "s" : "") +
+                              "://" +
+                              appName +
+                              "." +
+                              self.props.rootDomain
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Icon type="link" />{" "}
+                          </a>
+                        )}
+                      </p>
+                    </Card>
+                  )
+                )
+              ) : (
+                <Table<IAppDef>
+                  rowKey="appName"
+                  columns={self.createColumns()}
+                  dataSource={appsToRender}
+                  pagination={false}
+                  size="middle"
+                />
+              )}
             </Row>
           </Card>
         </Col>
