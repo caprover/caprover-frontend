@@ -152,23 +152,6 @@ export default class AppLogsView extends ApiComponent<
                       </a>
                     </Tooltip>
                   </span>
-
-                  <span style={{ marginLeft: 35 }}>
-                    <h4 className="unselectable-span">
-                      [{" "}
-                      <i>
-                        Experimental Feature! Report bugs{" "}
-                        <a
-                          href="https://github.com/CapRover/CapRover/issues"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          here
-                        </a>
-                      </i>{" "}
-                      ]
-                    </h4>
-                  </span>
                 </Row>
               </span>
               <span className={this.state.expandedLogs ? "" : "hide-on-demand"}>
