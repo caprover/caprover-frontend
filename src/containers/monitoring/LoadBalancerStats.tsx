@@ -1,7 +1,7 @@
+import { Avatar, Card, Col, Row, Tooltip } from "antd";
 import React, { Component } from "react";
-import ApiComponent from "../global/ApiComponent";
-import { Row, Col, Card, Avatar, Icon, Tooltip } from "antd";
 import Toaster from "../../utils/Toaster";
+import ApiComponent from "../global/ApiComponent";
 import CenteredSpinner from "../global/CenteredSpinner";
 import ErrorRetry from "../global/ErrorRetry";
 

@@ -1,13 +1,13 @@
-import React, { Component } from "react";
+import { Button, Card, Col, Icon, message, Row } from "antd";
+import React from "react";
 import { connect } from "react-redux";
-import ApiComponent from "../global/ApiComponent";
-import { Card, Col, Row, Button, Icon, message } from "antd";
 import Toaster from "../../utils/Toaster";
+import Utils from "../../utils/Utils";
+import ApiComponent from "../global/ApiComponent";
 import CenteredSpinner from "../global/CenteredSpinner";
+import ErrorRetry from "../global/ErrorRetry";
 import NetDataDescription from "./NetDataDescription";
 import NetDataSettingsForm from "./NetDataSettingsForm";
-import Utils from "../../utils/Utils";
-import ErrorRetry from "../global/ErrorRetry";
 
 class NetDataInfo extends ApiComponent<
   {

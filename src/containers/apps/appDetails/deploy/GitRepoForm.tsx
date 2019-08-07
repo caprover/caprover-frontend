@@ -1,8 +1,8 @@
+import { Col, Input, Row } from "antd";
 import React, { Component } from "react";
-import { Row, Col, Form, Input } from "antd";
-import { RepoInfo } from "../../AppDefinition";
 import Utils from "../../../../utils/Utils";
 import PasswordField from "../../../global/PasswordField";
+import { RepoInfo } from "../../AppDefinition";
 
 export default class GitRepoForm extends Component<{
   gitRepoValues: RepoInfo;

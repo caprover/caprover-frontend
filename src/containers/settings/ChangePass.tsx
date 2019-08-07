@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import ApiComponent from "../global/ApiComponent";
 import { Input, Button, Row, message } from "antd";
 import Toaster from "../../utils/Toaster";
@@ -71,9 +71,9 @@ export default class ChangePass extends ApiComponent<
         />
         <div style={{ height: 40 }} />
         <Row type="flex" justify="end">
-          <Button 
+          <Button
             block={this.props.isMobile}
-            onClick={() => this.onChangePasswordClicked()} 
+            onClick={() => this.onChangePasswordClicked()}
             type="primary"
           >
             Change Password

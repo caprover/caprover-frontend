@@ -1,6 +1,5 @@
+import { Button, Row } from "antd";
 import React, { Component } from "react";
-import { Route } from "react-router";
-import { Row, Button } from "antd";
 import { connect } from "react-redux";
 import { emitRootKeyChanged } from "../../actions/GlobalActions";
 

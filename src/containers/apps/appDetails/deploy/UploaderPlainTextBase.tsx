@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import ApiComponent from "../../../global/ApiComponent";
-import { Row, Input, Button, message } from "antd";
+import { Button, Input, Row } from "antd";
+import React from "react";
 import Toaster from "../../../../utils/Toaster";
+import ApiComponent from "../../../global/ApiComponent";
 
 export default abstract class UploaderPlainTextBase extends ApiComponent<
   {

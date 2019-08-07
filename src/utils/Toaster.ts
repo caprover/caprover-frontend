@@ -1,4 +1,4 @@
-import { message, Button } from "antd";
+import { message } from "antd";
 
 export default class Toaster {
   static toast(error: any) {

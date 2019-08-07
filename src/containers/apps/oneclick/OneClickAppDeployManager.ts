@@ -48,7 +48,7 @@ export default class OneClickAppDeployManager {
     } catch (error) {
       this.onDeploymentStateChanged({
         steps: ["Parsing the template"],
-        error: `Cannot parse: ${stringified}` + "\n\n\n\n" + error,
+        error: `Cannot parse: ${stringified}\n\n\n\n${error}`,
         currentStep: 0
       });
       return;

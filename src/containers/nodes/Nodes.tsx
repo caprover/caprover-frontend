@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import { Alert, Col, Divider, message, Row } from "antd";
+import React from "react";
 import { connect } from "react-redux";
-import AddNode, { INodeToAdd } from "./AddNode";
-import { Alert, Row, Col, Divider, message } from "antd";
-import ApiComponent from "../global/ApiComponent";
 import Toaster from "../../utils/Toaster";
+import ApiComponent from "../global/ApiComponent";
 import CenteredSpinner from "../global/CenteredSpinner";
 import ErrorRetry from "../global/ErrorRetry";
+import AddNode, { INodeToAdd } from "./AddNode";
 
 class CurrentNodes extends ApiComponent<
   {

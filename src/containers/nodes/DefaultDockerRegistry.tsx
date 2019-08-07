@@ -1,8 +1,8 @@
+import { Alert, Icon, Modal, Select } from "antd";
 import React, { Component } from "react";
-import ClickableLink from "../global/ClickableLink";
 import { IRegistryApi } from "../../models/IRegistryInfo";
-import { Icon, Modal, Select, Alert } from "antd";
 import Utils from "../../utils/Utils";
+import ClickableLink from "../global/ClickableLink";
 
 const Option = Select.Option;
 const NONE = "none";
@@ -74,8 +74,8 @@ export default class DefaultDockerRegistry extends Component<
           <Select
             defaultValue={this.props.apiData.defaultPushRegistryId || NONE}
             style={{ width: 300 }}
-            onChange={value => {
-              if (value == NONE) {
+            onChange={(value: string) => {
+              if (value === NONE) {
                 this.setState({ newSelectedDefaultId: "" });
               } else {
                 this.setState({ newSelectedDefaultId: value });

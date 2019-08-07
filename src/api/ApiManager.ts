@@ -1,11 +1,10 @@
-import HttpClient from "./HttpClient";
+import { IAppDef } from "../containers/apps/AppDefinition";
+import { ICaptainDefinition } from "../models/ICaptainDefinition";
+import { IRegistryInfo } from "../models/IRegistryInfo";
+import { IVersionInfo } from "../models/IVersionInfo";
 import Logger from "../utils/Logger";
 import StorageHelper from "../utils/StorageHelper";
-import { IAppDef } from "../containers/apps/AppDefinition";
-import { IRegistryInfo } from "../models/IRegistryInfo";
-import Utils from "../utils/Utils";
-import { ICaptainDefinition } from "../models/ICaptainDefinition";
-import { IVersionInfo } from "../models/IVersionInfo";
+import HttpClient from "./HttpClient";
 
 const BASE_DOMAIN = process.env.REACT_APP_API_URL
   ? process.env.REACT_APP_API_URL

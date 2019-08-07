@@ -1,20 +1,11 @@
-import React, { Component } from "react";
-import {
-  Form,
-  Icon,
-  Input,
-  Button,
-  Checkbox,
-  Card,
-  Radio,
-  Collapse
-} from "antd";
-import ApiComponent from "./global/ApiComponent";
-import Toaster from "../utils/Toaster";
-import ApiManager from "../api/ApiManager";
-import { RouteComponentProps } from "react-router";
+import { Button, Card, Collapse, Form, Icon, Input, Radio } from "antd";
 import RadioGroup from "antd/lib/radio/group";
+import React from "react";
+import { RouteComponentProps } from "react-router";
+import ApiManager from "../api/ApiManager";
 import StorageHelper from "../utils/StorageHelper";
+import Toaster from "../utils/Toaster";
+import ApiComponent from "./global/ApiComponent";
 const FormItem = Form.Item;
 
 const NO_SESSION = 1;
@@ -150,4 +141,4 @@ class NormalLoginForm extends React.Component<any, any> {
   }
 }
 
-const WrappedNormalLoginForm = Form.create()(NormalLoginForm);
+const WrappedNormalLoginForm = Form.create<any>()(NormalLoginForm);

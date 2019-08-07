@@ -17,8 +17,6 @@ class ErrorFactory {
 
   public readonly UNKNOWN_ERROR = 1999;
 
-  constructor() {}
-
   createError(status: number, message: string) {
     let e = new Error(message || "null") as any;
     e.captainStatus = status;

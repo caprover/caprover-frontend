@@ -1,12 +1,11 @@
+import { Alert, Button, Card, Col, Icon, Input, Row, Select } from "antd";
 import React, { Component } from "react";
-import ApiComponent from "../../global/ApiComponent";
-import OneClickAppsApi from "../../../api/OneClickAppsApi";
-import Toaster from "../../../utils/Toaster";
-import { Row, Col, Card, Select, Button, Icon, Input, Alert } from "antd";
-import CenteredSpinner from "../../global/CenteredSpinner";
 import { RouteComponentProps } from "react-router";
+import OneClickAppsApi from "../../../api/OneClickAppsApi";
 import { IOneClickAppIdentifier } from "../../../models/IOneClickAppModels";
+import Toaster from "../../../utils/Toaster";
 import Utils from "../../../utils/Utils";
+import CenteredSpinner from "../../global/CenteredSpinner";
 
 export const TEMPLATE_ONE_CLICK_APP = "TEMPLATE_ONE_CLICK_APP";
 

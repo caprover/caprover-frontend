@@ -83,8 +83,11 @@ class PageRoot extends ApiComponent<
 
   componentDidUpdate(prevProps: any) {
     // Typical usage (don't forget to compare props):
-    if (this.props.location.pathname !== prevProps.location.pathname && this.props.isMobile) {
-      this.setState({ collapsed: true })
+    if (
+      this.props.location.pathname !== prevProps.location.pathname &&
+      this.props.isMobile
+    ) {
+      this.setState({ collapsed: true });
     }
   }
 
@@ -169,29 +172,26 @@ class PageRoot extends ApiComponent<
     const self = this;
     return (
       <Layout className="full-screen-bg">
-          <Header 
-            className="header" 
-            style={{ 
-              padding: `0 ${this.props.isMobile ? 15 : 50 }px`,
-            }}          
-          >
-            <div>
-              <Row>
-                {
-                  this.props.isMobile && 
-                  <Col span={4}>
-                    <Button 
-                      ghost  
-                      icon="bars" 
-                      onClick={this.toggleSider}
-                    />
-                  </Col>
-                }
-                {this.props.isMobile && self.createUpdateAvailableIfNeeded() ||
+        <Header
+          className="header"
+          style={{
+            padding: `0 ${this.props.isMobile ? 15 : 50}px`
+          }}
+        >
+          <div>
+            <Row>
+              {this.props.isMobile && (
+                <Col span={4}>
+                  <Button ghost icon="bars" onClick={this.toggleSider} />
+                </Col>
+              )}
+              {(this.props.isMobile &&
+                self.createUpdateAvailableIfNeeded()) || (
                 <Col lg={{ span: 12 }} xs={{ span: 20 }}>
                   <div>
                     <h3 style={{ color: "#fff" }}>
                       <img
+                        alt="logo"
                         src="/icon-512x512.png"
                         style={{
                           height: 45,
@@ -202,51 +202,52 @@ class PageRoot extends ApiComponent<
                       {self.createUpdateAvailableIfNeeded()}
                     </h3>
                   </div>
-                </Col>}
-                {!self.props.isMobile && 
-                  <Col span={12}>
-                    <Row type="flex" justify="end">
-                      <a
-                        href="https://github.com/caprover/caprover"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ marginRight: 20 }}
-                      >
-                        GitHub
-                      </a>
+                </Col>
+              )}
+              {!self.props.isMobile && (
+                <Col span={12}>
+                  <Row type="flex" justify="end">
+                    <a
+                      href="https://github.com/caprover/caprover"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ marginRight: 20 }}
+                    >
+                      GitHub
+                    </a>
 
-                      <a
-                        href="https://caprover.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ marginRight: 70 }}
+                    <a
+                      href="https://caprover.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ marginRight: 70 }}
+                    >
+                      Docs
+                    </a>
+                    <span>
+                      <span
+                        style={{
+                          border: "1px solid #1b8ad3",
+                          borderRadius: 5,
+                          padding: 8
+                        }}
                       >
-                        Docs
-                      </a>
-                      <span>
-                        <span
-                          style={{
-                            border: "1px solid #1b8ad3",
-                            borderRadius: 5,
-                            padding: 8
+                        <ClickableLink
+                          onLinkClicked={() => {
+                            self.apiManager.setAuthToken("");
+                            self.goToLogin();
                           }}
                         >
-                          <ClickableLink
-                            onLinkClicked={() => {
-                              self.apiManager.setAuthToken("");
-                              self.goToLogin();
-                            }}
-                          >
-                            Logout <Icon type="logout" />
-                          </ClickableLink>
-                        </span>
+                          Logout <Icon type="logout" />
+                        </ClickableLink>
                       </span>
-                    </Row>
-                  </Col>
-                }
-              </Row>
-            </div>
-          </Header>
+                    </span>
+                  </Row>
+                </Col>
+              )}
+            </Row>
+          </div>
+        </Header>
 
         <Layout>
           <Sider
@@ -269,7 +270,6 @@ class PageRoot extends ApiComponent<
               defaultSelectedKeys={["dashboard"]}
               style={{ height: "100%", borderRight: 0 }}
             >
-
               {MENU_ITEMS.map(item => (
                 <Menu.Item key={item.key}>
                   <span>

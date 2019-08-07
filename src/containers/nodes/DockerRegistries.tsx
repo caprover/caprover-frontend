@@ -1,20 +1,16 @@
-import React, { Component } from "react";
-import { Collapse, Row, Button, Alert, message } from "antd";
-import DockerRegistriesStaticInfo from "./DockerRegistriesStaticInfo";
+import { Alert, message } from "antd";
+import React from "react";
+import { connect } from "react-redux";
+import { emitDefaultRegistryChanged } from "../../actions/DefaultRegistryActions";
+import { IRegistryApi, IRegistryInfo, IRegistryTypes } from "../../models/IRegistryInfo";
+import Toaster from "../../utils/Toaster";
 import ApiComponent from "../global/ApiComponent";
 import CenteredSpinner from "../global/CenteredSpinner";
-import Toaster from "../../utils/Toaster";
-import DefaultDockerRegistry from "./DefaultDockerRegistry";
-import DockerRegistryTable from "./DockerRegistryTable";
-import { connect } from "react-redux";
-import {
-  IRegistryApi,
-  IRegistryInfo,
-  IRegistryTypes
-} from "../../models/IRegistryInfo";
-import DockerRegistryAdd from "./DockerRegistryAdd";
-import { emitDefaultRegistryChanged } from "../../actions/DefaultRegistryActions";
 import ErrorRetry from "../global/ErrorRetry";
+import DefaultDockerRegistry from "./DefaultDockerRegistry";
+import DockerRegistriesStaticInfo from "./DockerRegistriesStaticInfo";
+import DockerRegistryAdd from "./DockerRegistryAdd";
+import DockerRegistryTable from "./DockerRegistryTable";
 
 class DockerRegistries extends ApiComponent<
   { 

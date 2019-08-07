@@ -1,10 +1,8 @@
-import React, { Component } from "react";
-import utf8 from "utf8";
-import ApiComponent from "../../../global/ApiComponent";
-import Toaster from "../../../../utils/Toaster";
-import ClickableLink from "../../../global/ClickableLink";
-import { Input, Icon, Alert, Row, Spin, Col, Tooltip } from "antd";
+import { Icon, Row, Tooltip } from "antd";
+import React from "react";
 import Utils from "../../../../utils/Utils";
+import ApiComponent from "../../../global/ApiComponent";
+import ClickableLink from "../../../global/ClickableLink";
 
 export default class AppLogsView extends ApiComponent<
   {
@@ -103,7 +101,7 @@ export default class AppLogsView extends ApiComponent<
 
   componentDidMount() {
     const self = this;
-    this.fetchLogs();
+    self.fetchLogs();
   }
 
   onExpandLogClicked() {

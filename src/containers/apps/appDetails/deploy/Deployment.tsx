@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import { AppDetailsTabProps } from "../AppDetails";
-import BuildLogsView from "./BuildLogsView";
-import { Col, Row, Upload, Input, message, Icon, Button, Tooltip } from "antd";
-import TarUploader from "./TarUploader";
-import GitRepoForm from "./GitRepoForm";
-import { RepoInfo, IAppDef, IAppVersion } from "../../AppDefinition";
-import Utils from "../../../../utils/Utils";
+import { Button, Col, Icon, Input, message, Row, Tooltip } from "antd";
+import React from "react";
 import DomUtils from "../../../../utils/DomUtils";
+import Toaster from "../../../../utils/Toaster";
+import Utils from "../../../../utils/Utils";
+import ApiComponent from "../../../global/ApiComponent";
+import { IAppDef, IAppVersion } from "../../AppDefinition";
+import { AppDetailsTabProps } from "../AppDetails";
+import AppLogsView from "./AppLogsView";
+import AppVersionTable from "./AppVersionTable";
+import BuildLogsView from "./BuildLogsView";
+import GitRepoForm from "./GitRepoForm";
+import TarUploader from "./TarUploader";
 import UploaderPlainTextCaptainDefinition from "./UploaderPlainTextCaptainDefinition";
 import UploaderPlainTextDockerfile from "./UploaderPlainTextDockerfile";
-import ApiComponent from "../../../global/ApiComponent";
-import AppVersionTable from "./AppVersionTable";
-import Toaster from "../../../../utils/Toaster";
-import AppLogsView from "./AppLogsView";
 
 export default class Deployment extends ApiComponent<
   AppDetailsTabProps,
@@ -157,6 +157,7 @@ export default class Deployment extends ApiComponent<
           <a
             href="https://caprover.com/docs/get-started.html#step-4-deploy-the-test-app"
             target="_blank"
+            rel="noopener noreferrer"
           >
             docs
           </a>

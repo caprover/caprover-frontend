@@ -1,33 +1,19 @@
-import React, { Component, RefObject } from "react";
-import {
-  message,
-  Row,
-  Col,
-  Card,
-  Icon,
-  Tooltip,
-  Tabs,
-  Button,
-  Input,
-  Affix,
-  Modal,
-  Checkbox,
-  Popover
-} from "antd";
+import { Affix, Button, Card, Checkbox, Col, Icon, Input, message, Modal, Popover, Row, Tabs, Tooltip } from "antd";
+import React, { RefObject } from "react";
 import { connect } from "react-redux";
-import ApiComponent from "../../global/ApiComponent";
-import Toaster from "../../../utils/Toaster";
-import CenteredSpinner from "../../global/CenteredSpinner";
 import { RouteComponentProps } from "react-router";
-import { IAppDef } from "../AppDefinition";
-import ClickableLink from "../../global/ClickableLink";
-import HttpSettings from "./HttpSettings";
 import ApiManager from "../../../api/ApiManager";
+import { IHashMapGeneric } from "../../../models/IHashMapGeneric";
+import Toaster from "../../../utils/Toaster";
+import Utils from "../../../utils/Utils";
+import ApiComponent from "../../global/ApiComponent";
+import CenteredSpinner from "../../global/CenteredSpinner";
+import ClickableLink from "../../global/ClickableLink";
+import ErrorRetry from "../../global/ErrorRetry";
+import { IAppDef } from "../AppDefinition";
 import AppConfigs from "./AppConfigs";
 import Deployment from "./deploy/Deployment";
-import Utils from "../../../utils/Utils";
-import ErrorRetry from "../../global/ErrorRetry";
-import { IHashMapGeneric } from "../../../models/IHashMapGeneric";
+import HttpSettings from "./HttpSettings";
 const TabPane = Tabs.TabPane;
 
 const WEB_SETTINGS = "WEB_SETTINGS";

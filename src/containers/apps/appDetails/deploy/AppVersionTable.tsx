@@ -1,10 +1,10 @@
-import React, { Component, Fragment } from "react";
-import { IAppVersion } from "../../AppDefinition";
-import { Table, Icon, Tooltip, Modal, Card } from "antd";
+import { Card, Icon, Modal, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
-import ClickableLink from "../../../global/ClickableLink";
 import moment from "moment";
+import React, { Component, Fragment } from "react";
 import Utils from "../../../../utils/Utils";
+import ClickableLink from "../../../global/ClickableLink";
+import { IAppVersion } from "../../AppDefinition";
 
 export default class AppVersionTable extends Component<{
   versions: IAppVersion[];
@@ -12,16 +12,11 @@ export default class AppVersionTable extends Component<{
   onVersionRollbackRequested: (versionToRevert: IAppVersion) => void;
   isMobile: boolean;
 }> {
-
-  getStateRender(version: number, versionDetails: IAppVersion){
+  getStateRender(version: number, versionDetails: IAppVersion) {
     if (version === this.props.deployedVersion) {
       return (
         <Tooltip title="Current Version">
-          <Icon
-            type="check-circle"
-            theme="twoTone"
-            twoToneColor="#52c41a"
-          />
+          <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
         </Tooltip>
       );
     }
@@ -49,14 +44,15 @@ export default class AppVersionTable extends Component<{
     );
   }
   getCols() {
-    const self = this;
+
     const columns: ColumnProps<IAppVersion>[] = [
       {
         title: "State",
         key: "revertColumn", // arbitrary unique name for the column
         align: "center",
         dataIndex: "version" as "version",
-        render: (version: number, versionDetails: IAppVersion) => this.getStateRender(version, versionDetails)
+        render: (version: number, versionDetails: IAppVersion) =>
+          this.getStateRender(version, versionDetails)
       },
       {
         title: "Version",
@@ -136,46 +132,54 @@ export default class AppVersionTable extends Component<{
   render() {
     const self = this;
     const versionsReversed = Utils.copyObject(self.props.versions).reverse();
-    const columns = this.getCols()
+    const columns = this.getCols();
     return (
       <div>
         <h3>Version History</h3>
         <div>
-          {this.props.isMobile ? 
-          versionsReversed.map((version, i) => i <= 5 && (
-            <Card
-              type="inner"
-              key={i}
-              style={{ marginBottom: 8 }}
-              title={
-                <Fragment>
-                  <Tooltip title={moment(new Date(version.timeStamp)).fromNow()}>
-                    <span>{new Date(version.timeStamp).toLocaleString()}</span>
-                  </Tooltip>
-                  <div>{version.deployedImageName}</div>
-                </Fragment>
-              }
-            >
-            <div>
-              <b>Version:</b> {version.version}
-            </div>
-            <div>
-              <b>Git hash:</b> {version.gitHash || "n/a"}
-            </div>
-            <div>
-              <b>State:</b> {this.getStateRender(version.version, version)}
-            </div>
-            </Card>
-          ))
-        :
-          <Table
-            size="small"
-            rowKey="timeStamp"
-            pagination={{ pageSize: 5 }}
-            columns={columns}
-            dataSource={versionsReversed}
-          />
-        }
+          {this.props.isMobile ? (
+            versionsReversed.map(
+              (version, i) =>
+                i <= 5 && (
+                  <Card
+                    type="inner"
+                    key={i}
+                    style={{ marginBottom: 8 }}
+                    title={
+                      <Fragment>
+                        <Tooltip
+                          title={moment(new Date(version.timeStamp)).fromNow()}
+                        >
+                          <span>
+                            {new Date(version.timeStamp).toLocaleString()}
+                          </span>
+                        </Tooltip>
+                        <div>{version.deployedImageName}</div>
+                      </Fragment>
+                    }
+                  >
+                    <div>
+                      <b>Version:</b> {version.version}
+                    </div>
+                    <div>
+                      <b>Git hash:</b> {version.gitHash || "n/a"}
+                    </div>
+                    <div>
+                      <b>State:</b>{" "}
+                      {this.getStateRender(version.version, version)}
+                    </div>
+                  </Card>
+                )
+            )
+          ) : (
+            <Table
+              size="small"
+              rowKey="timeStamp"
+              pagination={{ pageSize: 5 }}
+              columns={columns}
+              dataSource={versionsReversed}
+            />
+          )}
         </div>
       </div>
     );

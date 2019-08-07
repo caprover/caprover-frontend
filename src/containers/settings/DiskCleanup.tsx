@@ -1,19 +1,10 @@
-import React, { Component } from "react";
-import {
-  Row,
-  Col,
-  Input,
-  InputNumber,
-  Tooltip,
-  Button,
-  Icon,
-  message
-} from "antd";
-import ApiComponent from "../global/ApiComponent";
+import { Button, Col, Icon, Input, message, Row, Tooltip } from "antd";
+import React from "react";
 import Toaster from "../../utils/Toaster";
+import ApiComponent from "../global/ApiComponent";
 import CenteredSpinner from "../global/CenteredSpinner";
-import UnusedImagesTable from "./UnusedImagesTable";
 import ErrorRetry from "../global/ErrorRetry";
+import UnusedImagesTable from "./UnusedImagesTable";
 
 export interface IUnusedImage {
   tags: string[];

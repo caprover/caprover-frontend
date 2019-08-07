@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import ApiComponent from "../global/ApiComponent";
-import { Input, Icon, Row, Button, message, Modal } from "antd";
-import Utils from "../../utils/Utils";
-import CenteredSpinner from "../global/CenteredSpinner";
+import { Button, Icon, Input, Row } from "antd";
+import React from "react";
 import Toaster from "../../utils/Toaster";
-import ReloadCaptainModal from "./ReloadCaptainModal";
+import Utils from "../../utils/Utils";
+import ApiComponent from "../global/ApiComponent";
+import CenteredSpinner from "../global/CenteredSpinner";
 import ErrorRetry from "../global/ErrorRetry";
+import ReloadCaptainModal from "./ReloadCaptainModal";
 
 export default class NginxConfig extends ApiComponent<
   {

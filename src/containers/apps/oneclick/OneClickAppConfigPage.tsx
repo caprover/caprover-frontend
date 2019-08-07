@@ -1,19 +1,16 @@
-import React, { Component } from "react";
+import { Card, Col, message, Row } from "antd";
 import queryString from "query-string";
-import OneClickAppsApi from "../../../api/OneClickAppsApi";
+import React, { Component } from "react";
 import { RouteComponentProps } from "react-router";
-import { IHashMapGeneric } from "../../../models/IHashMapGeneric";
-import Toaster from "../../../utils/Toaster";
-import { Row, Col, Card, message } from "antd";
-import CenteredSpinner from "../../global/CenteredSpinner";
-import OneClickVariablesSection from "./OneClickVariablesSection";
-import OneClickAppDeployManager, {
-  IDeploymentState
-} from "./OneClickAppDeployManager";
-import OneClickAppDeployProgress from "./OneClickAppDeployProgress";
-import DomUtils from "../../../utils/DomUtils";
+import OneClickAppsApi from "../../../api/OneClickAppsApi";
 import { IOneClickTemplate } from "../../../models/IOneClickAppModels";
+import DomUtils from "../../../utils/DomUtils";
+import Toaster from "../../../utils/Toaster";
+import CenteredSpinner from "../../global/CenteredSpinner";
+import OneClickAppDeployManager, { IDeploymentState } from "./OneClickAppDeployManager";
+import OneClickAppDeployProgress from "./OneClickAppDeployProgress";
 import { TEMPLATE_ONE_CLICK_APP } from "./OneClickAppSelector";
+import OneClickVariablesSection from "./OneClickVariablesSection";
 
 export const ONE_CLICK_APP_NAME_VAR_NAME = "$$cap_appname";
 
@@ -55,7 +52,7 @@ export default class OneClickAppConfigPage extends Component<
     const appNameFromPath = this.props.match.params.appName;
     let promiseToFetchOneClick =
       appNameFromPath === TEMPLATE_ONE_CLICK_APP
-        ? new Promise(function(resolve, reject) {
+        ? new Promise<any>(function(resolve, reject) {
             resolve(
               JSON.parse(queryString.parse(self.props.location.search)[
                 "oneClickAppStringifiedData"

@@ -1,23 +1,9 @@
+import { Button, Col, Icon, Input, Row, Switch, Tooltip } from "antd";
 import React, { Component } from "react";
-import {
-  message,
-  Row,
-  Button,
-  Input,
-  Col,
-  Icon,
-  Tooltip,
-  Checkbox,
-  Switch
-} from "antd";
-import Toaster from "../../../utils/Toaster";
-import Utils from "../../../utils/Utils";
-import { AppDetailsTabProps } from "./AppDetails";
-import ClickableLink from "../../global/ClickableLink";
-import { IAppEnvVar } from "../AppDefinition";
 import { IHashMapGeneric } from "../../../models/IHashMapGeneric";
-
-const Search = Input.Search;
+import Utils from "../../../utils/Utils";
+import { IAppEnvVar } from "../AppDefinition";
+import { AppDetailsTabProps } from "./AppDetails";
 
 export default class AppConfigs extends Component<
   AppDetailsTabProps,

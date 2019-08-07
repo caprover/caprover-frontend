@@ -1,5 +1,5 @@
+import { Checkbox, Col, Input, Row } from "antd";
 import React, { Component } from "react";
-import { Row, Col, Input, Checkbox, Button } from "antd";
 import Utils from "../../utils/Utils";
 import PasswordField from "../global/PasswordField";
 

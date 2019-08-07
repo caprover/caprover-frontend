@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { Modal, Tooltip, Row, Col, Card, Input, Button } from "antd";
+import { Button, Card, Col, Input, Modal, Row, Tooltip } from "antd";
+import React from "react";
+import Toaster from "../utils/Toaster";
 import ApiComponent from "./global/ApiComponent";
 import CenteredSpinner from "./global/CenteredSpinner";
-import Toaster from "../utils/Toaster";
 import ErrorRetry from "./global/ErrorRetry";
 const Search = Input.Search;
 
@@ -357,7 +357,12 @@ export default class Dashboard extends ApiComponent<
         <Col xs={{ span: 23 }} lg={{ span: 16 }}>
           <Card title="CapRover Initial Setup">
             <div>
-              <h3>Congratulations! 🎉🎉</h3>
+              <h3>
+                Congratulations!{" "}
+                <span aria-label="Congrats" role="img">
+                  🎉🎉
+                </span>
+              </h3>
               <p>
                 <b /> You have installed CapRover successfully! You can set up
                 your CapRover instance in two ways:

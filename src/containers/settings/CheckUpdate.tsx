@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import { Icon, Button, message, Modal, Row, Alert } from "antd";
+import { Alert, Button, Icon, Row } from "antd";
+import React from "react";
+import { IVersionInfo } from "../../models/IVersionInfo";
+import Toaster from "../../utils/Toaster";
 import ApiComponent from "../global/ApiComponent";
 import CenteredSpinner from "../global/CenteredSpinner";
-import Toaster from "../../utils/Toaster";
-import ReloadCaptainModal from "./ReloadCaptainModal";
-import { IVersionInfo } from "../../models/IVersionInfo";
 import ErrorRetry from "../global/ErrorRetry";
+import ReloadCaptainModal from "./ReloadCaptainModal";
 
 export default class CheckUpdate extends ApiComponent<
   {
