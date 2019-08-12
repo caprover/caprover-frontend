@@ -67,6 +67,7 @@ interface IAppDefinitionBase {
   captainDefinitionRelativeFilePath: string;
 
   forceSsl: boolean;
+  websocketSupport: boolean;
   nodeId?: string;
   instanceCount: number;
   preDeployFunction?: string;

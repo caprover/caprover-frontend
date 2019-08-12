@@ -377,6 +377,24 @@ export default class HttpSettings extends Component<
         </Row>
         <br />
         <br />
+
+        <Row>
+          <Checkbox
+            defaultChecked={!!this.props.apiData.appDefinition.websocketSupport}
+            onChange={(e: any) => {
+              const newApiData = Utils.copyObject(this.props.apiData!);
+              newApiData.appDefinition.websocketSupport = !!e.target.checked;
+              this.props.updateApiData(newApiData);
+            }}
+          >
+            Websocket Support
+          </Checkbox>
+          <Tooltip title="Adds the upgrade proxy headers to NGINX config.">
+            <Icon type="info-circle" />
+          </Tooltip>
+        </Row>
+        <br />
+        <br />
         <Row>
           <Button
             style={{ marginRight: 20 }}

@@ -164,6 +164,7 @@ export default class ApiManager {
     var envVars = appDefinition.envVars;
     var notExposeAsWebApp = appDefinition.notExposeAsWebApp;
     var forceSsl = appDefinition.forceSsl;
+    var websocketSupport = appDefinition.websocketSupport;
     var volumes = appDefinition.volumes;
     var ports = appDefinition.ports;
     var nodeId = appDefinition.nodeId;
@@ -183,6 +184,7 @@ export default class ApiManager {
           captainDefinitionRelativeFilePath: captainDefinitionRelativeFilePath,
           notExposeAsWebApp: notExposeAsWebApp,
           forceSsl: forceSsl,
+          websocketSupport: websocketSupport,
           volumes: volumes,
           ports: ports,
           customNginxConfig: customNginxConfig,
