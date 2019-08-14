@@ -8,6 +8,7 @@ import Utils from "../../../utils/Utils";
 import CenteredSpinner from "../../global/CenteredSpinner";
 
 export const TEMPLATE_ONE_CLICK_APP = "TEMPLATE_ONE_CLICK_APP";
+export const ONE_CLICK_APP_STRINGIFIED_KEY = "oneClickAppStringifiedData";
 
 export default class OneClickAppSelector extends Component<
   RouteComponentProps<any>,
@@ -167,7 +168,7 @@ export default class OneClickAppSelector extends Component<
                     self.props.history.push(
                       `/apps/oneclick/${self.state.selectedApp}` +
                         (self.state.selectedApp === TEMPLATE_ONE_CLICK_APP
-                          ? "?oneClickAppStringifiedData=" +
+                          ? `?${ONE_CLICK_APP_STRINGIFIED_KEY}=` +
                             encodeURIComponent(
                               self.state.templateOneClickAppData
                             )

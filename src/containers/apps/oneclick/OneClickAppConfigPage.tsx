@@ -7,17 +7,27 @@ import { IOneClickTemplate } from "../../../models/IOneClickAppModels";
 import DomUtils from "../../../utils/DomUtils";
 import Toaster from "../../../utils/Toaster";
 import CenteredSpinner from "../../global/CenteredSpinner";
-import OneClickAppDeployManager, { IDeploymentState } from "./OneClickAppDeployManager";
+import OneClickAppDeployManager, {
+  IDeploymentState
+} from "./OneClickAppDeployManager";
 import OneClickAppDeployProgress from "./OneClickAppDeployProgress";
-import { TEMPLATE_ONE_CLICK_APP } from "./OneClickAppSelector";
+import {
+  TEMPLATE_ONE_CLICK_APP,
+  ONE_CLICK_APP_STRINGIFIED_KEY
+} from "./OneClickAppSelector";
 import OneClickVariablesSection from "./OneClickVariablesSection";
+import Utils from "../../../utils/Utils";
+import ApiManager from "../../../api/ApiManager";
+import ApiComponent from "../../global/ApiComponent";
 
 export const ONE_CLICK_APP_NAME_VAR_NAME = "$$cap_appname";
+export const ONE_CLICK_ROOT_DOMAIN_VAR_NAME = "$$cap_root_domain";
 
-export default class OneClickAppConfigPage extends Component<
+export default class OneClickAppConfigPage extends ApiComponent<
   RouteComponentProps<any>,
   {
     apiData: IOneClickTemplate | undefined;
+    rootDomain: string;
     deploymentState: IDeploymentState | undefined;
   }
 > {
@@ -29,6 +39,7 @@ export default class OneClickAppConfigPage extends Component<
     const self = this;
     this.state = {
       apiData: undefined,
+      rootDomain: "",
       deploymentState: undefined
     };
     this.oneClickAppDeployHelper = new OneClickAppDeployManager(
@@ -55,11 +66,13 @@ export default class OneClickAppConfigPage extends Component<
         ? new Promise<any>(function(resolve, reject) {
             resolve(
               JSON.parse(queryString.parse(self.props.location.search)[
-                "oneClickAppStringifiedData"
+                ONE_CLICK_APP_STRINGIFIED_KEY
               ] as string)
             );
           })
         : new OneClickAppsApi().getOneClickAppByName(appNameFromPath);
+
+    let apiData: IOneClickTemplate;
 
     promiseToFetchOneClick
       .then(function(data: IOneClickTemplate) {
@@ -79,7 +92,13 @@ export default class OneClickAppConfigPage extends Component<
             "This is your app name. Pick a name such as my-first-1-click-app",
           validRegex: "/^([a-z0-9]+\\-)*[a-z0-9]+$/" // string version of /^([a-z0-9]+\-)*[a-z0-9]+$/
         });
-        self.setState({ apiData: data });
+
+        apiData = data;
+
+        return self.apiManager.getCaptainInfo();
+      })
+      .then(function(captainInfo) {
+        self.setState({ apiData: apiData, rootDomain: captainInfo.rootDomain });
       })
       .catch(Toaster.createCatcher());
   }
@@ -107,7 +126,7 @@ export default class OneClickAppConfigPage extends Component<
     return (
       <div>
         <Row type="flex" justify="center">
-          <Col  xs={{ span: 23 }} lg={{ span: 16 }}>
+          <Col xs={{ span: 23 }} lg={{ span: 16 }}>
             <Card title={`Setup your ${this.props.match.params.appName}`}>
               <h2>{this.props.match.params.appName}</h2>
               <p
@@ -123,9 +142,19 @@ export default class OneClickAppConfigPage extends Component<
               <OneClickVariablesSection
                 oneClickAppVariables={apiData.variables}
                 onNextClicked={values => {
+                  const template = Utils.copyObject(self.state.apiData!);
+                  const valuesAugmented = Utils.copyObject(values);
+
+                  template.variables.push({
+                    id: ONE_CLICK_ROOT_DOMAIN_VAR_NAME,
+                    label: "CapRover root domain"
+                  });
+                  valuesAugmented[ONE_CLICK_ROOT_DOMAIN_VAR_NAME] =
+                    self.state.rootDomain;
+
                   self.oneClickAppDeployHelper.startDeployProcess(
-                    self.state.apiData!,
-                    values
+                    template,
+                    valuesAugmented
                   );
                   DomUtils.scrollToTopBar();
                 }}

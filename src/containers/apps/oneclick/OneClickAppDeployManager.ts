@@ -18,6 +18,14 @@ export interface IDeploymentState {
   currentStep: number;
 }
 
+function replaceWith(
+  replaceThis: string,
+  withThis: string,
+  mainString: string
+) {
+  return mainString.split(replaceThis).join(withThis);
+}
+
 export default class OneClickAppDeployManager {
   private deploymentHelper: OneClickAppDeploymentHelper = new OneClickAppDeploymentHelper();
   private template: IOneClickTemplate | undefined;
@@ -38,9 +46,11 @@ export default class OneClickAppDeployManager {
 
     for (let index = 0; index < template.variables.length; index++) {
       const element = template.variables[index];
-      stringified = stringified
-        .split(element.id)
-        .join(values[element.id] || "");
+      stringified = replaceWith(
+        element.id,
+        values[element.id] || "",
+        stringified
+      );
     }
 
     try {
@@ -54,8 +64,8 @@ export default class OneClickAppDeployManager {
       return;
     }
 
-    // Dependency tree and sort apps
-    // Call createDeploymentStepPromises for all apps.
+    // Dependency tree and sort apps using "createAppsArrayInOrder"
+    // Call "createDeploymentStepPromises" for all apps.
     // populate steps as string[]
     // create promise chain with catch -> error. Each promise gets followed by currentStep++ promise
     // Start running promises,
@@ -77,9 +87,12 @@ export default class OneClickAppDeployManager {
     } else {
       const steps: IDeploymentStep[] = [];
       for (let index = 0; index < apps.length; index++) {
-        const element = apps[index];
+        const appToDeploy = apps[index];
         steps.push(
-          ...self.createDeploymentStepPromises(element.appName, element.service)
+          ...self.createDeploymentStepPromises(
+            appToDeploy.appName,
+            appToDeploy.service
+          )
         );
       }
 
@@ -132,7 +145,7 @@ export default class OneClickAppDeployManager {
    * Outputs an array which includes all services in order based on their dependencies.
    * The first element is an app without any dependencies. The second element can be an app that depends on the first app.
    */
-  createAppsArrayInOrder() {
+  private createAppsArrayInOrder() {
     const apps: {
       appName: string;
       service: IDockerComposeService;
@@ -187,7 +200,7 @@ export default class OneClickAppDeployManager {
     return apps;
   }
 
-  createDeploymentStepPromises(
+  private createDeploymentStepPromises(
     appName: string,
     dockerComposeService: IDockerComposeService
   ): IDeploymentStep[] {
