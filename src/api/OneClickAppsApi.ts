@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IOneClickAppIdentifier } from "../models/IOneClickAppModels";
 
-const BASE_URL = "https://oneclickapps.caprover.com/v1";
+const BASE_URL = "https://oneclickapps.caprover.com/v2";
 
 export default class OneClickAppsApi {
   getOneClickAppByName(appName: string) {

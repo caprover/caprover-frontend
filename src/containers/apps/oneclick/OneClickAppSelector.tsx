@@ -131,7 +131,7 @@ export default class OneClickAppSelector extends Component<
                 <Input.TextArea
                   className="code-input"
                   placeholder={`{
-  "captainVersion": "1",
+  "captainVersion": "2",
   "dockerCompose": {
       "services": {
           "$$cap_appname": {
