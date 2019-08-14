@@ -10,6 +10,7 @@ export default class ClickableLink extends Component<
   }
 
   render() {
+    // eslint-disable-next-line
     return <a onClick={e => this.handleClick(e)}>{this.props.children}</a>;
   }
 }

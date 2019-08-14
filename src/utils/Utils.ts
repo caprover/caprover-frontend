@@ -30,6 +30,7 @@ export default {
     try {
       isSafari =
         /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || //
+        // eslint-disable-next-line
         !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
     } catch (error) {
       // Don't let the error to ruin everything!
