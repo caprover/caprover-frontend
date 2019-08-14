@@ -6,7 +6,7 @@ import thunk from "redux-thunk";
 
 import "./App.css";
 
-import reducers from "./reducers";
+import reducers from "./redux/reducers";
 
 import PageRoot from "./containers/PageRoot";
 import Login from "./containers/Login";

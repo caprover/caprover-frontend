@@ -1,7 +1,7 @@
 import { Alert, message } from "antd";
 import React from "react";
 import { connect } from "react-redux";
-import { emitDefaultRegistryChanged } from "../../actions/DefaultRegistryActions";
+import { emitDefaultRegistryChanged } from "../../redux/actions/DefaultRegistryActions";
 import { IRegistryApi, IRegistryInfo, IRegistryTypes } from "../../models/IRegistryInfo";
 import Toaster from "../../utils/Toaster";
 import ApiComponent from "../global/ApiComponent";

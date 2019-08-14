@@ -1,7 +1,7 @@
 import { Button, Row } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { emitRootKeyChanged } from "../../actions/GlobalActions";
+import { emitRootKeyChanged } from "../../redux/actions/GlobalActions";
 
 class ErrorRetry extends Component<any, {}> {
   render() {

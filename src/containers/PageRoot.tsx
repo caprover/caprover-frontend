@@ -16,7 +16,7 @@ import OneClickAppConfigPage from "./apps/oneclick/OneClickAppConfigPage";
 import ApiComponent from "./global/ApiComponent";
 import Toaster from "../utils/Toaster";
 import { IVersionInfo } from "../models/IVersionInfo";
-import * as GlobalActions from "../actions/GlobalActions";
+import * as GlobalActions from "../redux/actions/GlobalActions";
 import { connect } from "react-redux";
 
 const { Header, Content, Sider } = Layout;
