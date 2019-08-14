@@ -175,7 +175,7 @@ class AppsTable extends Component<
                       }
                     >
                       <p>
-                        Persistant Data:{" "}
+                        Persistent Data:{" "}
                         {!hasPersistentData ? null : (
                           <span>
                             <Icon type="check" />

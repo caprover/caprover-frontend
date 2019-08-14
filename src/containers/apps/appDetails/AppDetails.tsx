@@ -1,4 +1,19 @@
-import { Affix, Button, Card, Checkbox, Col, Icon, Input, message, Modal, Popover, Row, Tabs, Tooltip } from "antd";
+import {
+  Affix,
+  Button,
+  Card,
+  Checkbox,
+  Col,
+  Icon,
+  Input,
+  message,
+  Modal,
+  Popover,
+  Row,
+  Tabs,
+  Tooltip,
+  Alert
+} from "antd";
 import React, { RefObject } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
@@ -67,6 +82,35 @@ class AppDetails extends ApiComponent<
 
   goBackToApps() {
     this.props.history.push("/apps");
+  }
+
+  openRenameAppDialog() {
+    const self = this;
+    const app = self.state.apiData!.appDefinition;
+    const tempVal = { newName: app.appName };
+    Modal.confirm({
+      title: "Rename the app:",
+      content: (
+        <div>
+          <Alert
+            type="warning"
+            message="If other apps use the current name to communicate with this app, make sure to update them as well to avoid problems."
+          />
+          <Input
+            style={{ marginTop: 15 }}
+            placeholder="app-name-here"
+            defaultValue={app.appName}
+            onChange={e => {
+              tempVal.newName = (e.target.value || "").trim();
+            }}
+          />
+        </div>
+      ),
+      onOk() {
+        const changed = app.appName !== tempVal.newName;
+        if (changed && tempVal.newName) self.renameAppTo(tempVal.newName);
+      }
+    });
   }
 
   viewDescription() {
@@ -223,6 +267,21 @@ class AppDetails extends ApiComponent<
     });
   }
 
+  renameAppTo(newName: string) {
+    const self = this;
+    const appDef = Utils.copyObject(self.state.apiData!.appDefinition);
+    self.setState({ isLoading: true });
+    this.apiManager
+      .renameApp(appDef.appName!, newName)
+      .then(function() {
+        return self.reFetchData();
+      })
+      .catch(Toaster.createCatcher())
+      .then(function() {
+        self.setState({ isLoading: false });
+      });
+  }
+
   onUpdateConfigAndSave() {
     const self = this;
     const appDef = Utils.copyObject(self.state.apiData!.appDefinition);
@@ -272,8 +331,14 @@ class AppDetails extends ApiComponent<
             }
             title={
               <span>
+                <ClickableLink onLinkClicked={() => self.openRenameAppDialog()}>
+                  <Tooltip title="Rename app" placement="bottom">
+                    <Icon type="edit" />
+                  </Tooltip>
+                </ClickableLink>
+                &nbsp;&nbsp;
                 {app.appName}
-                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <ClickableLink onLinkClicked={() => self.viewDescription()}>
                   <Popover
                     placement="bottom"
@@ -284,7 +349,7 @@ class AppDetails extends ApiComponent<
                     }
                     title="App description"
                   >
-                    <Icon type="edit" />
+                    <Icon type="read" />
                   </Popover>
                 </ClickableLink>
               </span>

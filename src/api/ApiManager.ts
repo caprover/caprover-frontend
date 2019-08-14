@@ -199,6 +199,18 @@ export default class ApiManager {
       );
   }
 
+  renameApp(oldAppName: string, newAppName: string) {
+    const http = this.http;
+
+    return Promise.resolve() //
+      .then(
+        http.fetch(http.POST, "/user/apps/appDefinitions/rename", {
+          oldAppName,
+          newAppName
+        })
+      );
+  }
+
   registerNewApp(appName: string, hasPersistentData: boolean) {
     const http = this.http;
 
