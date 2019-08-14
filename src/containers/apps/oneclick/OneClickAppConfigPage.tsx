@@ -77,7 +77,9 @@ export default class OneClickAppConfigPage extends ApiComponent<
       .then(function(data: IOneClickTemplate) {
         if ((data.captainVersion || "").toString() !== "1") {
           message.error(
-            "One-Click App version does not match! Create a GitHub issue please!"
+            `One-click app version is ${
+              data.captainVersion
+            }, current support is "1". Make sure your CapRover is up-to-date with the latest version!!`
           );
           return;
         }
