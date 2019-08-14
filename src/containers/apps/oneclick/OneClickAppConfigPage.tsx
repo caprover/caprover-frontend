@@ -1,6 +1,6 @@
 import { Card, Col, message, Row } from "antd";
 import queryString from "query-string";
-import React, { Component } from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router";
 import OneClickAppsApi from "../../../api/OneClickAppsApi";
 import { IOneClickTemplate } from "../../../models/IOneClickAppModels";
@@ -17,7 +17,6 @@ import {
 } from "./OneClickAppSelector";
 import OneClickVariablesSection from "./OneClickVariablesSection";
 import Utils from "../../../utils/Utils";
-import ApiManager from "../../../api/ApiManager";
 import ApiComponent from "../../global/ApiComponent";
 
 export const ONE_CLICK_APP_NAME_VAR_NAME = "$$cap_appname";
@@ -63,7 +62,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
     const appNameFromPath = this.props.match.params.appName;
     let promiseToFetchOneClick =
       appNameFromPath === TEMPLATE_ONE_CLICK_APP
-        ? new Promise<any>(function(resolve, reject) {
+        ? new Promise<any>(function(resolve) {
             resolve(
               JSON.parse(queryString.parse(self.props.location.search)[
                 ONE_CLICK_APP_STRINGIFIED_KEY
