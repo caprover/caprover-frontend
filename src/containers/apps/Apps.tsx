@@ -39,7 +39,7 @@ export default class Apps extends ApiComponent<
     Promise.resolve() //
       .then(function() {
         self.setState({ isLoading: true });
-        return self.apiManager.registerNewApp(appName, hasPersistentData);
+        return self.apiManager.registerNewApp(appName, hasPersistentData, true);
       })
       .then(function() {
         return self.reFetchData();

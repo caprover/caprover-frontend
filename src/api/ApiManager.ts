@@ -211,15 +211,24 @@ export default class ApiManager {
       );
   }
 
-  registerNewApp(appName: string, hasPersistentData: boolean) {
+  registerNewApp(
+    appName: string,
+    hasPersistentData: boolean,
+    detached: boolean
+  ) {
     const http = this.http;
 
     return Promise.resolve() //
       .then(
-        http.fetch(http.POST, "/user/apps/appDefinitions/register", {
-          appName,
-          hasPersistentData
-        })
+        http.fetch(
+          http.POST,
+          "/user/apps/appDefinitions/register" +
+            (detached ? "?detached=1" : ""),
+          {
+            appName,
+            hasPersistentData
+          }
+        )
       );
   }
 

@@ -15,7 +15,8 @@ export default class OneClickAppDeploymentHelper {
     return Promise.resolve().then(function() {
       return self.apiManager.registerNewApp(
         appName,
-        !!dockerComposeService.volumes && !!dockerComposeService.volumes.length
+        !!dockerComposeService.volumes && !!dockerComposeService.volumes.length,
+        false
       );
     });
   }
