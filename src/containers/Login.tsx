@@ -101,6 +101,7 @@ class NormalLoginForm extends React.Component<any, any> {
             <Input.Password
               prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
               placeholder="Password"
+              autoFocus
             />
           )}
         </FormItem>
