@@ -27,3 +27,11 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
+
+
+### Contribution
+
+Thanks for contributing to the frontend code! Since contributors list for CapRover automatically picks up the contributors from the main backend repo, please make a minor update the frontend commit in the dockerfile, so your name will get displayed on the main page as a contributor.
+
+https://github.com/caprover/caprover/blob/master/dockerfile-captain.release#L18
+
