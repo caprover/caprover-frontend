@@ -42,9 +42,17 @@ https://github.com/caprover/caprover/blob/master/dockerfile-captain.release#L18
 
 
 
+## Learn More!
+
+For more details and documentation, please visit https://CapRover.com/
 
 
 
+## Backers
+
+Thank you to all our backers! 🙏 
+
+[![Donate](https://opencollective.com/caprover/donate/button.png?color=blue)](https://opencollective.com/caprover#backer)
 
 
 
