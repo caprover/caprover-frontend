@@ -25,7 +25,7 @@ export default class Deployment extends ApiComponent<
       | undefined;
   }
 > {
-  initialRepoData: string;
+  initRepoInfo: string;
 
   constructor(props: AppDetailsTabProps) {
     super(props);
@@ -37,7 +37,7 @@ export default class Deployment extends ApiComponent<
     };
 
     const { appPushWebhook } = props.apiData.appDefinition;
-    this.initialRepoData = JSON.stringify(appPushWebhook 
+    this.initRepoInfo = JSON.stringify(appPushWebhook 
       ? appPushWebhook.repoInfo 
       : {
           user: "",
@@ -256,7 +256,7 @@ export default class Deployment extends ApiComponent<
             Force Build
           </Button>
           <Button
-            disabled={JSON.stringify(repoInfo) === self.initialRepoData}
+            disabled={JSON.stringify(repoInfo) === self.initRepoInfo}
             type="primary"
             style={{ marginTop: this.props.isMobile ? 15 : 0 }}
             block={this.props.isMobile}
