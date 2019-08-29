@@ -25,7 +25,9 @@ export default class Deployment extends ApiComponent<
       | undefined;
   }
 > {
-  constructor(props: any) {
+  initialRepoData: string;
+
+  constructor(props: AppDetailsTabProps) {
     super(props);
     this.state = {
       dummyVar: undefined,
@@ -33,6 +35,17 @@ export default class Deployment extends ApiComponent<
       updatedVersions: undefined,
       buildLogRecreationId: ""
     };
+
+    const { appPushWebhook } = props.apiData.appDefinition;
+    this.initialRepoData = JSON.stringify(appPushWebhook 
+      ? appPushWebhook.repoInfo 
+      : {
+          user: "",
+          password: "",
+          branch: "",
+          sshKey: "",
+          repo: ""
+        });
   }
 
   onUploadSuccess() {
@@ -243,7 +256,7 @@ export default class Deployment extends ApiComponent<
             Force Build
           </Button>
           <Button
-            disabled={!repoInfo.repo}
+            disabled={JSON.stringify(repoInfo) === self.initialRepoData}
             type="primary"
             style={{ marginTop: this.props.isMobile ? 15 : 0 }}
             block={this.props.isMobile}
