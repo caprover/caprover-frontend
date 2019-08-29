@@ -37,8 +37,7 @@ export default class AddNode extends Component<
   }
 
   render() {
-    const self = this;
-    const nodeToAdd = self.state.nodeToAdd;
+    const nodeToAdd = this.state.nodeToAdd;
 
     return (
       <div>
@@ -52,7 +51,7 @@ export default class AddNode extends Component<
                 type="text"
                 value={nodeToAdd.remoteNodeIpAddress}
                 onChange={e =>
-                  self.changeModel("remoteNodeIpAddress", e.target.value)
+                  this.changeModel("remoteNodeIpAddress", e.target.value)
                 }
               />
             </Col>
@@ -64,7 +63,7 @@ export default class AddNode extends Component<
                 type="text"
                 value={nodeToAdd.captainIpAddress}
                 onChange={e =>
-                  self.changeModel("captainIpAddress", e.target.value)
+                  this.changeModel("captainIpAddress", e.target.value)
                 }
               />
             </Col>
@@ -78,7 +77,7 @@ export default class AddNode extends Component<
                 rows={6}
                 placeholder="-----BEGIN RSA PRIVATE KEY-----&#10;MIICWwIBAAKBgQDArfs81aizq8ckg16e+ewFgJg7J..."
                 value={nodeToAdd.privateKey}
-                onChange={e => self.changeModel("privateKey", e.target.value)}
+                onChange={e => this.changeModel("privateKey", e.target.value)}
               />
             </Col>
           </Row>
@@ -88,7 +87,7 @@ export default class AddNode extends Component<
               buttonStyle="outline"
               style={{ marginBottom: 20 }}
               value={nodeToAdd.nodeType}
-              onChange={e => self.changeModel("nodeType", e.target.value)}
+              onChange={e => this.changeModel("nodeType", e.target.value)}
             >
               <Radio.Button value="worker">Join as worker node</Radio.Button>
               <Radio.Button value="manager">Join as manager node</Radio.Button>
@@ -106,7 +105,7 @@ export default class AddNode extends Component<
             <Button
               type="primary"
               block={this.props.isMobile}
-              onClick={() => self.props.onAddNodeClicked(self.state.nodeToAdd)}
+              onClick={() => this.props.onAddNodeClicked(this.state.nodeToAdd)}
             >
               <Icon type="cluster" /> &nbsp; Join Cluster
             </Button>

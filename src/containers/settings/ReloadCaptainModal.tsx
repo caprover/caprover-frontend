@@ -17,22 +17,20 @@ export default class ReloadCaptainModal extends Component<
   }
 
   startTimer() {
-    const self = this;
-    self.setState({ timeToRefresh: 30 });
-    setInterval(function() {
-      if (self.state.timeToRefresh < 2) {
+    this.setState({ timeToRefresh: 30 });
+    setInterval(() => {
+      if (this.state.timeToRefresh < 2) {
         window.location.reload(true);
         return;
       }
-      self.setState({ timeToRefresh: self.state.timeToRefresh - 1 });
+      this.setState({ timeToRefresh: this.state.timeToRefresh - 1 });
     }, 1000);
   }
 
   render() {
-    const self = this;
-    if (self.props.isRefreshTimerActivated && !this.hasAlreadyActivated) {
+    if (this.props.isRefreshTimerActivated && !this.hasAlreadyActivated) {
       this.hasAlreadyActivated = true;
-      setTimeout(() => self.startTimer(), 10);
+      setTimeout(() => this.startTimer(), 10);
     }
 
     return (
@@ -41,10 +39,10 @@ export default class ReloadCaptainModal extends Component<
           closable={false}
           footer={<div />}
           title="Update Process Started"
-          visible={self.state.timeToRefresh > 0}
+          visible={this.state.timeToRefresh > 0}
         >
           <div>
-            {self.props.children}
+            {this.props.children}
             <p>
               <b>Time to Refresh: </b>
               {this.state.timeToRefresh}

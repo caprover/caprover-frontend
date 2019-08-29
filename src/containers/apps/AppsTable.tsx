@@ -26,7 +26,6 @@ class AppsTable extends Component<
   }
 
   createColumns(): ColumnProps<IAppDef>[] {
-    const self = this;
     const ALIGN: "center" = "center";
     return [
       {
@@ -34,7 +33,7 @@ class AppsTable extends Component<
         dataIndex: "appName",
         key: "appName",
         render: (appName: string) => (
-          <ClickableLink onLinkClicked={() => self.onAppClicked(appName)}>
+          <ClickableLink onLinkClicked={() => this.onAppClicked(appName)}>
             {appName}
           </ClickableLink>
         ),
@@ -102,7 +101,7 @@ class AppsTable extends Component<
                 "://" +
                 app.appName +
                 "." +
-                self.props.rootDomain
+                this.props.rootDomain
               }
               target="_blank"
               rel="noopener noreferrer"
@@ -116,12 +115,10 @@ class AppsTable extends Component<
   }
 
   render() {
-    const self = this;
+    const appsToRender = this.props.apps.filter(app => {
+      if (!this.state.searchTerm) return true;
 
-    const appsToRender = self.props.apps.filter(app => {
-      if (!self.state.searchTerm) return true;
-
-      return app.appName!.indexOf(self.state.searchTerm) >= 0;
+      return app.appName!.indexOf(this.state.searchTerm) >= 0;
     });
 
     const searchAppInput = (
@@ -129,7 +126,7 @@ class AppsTable extends Component<
         placeholder="Search by Name"
         type="text"
         onChange={event =>
-          self.setState({
+          this.setState({
             searchTerm: (event.target.value || "").trim()
           })
         }
@@ -140,7 +137,7 @@ class AppsTable extends Component<
       <Row type="flex" justify="center">
         <Col xs={{ span: 23 }} lg={{ span: 16 }} style={{ paddingBottom: 300 }}>
           <Card
-            extra={!!!self.props.isMobile && searchAppInput}
+            extra={!!!this.props.isMobile && searchAppInput}
             title={
               <React.Fragment>
                 <span>
@@ -148,12 +145,12 @@ class AppsTable extends Component<
                   &nbsp;&nbsp;&nbsp;Your Apps
                 </span>
                 <br />
-                {self.props.isMobile && searchAppInput}
+                {this.props.isMobile && searchAppInput}
               </React.Fragment>
             }
           >
             <Row>
-              {self.props.isMobile ? (
+              {this.props.isMobile ? (
                 appsToRender.map(
                   ({
                     appName = "",
@@ -168,7 +165,7 @@ class AppsTable extends Component<
                       key={appName}
                       extra={
                         <ClickableLink
-                          onLinkClicked={() => self.onAppClicked(appName)}
+                          onLinkClicked={() => this.onAppClicked(appName)}
                         >
                           Details
                         </ClickableLink>
@@ -201,7 +198,7 @@ class AppsTable extends Component<
                               "://" +
                               appName +
                               "." +
-                              self.props.rootDomain
+                              this.props.rootDomain
                             }
                             target="_blank"
                             rel="noopener noreferrer"
@@ -216,7 +213,7 @@ class AppsTable extends Component<
               ) : (
                 <Table<IAppDef>
                   rowKey="appName"
-                  columns={self.createColumns()}
+                  columns={this.createColumns()}
                   dataSource={appsToRender}
                   pagination={false}
                   size="middle"
@@ -230,7 +227,7 @@ class AppsTable extends Component<
   }
 }
 
-function mapStateToProps(state: any) {
+const mapStateToProps = (state: any) => {
   return {
     isMobile: state.globalReducer.isMobile
   };

@@ -42,96 +42,92 @@ export default class HttpSettings extends Component<
   }
 
   enableDefaultHttps() {
-    const self = this;
     this.props.setLoading(true);
 
     return Promise.resolve()
-      .then(function() {
-        return self.props.apiManager.enableSslForBaseDomain(
-          self.props.apiData!.appDefinition.appName!
+      .then(() => {
+        return this.props.apiManager.enableSslForBaseDomain(
+          this.props.apiData!.appDefinition.appName!
         );
       })
-      .then(function() {
+      .then(() => {
         message.success("HTTPS is now enabled for your app");
       })
-      .then(function() {
-        self.reFetchData();
+      .then(() => {
+        this.reFetchData();
       })
       .catch(
-        Toaster.createCatcher(function() {
-          self.props.setLoading(false);
+        Toaster.createCatcher(() => {
+          this.props.setLoading(false);
         })
       );
   }
 
   onConnectNewDomainClicked(newDomain: string) {
-    const self = this;
     this.props.setLoading(true);
 
     return Promise.resolve()
-      .then(function() {
-        return self.props.apiManager.attachNewCustomDomainToApp(
-          self.props.apiData!.appDefinition.appName!,
+      .then(() => {
+        return this.props.apiManager.attachNewCustomDomainToApp(
+          this.props.apiData!.appDefinition.appName!,
           newDomain
         );
       })
-      .then(function() {
+      .then(() => {
         message.success("New domain is now successfully connected!");
       })
-      .then(function() {
-        self.reFetchData();
+      .then(() => {
+        this.reFetchData();
       })
       .catch(
-        Toaster.createCatcher(function() {
-          self.props.setLoading(false);
+        Toaster.createCatcher(() => {
+          this.props.setLoading(false);
         })
       );
   }
 
   onEnableCustomDomainSslClicked(customDomain: string) {
-    const self = this;
     this.props.setLoading(true);
 
     return Promise.resolve()
-      .then(function() {
-        return self.props.apiManager.enableSslForCustomDomain(
-          self.props.apiData!.appDefinition.appName!,
+      .then(() => {
+        return this.props.apiManager.enableSslForCustomDomain(
+          this.props.apiData!.appDefinition.appName!,
           customDomain
         );
       })
-      .then(function() {
+      .then(() => {
         message.success("HTTPS is successfully activated for your domain!");
       })
-      .then(function() {
-        self.reFetchData();
+      .then(() => {
+        this.reFetchData();
       })
       .catch(
-        Toaster.createCatcher(function() {
-          self.props.setLoading(false);
+        Toaster.createCatcher(() => {
+          this.props.setLoading(false);
         })
       );
   }
 
   onRemoveCustomDomainClicked(customDomain: string) {
-    const self = this;
     this.props.setLoading(true);
 
     return Promise.resolve()
-      .then(function() {
-        return self.props.apiManager.removeCustomDomain(
-          self.props.apiData!.appDefinition.appName!,
+      .then(() => {
+        return this.props.apiManager.removeCustomDomain(
+          this.props.apiData!.appDefinition.appName!,
           customDomain
         );
       })
-      .then(function() {
+      .then(() => {
         message.success("Your custom domain is successfully removed!");
       })
-      .then(function() {
-        self.reFetchData();
+      .then(() => {
+        this.reFetchData();
       })
       .catch(
-        Toaster.createCatcher(function() {
-          self.props.setLoading(false);
+        Toaster.createCatcher(() => {
+          this.props.setLoading(false);
         })
       );
   }
@@ -233,11 +229,10 @@ export default class HttpSettings extends Component<
   }
 
   createHttpDetailsSettingsContent() {
-    const self = this;
     const app = this.props.apiData!.appDefinition;
     const rootDomain = this.props.apiData!.rootDomain;
-    const basicAuthUsername = self.props.apiData.appDefinition.httpAuth
-      ? self.props.apiData.appDefinition.httpAuth.user
+    const basicAuthUsername = this.props.apiData.appDefinition.httpAuth
+      ? this.props.apiData.appDefinition.httpAuth.user
       : "";
 
     return (
@@ -399,7 +394,7 @@ export default class HttpSettings extends Component<
           <Button
             style={{ marginRight: 20 }}
             type="default"
-            onClick={() => self.onEditHttpAuthClicked()}
+            onClick={() => this.onEditHttpAuthClicked()}
           >
             Edit HTTP Basic Auth
           </Button>
@@ -416,20 +411,19 @@ export default class HttpSettings extends Component<
   }
 
   onEditHttpAuthClicked() {
-    const self = this;
     const IGNORE = "IGNORE";
     const CONFIRM = "CONFIRM";
 
-    const auth = self.props.apiData.appDefinition.httpAuth;
+    const auth = this.props.apiData.appDefinition.httpAuth;
 
-    self.setState({
+    this.setState({
       dialogHttpPass: auth ? auth.password || "" : "",
       dialogHttpUser: auth ? auth.user || "" : ""
     });
 
     Promise.resolve()
-      .then(function() {
-        return new Promise(function(resolve, reject) {
+      .then(() => {
+        return new Promise((resolve, reject) => {
           Modal.confirm({
             title: "Edit HTTP Basic Auth",
             content: (
@@ -447,9 +441,9 @@ export default class HttpSettings extends Component<
                   <Input
                     placeholder="username"
                     type="text"
-                    defaultValue={self.state.dialogHttpUser}
+                    defaultValue={this.state.dialogHttpUser}
                     onChange={event =>
-                      self.setState({
+                      this.setState({
                         dialogHttpUser: (event.target.value || "").trim()
                       })
                     }
@@ -459,9 +453,9 @@ export default class HttpSettings extends Component<
                   <Input
                     placeholder="password"
                     type="text"
-                    defaultValue={self.state.dialogHttpPass}
+                    defaultValue={this.state.dialogHttpPass}
                     onChange={event =>
-                      self.setState({
+                      this.setState({
                         dialogHttpPass: (event.target.value || "").trim()
                       })
                     }
@@ -478,12 +472,12 @@ export default class HttpSettings extends Component<
           });
         });
       })
-      .then(function(data: any) {
+      .then((data: any) => {
         if (data === IGNORE) return;
 
-        const newApiData = Utils.copyObject(self.props.apiData);
-        const enteredUser = self.state.dialogHttpUser;
-        const enteredPassword = self.state.dialogHttpPass;
+        const newApiData = Utils.copyObject(this.props.apiData);
+        const enteredUser = this.state.dialogHttpUser;
+        const enteredPassword = this.state.dialogHttpPass;
 
         if (!enteredUser || !enteredPassword) {
           newApiData.appDefinition.httpAuth = undefined;
@@ -495,12 +489,12 @@ export default class HttpSettings extends Component<
           newApiData.appDefinition.httpAuth.password = enteredPassword;
         }
 
-        self.props.updateApiData(newApiData);
+        this.props.updateApiData(newApiData);
 
         // Make sure state is saved!
         return Utils.getDelayedPromise(300) //
-          .then(function() {
-            self.props.onUpdateConfigAndSave();
+          .then(() => {
+            this.props.onUpdateConfigAndSave();
           });
       });
   }

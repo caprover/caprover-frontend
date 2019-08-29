@@ -85,8 +85,7 @@ class AppDetails extends ApiComponent<
   }
 
   openRenameAppDialog() {
-    const self = this;
-    const app = self.state.apiData!.appDefinition;
+    const app = this.state.apiData!.appDefinition;
     const tempVal = { newName: app.appName };
     Modal.confirm({
       title: "Rename the app:",
@@ -106,16 +105,15 @@ class AppDetails extends ApiComponent<
           />
         </div>
       ),
-      onOk() {
+      onOk:() => {
         const changed = app.appName !== tempVal.newName;
-        if (changed && tempVal.newName) self.renameAppTo(tempVal.newName);
+        if (changed && tempVal.newName) this.renameAppTo(tempVal.newName);
       }
     });
   }
 
   viewDescription() {
-    const self = this;
-    const app = self.state.apiData!.appDefinition;
+    const app = this.state.apiData!.appDefinition;
     const tempVal = { tempDescription: app.description };
     Modal.confirm({
       title: "App Description:",
@@ -132,29 +130,28 @@ class AppDetails extends ApiComponent<
           />
         </div>
       ),
-      onOk() {
+      onOk: () => {
         const changed = app.description !== tempVal.tempDescription;
         app.description = tempVal.tempDescription;
-        if (changed) self.onUpdateConfigAndSave();
+        if (changed) this.onUpdateConfigAndSave();
       }
     });
   }
 
   onDeleteAppClicked() {
-    const self = this;
-    const appDef = Utils.copyObject(self.state.apiData!.appDefinition);
+    const appDef = Utils.copyObject(this.state.apiData!.appDefinition);
 
-    self.confirmedAppNameToDelete = "";
+    this.confirmedAppNameToDelete = "";
 
     const allVolumes: string[] = [];
 
-    self.volumesToDelete = {};
+    this.volumesToDelete = {};
 
     if (appDef.volumes) {
       appDef.volumes.forEach(v => {
         if (v.volumeName) {
           allVolumes.push(v.volumeName);
-          self.volumesToDelete[v.volumeName] = true;
+          this.volumesToDelete[v.volumeName] = true;
         }
       });
     }
@@ -179,9 +176,9 @@ class AppDetails extends ApiComponent<
             return (
               <div key={v}>
                 <Checkbox
-                  defaultChecked={!!self.volumesToDelete[v]}
+                  defaultChecked={!!this.volumesToDelete[v]}
                   onChange={(e: any) => {
-                    self.volumesToDelete[v] = !self.volumesToDelete[v];
+                    this.volumesToDelete[v] = !this.volumesToDelete[v];
                   }}
                 >
                   {v}
@@ -197,28 +194,28 @@ class AppDetails extends ApiComponent<
             type="text"
             placeholder={appDef.appName}
             onChange={e => {
-              self.confirmedAppNameToDelete = e.target.value.trim();
+              this.confirmedAppNameToDelete = e.target.value.trim();
             }}
           />
         </div>
       ),
-      onOk() {
-        if (self.confirmedAppNameToDelete !== appDef.appName) {
+      onOk: () => {
+        if (this.confirmedAppNameToDelete !== appDef.appName) {
           message.warning("App name did not match. Operation cancelled.");
           return;
         }
 
         const volumes: string[] = [];
-        Object.keys(self.volumesToDelete).forEach(v => {
-          if (self.volumesToDelete[v]) {
+        Object.keys(this.volumesToDelete).forEach(v => {
+          if (this.volumesToDelete[v]) {
             volumes.push(v);
           }
         });
 
-        self.setState({ isLoading: true });
-        self.apiManager
+        this.setState({ isLoading: true });
+        this.apiManager
           .deleteApp(appDef.appName!, volumes)
-          .then(function(data) {
+          .then((data) => {
             const volumesFailedToDelete = data.volumesFailedToDelete as string[];
             if (volumesFailedToDelete && volumesFailedToDelete.length) {
               Modal.info({
@@ -252,12 +249,12 @@ class AppDetails extends ApiComponent<
             }
             message.success("App deleted!");
           })
-          .then(function() {
-            self.goBackToApps();
+          .then(() => {
+            this.goBackToApps();
           })
           .catch(
-            Toaster.createCatcher(function() {
-              self.setState({ isLoading: false });
+            Toaster.createCatcher(() => {
+              this.setState({ isLoading: false });
             })
           );
       },
@@ -268,62 +265,59 @@ class AppDetails extends ApiComponent<
   }
 
   renameAppTo(newName: string) {
-    const self = this;
-    const appDef = Utils.copyObject(self.state.apiData!.appDefinition);
-    self.setState({ isLoading: true });
+    const appDef = Utils.copyObject(this.state.apiData!.appDefinition);
+    this.setState({ isLoading: true });
     this.apiManager
       .renameApp(appDef.appName!, newName)
-      .then(function() {
-        return self.reFetchData();
+      .then(() => {
+        return this.reFetchData();
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   onUpdateConfigAndSave() {
-    const self = this;
-    const appDef = Utils.copyObject(self.state.apiData!.appDefinition);
-    self.setState({ isLoading: true });
+    const appDef = Utils.copyObject(this.state.apiData!.appDefinition);
+    this.setState({ isLoading: true });
     this.apiManager
       .updateConfigAndSave(appDef.appName!, appDef)
-      .then(function() {
-        return self.reFetchData();
+      .then(() => {
+        return this.reFetchData();
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   render() {
-    const self = this;
 
-    if (self.state.isLoading) {
+    if (this.state.isLoading) {
       return <CenteredSpinner />;
     }
 
-    if (!self.reRenderTriggered) {
+    if (!this.reRenderTriggered) {
       //crazy hack to make sure the Affix is showing (delete and save & update)
-      self.reRenderTriggered = true;
-      setTimeout(function() {
-        self.setState({ renderCounterForAffixBug: 1 });
+      this.reRenderTriggered = true;
+      setTimeout(() => {
+        this.setState({ renderCounterForAffixBug: 1 });
       }, 50);
     }
 
-    if (!self.state.apiData) {
+    if (!this.state.apiData) {
       return <ErrorRetry />;
     }
 
-    const app = self.state.apiData.appDefinition;
+    const app = this.state.apiData.appDefinition;
 
     return (
       <Row>
         <Col span={20} offset={2}>
           <Card
             extra={
-              <ClickableLink onLinkClicked={() => self.goBackToApps()}>
+              <ClickableLink onLinkClicked={() => this.goBackToApps()}>
                 <Tooltip title="Close">
                   <Icon type="close" />
                 </Tooltip>
@@ -331,7 +325,7 @@ class AppDetails extends ApiComponent<
             }
             title={
               <span>
-                <ClickableLink onLinkClicked={() => self.openRenameAppDialog()}>
+                <ClickableLink onLinkClicked={() => this.openRenameAppDialog()}>
                   <Tooltip title="Rename app" placement="bottom">
                     <Icon type="edit" />
                   </Tooltip>
@@ -339,7 +333,7 @@ class AppDetails extends ApiComponent<
                 &nbsp;&nbsp;
                 {app.appName}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <ClickableLink onLinkClicked={() => self.viewDescription()}>
+                <ClickableLink onLinkClicked={() => this.viewDescription()}>
                   <Popover
                     placement="bottom"
                     content={
@@ -358,7 +352,7 @@ class AppDetails extends ApiComponent<
             <Tabs
               defaultActiveKey={WEB_SETTINGS}
               onChange={key => {
-                self.setState({ activeTabKey: key });
+                this.setState({ activeTabKey: key });
               }}
             >
               <TabPane
@@ -374,7 +368,7 @@ class AppDetails extends ApiComponent<
                   updateApiData={(newData: any) =>
                     this.setState({ apiData: newData })
                   }
-                  onUpdateConfigAndSave={() => self.onUpdateConfigAndSave()}
+                  onUpdateConfigAndSave={() => this.onUpdateConfigAndSave()}
                 />
               </TabPane>
               <TabPane
@@ -390,7 +384,7 @@ class AppDetails extends ApiComponent<
                   updateApiData={(newData: any) =>
                     this.setState({ apiData: newData })
                   }
-                  onUpdateConfigAndSave={() => self.onUpdateConfigAndSave()}
+                  onUpdateConfigAndSave={() => this.onUpdateConfigAndSave()}
                 />
               </TabPane>
               <TabPane
@@ -403,7 +397,7 @@ class AppDetails extends ApiComponent<
                   reFetchData={() => this.reFetchData()}
                   apiData={this.state.apiData!}
                   apiManager={this.apiManager}
-                  onUpdateConfigAndSave={() => self.onUpdateConfigAndSave()}
+                  onUpdateConfigAndSave={() => this.onUpdateConfigAndSave()}
                   updateApiData={(newData: any) =>
                     this.setState({ apiData: newData })
                   }
@@ -415,13 +409,13 @@ class AppDetails extends ApiComponent<
             <Affix
               offsetBottom={10}
               target={() => {
-                const newLocal = self.props.mainContainer;
+                const newLocal = this.props.mainContainer;
                 return newLocal && newLocal.current ? newLocal.current : window;
               }}
             >
               <div
                 className={
-                  self.state.activeTabKey === DEPLOYMENT ? "hide-on-demand" : ""
+                  this.state.activeTabKey === DEPLOYMENT ? "hide-on-demand" : ""
                 }
                 style={{
                   borderRadius: 8,
@@ -434,12 +428,12 @@ class AppDetails extends ApiComponent<
                   <Col span={8}>
                     <div style={{ textAlign: "center" }}>
                       <Button
-                        style={{ minWidth: self.props.isMobile ? 35 : 135 }}
+                        style={{ minWidth: this.props.isMobile ? 35 : 135 }}
                         type="danger"
                         size="large"
-                        onClick={() => self.onDeleteAppClicked()}
+                        onClick={() => this.onDeleteAppClicked()}
                       >
-                        {self.props.isMobile ? (
+                        {this.props.isMobile ? (
                           <Icon type="delete" />
                         ) : (
                           "Delete App"
@@ -450,12 +444,12 @@ class AppDetails extends ApiComponent<
                   <Col span={8}>
                     <div style={{ textAlign: "center" }}>
                       <Button
-                        style={{ minWidth: self.props.isMobile ? 35 : 135 }}
+                        style={{ minWidth: this.props.isMobile ? 35 : 135 }}
                         type="primary"
                         size="large"
-                        onClick={() => self.onUpdateConfigAndSave()}
+                        onClick={() => this.onUpdateConfigAndSave()}
                       >
-                        {self.props.isMobile ? (
+                        {this.props.isMobile ? (
                           <Icon type="save" />
                         ) : (
                           "Save & Update"
@@ -477,15 +471,14 @@ class AppDetails extends ApiComponent<
   }
 
   reFetchData() {
-    const self = this;
-    self.setState({ isLoading: true });
+    this.setState({ isLoading: true });
     return this.apiManager
       .getAllApps()
-      .then(function(data: any) {
+      .then((data: any) => {
         for (let index = 0; index < data.appDefinitions.length; index++) {
           const element = data.appDefinitions[index];
-          if (element.appName === self.props.match.params.appName) {
-            self.setState({
+          if (element.appName === this.props.match.params.appName) {
+            this.setState({
               isLoading: false,
               apiData: {
                 appDefinition: element,
@@ -498,16 +491,16 @@ class AppDetails extends ApiComponent<
         }
 
         // App Not Found!
-        self.goBackToApps();
+        this.goBackToApps();
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 }
 
-function mapStateToProps(state: any) {
+const mapStateToProps = (state: any) => {
   return {
     isMobile: state.globalReducer.isMobile
   };

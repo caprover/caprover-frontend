@@ -28,16 +28,15 @@ class NetDataInfo extends ApiComponent<
   }
 
   refetchData() {
-    const self = this;
-    self.setState({ isLoading: true, apiData: undefined });
+    this.setState({ isLoading: true, apiData: undefined });
     return this.apiManager
       .getNetDataInfo()
-      .then(function(data) {
-        self.setState({ apiData: data });
+      .then((data) => {
+        this.setState({ apiData: data });
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
@@ -48,11 +47,10 @@ class NetDataInfo extends ApiComponent<
   }
 
   onUpdateNetDataClicked(netDataInfo: any) {
-    const self = this;
-    self.setState({ isLoading: true });
+    this.setState({ isLoading: true });
     return this.apiManager
       .updateNetDataInfo(netDataInfo)
-      .then(function() {
+      .then(() => {
         message.success(
           netDataInfo.isEnabled
             ? "NetData is started and updated!"
@@ -60,14 +58,12 @@ class NetDataInfo extends ApiComponent<
         );
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.refetchData();
+      .then(() => {
+        this.refetchData();
       });
   }
 
   render() {
-    const self = this;
-
     if (this.state.isLoading) {
       return <CenteredSpinner />;
     }
@@ -89,7 +85,7 @@ class NetDataInfo extends ApiComponent<
               <div className={netDataInfo.isEnabled ? "hide-on-demand" : ""}>
                 <Row type="flex" justify="end">
                   <Button
-                    onClick={() => self.toggleNetDataClicked(true)}
+                    onClick={() => this.toggleNetDataClicked(true)}
                     type="primary"
                   >
                     <span>
@@ -104,11 +100,11 @@ class NetDataInfo extends ApiComponent<
                 <Row type="flex" justify="end" gutter={20}>
                   <Button
                     style={{
-                      marginRight: self.props.isMobile ? 0 : 40,
-                      marginBottom: self.props.isMobile ? 8 : 0
+                      marginRight: this.props.isMobile ? 0 : 40,
+                      marginBottom: this.props.isMobile ? 8 : 0
                     }}
-                    block={self.props.isMobile}
-                    onClick={() => self.toggleNetDataClicked(false)}
+                    block={this.props.isMobile}
+                    onClick={() => this.toggleNetDataClicked(false)}
                     type="danger"
                   >
                     <span>
@@ -124,8 +120,8 @@ class NetDataInfo extends ApiComponent<
                     style={{ width: this.props.isMobile ? "100%" : "auto" }}
                   >
                     <Button
-                      block={self.props.isMobile}
-                      //onClick={() => self.onStartNetDataClicked()}
+                      block={this.props.isMobile}
+                      //onClick={() => this.onStartNetDataClicked()}
                       type="primary"
                     >
                       <span>
@@ -140,7 +136,7 @@ class NetDataInfo extends ApiComponent<
                 <div style={{ height: 30 }} />
                 <NetDataSettingsForm
                   updateModel={netDataInfo => {
-                    self.setState({ apiData: netDataInfo });
+                    this.setState({ apiData: netDataInfo });
                   }}
                   netDataInfo={netDataInfo}
                 />
@@ -151,8 +147,8 @@ class NetDataInfo extends ApiComponent<
                   <Button
                     type="primary"
                     onClick={() =>
-                      self.onUpdateNetDataClicked(
-                        Utils.copyObject(self.state.apiData)
+                      this.onUpdateNetDataClicked(
+                        Utils.copyObject(this.state.apiData)
                       )
                     }
                   >
@@ -168,7 +164,7 @@ class NetDataInfo extends ApiComponent<
   }
 }
 
-function mapStateToProps(state: any) {
+const mapStateToProps = (state: any) => {
   return {
     isMobile: state.globalReducer.isMobile
   };

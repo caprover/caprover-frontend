@@ -27,16 +27,15 @@ export default class NginxConfig extends ApiComponent<
   }
 
   componentDidMount() {
-    const self = this;
-    self.setState({ isLoading: true });
+    this.setState({ isLoading: true });
     this.apiManager
       .getNginxConfig()
-      .then(function(data) {
-        self.setState({ nginxConfig: data });
+      .then((data) => {
+        this.setState({ nginxConfig: data });
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
@@ -48,27 +47,25 @@ export default class NginxConfig extends ApiComponent<
   }
 
   onUpdateNginxConfigClicked() {
-    const self = this;
     const newApiData = Utils.copyObject(this.state.nginxConfig);
-    self.setState({ isLoading: true });
+    this.setState({ isLoading: true });
 
     this.apiManager
       .setNginxConfig(
         newApiData.baseConfig.customValue,
         newApiData.captainConfig.customValue
       )
-      .then(function() {
-        self.setState({ isRefreshTimerActivated: true });
+      .then(() => {
+        this.setState({ isRefreshTimerActivated: true });
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   render() {
-    const self = this;
-    if (self.state.isLoading) {
+    if (this.state.isLoading) {
       return <CenteredSpinner />;
     }
 
@@ -81,7 +78,7 @@ export default class NginxConfig extends ApiComponent<
     return (
       <div>
         <ReloadCaptainModal
-          isRefreshTimerActivated={self.state.isRefreshTimerActivated}
+          isRefreshTimerActivated={this.state.isRefreshTimerActivated}
         >
           <div>
             Nginx is successfully updated, CapRover will restart in 30 seconds.{" "}
@@ -120,7 +117,7 @@ export default class NginxConfig extends ApiComponent<
             onChange={e => {
               const newApiData = Utils.copyObject(nginxConfig);
               newApiData.baseConfig.customValue = e.target.value;
-              self.setState({ nginxConfig: newApiData });
+              this.setState({ nginxConfig: newApiData });
             }}
           />
           <div style={{ height: 40 }} />
@@ -145,7 +142,7 @@ export default class NginxConfig extends ApiComponent<
             onChange={e => {
               const newApiData = Utils.copyObject(nginxConfig);
               newApiData.captainConfig.customValue = e.target.value;
-              self.setState({ nginxConfig: newApiData });
+              this.setState({ nginxConfig: newApiData });
             }}
           />
         </div>
@@ -155,7 +152,7 @@ export default class NginxConfig extends ApiComponent<
             <Button
               type="default"
               block={this.props.isMobile}
-              onClick={() => self.onLoadDefaultNginxConfigClicked()}
+              onClick={() => this.onLoadDefaultNginxConfigClicked()}
             >
               Load Default and Edit
             </Button>
@@ -167,7 +164,7 @@ export default class NginxConfig extends ApiComponent<
             <Button
               type="primary"
               block={this.props.isMobile}
-              onClick={() => self.onUpdateNginxConfigClicked()}
+              onClick={() => this.onUpdateNginxConfigClicked()}
             >
               <span>
                 <Icon type="sync" />

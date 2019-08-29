@@ -38,7 +38,7 @@ export default class DefaultDockerRegistry extends Component<
 
   getAllOptions() {
     const registries = Utils.copyObject(this.props.apiData.registries);
-    return registries.map(function(element) {
+    return registries.map((element) => {
       return (
         <Option value={element.id} key={element.id}>
           {element.registryUser + " @ " + element.registryDomain}
@@ -48,19 +48,17 @@ export default class DefaultDockerRegistry extends Component<
   }
 
   render() {
-    const self = this;
-
     return (
       <div>
         <Modal
           title="Edit Push Registry"
           okText="Save and Update"
-          onCancel={() => self.setState({ isInEditMode: false })}
+          onCancel={() => this.setState({ isInEditMode: false })}
           onOk={() => {
-            self.setState({ isInEditMode: false });
-            self.props.changeDefault(self.state.newSelectedDefaultId);
+            this.setState({ isInEditMode: false });
+            this.props.changeDefault(this.state.newSelectedDefaultId);
           }}
-          visible={self.state.isInEditMode}
+          visible={this.state.isInEditMode}
         >
           <p>
             Default Docker Registry is the registry that will be used to store
@@ -83,13 +81,13 @@ export default class DefaultDockerRegistry extends Component<
             }}
           >
             <Option value={NONE}>{DISABLED_PUSH}</Option>
-            {self.getAllOptions()}
+            {this.getAllOptions()}
           </Select>
 
           <div
             style={{ marginTop: 20 }}
             className={
-              !!self.state.newSelectedDefaultId ? "hide-on-demand" : ""
+              !!this.state.newSelectedDefaultId ? "hide-on-demand" : ""
             }
           >
             <Alert
@@ -104,10 +102,10 @@ export default class DefaultDockerRegistry extends Component<
           Docker Registry for Pushing New Images:{" "}
           <ClickableLink
             onLinkClicked={() => {
-              self.setState({
+              this.setState({
                 isInEditMode: true,
                 newSelectedDefaultId:
-                  self.props.apiData.defaultPushRegistryId || ""
+                  this.props.apiData.defaultPushRegistryId || ""
               });
             }}
           >

@@ -24,22 +24,19 @@ export default class Dashboard extends ApiComponent<
   }
 
   reFetchData() {
-    const self = this;
-    self.setState({ isLoading: true, apiData: undefined });
+    this.setState({ isLoading: true, apiData: undefined });
     return this.apiManager
       .getCaptainInfo()
-      .then(function(data: any) {
-        self.setState({ apiData: data });
+      .then((data: any) => {
+        this.setState({ apiData: data });
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   onForceSslClicked() {
-    const self = this;
-
     const isUsingHttp = window.location.href.startsWith("http://");
 
     Modal.confirm({
@@ -54,11 +51,11 @@ export default class Dashboard extends ApiComponent<
           Do you still want to proceed?
         </p>
       ),
-      onOk() {
-        self.setState({ isLoading: true });
-        self.apiManager
+      onOk: () => {
+        this.setState({ isLoading: true });
+        this.apiManager
           .forceSsl(true)
-          .then(function() {
+          .then(() => {
             Modal.success({
               title: "Force HTTPS activated!",
               content: (
@@ -71,25 +68,25 @@ export default class Dashboard extends ApiComponent<
                   </p>
                 </div>
               ),
-              onOk() {
+              onOk: () => {
                 if (isUsingHttp) {
                   window.location.replace(
-                    "https://captain." + self.state.apiData.rootDomain
+                    "https://captain." + this.state.apiData.rootDomain
                   );
                 }
               },
-              onCancel() {
+              onCancel: () => {
                 if (isUsingHttp) {
                   window.location.replace(
-                    "https://" + self.state.apiData.rootDomain
+                    "https://" + this.state.apiData.rootDomain
                   );
                 }
               }
             });
           })
           .catch(Toaster.createCatcher())
-          .then(function() {
-            self.setState({ isLoading: false });
+          .then(() => {
+            this.setState({ isLoading: false });
           });
       },
       onCancel() {
@@ -99,12 +96,11 @@ export default class Dashboard extends ApiComponent<
   }
 
   onEnableSslClicked() {
-    const self = this;
     const IGNORE = "IGNORE";
 
     Promise.resolve()
-      .then(function() {
-        return new Promise(function(resolve, reject) {
+      .then(() => {
+        return new Promise((resolve, reject) => {
           Modal.success({
             title: "Enable HTTPS",
             content: (
@@ -135,15 +131,15 @@ export default class Dashboard extends ApiComponent<
                   placeholder="your@email.com"
                   type="email"
                   onChange={event =>
-                    self.setState({
+                    this.setState({
                       userEmail: (event.target.value || "").trim()
                     })
                   }
                 />
               </div>
             ),
-            onOk() {
-              resolve(self.state.userEmail || "");
+            onOk: () => {
+              resolve(this.state.userEmail || "");
             },
             onCancel() {
               resolve(undefined);
@@ -151,13 +147,13 @@ export default class Dashboard extends ApiComponent<
           });
         });
       })
-      .then(function(data: any) {
+      .then((data: any) => {
         if (data === undefined) return IGNORE;
-        self.setState({ isLoading: true });
-        return self.apiManager.enableRootSsl(data);
+        this.setState({ isLoading: true });
+        return this.apiManager.enableRootSsl(data);
       })
 
-      .then(function(data: any) {
+      .then((data: any) => {
         if (data === IGNORE) return;
 
         Modal.success({
@@ -166,25 +162,24 @@ export default class Dashboard extends ApiComponent<
             <div>
               <p>
                 You can now use{" "}
-                <code>{"https://" + self.state.apiData.rootDomain}</code>. Next
+                <code>{"https://" + this.state.apiData.rootDomain}</code>. Next
                 step is to Force HTTPS to disallow plain HTTP traffic.
               </p>
             </div>
           )
         });
 
-        return self.reFetchData();
+        return this.reFetchData();
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   updateRootDomainClicked(rootDomain: string) {
-    const self = this;
-    if (!self.state.apiData.hasRootSsl) {
-      self.performUpdateRootDomain(rootDomain, false);
+    if (!this.state.apiData.hasRootSsl) {
+      this.performUpdateRootDomain(rootDomain, false);
       return;
     }
 
@@ -200,8 +195,8 @@ export default class Dashboard extends ApiComponent<
           <p>You can still re-enable HTTPS after changing the root domain.</p>
         </div>
       ),
-      onOk() {
-        self.performUpdateRootDomain(rootDomain, true);
+      onOk: () => {
+        this.performUpdateRootDomain(rootDomain, true);
       },
       onCancel() {
         // do nothing
@@ -212,7 +207,7 @@ export default class Dashboard extends ApiComponent<
   performUpdateRootDomain(rootDomain: string, force: boolean) {
     this.apiManager
       .updateRootDomain(rootDomain, force)
-      .then(function(data: any) {
+      .then((data: any) => {
         Modal.success({
           title: "Root Domain Updated",
           content: (
@@ -232,27 +227,24 @@ export default class Dashboard extends ApiComponent<
   }
 
   render() {
-    const self = this;
-
-    if (self.state.isLoading) {
+    if (this.state.isLoading) {
       return <CenteredSpinner />;
     }
 
-    if (!self.state.apiData) {
+    if (!this.state.apiData) {
       return <ErrorRetry />;
     }
 
     return (
       <div>
-        {self.createInitialSetup()}
+        {this.createInitialSetup()}
         <br />
-        {self.createSetupPanel()}
+        {this.createSetupPanel()}
       </div>
     );
   }
 
   createSetupPanel() {
-    const self = this;
     return (
       <Row type="flex" justify="center">
         <Col xs={{ span: 23 }} lg={{ span: 16 }}>
@@ -304,9 +296,9 @@ export default class Dashboard extends ApiComponent<
                   <Search
                     addonBefore="[wildcard]&nbsp;."
                     placeholder="my-root.example.com"
-                    defaultValue={self.state.apiData.rootDomain + ""}
+                    defaultValue={this.state.apiData.rootDomain + ""}
                     enterButton="Update Domain"
-                    onSearch={value => self.updateRootDomainClicked(value)}
+                    onSearch={value => this.updateRootDomainClicked(value)}
                   />
                 </div>
               </div>
@@ -316,10 +308,10 @@ export default class Dashboard extends ApiComponent<
                 <Tooltip title="Using Let's Encrypt Free Service">
                   <Button
                     disabled={
-                      self.state.apiData.hasRootSsl ||
-                      !self.state.apiData.rootDomain
+                      this.state.apiData.hasRootSsl ||
+                      !this.state.apiData.rootDomain
                     }
-                    onClick={() => self.onEnableSslClicked()}
+                    onClick={() => this.onEnableSslClicked()}
                   >
                     Enable HTTPS
                   </Button>
@@ -328,10 +320,10 @@ export default class Dashboard extends ApiComponent<
                 <Tooltip title="Redirect all HTTP to HTTPS">
                   <Button
                     disabled={
-                      !self.state.apiData.hasRootSsl ||
-                      self.state.apiData.forceSsl
+                      !this.state.apiData.hasRootSsl ||
+                      this.state.apiData.forceSsl
                     }
-                    onClick={() => self.onForceSslClicked()}
+                    onClick={() => this.onForceSslClicked()}
                   >
                     Force HTTPS
                   </Button>

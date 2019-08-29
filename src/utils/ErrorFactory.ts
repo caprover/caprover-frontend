@@ -25,7 +25,7 @@ class ErrorFactory {
   }
 
   eatUpPromiseRejection() {
-    return function(error: any) {
+    return (error: any) => {
       CrashReporter.getInstance().captureException(error);
       // nom nom
     };

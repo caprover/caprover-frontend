@@ -24,8 +24,6 @@ export default class AppLogsView extends ApiComponent<
   }
 
   fetchLogs() {
-    const self = this;
-
     // See https://docs.docker.com/engine/api/v1.30/#operation/ContainerAttach for logs headers
     const separators = [
       "00000000",
@@ -36,7 +34,7 @@ export default class AppLogsView extends ApiComponent<
     const ansiRegex = Utils.getAnsiColorRegex();
     this.apiManager
       .fetchAppLogsInHex(this.props.appName)
-      .then(function(logInfo: { logs: string }) {
+      .then((logInfo: { logs: string }) => {
         const logsProcessed = logInfo.logs
           .split(new RegExp(separators.join("|"), "g"))
           .map(rawRow => {
@@ -62,11 +60,11 @@ export default class AppLogsView extends ApiComponent<
           .join("")
           .replace(ansiRegex, "");
 
-        if (logsProcessed === self.state.appLogsStringified) {
+        if (logsProcessed === this.state.appLogsStringified) {
           return;
         }
 
-        const firstLogs = !self.state.appLogsStringified;
+        const firstLogs = !this.state.appLogsStringified;
 
         let textareaNow = document.getElementById("applogs-text-id");
         // Almost at the bottom. So keep the scroll at the bottom. Otherwise, user, may have manually scrolled up. Respect the user!
@@ -78,30 +76,29 @@ export default class AppLogsView extends ApiComponent<
                 (textareaNow.scrollHeight - textareaNow.offsetHeight)
             ) < 100);
 
-        self.setState({ appLogsStringified: logsProcessed });
+        this.setState({ appLogsStringified: logsProcessed });
 
         if (shouldScrollToBottom)
-          setTimeout(function() {
+          setTimeout(() => {
             let textarea = document.getElementById("applogs-text-id");
             if (textarea) textarea.scrollTop = textarea.scrollHeight;
           }, 100);
       })
-      .catch(function(error) {
+      .catch((error) => {
         console.log(error);
-        self.setState({ appLogsStringified: "fetching app log failed..." });
+        this.setState({ appLogsStringified: "fetching app log failed..." });
       })
-      .then(function() {
+      .then(() => {
         setTimeout(() => {
-          if (!self.willUnmountSoon) {
-            self.fetchLogs();
+          if (!this.willUnmountSoon) {
+            this.fetchLogs();
           }
         }, 2200); // Just a random number to avoid hitting at the same time as build log fetch!
       });
   }
 
   componentDidMount() {
-    const self = this;
-    self.fetchLogs();
+    this.fetchLogs();
   }
 
   onExpandLogClicked() {
@@ -109,7 +106,6 @@ export default class AppLogsView extends ApiComponent<
   }
 
   render() {
-    const self = this;
     return (
       <div>
         <div style={{ height: 20 }} />
@@ -122,7 +118,7 @@ export default class AppLogsView extends ApiComponent<
                   <span>
                     <ClickableLink
                       onLinkClicked={() => {
-                        self.onExpandLogClicked();
+                        this.onExpandLogClicked();
                       }}
                     >
                       <h4 className="unselectable-span">
@@ -155,7 +151,7 @@ export default class AppLogsView extends ApiComponent<
               <span className={this.state.expandedLogs ? "" : "hide-on-demand"}>
                 <ClickableLink
                   onLinkClicked={() => {
-                    self.setState({ isWrapped: !self.state.isWrapped });
+                    this.setState({ isWrapped: !this.state.isWrapped });
                   }}
                 >
                   <h4 className="unselectable-span">
@@ -176,10 +172,10 @@ export default class AppLogsView extends ApiComponent<
               id="applogs-text-id"
               className="logs-output"
               style={{
-                whiteSpace: self.state.isWrapped ? "pre-line" : "pre"
+                whiteSpace: this.state.isWrapped ? "pre-line" : "pre"
               }}
             >
-              {self.state.appLogsStringified}
+              {this.state.appLogsStringified}
             </div>
           </div>
         </div>

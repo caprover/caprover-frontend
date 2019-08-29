@@ -28,11 +28,10 @@ export default class OneClickAppSelector extends Component<
   }
 
   componentDidMount() {
-    const self = this;
     new OneClickAppsApi()
       .getAllOneClickApps()
-      .then(function(data) {
-        self.setState({
+      .then((data) => {
+        this.setState({
           oneClickAppList: data
         });
       })
@@ -61,8 +60,6 @@ export default class OneClickAppSelector extends Component<
   }
 
   render() {
-    const self = this;
-
     if (!this.state.oneClickAppList) return <CenteredSpinner />;
 
     return (
@@ -99,16 +96,16 @@ export default class OneClickAppSelector extends Component<
                   showSearch
                   style={{ minWidth: 180 }}
                   onChange={value => {
-                    self.setState({ selectedApp: value.toString() });
+                    this.setState({ selectedApp: value.toString() });
                   }}
                 >
-                  {self.createOptions()}
+                  {this.createOptions()}
                 </Select>
               </Row>
               <div style={{ height: 30 }} />
               <div
                 className={
-                  self.state.selectedApp === TEMPLATE_ONE_CLICK_APP
+                  this.state.selectedApp === TEMPLATE_ONE_CLICK_APP
                     ? ""
                     : "hide-on-demand"
                 }
@@ -146,7 +143,7 @@ export default class OneClickAppSelector extends Component<
   ......`}
                   rows={10}
                   onChange={e => {
-                    self.setState({ templateOneClickAppData: e.target.value });
+                    this.setState({ templateOneClickAppData: e.target.value });
                   }}
                 />
               </div>
@@ -165,17 +162,17 @@ export default class OneClickAppSelector extends Component<
                 </div>
                 <Button
                   onClick={() =>
-                    self.props.history.push(
-                      `/apps/oneclick/${self.state.selectedApp}` +
-                        (self.state.selectedApp === TEMPLATE_ONE_CLICK_APP
+                    this.props.history.push(
+                      `/apps/oneclick/${this.state.selectedApp}` +
+                        (this.state.selectedApp === TEMPLATE_ONE_CLICK_APP
                           ? `?${ONE_CLICK_APP_STRINGIFIED_KEY}=` +
                             encodeURIComponent(
-                              self.state.templateOneClickAppData
+                              this.state.templateOneClickAppData
                             )
                           : "")
                     )
                   }
-                  disabled={!self.state.selectedApp}
+                  disabled={!this.state.selectedApp}
                   style={{ minWidth: 150 }}
                   type="primary"
                 >

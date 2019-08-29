@@ -26,35 +26,33 @@ class CurrentNodes extends ApiComponent<
   }
 
   fetchData() {
-    const self = this;
-    self.setState({ apiData: undefined, isLoading: true });
-    self.apiManager
+    this.setState({ apiData: undefined, isLoading: true });
+    this.apiManager
       .getAllNodes()
-      .then(function(data) {
-        self.setState({ apiData: data });
+      .then((data) => {
+        this.setState({ apiData: data });
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   addNode(nodeToAdd: INodeToAdd) {
-    const self = this;
-    self.setState({ apiData: undefined, isLoading: true });
-    self.apiManager
+    this.setState({ apiData: undefined, isLoading: true });
+    this.apiManager
       .addDockerNode(
         nodeToAdd.nodeType,
         nodeToAdd.privateKey,
         nodeToAdd.remoteNodeIpAddress,
         nodeToAdd.captainIpAddress
       )
-      .then(function() {
+      .then(() => {
         message.success("Node added successfully!");
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.fetchData();
+      .then(() => {
+        this.fetchData();
       });
   }
 
@@ -159,7 +157,6 @@ class CurrentNodes extends ApiComponent<
   }
 
   render() {
-    const self = this;
     if (this.state.isLoading) {
       return <CenteredSpinner />;
     }
@@ -174,7 +171,7 @@ class CurrentNodes extends ApiComponent<
           <AddNode
             isMobile={this.props.isMobile}
             onAddNodeClicked={nodeToAdd => {
-              self.addNode(nodeToAdd);
+              this.addNode(nodeToAdd);
             }}
           />
         ) : (
@@ -194,14 +191,14 @@ class CurrentNodes extends ApiComponent<
         <div style={{ height: 30 }} />
 
         <Row type="flex" justify="center">
-          <Col lg={{ span: 14 }} xs={{ span: 23 }}>{self.createNodes()}</Col>
+          <Col lg={{ span: 14 }} xs={{ span: 23 }}>{this.createNodes()}</Col>
         </Row>
       </div>
     );
   }
 }
 
-function mapStateToProps(state: any) {
+const mapStateToProps = (state: any) => {
   return {
     defaultRegistryId: state.registryReducer.defaultRegistryId,
     isMobile: state.globalReducer.isMobile

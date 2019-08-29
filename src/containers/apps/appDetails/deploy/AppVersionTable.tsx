@@ -94,7 +94,6 @@ export default class AppVersionTable extends Component<{
   }
 
   onRollbackClicked(versionToRevert: IAppVersion) {
-    const self = this;
     const imageName = versionToRevert.deployedImageName!;
     let content = (
       <span>
@@ -124,14 +123,13 @@ export default class AppVersionTable extends Component<{
       title: "Rollback?",
       content,
       onOk: () => {
-        self.props.onVersionRollbackRequested(versionToRevert);
+        this.props.onVersionRollbackRequested(versionToRevert);
       }
     });
   }
 
   render() {
-    const self = this;
-    const versionsReversed = Utils.copyObject(self.props.versions).reverse();
+    const versionsReversed = Utils.copyObject(this.props.versions).reverse();
     const columns = this.getCols();
     return (
       <div>

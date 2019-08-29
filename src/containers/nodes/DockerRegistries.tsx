@@ -28,42 +28,38 @@ class DockerRegistries extends ApiComponent<
   }
 
   fetchData() {
-    const self = this;
     this.setState({ apiData: undefined, isLoading: true });
     this.apiManager
       .getDockerRegistries()
-      .then(function(data) {
-        self.setState({ apiData: data });
-        self.props.emitDefaultRegistryChanged(
+      .then((data) => {
+        this.setState({ apiData: data });
+        this.props.emitDefaultRegistryChanged(
           (data as IRegistryApi).defaultPushRegistryId
         );
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   changeDefault(id: string) {
-    const self = this;
     this.setState({ apiData: undefined, isLoading: true });
 
     this.apiManager
       .setDefaultPushDockerRegistry(id)
-      .then(function() {
+      .then(() => {
         message.success("Default push registry successfully changed.");
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.fetchData();
+      .then(() => {
+        this.fetchData();
       });
   }
 
   deleteRegistry(id: string) {
-    const self = this;
-
     const isSelfHosted =
-      self.state
+      this.state
         .apiData!.registries.map(
           reg => reg.registryType === IRegistryTypes.LOCAL_REG && reg.id === id
         )
@@ -75,43 +71,41 @@ class DockerRegistries extends ApiComponent<
       ? this.apiManager.disableSelfHostedDockerRegistry()
       : this.apiManager.deleteDockerRegistry(id)
     )
-      .then(function() {
+      .then(() => {
         message.success("Registry deleted.");
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.fetchData();
+      .then(() => {
+        this.fetchData();
       });
   }
 
   editRegistry(dockerRegistry: IRegistryInfo) {
-    const self = this;
     this.setState({ apiData: undefined, isLoading: true });
 
     this.apiManager
       .updateDockerRegistry(dockerRegistry)
-      .then(function() {
+      .then(() => {
         message.success("Registry updated.");
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.fetchData();
+      .then(() => {
+        this.fetchData();
       });
   }
 
   addDockerRegistry(dockerRegistry: IRegistryInfo) {
-    const self = this;
     this.setState({ apiData: undefined, isLoading: true });
     (dockerRegistry.registryType === IRegistryTypes.LOCAL_REG
-      ? self.apiManager.enableSelfHostedDockerRegistry()
-      : self.apiManager.addDockerRegistry(dockerRegistry)
+      ? this.apiManager.enableSelfHostedDockerRegistry()
+      : this.apiManager.addDockerRegistry(dockerRegistry)
     )
-      .then(function() {
+      .then(() => {
         message.success("Docker registry successfully added!");
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.fetchData();
+      .then(() => {
+        this.fetchData();
       });
   }
 
@@ -120,7 +114,6 @@ class DockerRegistries extends ApiComponent<
   }
 
   render() {
-    const self = this;
     if (this.state.isLoading) {
       return <CenteredSpinner />;
     }
@@ -152,31 +145,31 @@ class DockerRegistries extends ApiComponent<
           }
         >
           <DefaultDockerRegistry
-            apiData={self.state.apiData!}
+            apiData={this.state.apiData!}
             changeDefault={id => {
-              self.changeDefault(id);
+              this.changeDefault(id);
             }}
           />
 
           <div style={{ height: 40 }} />
 
           <DockerRegistryTable
-            apiData={self.state.apiData!}
+            apiData={this.state.apiData!}
             isMobile={this.props.isMobile}
             deleteRegistry={id => {
-              self.deleteRegistry(id);
+              this.deleteRegistry(id);
             }}
             editRegistry={dockerRegistry => {
-              self.editRegistry(dockerRegistry);
+              this.editRegistry(dockerRegistry);
             }}
           />
         </div>
         <div style={{ height: 50 }} />
         <DockerRegistryAdd
-          apiData={self.state.apiData!}
+          apiData={this.state.apiData!}
           isMobile={this.props.isMobile}
           addDockerRegistry={dockerRegistry =>
-            self.addDockerRegistry(dockerRegistry)
+            this.addDockerRegistry(dockerRegistry)
           }
         />
       </div>
@@ -184,7 +177,7 @@ class DockerRegistries extends ApiComponent<
   }
 }
 
-function mapStateToProps(state: any) {
+const mapStateToProps = (state: any) => {
   return {
     defaultRegistryId: state.registryReducer.defaultRegistryId,
     isMobile: state.globalReducer.isMobile

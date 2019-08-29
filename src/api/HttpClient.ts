@@ -41,28 +41,27 @@ export default class HttpClient {
     endpoint: string,
     variables: any
   ) {
-    const self = this;
-    return function(): Promise<any> {
+    return (): Promise<any> => {
       return Promise.resolve() //
-        .then(function() {
+        .then(() => {
           if (!process.env.REACT_APP_IS_DEBUG) return Promise.resolve();
-          return new Promise<void>(function(res) {
+          return new Promise<void>((res) => {
             setTimeout(res, 500);
           });
         })
-        .then(function() {
-          return self.fetchInternal(method, endpoint, variables); //
+        .then(() => {
+          return this.fetchInternal(method, endpoint, variables); //
         })
-        .then(function(axiosResponse) {
+        .then((axiosResponse) => {
           const data = axiosResponse.data; // this is an axios thing!
 
           if (data.status === ErrorFactory.STATUS_AUTH_TOKEN_INVALID) {
-            return self
+            return this
               .onAuthFailure() //
-              .then(function() {
-                return self
+              .then(() => {
+                return this
                   .fetchInternal(method, endpoint, variables)
-                  .then(function(newAxiosResponse) {
+                  .then((newAxiosResponse) => {
                     return newAxiosResponse.data;
                   });
               });
@@ -70,7 +69,7 @@ export default class HttpClient {
             return data;
           }
         })
-        .then(function(data) {
+        .then((data) => {
           if (
             data.status !== ErrorFactory.OKAY &&
             data.status !== ErrorFactory.OK_PARTIALLY &&
@@ -83,21 +82,21 @@ export default class HttpClient {
           }
           return data;
         })
-        .then(function(data) {
+        .then((data) => {
           // These two blocks are clearly memory leaks! But I don't have time to fix them now... I need to CANCEL the promise, but since I don't
           // have CANCEL method on the native Promise, I return a promise that will never RETURN if the HttpClient is destroyed.
           // Will fix them later... but it shouldn't be a big deal anyways as it's only a problem when user navigates away from a page before the
           // network request returns back.
-          return new Promise(function(resolve, reject) {
+          return new Promise((resolve, reject) => {
             // data.data here is the "data" field inside the API response! {status: 100, description: "Login succeeded", data: {…}}
-            if (!self.isDestroyed) return resolve(data.data);
+            if (!this.isDestroyed) return resolve(data.data);
             Logger.dev("Destroyed then not called");
           });
         })
-        .catch(function(error) {
+        .catch((error) => {
           Logger.error(error);
-          return new Promise(function(resolve, reject) {
-            if (!self.isDestroyed) return reject(error);
+          return new Promise((resolve, reject) => {
+            if (!this.isDestroyed) return reject(error);
             Logger.dev("Destroyed catch not called");
           });
         });
@@ -118,25 +117,23 @@ export default class HttpClient {
   }
 
   getReq(endpoint: string, variables: any) {
-    const self = this;
     return axios
       .get(this.baseUrl + endpoint, {
         params: variables,
-        headers: self.createHeaders()
+        headers: this.createHeaders()
       }) //
-      .then(function(data) {
+      .then((data) => {
         //console.log(data);
         return data;
       });
   }
 
   postReq(endpoint: string, variables: any) {
-    const self = this;
     return axios
       .post(this.baseUrl + endpoint, variables, {
-        headers: self.createHeaders()
+        headers: this.createHeaders()
       }) //
-      .then(function(data) {
+      .then((data) => {
         //console.log(data);
         return data;
       });

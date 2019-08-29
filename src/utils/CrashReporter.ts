@@ -12,7 +12,7 @@ class CrashReporter {
 
 let instance: CrashReporter | undefined = undefined;
 
-const getInstance = function() {
+const getInstance = () => {
   if (!instance) instance = new CrashReporter();
   return instance;
 };

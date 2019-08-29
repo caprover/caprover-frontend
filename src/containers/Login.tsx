@@ -21,26 +21,24 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
   }
 
   onLoginRequested(password: string) {
-    const self = this;
     this.apiManager
       .getAuthToken(password)
-      .then(function() {
-        if (self.state.loginOption === SESSION_STORAGE) {
+      .then(() => {
+        if (this.state.loginOption === SESSION_STORAGE) {
           StorageHelper.setAuthKeyInSessionStorage(
             ApiManager.getAuthTokenString()
           );
-        } else if (self.state.loginOption === LOCAL_STORAGE) {
+        } else if (this.state.loginOption === LOCAL_STORAGE) {
           StorageHelper.setAuthKeyInLocalStorage(
             ApiManager.getAuthTokenString()
           );
         }
-        self.props.history.push("/");
+        this.props.history.push("/");
       })
       .catch(Toaster.createCatcher());
   }
 
   render() {
-    const self = this;
     return (
       <div>
         <div
@@ -54,8 +52,8 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
           <Card title="CapRover Login" style={{ width: 350 }}>
             <WrappedNormalLoginForm
               onLoginRequested={(password: string, loginOption: number) => {
-                self.setState({ loginOption });
-                self.onLoginRequested(password);
+                this.setState({ loginOption });
+                this.onLoginRequested(password);
               }}
             />
           </Card>
@@ -80,17 +78,15 @@ class NormalLoginForm extends React.Component<any, any> {
   }
 
   handleSubmit = (e: any) => {
-    const self = this;
     e.preventDefault();
     this.props.form.validateFields((err: any, values: any) => {
       if (!err) {
-        self.props.onLoginRequested(values.password, self.state.loginOption);
+        this.props.onLoginRequested(values.password, this.state.loginOption);
       }
     });
   };
 
   render() {
-    const self = this;
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
@@ -120,7 +116,7 @@ class NormalLoginForm extends React.Component<any, any> {
             <Collapse.Panel header="Remember Me" key="1">
               <RadioGroup
                 onChange={e => {
-                  self.setState({ loginOption: e.target.value });
+                  this.setState({ loginOption: e.target.value });
                 }}
                 value={this.state.loginOption}
               >

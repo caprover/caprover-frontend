@@ -33,39 +33,35 @@ export default class DiskCleanup extends ApiComponent<
   }
 
   onRemoveImagesClicked() {
-    const self = this;
     this.setState({ isLoading: true });
     this.apiManager
       .deleteImages(this.state.selectedImagesForDelete)
-      .then(function() {
+      .then(() => {
         message.success("Unused images are deleted.");
-        self.refreshOldImagesList();
+        this.refreshOldImagesList();
       })
       .catch(
-        Toaster.createCatcher(function() {
-          self.setState({ isLoading: false });
+        Toaster.createCatcher(() => {
+          this.setState({ isLoading: false });
         })
       );
   }
 
   refreshOldImagesList() {
-    const self = this;
     this.setState({ unusedImages: undefined, isLoading: true });
     return this.apiManager
       .getUnusedImages(this.state.mostRecentLimit)
-      .then(function(data) {
-        self.setState({ unusedImages: data.unusedImages });
+      .then((data) => {
+        this.setState({ unusedImages: data.unusedImages });
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   render() {
-    const self = this;
-
-    if (self.state.isLoading) {
+    if (this.state.isLoading) {
       return <CenteredSpinner />;
     }
 
@@ -76,8 +72,8 @@ export default class DiskCleanup extends ApiComponent<
     }
 
     const hasSelectedImagesForRemoval = !!(
-      self.state.selectedImagesForDelete &&
-      self.state.selectedImagesForDelete.length
+      this.state.selectedImagesForDelete &&
+      this.state.selectedImagesForDelete.length
     );
 
     return (
@@ -153,7 +149,7 @@ export default class DiskCleanup extends ApiComponent<
                 type="primary"
                 block={this.props.isMobile}
                 onClick={() => {
-                  self.onRemoveImagesClicked();
+                  this.onRemoveImagesClicked();
                 }}
               >
                 <span>

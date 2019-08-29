@@ -50,25 +50,23 @@ export default class TarUploader extends ApiComponent<
   };
 
   startUploadAndDeploy() {
-    const self = this;
-
-    const file = self.state.fileToBeUploaded!;
-    self.setState({ fileToBeUploaded: undefined });
+    const file = this.state.fileToBeUploaded!;
+    this.setState({ fileToBeUploaded: undefined });
     message.info("Upload has started");
 
     Promise.resolve()
-      .then(function() {
-        return self.apiManager.uploadAppData(
-          self.props.appName,
+      .then(() => {
+        return this.apiManager.uploadAppData(
+          this.props.appName,
           file.originFileObj! as File
         );
       })
-      .then(function() {
-        self.props.onUploadSucceeded();
+      .then(() => {
+        this.props.onUploadSucceeded();
       })
       .catch(
-        Toaster.createCatcher(function() {
-          self.setState({ fileToBeUploaded: file });
+        Toaster.createCatcher(() => {
+          this.setState({ fileToBeUploaded: file });
         })
       );
   }

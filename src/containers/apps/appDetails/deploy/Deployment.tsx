@@ -42,21 +42,20 @@ export default class Deployment extends ApiComponent<
   }
 
   onAppBuildFinished() {
-    const self = this;
-    self.apiManager
+    this.apiManager
       .getAllApps()
-      .then(function(data) {
+      .then((data) => {
         const appDefs = data.appDefinitions as IAppDef[];
         for (let index = 0; index < appDefs.length; index++) {
           const element = appDefs[index];
-          if (element.appName === self.props.apiData.appDefinition.appName) {
+          if (element.appName === this.props.apiData.appDefinition.appName) {
             return Utils.copyObject(element);
           }
         }
         throw new Error("App not found!");
       })
-      .then(function(app) {
-        self.setState({
+      .then((app) => {
+        this.setState({
           updatedVersions: {
             deployedVersion: app.deployedVersion,
             versions: app.versions
@@ -67,10 +66,9 @@ export default class Deployment extends ApiComponent<
   }
 
   onVersionRollbackRequested(version: IAppVersion) {
-    const self = this;
-    self.apiManager
+    this.apiManager
       .uploadCaptainDefinitionContent(
-        self.props.apiData.appDefinition.appName!,
+        this.props.apiData.appDefinition.appName!,
         {
           schemaVersion: 2,
           // We should use imageName, but since imageName does not report build failure (since there is no build!)
@@ -80,14 +78,13 @@ export default class Deployment extends ApiComponent<
         version.gitHash || "",
         true
       )
-      .then(function() {
-        self.onUploadSuccess();
+      .then(() => {
+        this.onUploadSuccess();
       })
       .catch(Toaster.createCatcher());
   }
 
   render() {
-    const self = this;
     const app = this.props.apiData.appDefinition;
     const hasPushToken =
       app.appPushWebhook && app.appPushWebhook.pushWebhookToken;
@@ -116,10 +113,10 @@ export default class Deployment extends ApiComponent<
     return (
       <div>
         <BuildLogsView
-          onAppBuildFinished={() => self.onAppBuildFinished()}
+          onAppBuildFinished={() => this.onAppBuildFinished()}
           appName={app.appName!}
-          buildLogRecreationId={self.state.buildLogRecreationId}
-          key={app.appName! + "-" + self.state.buildLogRecreationId}
+          buildLogRecreationId={this.state.buildLogRecreationId}
+          key={app.appName! + "-" + this.state.buildLogRecreationId}
         />
         <div style={{ height: 20 }} />
         <hr />
@@ -128,16 +125,16 @@ export default class Deployment extends ApiComponent<
         <AppVersionTable
           isMobile={this.props.isMobile}
           onVersionRollbackRequested={versionToRevert =>
-            self.onVersionRollbackRequested(versionToRevert)
+            this.onVersionRollbackRequested(versionToRevert)
           }
           versions={
-            self.state.updatedVersions
-              ? self.state.updatedVersions.versions
+            this.state.updatedVersions
+              ? this.state.updatedVersions.versions
               : app.versions
           }
           deployedVersion={
-            self.state.updatedVersions
-              ? self.state.updatedVersions.deployedVersion
+            this.state.updatedVersions
+              ? this.state.updatedVersions.deployedVersion
               : app.deployedVersion
           }
         />
@@ -172,7 +169,7 @@ export default class Deployment extends ApiComponent<
         </p>
 
         <TarUploader
-          onUploadSucceeded={() => self.onUploadSuccess()}
+          onUploadSucceeded={() => this.onUploadSuccess()}
           appName={app.appName!}
         />
 
@@ -232,10 +229,10 @@ export default class Deployment extends ApiComponent<
             style={{ marginRight: this.props.isMobile ? 0 : 10 }}
             block={this.props.isMobile}
             onClick={() => {
-              self.apiManager
+              this.apiManager
                 .forceBuild(webhookPushUrlRelativePath)
-                .then(function() {
-                  self.onUploadSuccess();
+                .then(() => {
+                  this.onUploadSuccess();
                 })
                 .catch(Toaster.createCatcher());
             }}
@@ -247,7 +244,7 @@ export default class Deployment extends ApiComponent<
             type="primary"
             style={{ marginTop: this.props.isMobile ? 15 : 0 }}
             block={this.props.isMobile}
-            onClick={() => self.props.onUpdateConfigAndSave()}
+            onClick={() => this.props.onUpdateConfigAndSave()}
           >
             Save &amp; Update
           </Button>
@@ -258,7 +255,7 @@ export default class Deployment extends ApiComponent<
         </h4>
         <UploaderPlainTextDockerfile
           appName={app.appName!}
-          onUploadSucceeded={() => self.onUploadSuccess()}
+          onUploadSucceeded={() => this.onUploadSuccess()}
         />
         <div style={{ height: 20 }} />
         <h4>
@@ -266,7 +263,7 @@ export default class Deployment extends ApiComponent<
         </h4>
         <UploaderPlainTextCaptainDefinition
           appName={app.appName!}
-          onUploadSucceeded={() => self.onUploadSuccess()}
+          onUploadSucceeded={() => this.onUploadSuccess()}
         />
         <div style={{ height: 20 }} />
         <Row>
@@ -318,7 +315,7 @@ export default class Deployment extends ApiComponent<
                 block={this.props.isMobile}
                 disabled={!this.state.forceEditableCaptainDefinitionPath}
                 type="primary"
-                onClick={() => self.props.onUpdateConfigAndSave()}
+                onClick={() => this.props.onUpdateConfigAndSave()}
               >
                 Save &amp; Update
               </Button>

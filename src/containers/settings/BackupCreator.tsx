@@ -20,15 +20,14 @@ export default class BackupCreator extends ApiComponent<
   }
 
   onCreateBackupClicked() {
-    const self = this;
-    self.setState({ isLoading: true });
-    self.apiManager
+    this.setState({ isLoading: true });
+    this.apiManager
       .createBackup()
-      .then(function(data) {
+      .then((data) => {
         let link = document.createElement("a"); //create 'a' element
         link.setAttribute(
           "href",
-          self.apiManager.getApiBaseUrl() +
+          this.apiManager.getApiBaseUrl() +
             "/downloads/?namespace=captain&downloadToken=" +
             encodeURIComponent(data.downloadToken)
         );
@@ -37,15 +36,13 @@ export default class BackupCreator extends ApiComponent<
         message.success("Downloading backup started...");
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   render() {
-    const self = this;
-
-    if (self.state.isLoading) {
+    if (this.state.isLoading) {
       return <CenteredSpinner />;
     }
 

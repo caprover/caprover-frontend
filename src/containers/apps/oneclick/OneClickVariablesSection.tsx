@@ -32,12 +32,11 @@ export default class OneClickVariablesSection extends Component<
   }
 
   onNextClicked() {
-    const self = this;
-    const blurredFields = Utils.copyObject(self.state.blurredFields);
+    const blurredFields = Utils.copyObject(this.state.blurredFields);
     let allFieldValid = true;
-    self.props.oneClickAppVariables.forEach(v => {
+    this.props.oneClickAppVariables.forEach(v => {
       blurredFields[v.id] = true;
-      if (!self.isFieldValueValid(v)) {
+      if (!this.isFieldValueValid(v)) {
         allFieldValid = false;
       }
     });
@@ -45,14 +44,13 @@ export default class OneClickVariablesSection extends Component<
     if (!allFieldValid) {
       message.error("Fix all errors before deploying.");
     } else {
-      self.props.onNextClicked(self.state.enteredVariables);
+      this.props.onNextClicked(this.state.enteredVariables);
     }
-    self.setState({ blurredFields });
+    this.setState({ blurredFields });
   }
 
   isFieldValueValid(variable: IOneClickVariable) {
-    const self = this;
-    const currVal = self.state.enteredVariables[variable.id] || "";
+    const currVal = this.state.enteredVariables[variable.id] || "";
     let isEnteredValueValid = true;
     if (variable.validRegex) {
       // From https://stackoverflow.com/questions/39154255/converting-regexp-to-string-then-back-to-regexp
@@ -69,9 +67,8 @@ export default class OneClickVariablesSection extends Component<
   }
 
   createTextFields() {
-    const self = this;
     return this.props.oneClickAppVariables.map(variable => {
-      const currVal = self.state.enteredVariables[variable.id];
+      const currVal = this.state.enteredVariables[variable.id];
 
       return (
         <div key={variable.id} style={{ marginBottom: 40 }}>
@@ -98,17 +95,17 @@ export default class OneClickVariablesSection extends Component<
                 }}
                 onBlur={e => {
                   const blurredFields = Utils.copyObject(
-                    self.state.blurredFields
+                    this.state.blurredFields
                   );
                   blurredFields[variable.id] = true;
-                  self.setState({ blurredFields });
+                  this.setState({ blurredFields });
                 }}
               />
               <div style={{ height: 5 }} />
               <Alert
                 className={
-                  !self.state.blurredFields[variable.id] ||
-                  self.isFieldValueValid(variable)
+                  !this.state.blurredFields[variable.id] ||
+                  this.isFieldValueValid(variable)
                     ? "hide-on-demand"
                     : ""
                 }
@@ -129,7 +126,6 @@ export default class OneClickVariablesSection extends Component<
   }
 
   render() {
-    const self = this;
     return (
       <div>
         <div>{this.createTextFields()}</div>
@@ -138,7 +134,7 @@ export default class OneClickVariablesSection extends Component<
             size="large"
             style={{ minWidth: 150 }}
             type="primary"
-            onClick={() => self.onNextClicked()}
+            onClick={() => this.onNextClicked()}
           >
             Deploy
           </Button>

@@ -92,7 +92,6 @@ class PageRoot extends ApiComponent<
   }
 
   componentDidMount() {
-    const self = this;
     this.updateDimensions();
 
     window.addEventListener("resize", this.updateDimensions);
@@ -102,8 +101,8 @@ class PageRoot extends ApiComponent<
     } else {
       this.apiManager
         .getVersionInfo()
-        .then(function(data) {
-          self.setState({ versionInfo: data });
+        .then((data) => {
+          this.setState({ versionInfo: data });
         })
         .catch(Toaster.createCatcher());
     }
@@ -114,16 +113,14 @@ class PageRoot extends ApiComponent<
   }
 
   createUpdateAvailableIfNeeded() {
-    const self = this;
-
-    if (!self.state.versionInfo || !self.state.versionInfo.canUpdate) {
+    if (!this.state.versionInfo || !this.state.versionInfo.canUpdate) {
       return null;
     }
 
     return (
       <Fragment>
         <ClickableLink
-          onLinkClicked={() => self.props.history.push("/settings")}
+          onLinkClicked={() => this.props.history.push("/settings")}
         >
           <Icon
             type="gift"
@@ -169,7 +166,6 @@ class PageRoot extends ApiComponent<
   };
 
   render() {
-    const self = this;
     return (
       <Layout className="full-screen-bg">
         <Header
@@ -186,7 +182,7 @@ class PageRoot extends ApiComponent<
                 </Col>
               )}
               {(this.props.isMobile &&
-                self.createUpdateAvailableIfNeeded()) || (
+                this.createUpdateAvailableIfNeeded()) || (
                 <Col lg={{ span: 12 }} xs={{ span: 20 }}>
                   <div>
                     <h3 style={{ color: "#fff" }}>
@@ -199,12 +195,12 @@ class PageRoot extends ApiComponent<
                         }}
                       />
                       CapRover
-                      {self.createUpdateAvailableIfNeeded()}
+                      {this.createUpdateAvailableIfNeeded()}
                     </h3>
                   </div>
                 </Col>
               )}
-              {!self.props.isMobile && (
+              {!this.props.isMobile && (
                 <Col span={12}>
                   <Row type="flex" justify="end">
                     <a
@@ -234,8 +230,8 @@ class PageRoot extends ApiComponent<
                       >
                         <ClickableLink
                           onLinkClicked={() => {
-                            self.apiManager.setAuthToken("");
-                            self.goToLogin();
+                            this.apiManager.setAuthToken("");
+                            this.goToLogin();
                           }}
                         >
                           Logout <Icon type="logout" />
@@ -256,7 +252,7 @@ class PageRoot extends ApiComponent<
             collapsible
             collapsed={this.state.collapsed}
             width={200}
-            collapsedWidth={self.props.isMobile ? 0 : 80}
+            collapsedWidth={this.props.isMobile ? 0 : 80}
             style={{ zIndex: 2 }}
             onCollapse={this.toggleSider}
           >
@@ -341,16 +337,16 @@ class PageRoot extends ApiComponent<
           </Sider>
           <Content>
             <div
-              key={self.props.rootElementKey}
-              ref={self.mainContainer}
+              key={this.props.rootElementKey}
+              ref={this.mainContainer}
               style={{
                 paddingTop: 12,
                 paddingBottom: 36,
                 height: "100%",
                 overflowY: "scroll",
-                marginRight: self.state.collapsed
+                marginRight: this.state.collapsed
                   ? 0
-                  : self.props.isMobile
+                  : this.props.isMobile
                   ? -200
                   : 0,
                 transition: "margin-right 0.3s ease"
@@ -362,7 +358,7 @@ class PageRoot extends ApiComponent<
                 <Route
                   path="/apps/details/:appName"
                   render={props => (
-                    <AppDetails {...props} mainContainer={self.mainContainer} />
+                    <AppDetails {...props} mainContainer={this.mainContainer} />
                   )}
                 />
                 <Route
@@ -384,7 +380,7 @@ class PageRoot extends ApiComponent<
   }
 }
 
-function mapStateToProps(state: any) {
+const mapStateToProps = (state: any) => {
   return {
     rootElementKey: state.globalReducer.rootElementKey,
     isMobile: state.globalReducer.isMobile

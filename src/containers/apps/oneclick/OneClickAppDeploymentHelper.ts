@@ -11,9 +11,8 @@ export default class OneClickAppDeploymentHelper {
     appName: string,
     dockerComposeService: IDockerComposeService
   ) {
-    const self = this;
-    return Promise.resolve().then(function() {
-      return self.apiManager.registerNewApp(
+    return Promise.resolve().then(() => {
+      return this.apiManager.registerNewApp(
         appName,
         !!dockerComposeService.volumes && !!dockerComposeService.volumes.length,
         false
@@ -25,11 +24,10 @@ export default class OneClickAppDeploymentHelper {
     appName: string,
     dockerComposeService: IDockerComposeService
   ) {
-    const self = this;
-    return Promise.resolve().then(function() {
-      return self.apiManager
+    return Promise.resolve().then(() => {
+      return this.apiManager
         .getAllApps()
-        .then(function(data) {
+        .then((data) => {
           const appDefs = data.appDefinitions as IAppDef[];
           for (let index = 0; index < appDefs.length; index++) {
             const element = appDefs[index];
@@ -38,7 +36,7 @@ export default class OneClickAppDeploymentHelper {
             }
           }
         })
-        .then(function(appDef) {
+        .then((appDef) => {
           if (!appDef) {
             throw new Error("App was not found right after registering!!");
           }
@@ -73,7 +71,7 @@ export default class OneClickAppDeploymentHelper {
 
           appDef.envVars = appDef.envVars || [];
           const environment = dockerComposeService.environment || {};
-          Object.keys(environment).forEach(function(envKey) {
+          Object.keys(environment).forEach((envKey) => {
             appDef.envVars.push({
               key: envKey,
               value: environment[envKey]
@@ -88,7 +86,7 @@ export default class OneClickAppDeploymentHelper {
             appDef.notExposeAsWebApp = true;
           }
 
-          return self.apiManager.updateConfigAndSave(appName, appDef);
+          return this.apiManager.updateConfigAndSave(appName, appDef);
         });
     });
   }
@@ -97,8 +95,7 @@ export default class OneClickAppDeploymentHelper {
     appName: string,
     dockerComposeService: IDockerComposeService
   ) {
-    const self = this;
-    return Promise.resolve().then(function() {
+    return Promise.resolve().then(() => {
       let captainDefinition: ICaptainDefinition = {
         schemaVersion: 2
       };
@@ -110,7 +107,7 @@ export default class OneClickAppDeploymentHelper {
           dockerComposeService.dockerfileLines;
       }
 
-      return self.apiManager.uploadCaptainDefinitionContent(
+      return this.apiManager.uploadCaptainDefinitionContent(
         appName,
         captainDefinition,
         "",

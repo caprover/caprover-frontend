@@ -57,16 +57,15 @@ export default class LoadBalancerStats extends ApiComponent<
   }
 
   updateApi() {
-    const self = this;
-    self.setState({ isLoading: !self.state.apiData }); // set to true just the first time
+    this.setState({ isLoading: !this.state.apiData }); // set to true just the first time
     this.apiManager
       .getLoadBalancerInfo()
-      .then(function(data) {
-        self.setState({ apiData: data });
+      .then((data) => {
+        this.setState({ apiData: data });
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
@@ -80,10 +79,9 @@ export default class LoadBalancerStats extends ApiComponent<
   }
 
   componentDidMount() {
-    const self = this;
     this.updateApi();
-    this.updateApiInterval = setInterval(function() {
-      self.updateApi();
+    this.updateApiInterval = setInterval(() => {
+      this.updateApi();
     }, 20000);
   }
 

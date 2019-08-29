@@ -12,7 +12,7 @@ export default class Toaster {
   }
 
   static createCatcher(functionToRun?: Function) {
-    return function(error: any) {
+    return (error: any) => {
       Toaster.toast(error);
       if (functionToRun) {
         functionToRun();

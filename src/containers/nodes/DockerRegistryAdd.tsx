@@ -42,8 +42,6 @@ export default class DockerRegistryAdd extends Component<
   }
 
   render() {
-    const self = this;
-
     const hasSelfHostedRegistry =
       this.props.apiData.registries
         .map(reg => reg.registryType)
@@ -54,14 +52,14 @@ export default class DockerRegistryAdd extends Component<
         <Modal
           title="Self-Hosted Registry"
           okText="Enable Self-Hosted Registry"
-          onCancel={() => self.setState({ modalShowing: undefined })}
+          onCancel={() => this.setState({ modalShowing: undefined })}
           onOk={() => {
-            self.setState({ modalShowing: undefined });
-            self.props.addDockerRegistry({
+            this.setState({ modalShowing: undefined });
+            this.props.addDockerRegistry({
               registryType: IRegistryTypes.LOCAL_REG // Other values are getting ignored by the downstream callback
             } as IRegistryInfo);
           }}
-          visible={self.state.modalShowing === ADDING_LOCAL}
+          visible={this.state.modalShowing === ADDING_LOCAL}
         >
           <p>
             You can read more about this type of registry on the page behind
@@ -73,12 +71,12 @@ export default class DockerRegistryAdd extends Component<
         <Modal
           title="Remote Registry"
           okText="Add Remote Registry"
-          onCancel={() => self.setState({ modalShowing: undefined })}
+          onCancel={() => this.setState({ modalShowing: undefined })}
           onOk={() => {
-            self.setState({ modalShowing: undefined });
-            self.props.addDockerRegistry(self.state.remoteRegistryToAdd);
+            this.setState({ modalShowing: undefined });
+            this.props.addDockerRegistry(this.state.remoteRegistryToAdd);
           }}
-          visible={self.state.modalShowing === ADDING_REMOTE}
+          visible={this.state.modalShowing === ADDING_REMOTE}
         >
           <p>
             You can read more about this type of registry on the page behind
@@ -90,26 +88,26 @@ export default class DockerRegistryAdd extends Component<
               addonBefore="Username"
               placeholder="username | email@gmail.com"
               type="email"
-              value={self.state.remoteRegistryToAdd.registryUser}
+              value={this.state.remoteRegistryToAdd.registryUser}
               onChange={e => {
                 const newData = Utils.copyObject(
-                  self.state.remoteRegistryToAdd
+                  this.state.remoteRegistryToAdd
                 );
                 newData.registryUser = e.target.value.trim();
-                self.setState({ remoteRegistryToAdd: newData });
+                this.setState({ remoteRegistryToAdd: newData });
               }}
             />
             <div style={{ height: 20 }} />
             <PasswordField
               addonBefore="Password"
               placeholder="mypassword"
-              defaultValue={self.state.remoteRegistryToAdd.registryPassword}
+              defaultValue={this.state.remoteRegistryToAdd.registryPassword}
               onChange={e => {
                 const newData = Utils.copyObject(
-                  self.state.remoteRegistryToAdd
+                  this.state.remoteRegistryToAdd
                 );
                 newData.registryPassword = e.target.value;
-                self.setState({ remoteRegistryToAdd: newData });
+                this.setState({ remoteRegistryToAdd: newData });
               }}
             />
             <div style={{ height: 20 }} />
@@ -117,13 +115,13 @@ export default class DockerRegistryAdd extends Component<
               addonBefore="Domain"
               placeholder="registry-1.docker.io"
               type="text"
-              value={self.state.remoteRegistryToAdd.registryDomain}
+              value={this.state.remoteRegistryToAdd.registryDomain}
               onChange={e => {
                 const newData = Utils.copyObject(
-                  self.state.remoteRegistryToAdd
+                  this.state.remoteRegistryToAdd
                 );
                 newData.registryDomain = e.target.value.trim();
-                self.setState({ remoteRegistryToAdd: newData });
+                this.setState({ remoteRegistryToAdd: newData });
               }}
             />
             <div style={{ height: 20 }} />
@@ -136,13 +134,13 @@ export default class DockerRegistryAdd extends Component<
                 </Tooltip>
               }
               type="text"
-              value={self.state.remoteRegistryToAdd.registryImagePrefix}
+              value={this.state.remoteRegistryToAdd.registryImagePrefix}
               onChange={e => {
                 const newData = Utils.copyObject(
-                  self.state.remoteRegistryToAdd
+                  this.state.remoteRegistryToAdd
                 );
                 newData.registryImagePrefix = e.target.value.trim();
-                self.setState({ remoteRegistryToAdd: newData });
+                this.setState({ remoteRegistryToAdd: newData });
               }}
             />
           </div>
@@ -152,7 +150,7 @@ export default class DockerRegistryAdd extends Component<
           <Row type="flex" justify="end">
             <Button
               block={this.props.isMobile}
-              onClick={() => self.setState({ modalShowing: ADDING_LOCAL })}
+              onClick={() => this.setState({ modalShowing: ADDING_LOCAL })}
             >
               Add Self-Hosted Registry
             </Button>
@@ -164,9 +162,9 @@ export default class DockerRegistryAdd extends Component<
           <Button
             block={this.props.isMobile}
             onClick={() =>
-              self.setState({
+              this.setState({
                 modalShowing: ADDING_REMOTE,
-                remoteRegistryToAdd: self.getPlainRegistryInfo()
+                remoteRegistryToAdd: this.getPlainRegistryInfo()
               })
             }
           >

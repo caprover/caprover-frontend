@@ -34,7 +34,7 @@ export default class AppConfigs extends Component<
     src
       .toString()
       .split("\n")
-      .forEach(function(line, idx) {
+      .forEach((line, idx) => {
         // matching "KEY' and 'VAL' in 'KEY=VAL'
         const keyValueArr = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
         // matched?
@@ -77,10 +77,9 @@ export default class AppConfigs extends Component<
   }
 
   createEnvVarSection() {
-    const self = this;
     const envVars = this.props.apiData.appDefinition.envVars || [];
 
-    if (self.state.envVarBulkEdit) {
+    if (this.state.envVarBulkEdit) {
       return (
         <div>
           <Row style={{ paddingBottom: 12 }}>
@@ -90,20 +89,20 @@ export default class AppConfigs extends Component<
                 placeholder={"key1=value1\nkey2=value2"}
                 rows={7}
                 value={
-                  self.state.bulkVals
-                    ? self.state.bulkVals
-                    : self.convertEnvVarsToBulk(envVars)
+                  this.state.bulkVals
+                    ? this.state.bulkVals
+                    : this.convertEnvVarsToBulk(envVars)
                 }
                 onChange={e => {
-                  const newApiData = Utils.copyObject(self.props.apiData);
-                  const keyVals = self.parseEnvVars(e.target.value);
+                  const newApiData = Utils.copyObject(this.props.apiData);
+                  const keyVals = this.parseEnvVars(e.target.value);
                   const envVars: IAppEnvVar[] = [];
                   Object.keys(keyVals).forEach(k => {
                     envVars.push({ key: k, value: keyVals[k] });
                   });
                   newApiData.appDefinition.envVars = envVars;
-                  self.props.updateApiData(newApiData);
-                  self.setState({ bulkVals: e.target.value });
+                  this.props.updateApiData(newApiData);
+                  this.setState({ bulkVals: e.target.value });
                 }}
               />
             </Col>
@@ -122,9 +121,9 @@ export default class AppConfigs extends Component<
               value={value.key}
               type="text"
               onChange={e => {
-                const newApiData = Utils.copyObject(self.props.apiData);
+                const newApiData = Utils.copyObject(this.props.apiData);
                 newApiData.appDefinition.envVars[index].key = e.target.value;
-                self.props.updateApiData(newApiData);
+                this.props.updateApiData(newApiData);
               }}
             />
           </Col>
@@ -135,9 +134,9 @@ export default class AppConfigs extends Component<
               rows={1}
               value={value.value}
               onChange={e => {
-                const newApiData = Utils.copyObject(self.props.apiData);
+                const newApiData = Utils.copyObject(this.props.apiData);
                 newApiData.appDefinition.envVars[index].value = e.target.value;
-                self.props.updateApiData(newApiData);
+                this.props.updateApiData(newApiData);
               }}
             />
           </Col>
@@ -151,7 +150,7 @@ export default class AppConfigs extends Component<
 
         <br />
 
-        <Button block={this.props.isMobile} type="default" onClick={() => self.addEnvVarClicked()}>
+        <Button block={this.props.isMobile} type="default" onClick={() => this.addEnvVarClicked()}>
           Add Key/Value Pair
         </Button>
       </div>
@@ -159,7 +158,6 @@ export default class AppConfigs extends Component<
   }
 
   createPortRows() {
-    const self = this;
     const ports = this.props.apiData.appDefinition.ports || [];
     return ports.map((value, index) => {
       return (
@@ -172,11 +170,11 @@ export default class AppConfigs extends Component<
                 value={value.hostPort ? value.hostPort + "" : ""}
                 type="number"
                 onChange={e => {
-                  const newApiData = Utils.copyObject(self.props.apiData);
+                  const newApiData = Utils.copyObject(this.props.apiData);
                   const p = Number(e.target.value.trim());
                   newApiData.appDefinition.ports[index].hostPort =
                     p > 0 ? p : 0; // to avoid NaN
-                  self.props.updateApiData(newApiData);
+                  this.props.updateApiData(newApiData);
                 }}
               />
             </Tooltip>
@@ -187,11 +185,11 @@ export default class AppConfigs extends Component<
               placeholder="6060"
               value={value.containerPort ? value.containerPort + "" : ""}
               onChange={e => {
-                const newApiData = Utils.copyObject(self.props.apiData);
+                const newApiData = Utils.copyObject(this.props.apiData);
                 const p = Number(e.target.value.trim());
                 newApiData.appDefinition.ports[index].containerPort =
                   p > 0 ? p : 0; // to avoid NaN
-                self.props.updateApiData(newApiData);
+                this.props.updateApiData(newApiData);
               }}
             />
           </Col>
@@ -201,7 +199,6 @@ export default class AppConfigs extends Component<
   }
 
   createVolRows() {
-    const self = this;
     const volumes = this.props.apiData.appDefinition.volumes || [];
     return volumes.map((value, index) => {
       return (
@@ -214,10 +211,10 @@ export default class AppConfigs extends Component<
               value={value.containerPath}
               type="text"
               onChange={e => {
-                const newApiData = Utils.copyObject(self.props.apiData);
+                const newApiData = Utils.copyObject(this.props.apiData);
                 newApiData.appDefinition.volumes[index].containerPath =
                   e.target.value;
-                self.props.updateApiData(newApiData);
+                this.props.updateApiData(newApiData);
               }}
             />
           </Col>
@@ -232,10 +229,10 @@ export default class AppConfigs extends Component<
               placeholder="some-name"
               value={value.volumeName}
               onChange={e => {
-                const newApiData = Utils.copyObject(self.props.apiData);
+                const newApiData = Utils.copyObject(this.props.apiData);
                 newApiData.appDefinition.volumes[index].volumeName =
                   e.target.value;
-                self.props.updateApiData(newApiData);
+                this.props.updateApiData(newApiData);
               }}
             />
           </Col>
@@ -252,10 +249,10 @@ export default class AppConfigs extends Component<
                 placeholder="/host/path/exists"
                 value={value.hostPath}
                 onChange={e => {
-                  const newApiData = Utils.copyObject(self.props.apiData);
+                  const newApiData = Utils.copyObject(this.props.apiData);
                   newApiData.appDefinition.volumes[index].hostPath =
                     e.target.value;
-                  self.props.updateApiData(newApiData);
+                  this.props.updateApiData(newApiData);
                 }}
               />
             </Tooltip>
@@ -264,12 +261,12 @@ export default class AppConfigs extends Component<
             <Button
               type="dashed"
               onClick={() => {
-                const newApiData = Utils.copyObject(self.props.apiData);
+                const newApiData = Utils.copyObject(this.props.apiData);
                 newApiData.appDefinition.volumes[index].hostPath = newApiData
                   .appDefinition.volumes[index].hostPath
                   ? ""
                   : "/";
-                self.props.updateApiData(newApiData);
+                this.props.updateApiData(newApiData);
               }}
             >
               {value.hostPath
@@ -283,7 +280,6 @@ export default class AppConfigs extends Component<
   }
 
   createVolSection() {
-    const self = this;
     const app = this.props.apiData!.appDefinition;
 
     if (!app.hasPersistentData) return <div />;
@@ -326,9 +322,9 @@ export default class AppConfigs extends Component<
                 value={app.nodeId ? app.nodeId : ""}
                 disabled={!this.state.forceEditableNodeId}
                 onChange={e => {
-                  const newApiData = Utils.copyObject(self.props.apiData);
+                  const newApiData = Utils.copyObject(this.props.apiData);
                   newApiData.appDefinition.nodeId = e.target.value;
-                  self.props.updateApiData(newApiData);
+                  this.props.updateApiData(newApiData);
                 }}
               />
             </Tooltip>
@@ -353,7 +349,6 @@ export default class AppConfigs extends Component<
   }
 
   render() {
-    const self = this;
     const app = this.props.apiData!.appDefinition;
     return (
       <div>
@@ -363,7 +358,7 @@ export default class AppConfigs extends Component<
             Bulk Edit&nbsp;{" "}
             <Switch
               onChange={val => {
-                self.setState({ envVarBulkEdit: val, bulkVals: "" });
+                this.setState({ envVarBulkEdit: val, bulkVals: "" });
               }}
             />
           </h5>

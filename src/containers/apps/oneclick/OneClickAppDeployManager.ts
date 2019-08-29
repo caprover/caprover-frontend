@@ -41,7 +41,6 @@ export default class OneClickAppDeployManager {
     template: IOneClickTemplate,
     values: IHashMapGeneric<string>
   ) {
-    const self = this;
     let stringified = JSON.stringify(template);
 
     for (let index = 0; index < template.variables.length; index++) {
@@ -72,14 +71,14 @@ export default class OneClickAppDeployManager {
 
     const apps = this.createAppsArrayInOrder();
     if (!apps) {
-      self.onDeploymentStateChanged({
+      this.onDeploymentStateChanged({
         steps: ["Parsing the template"],
         error:
           "Cannot parse the template. Dependency tree cannot be resolved. Infinite loop!!",
         currentStep: 0
       });
     } else if (apps.length === 0) {
-      self.onDeploymentStateChanged({
+      this.onDeploymentStateChanged({
         steps: ["Parsing the template"],
         error: "Cannot parse the template. No services found!!",
         currentStep: 0
@@ -89,7 +88,7 @@ export default class OneClickAppDeployManager {
       for (let index = 0; index < apps.length; index++) {
         const appToDeploy = apps[index];
         steps.push(
-          ...self.createDeploymentStepPromises(
+          ...this.createDeploymentStepPromises(
             appToDeploy.appName,
             appToDeploy.service
           )
@@ -102,17 +101,17 @@ export default class OneClickAppDeployManager {
       }
 
       let currentStep = 0;
-      const onNextStepPromiseCreator = function() {
-        return new Promise<void>(function(resolve) {
+      const onNextStepPromiseCreator = () => {
+        return new Promise<void>((resolve) => {
           currentStep++;
-          self.onDeploymentStateChanged(
+          this.onDeploymentStateChanged(
             Utils.copyObject({
               steps: stepsTexts,
               error: "",
               currentStep,
               successMessage:
                 currentStep >= stepsTexts.length
-                  ? self.template!.instructions.end
+                  ? this.template!.instructions.end
                   : undefined
             })
           );
@@ -129,8 +128,8 @@ export default class OneClickAppDeployManager {
           .then(onNextStepPromiseCreator);
       }
 
-      promise.catch(function(error) {
-        self.onDeploymentStateChanged(
+      promise.catch((error) => {
+        this.onDeploymentStateChanged(
           Utils.copyObject({
             steps: stepsTexts,
             error: "Failed: " + error,
@@ -153,7 +152,7 @@ export default class OneClickAppDeployManager {
 
     let numberOfServices = 0;
     const servicesMap = this.template!.dockerCompose.services;
-    Object.keys(servicesMap).forEach(function(key) {
+    Object.keys(servicesMap).forEach((key) => {
       numberOfServices++;
     });
 
@@ -165,7 +164,7 @@ export default class OneClickAppDeployManager {
       }
       itCount++;
 
-      Object.keys(servicesMap).forEach(function(appName) {
+      Object.keys(servicesMap).forEach((appName) => {
         for (let index = 0; index < apps.length; index++) {
           const element = apps[index];
           if (element.appName === appName) {
@@ -205,12 +204,11 @@ export default class OneClickAppDeployManager {
     dockerComposeService: IDockerComposeService
   ): IDeploymentStep[] {
     const promises: IDeploymentStep[] = [];
-    const self = this;
 
     promises.push({
       stepName: `Registering ${appName}`,
-      stepPromise: function() {
-        return self.deploymentHelper.createRegisterPromise(
+      stepPromise: () => {
+        return this.deploymentHelper.createRegisterPromise(
           appName,
           dockerComposeService
         );
@@ -219,8 +217,8 @@ export default class OneClickAppDeployManager {
 
     promises.push({
       stepName: `Configuring ${appName} (volumes, ports, environmental variables)`,
-      stepPromise: function() {
-        return self.deploymentHelper.createConfigurationPromise(
+      stepPromise: () => {
+        return this.deploymentHelper.createConfigurationPromise(
           appName,
           dockerComposeService
         );
@@ -229,8 +227,8 @@ export default class OneClickAppDeployManager {
 
     promises.push({
       stepName: `Deploying ${appName} (might take up to a minute)`,
-      stepPromise: function() {
-        return self.deploymentHelper.createDeploymentPromise(
+      stepPromise: () => {
+        return this.deploymentHelper.createDeploymentPromise(
           appName,
           dockerComposeService
         );

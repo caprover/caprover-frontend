@@ -27,38 +27,34 @@ export default class CheckUpdate extends ApiComponent<
   }
 
   componentDidMount() {
-    const self = this;
-    self.setState({ isLoading: true });
-    self.apiManager
+    this.setState({ isLoading: true });
+    this.apiManager
       .getVersionInfo()
-      .then(function(data) {
-        self.setState({ versionInfo: data });
+      .then((data) => {
+        this.setState({ versionInfo: data });
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   onPerformUpdateClicked() {
-    const self = this;
     const versionInfo = this.state.versionInfo;
-    self.setState({ isLoading: true });
-    self.apiManager
+    this.setState({ isLoading: true });
+    this.apiManager
       .performUpdate(versionInfo!.latestVersion)
-      .then(function() {
-        self.setState({ isRefreshTimerActivated: true });
+      .then(() => {
+        this.setState({ isRefreshTimerActivated: true });
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   render() {
-    const self = this;
-
-    if (self.state.isLoading) {
+    if (this.state.isLoading) {
       return <CenteredSpinner />;
     }
 
@@ -106,7 +102,7 @@ export default class CheckUpdate extends ApiComponent<
         </div>
 
         <ReloadCaptainModal
-          isRefreshTimerActivated={self.state.isRefreshTimerActivated}
+          isRefreshTimerActivated={this.state.isRefreshTimerActivated}
         >
           <div>
             <p>

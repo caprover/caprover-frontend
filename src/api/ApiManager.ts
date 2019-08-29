@@ -22,9 +22,8 @@ export default class ApiManager {
   private http: HttpClient;
 
   constructor() {
-    const self = this;
-    this.http = new HttpClient(URL, ApiManager.authToken, function() {
-      return self.getAuthToken(ApiManager.lastKnownPassword);
+    this.http = new HttpClient(URL, ApiManager.authToken, () => {
+      return this.getAuthToken(ApiManager.lastKnownPassword);
     });
   }
 
@@ -54,11 +53,10 @@ export default class ApiManager {
     const http = this.http;
     ApiManager.lastKnownPassword = password;
 
-    const self = this;
-    return Promise.resolve() //
+    return Promise.resolve() 
       .then(http.fetch(http.POST, "/login", { password }))
-      .then(function(data) {
-        self.setAuthToken(data.token);
+      .then((data) => {
+        this.setAuthToken(data.token);
       });
   }
 

@@ -34,30 +34,26 @@ export default class Apps extends ApiComponent<
   }
 
   onCreateNewAppClicked(appName: string, hasPersistentData: boolean){
-    const self = this;
-
     Promise.resolve() //
-      .then(function() {
-        self.setState({ isLoading: true });
-        return self.apiManager.registerNewApp(appName, hasPersistentData, true);
+      .then(() => {
+        this.setState({ isLoading: true });
+        return this.apiManager.registerNewApp(appName, hasPersistentData, true);
       })
-      .then(function() {
-        return self.reFetchData();
+      .then(() => {
+        return this.reFetchData();
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 
   render() {
-    const self = this;
-
-    if (self.state.isLoading) {
+    if (this.state.isLoading) {
       return <CenteredSpinner />;
     }
 
-    const apiData = self.state.apiData;
+    const apiData = this.state.apiData;
 
     if (!apiData) {
       return <ErrorRetry />;
@@ -67,10 +63,10 @@ export default class Apps extends ApiComponent<
       <div>
         <CreateNewApp
           onCreateNewAppClicked={(appName: string, hasPersistency: boolean) => {
-            self.onCreateNewAppClicked(appName, hasPersistency);
+            this.onCreateNewAppClicked(appName, hasPersistency);
           }}
           onCreateOneClickAppClicked={() => {
-            self.onCreateOneClickAppClicked();
+            this.onCreateOneClickAppClicked();
           }}
         />
         <div style={{ height: 25 }} />
@@ -93,16 +89,15 @@ export default class Apps extends ApiComponent<
   }
 
   reFetchData() {
-    const self = this;
-    self.setState({ isLoading: true });
+    this.setState({ isLoading: true });
     return this.apiManager
       .getAllApps()
-      .then(function(data: any) {
-        self.setState({ apiData: data });
+      .then((data: any) => {
+        this.setState({ apiData: data });
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.setState({ isLoading: false });
       });
   }
 }

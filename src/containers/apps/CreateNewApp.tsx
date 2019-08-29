@@ -31,8 +31,6 @@ class CreateNewApp extends Component<
   }
 
   render() {
-    const self = this;
-
     return (
       <Row type="flex" justify="center">
         <Col xs={{ span: 23 }} lg={{ span: 10 }}>
@@ -45,25 +43,25 @@ class CreateNewApp extends Component<
             }
           >
             <Row>
-              {self.props.isMobile ? 
+              {this.props.isMobile ? 
                 <Fragment>
-                    <Input placeholder="my-amazing-app" onChange={e => self.setState({ appName: e.target.value })} />
-                    <Button style={{marginTop: 8}} block onClick={() => self.onCreateNewAppClicked()} type="primary">Create New App</Button>
+                    <Input placeholder="my-amazing-app" onChange={e => this.setState({ appName: e.target.value })} />
+                    <Button style={{marginTop: 8}} block onClick={() => this.onCreateNewAppClicked()} type="primary">Create New App</Button>
                 </Fragment>
                 :
                 <Search
                   placeholder="my-amazing-app"
                   enterButton="Create New App"
-                  onChange={e => self.setState({ appName: e.target.value })}
-                  onSearch={value => self.onCreateNewAppClicked()}
+                  onChange={e => this.setState({ appName: e.target.value })}
+                  onSearch={value => this.onCreateNewAppClicked()}
                 />
               }
             </Row>
             <br />
-            <Row type="flex" justify={self.props.isMobile ? "start" : "end"} >
+            <Row type="flex" justify={this.props.isMobile ? "start" : "end"} >
               <Checkbox
                 onChange={(e: any) =>
-                  self.setState({ hasPersistency: !!e.target.checked })
+                  this.setState({ hasPersistency: !!e.target.checked })
                 }
               >
                 Has Persistent Data
@@ -89,7 +87,7 @@ class CreateNewApp extends Component<
             <br />
             <div style={{ textAlign: "center" }}>
               <p>Or Select From</p>
-              <Button onClick={() => self.onCreateOneClickAppClicked()}>
+              <Button onClick={() => this.onCreateOneClickAppClicked()}>
                 One-Click Apps/Databases
               </Button>
             </div>
@@ -101,7 +99,7 @@ class CreateNewApp extends Component<
 }
 
 
-function mapStateToProps(state: any) {
+const mapStateToProps = (state: any) => {
   return {
     isMobile: state.globalReducer.isMobile
   };

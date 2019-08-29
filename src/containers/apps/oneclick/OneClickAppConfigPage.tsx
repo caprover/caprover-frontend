@@ -35,7 +35,6 @@ export default class OneClickAppConfigPage extends ApiComponent<
 
   constructor(props: any) {
     super(props);
-    const self = this;
     this.state = {
       apiData: undefined,
       rootDomain: "",
@@ -43,10 +42,10 @@ export default class OneClickAppConfigPage extends ApiComponent<
     };
     this.oneClickAppDeployHelper = new OneClickAppDeployManager(
       deploymentState => {
-        if (self.isUnmount) {
+        if (this.isUnmount) {
           return;
         }
-        self.setState({ deploymentState });
+        this.setState({ deploymentState });
       }
     );
   }
@@ -57,14 +56,12 @@ export default class OneClickAppConfigPage extends ApiComponent<
   }
 
   componentDidMount() {
-    const self = this;
-
     const appNameFromPath = this.props.match.params.appName;
     let promiseToFetchOneClick =
       appNameFromPath === TEMPLATE_ONE_CLICK_APP
-        ? new Promise<any>(function(resolve) {
+        ? new Promise<any>((resolve) => {
             resolve(
-              JSON.parse(queryString.parse(self.props.location.search)[
+              JSON.parse(queryString.parse(this.props.location.search)[
                 ONE_CLICK_APP_STRINGIFIED_KEY
               ] as string)
             );
@@ -74,7 +71,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
     let apiData: IOneClickTemplate;
 
     promiseToFetchOneClick
-      .then(function(data: IOneClickTemplate) {
+      .then((data: IOneClickTemplate) => {
         if ((data.captainVersion || "").toString() !== "2") {
           message.error(
             `One-click app version is ${
@@ -96,16 +93,15 @@ export default class OneClickAppConfigPage extends ApiComponent<
 
         apiData = data;
 
-        return self.apiManager.getCaptainInfo();
+        return this.apiManager.getCaptainInfo();
       })
-      .then(function(captainInfo) {
-        self.setState({ apiData: apiData, rootDomain: captainInfo.rootDomain });
+      .then((captainInfo) => {
+        this.setState({ apiData: apiData, rootDomain: captainInfo.rootDomain });
       })
       .catch(Toaster.createCatcher());
   }
 
   render() {
-    const self = this;
     const deploymentState = this.state.deploymentState;
     const apiData = this.state.apiData;
 
@@ -116,10 +112,10 @@ export default class OneClickAppConfigPage extends ApiComponent<
     if (!!deploymentState) {
       return (
         <OneClickAppDeployProgress
-          appName={self.props.match.params.appName}
+          appName={this.props.match.params.appName}
           deploymentState={deploymentState}
-          onFinishClicked={() => self.props.history.push("/apps")}
-          onRestartClicked={() => self.setState({ deploymentState: undefined })}
+          onFinishClicked={() => this.props.history.push("/apps")}
+          onRestartClicked={() => this.setState({ deploymentState: undefined })}
         />
       );
     }
@@ -143,7 +139,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
               <OneClickVariablesSection
                 oneClickAppVariables={apiData.variables}
                 onNextClicked={values => {
-                  const template = Utils.copyObject(self.state.apiData!);
+                  const template = Utils.copyObject(this.state.apiData!);
                   const valuesAugmented = Utils.copyObject(values);
 
                   template.variables.push({
@@ -151,9 +147,9 @@ export default class OneClickAppConfigPage extends ApiComponent<
                     label: "CapRover root domain"
                   });
                   valuesAugmented[ONE_CLICK_ROOT_DOMAIN_VAR_NAME] =
-                    self.state.rootDomain;
+                    this.state.rootDomain;
 
-                  self.oneClickAppDeployHelper.startDeployProcess(
+                  this.oneClickAppDeployHelper.startDeployProcess(
                     template,
                     valuesAugmented
                   );

@@ -37,52 +37,51 @@ export default class BuildLogsView extends ApiComponent<
   }
 
   fetchBuildLogs() {
-    const self = this;
     this.apiManager
       .fetchBuildLogs(this.props.appName)
-      .then(function(logInfo: {
+      .then((logInfo: {
         isAppBuilding: boolean;
         isBuildFailed: boolean;
         logs: {
           firstLineNumber: number;
           lines: string[];
         };
-      }) {
-        if (self.state.isAppBuilding && !logInfo.isAppBuilding) {
+      }) => {
+        if (this.state.isAppBuilding && !logInfo.isAppBuilding) {
           // App was building but not anymore
-          self.props.onAppBuildFinished();
+          this.props.onAppBuildFinished();
         }
 
-        self.setState({ isAppBuilding: logInfo.isAppBuilding });
+        this.setState({ isAppBuilding: logInfo.isAppBuilding });
         if (logInfo.isAppBuilding) {
           // forcefully expanding the view such that when building finishes it doesn't collapses automatically
-          self.setState({ expandedLogs: true });
+          this.setState({ expandedLogs: true });
         }
 
         let lines = logInfo.logs.lines;
         let firstLineNumberOfLogs = logInfo.logs.firstLineNumber;
         let firstLinesToPrint = 0;
-        if (firstLineNumberOfLogs > self.state.lastLineNumberPrinted) {
+        if (firstLineNumberOfLogs > this.state.lastLineNumberPrinted) {
           if (firstLineNumberOfLogs < 0) {
             // This is the very first fetch, probably firstLineNumberOfLogs is around -50
             firstLinesToPrint = -firstLineNumberOfLogs;
           } else {
-            self.setState({
-              buildLogs: self.state.buildLogs + "[[ TRUNCATED ]]\n"
+            this.setState({
+              buildLogs: this.state.buildLogs + "[[ TRUNCATED ]]\n"
             });
           }
         } else {
           firstLinesToPrint =
-            self.state.lastLineNumberPrinted - firstLineNumberOfLogs;
+            this.state.lastLineNumberPrinted - firstLineNumberOfLogs;
         }
 
-        self.setState({
+        this.setState({
           lastLineNumberPrinted: firstLineNumberOfLogs + lines.length
         });
 
         let lineAdded = false;
 
-        let buildLogs = self.state.buildLogs;
+        let buildLogs = this.state.buildLogs;
         const ansiRegex = Utils.getAnsiColorRegex();
         for (let i = firstLinesToPrint; i < lines.length; i++) {
           const newLine = (lines[i] || "").trim().replace(ansiRegex, "");
@@ -90,10 +89,10 @@ export default class BuildLogsView extends ApiComponent<
 
           lineAdded = true;
         }
-        self.setState({ buildLogs: buildLogs });
+        this.setState({ buildLogs: buildLogs });
 
         if (lineAdded) {
-          setTimeout(function() {
+          setTimeout(() => {
             let textarea = document.getElementById("buildlog-text-id");
             if (textarea) textarea.scrollTop = textarea.scrollHeight;
           }, 100);
@@ -103,10 +102,9 @@ export default class BuildLogsView extends ApiComponent<
   }
 
   componentDidMount() {
-    const self = this;
     this.fetchBuildLogs();
-    this.fetchBuildLogsInterval = setInterval(function() {
-      self.fetchBuildLogs();
+    this.fetchBuildLogsInterval = setInterval(() => {
+      this.fetchBuildLogs();
     }, 2000);
   }
 
@@ -115,7 +113,6 @@ export default class BuildLogsView extends ApiComponent<
   }
 
   render() {
-    const self = this;
     return (
       <div>
         <Row>
@@ -145,7 +142,7 @@ export default class BuildLogsView extends ApiComponent<
           <div>
             <ClickableLink
               onLinkClicked={() => {
-                self.onExpandLogClicked();
+                this.onExpandLogClicked();
               }}
             >
               <h4 className="unselectable-span">
@@ -173,7 +170,7 @@ export default class BuildLogsView extends ApiComponent<
                 whiteSpace: "pre"
               }}
             >
-              {self.state.buildLogs}
+              {this.state.buildLogs}
             </div>
           </div>
         </div>

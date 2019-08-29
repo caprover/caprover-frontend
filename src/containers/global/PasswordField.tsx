@@ -18,21 +18,19 @@ export default class PasswordField extends Component<
   }
 
   render() {
-    const self = this;
     return (
       <Fragment>
-        {self.state.isShowing ? self.createInput() : self.createButton()}
+        {this.state.isShowing ? this.createInput() : this.createButton()}
       </Fragment>
     );
   }
 
   createButton() {
-    const self = this;
     return (
       <Button
         style={{ width: "100%" }}
         onClick={() => {
-          self.setState({ isShowing: true });
+          this.setState({ isShowing: true });
         }}
       >
         Show Password
@@ -41,7 +39,6 @@ export default class PasswordField extends Component<
   }
 
   createInput() {
-    const self = this;
     return (
       <Input
         type="text"
@@ -49,10 +46,10 @@ export default class PasswordField extends Component<
         autoCorrect="off"
         autoComplete="off"
         autoCapitalize="off"
-        placeholder={self.props.placeholder}
-        addonBefore={self.props.addonBefore}
-        defaultValue={self.props.defaultValue}
-        onChange={e => self.props.onChange(e)}
+        placeholder={this.props.placeholder}
+        addonBefore={this.props.addonBefore}
+        defaultValue={this.props.defaultValue}
+        onChange={e => this.props.onChange(e)}
       />
     );
   }

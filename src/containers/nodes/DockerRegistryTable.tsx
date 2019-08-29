@@ -72,7 +72,6 @@ export default class DockerRegistryTable extends Component<
   }
 
   getCols(): ColumnProps<IRegistryInfo>[] {
-    const self = this;
     const columns = [
       {
         title: "User",
@@ -101,7 +100,7 @@ export default class DockerRegistryTable extends Component<
             <span>
               <ClickableLink
                 onLinkClicked={() => {
-                  self.editRegistry(reg);
+                  this.editRegistry(reg);
                 }}
               >
                 <Icon type="form" />
@@ -109,7 +108,7 @@ export default class DockerRegistryTable extends Component<
               &nbsp;&nbsp;&nbsp;&nbsp;
               <ClickableLink
                 onLinkClicked={() => {
-                  self.deleteRegistry(reg.id);
+                  this.deleteRegistry(reg.id);
                 }}
               >
                 <Icon type="delete" />
@@ -123,30 +122,28 @@ export default class DockerRegistryTable extends Component<
   }
 
   createEditModalContent() {
-    const self = this;
-
     return (
       <div style={{ maxWidth: 360 }}>
         <Input
           addonBefore="Username"
           placeholder="username | email@gmail.com"
           type="email"
-          value={self.state.remoteRegistryToEdit!.registryUser}
+          value={this.state.remoteRegistryToEdit!.registryUser}
           onChange={e => {
-            const newData = Utils.copyObject(self.state.remoteRegistryToEdit!);
+            const newData = Utils.copyObject(this.state.remoteRegistryToEdit!);
             newData.registryUser = e.target.value.trim();
-            self.setState({ remoteRegistryToEdit: newData });
+            this.setState({ remoteRegistryToEdit: newData });
           }}
         />
         <div style={{ height: 20 }} />
         <PasswordField
           addonBefore="Password"
           placeholder="mypassword"
-          defaultValue={self.state.remoteRegistryToEdit!.registryPassword}
+          defaultValue={this.state.remoteRegistryToEdit!.registryPassword}
           onChange={e => {
-            const newData = Utils.copyObject(self.state.remoteRegistryToEdit!);
+            const newData = Utils.copyObject(this.state.remoteRegistryToEdit!);
             newData.registryPassword = e.target.value;
-            self.setState({ remoteRegistryToEdit: newData });
+            this.setState({ remoteRegistryToEdit: newData });
           }}
         />
         <div style={{ height: 20 }} />
@@ -154,11 +151,11 @@ export default class DockerRegistryTable extends Component<
           addonBefore="Domain"
           placeholder="registry-1.docker.io"
           type="text"
-          value={self.state.remoteRegistryToEdit!.registryDomain}
+          value={this.state.remoteRegistryToEdit!.registryDomain}
           onChange={e => {
-            const newData = Utils.copyObject(self.state.remoteRegistryToEdit!);
+            const newData = Utils.copyObject(this.state.remoteRegistryToEdit!);
             newData.registryDomain = e.target.value.trim();
-            self.setState({ remoteRegistryToEdit: newData });
+            this.setState({ remoteRegistryToEdit: newData });
           }}
         />
         <div style={{ height: 20 }} />
@@ -171,11 +168,11 @@ export default class DockerRegistryTable extends Component<
             </Tooltip>
           }
           type="text"
-          value={self.state.remoteRegistryToEdit!.registryImagePrefix}
+          value={this.state.remoteRegistryToEdit!.registryImagePrefix}
           onChange={e => {
-            const newData = Utils.copyObject(self.state.remoteRegistryToEdit!);
+            const newData = Utils.copyObject(this.state.remoteRegistryToEdit!);
             newData.registryImagePrefix = e.target.value.trim();
-            self.setState({ remoteRegistryToEdit: newData });
+            this.setState({ remoteRegistryToEdit: newData });
           }}
         />
       </div>
@@ -183,18 +180,17 @@ export default class DockerRegistryTable extends Component<
   }
 
   render() {
-    const self = this;
     return (
       <div>
         <Modal
           title="Confirm Delete"
           okText="Delete Registry"
-          onCancel={() => self.setState({ modalShowing: undefined })}
+          onCancel={() => this.setState({ modalShowing: undefined })}
           onOk={() => {
-            self.setState({ modalShowing: undefined });
-            self.props.deleteRegistry(self.state.registryIdToDelete!);
+            this.setState({ modalShowing: undefined });
+            this.props.deleteRegistry(this.state.registryIdToDelete!);
           }}
-          visible={self.state.modalShowing === DELETING_MODAL}
+          visible={this.state.modalShowing === DELETING_MODAL}
         >
           Are you sure you want to remote this registry from your list. You will
           no longer be able to push to or pull from this registry.
@@ -202,17 +198,17 @@ export default class DockerRegistryTable extends Component<
         <Modal
           title="Edit Registry"
           okText="Save and Update"
-          onCancel={() => self.setState({ modalShowing: undefined })}
+          onCancel={() => this.setState({ modalShowing: undefined })}
           onOk={() => {
-            self.setState({ modalShowing: undefined });
-            self.props.editRegistry(
-              Utils.copyObject(self.state.remoteRegistryToEdit!)
+            this.setState({ modalShowing: undefined });
+            this.props.editRegistry(
+              Utils.copyObject(this.state.remoteRegistryToEdit!)
             );
           }}
-          visible={self.state.modalShowing === EDITING_MODAL}
+          visible={this.state.modalShowing === EDITING_MODAL}
         >
-          {self.state.remoteRegistryToEdit ? (
-            self.createEditModalContent()
+          {this.state.remoteRegistryToEdit ? (
+            this.createEditModalContent()
           ) : (
             <div />
           )}
@@ -244,7 +240,7 @@ export default class DockerRegistryTable extends Component<
               <span>
                 <ClickableLink
                   onLinkClicked={() => {
-                    self.editRegistry(registry);
+                    this.editRegistry(registry);
                   }}
                 >
                   <Icon type="form" />
@@ -252,7 +248,7 @@ export default class DockerRegistryTable extends Component<
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <ClickableLink
                   onLinkClicked={() => {
-                    self.deleteRegistry(registry.id);
+                    this.deleteRegistry(registry.id);
                   }}
                 >
                   <Icon type="delete" />

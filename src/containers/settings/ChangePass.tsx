@@ -21,7 +21,6 @@ export default class ChangePass extends ApiComponent<
   }
 
   onChangePasswordClicked() {
-    const self = this;
     if (!this.state.new1) {
       message.error("New password cannot be empty");
       return;
@@ -36,13 +35,13 @@ export default class ChangePass extends ApiComponent<
 
     this.apiManager
       .changePass(this.state.old, this.state.new1)
-      .then(function() {
+      .then(() => {
         message.success("Password changed successfully!");
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.apiManager.getAuthToken(self.state.new1);
-        self.setState({ isLoading: false });
+      .then(() => {
+        this.apiManager.getAuthToken(this.state.new1);
+        this.setState({ isLoading: false });
       });
   }
 

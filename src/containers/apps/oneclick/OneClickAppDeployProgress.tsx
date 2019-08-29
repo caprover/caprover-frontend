@@ -43,8 +43,6 @@ export default class OneClickAppDeployProgress extends Component<{
   }
 
   render() {
-    const self = this;
-
     return (
       <div>
         <div>
@@ -60,17 +58,17 @@ export default class OneClickAppDeployProgress extends Component<{
                   <div style={{ height: 20 }} />
                   <Steps
                     status={
-                      !!self.props.deploymentState.error ? "error" : undefined
+                      !!this.props.deploymentState.error ? "error" : undefined
                     }
                     direction="vertical"
-                    current={self.props.deploymentState.currentStep}
+                    current={this.props.deploymentState.currentStep}
                   >
-                    {self.createSteps()}
+                    {this.createSteps()}
                   </Steps>
 
                   <div
                     className={
-                      !!self.props.deploymentState.successMessage
+                      !!this.props.deploymentState.successMessage
                         ? ""
                         : "hide-on-demand"
                     }
@@ -81,7 +79,7 @@ export default class OneClickAppDeployProgress extends Component<{
                       type="success"
                       message={
                         <div style={{ whiteSpace: "pre-line" }}>
-                          {self.props.deploymentState.successMessage}
+                          {this.props.deploymentState.successMessage}
                         </div>
                       }
                     />
@@ -91,7 +89,7 @@ export default class OneClickAppDeployProgress extends Component<{
                         style={{ minWidth: 150 }}
                         size="large"
                         type="primary"
-                        onClick={() => self.props.onFinishClicked()}
+                        onClick={() => this.props.onFinishClicked()}
                       >
                         Finish
                       </Button>
@@ -100,14 +98,14 @@ export default class OneClickAppDeployProgress extends Component<{
 
                   <div
                     className={
-                      !!self.props.deploymentState.error ? "" : "hide-on-demand"
+                      !!this.props.deploymentState.error ? "" : "hide-on-demand"
                     }
                   >
                     <div style={{ height: 20 }} />
                     <Alert
                       showIcon
                       type="error"
-                      message={self.props.deploymentState.error}
+                      message={this.props.deploymentState.error}
                     />
                     <div style={{ height: 80 }} />
 
@@ -115,7 +113,7 @@ export default class OneClickAppDeployProgress extends Component<{
                       <Button
                         size="large"
                         type="primary"
-                        onClick={() => self.props.onRestartClicked()}
+                        onClick={() => this.props.onRestartClicked()}
                       >
                         Go Back &amp; Try Again
                       </Button>

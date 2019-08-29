@@ -22,7 +22,6 @@ export default class NetDataSettingsForm extends Component<{
   }
 
   render() {
-    const self = this;
     const netDataInfo = this.props.netDataInfo;
     return (
       <div>
@@ -46,7 +45,7 @@ export default class NetDataSettingsForm extends Component<{
                   type="text"
                   placeholder="alerts.receiver@example.com"
                   value={netDataInfo.data.smtp.to}
-                  onChange={e => self.changeModel("smtp", "to", e.target.value)}
+                  onChange={e => this.changeModel("smtp", "to", e.target.value)}
                 />
               </Col>
 
@@ -57,7 +56,7 @@ export default class NetDataSettingsForm extends Component<{
                   placeholder="my-aws-server-01-anything"
                   value={netDataInfo.data.smtp.hostname}
                   onChange={e =>
-                    self.changeModel("smtp", "hostname", e.target.value)
+                    this.changeModel("smtp", "hostname", e.target.value)
                   }
                 />
               </Col>
@@ -69,7 +68,7 @@ export default class NetDataSettingsForm extends Component<{
                   placeholder="smtp.gmail.com"
                   value={netDataInfo.data.smtp.server}
                   onChange={e =>
-                    self.changeModel("smtp", "server", e.target.value)
+                    this.changeModel("smtp", "server", e.target.value)
                   }
                 />
               </Col>
@@ -81,7 +80,7 @@ export default class NetDataSettingsForm extends Component<{
                   placeholder="587"
                   value={netDataInfo.data.smtp.port}
                   onChange={e =>
-                    self.changeModel("smtp", "port", e.target.value)
+                    this.changeModel("smtp", "port", e.target.value)
                   }
                 />
               </Col>
@@ -91,7 +90,7 @@ export default class NetDataSettingsForm extends Component<{
                 <Checkbox
                   checked={!!netDataInfo.data.smtp.allowNonTls}
                   onChange={e =>
-                    self.changeModel("smtp", "allowNonTls", e.target.checked)
+                    this.changeModel("smtp", "allowNonTls", e.target.checked)
                   }
                 >
                   allow non-TLS
@@ -105,7 +104,7 @@ export default class NetDataSettingsForm extends Component<{
                   placeholder="alerts.receiver@example.com"
                   value={netDataInfo.data.smtp.username}
                   onChange={e =>
-                    self.changeModel("smtp", "username", e.target.value)
+                    this.changeModel("smtp", "username", e.target.value)
                   }
                 />
               </Col>
@@ -115,7 +114,7 @@ export default class NetDataSettingsForm extends Component<{
                 <PasswordField
                   defaultValue={netDataInfo.data.smtp.password}
                   onChange={e =>
-                    self.changeModel("smtp", "password", e.target.value)
+                    this.changeModel("smtp", "password", e.target.value)
                   }
                 />
               </Col>
@@ -134,7 +133,7 @@ export default class NetDataSettingsForm extends Component<{
                   placeholder="https://hooks.slack.com/services/XXXX"
                   value={netDataInfo.data.slack.hook}
                   onChange={e =>
-                    self.changeModel("slack", "hook", e.target.value)
+                    this.changeModel("slack", "hook", e.target.value)
                   }
                 />
               </Col>
@@ -145,7 +144,7 @@ export default class NetDataSettingsForm extends Component<{
                   placeholder="alertschannel"
                   value={netDataInfo.data.slack.channel}
                   onChange={e =>
-                    self.changeModel("slack", "channel", e.target.value)
+                    this.changeModel("slack", "channel", e.target.value)
                   }
                 />
               </Col>
@@ -164,7 +163,7 @@ export default class NetDataSettingsForm extends Component<{
                   placeholder="TELEGRAM_BOT_TOKEN"
                   value={netDataInfo.data.telegram.botToken}
                   onChange={e =>
-                    self.changeModel("telegram", "botToken", e.target.value)
+                    this.changeModel("telegram", "botToken", e.target.value)
                   }
                 />
               </Col>
@@ -175,7 +174,7 @@ export default class NetDataSettingsForm extends Component<{
                   placeholder="Telegram Chat ID"
                   value={netDataInfo.data.telegram.chatId}
                   onChange={e =>
-                    self.changeModel("telegram", "chatId", e.target.value)
+                    this.changeModel("telegram", "chatId", e.target.value)
                   }
                 />
               </Col>
@@ -194,7 +193,7 @@ export default class NetDataSettingsForm extends Component<{
                   placeholder="PUSH_BULLET_API_TOKEN"
                   value={netDataInfo.data.pushBullet.apiToken}
                   onChange={e =>
-                    self.changeModel("pushBullet", "apiToken", e.target.value)
+                    this.changeModel("pushBullet", "apiToken", e.target.value)
                   }
                 />
               </Col>
@@ -205,7 +204,7 @@ export default class NetDataSettingsForm extends Component<{
                   placeholder="alerts.receiver@example.com"
                   value={netDataInfo.data.pushBullet.fallbackEmail}
                   onChange={e =>
-                    self.changeModel(
+                    this.changeModel(
                       "pushBullet",
                       "fallbackEmail",
                       e.target.value

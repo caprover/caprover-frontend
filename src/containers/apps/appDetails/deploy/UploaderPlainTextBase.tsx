@@ -28,40 +28,37 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
   ): string;
 
   startDeploy(captainDefinitionToBeUploaded: string) {
-    const self = this;
-
     Promise.resolve() //
-      .then(function() {
-        self.setState({ uploadInProcess: true });
-        return self.apiManager.uploadCaptainDefinitionContent(
-          self.props.appName,
+      .then(() => {
+        this.setState({ uploadInProcess: true });
+        return this.apiManager.uploadCaptainDefinitionContent(
+          this.props.appName,
           JSON.parse(captainDefinitionToBeUploaded),
           "",
           true
         );
       })
-      .then(function() {
-        self.setState({ userEnteredValue: "" });
-        self.props.onUploadSucceeded();
+      .then(() => {
+        this.setState({ userEnteredValue: "" });
+        this.props.onUploadSucceeded();
       })
       .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ uploadInProcess: false });
+      .then(() => {
+        this.setState({ uploadInProcess: false });
       });
   }
 
   render() {
-    const self = this;
     return (
       <div style={{ padding: 16 }}>
         <Row>
           <Input.TextArea
             className="code-input"
-            placeholder={self.getPlaceHolderValue()}
+            placeholder={this.getPlaceHolderValue()}
             rows={7}
-            value={self.state.userEnteredValue}
+            value={this.state.userEnteredValue}
             onChange={e => {
-              self.setState({
+              this.setState({
                 userEnteredValue: e.target.value
               });
             }}
@@ -71,12 +68,12 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
         <Row type="flex" justify="end">
           <Button
             disabled={
-              self.state.uploadInProcess || !self.state.userEnteredValue.trim()
+              this.state.uploadInProcess || !this.state.userEnteredValue.trim()
             }
             type="primary"
             onClick={() =>
-              self.startDeploy(
-                self.convertDataToCaptainDefinition(self.state.userEnteredValue)
+              this.startDeploy(
+                this.convertDataToCaptainDefinition(this.state.userEnteredValue)
               )
             }
           >

@@ -5,7 +5,6 @@ import { emitRootKeyChanged } from "../../redux/actions/GlobalActions";
 
 class ErrorRetry extends Component<any, {}> {
   render() {
-    const self = this;
     return (
       <div style={{ textAlign: "center", padding: 36 }}>
         <p>An error occurred. Please try again.</p>
@@ -13,7 +12,7 @@ class ErrorRetry extends Component<any, {}> {
           <Button
             type="primary"
             onClick={() => {
-              self.props.emitRootKeyChanged();
+              this.props.emitRootKeyChanged();
             }}
           >
             Reload

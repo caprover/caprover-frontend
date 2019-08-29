@@ -54,11 +54,10 @@ export default class UnusedImagesTable extends Component<{
 
   getRowSelection() {
     // rowSelection object indicates the need for row selection
-    const self = this;
     const rowSelection = {
       onChange: (selectedRowKeys: any, selectedRows: any[]) => {
         console.log(selectedRowKeys)
-        self.props.updateModel(selectedRowKeys);
+        this.props.updateModel(selectedRowKeys);
       },
       getCheckboxProps: (record: any) => ({
         disabled: false, // Column configuration not to be checked
