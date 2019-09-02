@@ -40,4 +40,9 @@ hr {
     border-radius: 5px;
     padding: 10px;
     font-size: 90%;
+    width: 100%;
+}
+
+.logs-output:focus {
+    outline: none;
 }

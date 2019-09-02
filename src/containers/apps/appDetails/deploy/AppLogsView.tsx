@@ -172,15 +172,15 @@ export default class AppLogsView extends ApiComponent<
             className={this.state.expandedLogs ? "" : "hide-on-demand"}
             style={{ padding: 5 }}
           >
-            <div
+            <textarea
               id="applogs-text-id"
               className="logs-output"
               style={{
                 whiteSpace: self.state.isWrapped ? "pre-line" : "pre"
               }}
-            >
-              {self.state.appLogsStringified}
-            </div>
+              value={self.state.appLogsStringified}
+              readOnly
+            />
           </div>
         </div>
       </div>
