@@ -10,41 +10,10 @@ export default class PasswordField extends Component<
   },
   any
 > {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      isShowing: !props.defaultValue
-    };
-  }
-
   render() {
     const self = this;
     return (
-      <Fragment>
-        {self.state.isShowing ? self.createInput() : self.createButton()}
-      </Fragment>
-    );
-  }
-
-  createButton() {
-    const self = this;
-    return (
-      <Button
-        style={{ width: "100%" }}
-        onClick={() => {
-          self.setState({ isShowing: true });
-        }}
-      >
-        Show Password
-      </Button>
-    );
-  }
-
-  createInput() {
-    const self = this;
-    return (
-      <Input
-        type="text"
+      <Input.Password
         spellCheck={false}
         autoCorrect="off"
         autoComplete="off"
