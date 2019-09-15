@@ -2,18 +2,20 @@ import { Card, Icon, Modal, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import moment from "moment";
 import React, { Component, Fragment } from "react";
-import Utils from "../../../../utils/Utils";
-import ClickableLink from "../../../global/ClickableLink";
-import { IAppVersion } from "../../AppDefinition";
+import Utils from "../../../../../utils/Utils";
+import { AppDetailsContext } from "../../AppDetailsProvider";
+import ClickableLink from "../../../../global/ClickableLink";
+import { IAppVersion } from "../../../AppDefinition";
+import Toaster from "../../../../../utils/Toaster";
 
-export default class AppVersionTable extends Component<{
-  versions: IAppVersion[];
-  deployedVersion: number;
-  onVersionRollbackRequested: (versionToRevert: IAppVersion) => void;
-  isMobile: boolean;
-}> {
+export default class AppVersionTable extends Component {
+  static contextType = AppDetailsContext;
+  context!: React.ContextType<typeof AppDetailsContext>;
+
   getStateRender(version: number, versionDetails: IAppVersion) {
-    if (version === this.props.deployedVersion) {
+    const { appDefinition: app } = this.context!;
+
+    if (version === app.deployedVersion) {
       return (
         <Tooltip title="Current Version">
           <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
@@ -98,7 +100,7 @@ export default class AppVersionTable extends Component<{
     const imageName = versionToRevert.deployedImageName!;
     let content = (
       <span>
-        {`If you had previously deleted this image explicitly through disk cleanup, 
+        {`If you had previously deleted this image explicitly through disk cleanup,
       this revert process will fail.`}
         <br />
         <br />
@@ -109,9 +111,9 @@ export default class AppVersionTable extends Component<{
     if (imageName.indexOf("/") > 0) {
       content = (
         <span>
-          {`${imageName} appears to be hosted on Docker Registry. 
-        Make sure you have not deleted this image from the repository since it was originally deployed. 
-        Deletion usually does not happen automatically, so if you have not deleted the image intentionally, 
+          {`${imageName} appears to be hosted on Docker Registry.
+        Make sure you have not deleted this image from the repository since it was originally deployed.
+        Deletion usually does not happen automatically, so if you have not deleted the image intentionally,
         you don't need to worry about this.`}
           <br />
           <br />
@@ -124,20 +126,30 @@ export default class AppVersionTable extends Component<{
       title: "Rollback?",
       content,
       onOk: () => {
-        self.props.onVersionRollbackRequested(versionToRevert);
+        self.onVersionRollbackRequested(versionToRevert);
       }
     });
   }
 
+  onVersionRollbackRequested = async (version: IAppVersion) => {
+    try {
+      this.context!.rollbackToVersion(version)
+    } catch(err) {
+      Toaster.toast(err)
+    }
+  }
+
   render() {
-    const self = this;
-    const versionsReversed = Utils.copyObject(self.props.versions).reverse();
+    const { appDefinition: app } = this.context!;
+    const versionsReversed = Utils.copyObject(app.versions as IAppVersion[]).reverse();
     const columns = this.getCols();
+    const { isMobile } = this.context!;
+
     return (
       <div>
         <h3>Version History</h3>
         <div>
-          {this.props.isMobile ? (
+          {isMobile ? (
             versionsReversed.map(
               (version, i) =>
                 i <= 5 && (

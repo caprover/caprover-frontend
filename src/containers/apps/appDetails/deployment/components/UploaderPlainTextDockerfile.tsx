@@ -1,5 +1,5 @@
 import UploaderPlainTextCaptainDefinition from "./UploaderPlainTextCaptainDefinition";
-import { ICaptainDefinition } from "../../../../models/ICaptainDefinition";
+import { ICaptainDefinition } from "../../../../../models/ICaptainDefinition";
 
 export default class UploaderPlainTextDockerfile extends UploaderPlainTextCaptainDefinition {
   protected getPlaceHolderValue() {

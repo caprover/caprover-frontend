@@ -1,23 +1,21 @@
 import { Button, Col, Icon, message, Row, Upload } from "antd";
 import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
-import React from "react";
-import Toaster from "../../../../utils/Toaster";
-import ApiComponent from "../../../global/ApiComponent";
+import React, { Component } from "react";
+import Toaster from "../../../../../utils/Toaster";
+import { AppDetailsContext } from "../../AppDetailsProvider";
 
-export default class TarUploader extends ApiComponent<
+export default class TarUploader extends Component<
   {
-    appName: string;
-    onUploadSucceeded: () => void;
   },
   {
     fileToBeUploaded: UploadFile | undefined;
   }
 > {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      fileToBeUploaded: undefined
-    };
+  static contextType = AppDetailsContext;
+  context!: React.ContextType<typeof AppDetailsContext>
+
+  state = {
+    fileToBeUploaded: undefined,
   }
 
   beforeUpload = (file: File) => {
@@ -49,28 +47,17 @@ export default class TarUploader extends ApiComponent<
     this.setState({ fileToBeUploaded: file });
   };
 
-  startUploadAndDeploy() {
-    const self = this;
-
-    const file = self.state.fileToBeUploaded!;
-    self.setState({ fileToBeUploaded: undefined });
+  async startUploadAndDeploy() {
+    const file: any = this.state.fileToBeUploaded!;
+    this.setState({ fileToBeUploaded: undefined });
     message.info("Upload has started");
 
-    Promise.resolve()
-      .then(function() {
-        return self.apiManager.uploadAppData(
-          self.props.appName,
-          file.originFileObj! as File
-        );
-      })
-      .then(function() {
-        self.props.onUploadSucceeded();
-      })
-      .catch(
-        Toaster.createCatcher(function() {
-          self.setState({ fileToBeUploaded: file });
-        })
-      );
+    try {
+      await this.context!.uploadAppData(file.originFileObj! as File)
+    } catch(err) {
+      Toaster.toast(err)
+      this.setState({ fileToBeUploaded: file })
+    }
   }
 
   render() {
@@ -84,7 +71,7 @@ export default class TarUploader extends ApiComponent<
               multiple={false}
               fileList={
                 this.state.fileToBeUploaded
-                  ? [this.state.fileToBeUploaded]
+                  ? [this.state.fileToBeUploaded!]
                   : undefined
               }
               listType="text"

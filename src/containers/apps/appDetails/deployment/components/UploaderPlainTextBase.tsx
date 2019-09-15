@@ -1,25 +1,23 @@
 import { Button, Input, Row } from "antd";
-import React from "react";
-import Toaster from "../../../../utils/Toaster";
-import ApiComponent from "../../../global/ApiComponent";
+import React, { Component } from "react";
+import Toaster from "../../../../../utils/Toaster";
+import { AppDetailsContext } from "../../AppDetailsProvider";
 
-export default abstract class UploaderPlainTextBase extends ApiComponent<
+export default abstract class UploaderPlainTextBase extends Component<
   {
-    appName: string;
-    onUploadSucceeded: () => void;
   },
   {
     userEnteredValue: string;
     uploadInProcess: boolean;
   }
 > {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      userEnteredValue: "",
-      uploadInProcess: false
-    };
-  }
+  static contextType = AppDetailsContext;
+  context!: React.ContextType<typeof AppDetailsContext>
+
+  state = {
+    userEnteredValue: "",
+    uploadInProcess: false,
+  };
 
   protected abstract getPlaceHolderValue(): string;
 
@@ -27,27 +25,16 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
     userEnteredValue: string
   ): string;
 
-  startDeploy(captainDefinitionToBeUploaded: string) {
-    const self = this;
+  async startDeploy(captainDefinitionToBeUploaded: string) {
+    this.setState({ uploadInProcess: true });
+    try {
+      await this.context!.uploadCaptainDefinitionContent(captainDefinitionToBeUploaded);
+      this.setState({ userEnteredValue: "" });
+    } catch (err) {
+      Toaster.toast(err)
+    }
 
-    Promise.resolve() //
-      .then(function() {
-        self.setState({ uploadInProcess: true });
-        return self.apiManager.uploadCaptainDefinitionContent(
-          self.props.appName,
-          JSON.parse(captainDefinitionToBeUploaded),
-          "",
-          true
-        );
-      })
-      .then(function() {
-        self.setState({ userEnteredValue: "" });
-        self.props.onUploadSucceeded();
-      })
-      .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ uploadInProcess: false });
-      });
+    this.setState({ uploadInProcess: false });
   }
 
   render() {

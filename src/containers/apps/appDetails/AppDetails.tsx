@@ -14,21 +14,19 @@ import {
   Tooltip,
   Alert
 } from "antd";
-import React, { RefObject } from "react";
+import React, { RefObject, Component } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
-import ApiManager from "../../../api/ApiManager";
 import { IHashMapGeneric } from "../../../models/IHashMapGeneric";
 import Toaster from "../../../utils/Toaster";
-import Utils from "../../../utils/Utils";
-import ApiComponent from "../../global/ApiComponent";
 import CenteredSpinner from "../../global/CenteredSpinner";
 import ClickableLink from "../../global/ClickableLink";
 import ErrorRetry from "../../global/ErrorRetry";
-import { IAppDef } from "../AppDefinition";
-import AppConfigs from "./AppConfigs";
-import Deployment from "./deploy/Deployment";
-import HttpSettings from "./HttpSettings";
+import { IAppDef, IAppVolume } from "../AppDefinition";
+import AppConfigsTab from "./appConfigs/AppConfigsTab";
+import DeploymentTab from "./deployment/DeploymentTab";
+import HttpSettingsTab from "./httpSettings/HttpSettingsTab";
+import AppDetailsProvider, { AppDetailsContext } from "./AppDetailsProvider";
 const TabPane = Tabs.TabPane;
 
 const WEB_SETTINGS = "WEB_SETTINGS";
@@ -41,43 +39,36 @@ export interface SingleAppApiData {
   defaultNginxConfig: string;
 }
 
-export interface AppDetailsTabProps {
-  apiData: SingleAppApiData;
-  apiManager: ApiManager;
-  updateApiData: Function;
-  onUpdateConfigAndSave: () => void;
-  reFetchData: () => void;
-  setLoading: (value: boolean) => void;
-  isMobile: boolean;
-}
-
 interface PropsInterface extends RouteComponentProps<any> {
   mainContainer: RefObject<HTMLDivElement>;
-  isMobile: boolean;
 }
 
-class AppDetails extends ApiComponent<
-  PropsInterface,
-  {
-    isLoading: boolean;
-    apiData: SingleAppApiData | undefined;
-    activeTabKey: string;
-    renderCounterForAffixBug: number;
-  }
+class AppDetails extends Component<
+  PropsInterface
 > {
+  static contextType = AppDetailsContext;
+  context!: React.ContextType<typeof AppDetailsContext>
   private reRenderTriggered = false;
-  private confirmedAppNameToDelete: string = "";
-  private volumesToDelete: IHashMapGeneric<boolean> = {};
 
-  constructor(props: any) {
-    super(props);
+  state = {
+    activeTabKey: WEB_SETTINGS,
+    renderCounterForAffixBug: 0,
+    confirmedAppNameToDelete: "",
+    volumesToDelete: {} as IHashMapGeneric<boolean>,
+  }
 
-    this.state = {
-      activeTabKey: WEB_SETTINGS,
-      isLoading: true,
-      renderCounterForAffixBug: 0,
-      apiData: undefined
-    };
+  componentDidMount() {
+    this.context!.fetchAppData()
+  }
+
+  asyncSetState = async (state: any) => new Promise((resolve) => this.setState(state, resolve))
+
+  async reFetchData() {
+    const app = await this.context!.fetchAppData()
+    if (!app) {
+      // App Not Found!
+      this.goBackToApps();
+    }
   }
 
   goBackToApps() {
@@ -86,8 +77,9 @@ class AppDetails extends ApiComponent<
 
   openRenameAppDialog() {
     const self = this;
-    const app = self.state.apiData!.appDefinition;
+    const { appDefinition: app } = this.context!;
     const tempVal = { newName: app.appName };
+
     Modal.confirm({
       title: "Rename the app:",
       content: (
@@ -115,8 +107,9 @@ class AppDetails extends ApiComponent<
 
   viewDescription() {
     const self = this;
-    const app = self.state.apiData!.appDefinition;
+    const { appDefinition: app } = this.context!;
     const tempVal = { tempDescription: app.description };
+
     Modal.confirm({
       title: "App Description:",
       content: (
@@ -140,190 +133,172 @@ class AppDetails extends ApiComponent<
     });
   }
 
-  onDeleteAppClicked() {
-    const self = this;
-    const appDef = Utils.copyObject(self.state.apiData!.appDefinition);
-
-    self.confirmedAppNameToDelete = "";
-
-    const allVolumes: string[] = [];
-
-    self.volumesToDelete = {};
-
-    if (appDef.volumes) {
-      appDef.volumes.forEach(v => {
-        if (v.volumeName) {
-          allVolumes.push(v.volumeName);
-          self.volumesToDelete[v.volumeName] = true;
-        }
-      });
-    }
-
-    Modal.confirm({
-      title: "Confirm Permanent Delete?",
-      content: (
-        <div>
+  getDeleteModalContent = (app: IAppDef, volumes: string[]) => {
+    return (
+      <div>
+        <p>
+          You are about to delete <code>{app.appName}</code>. Enter the
+          name of this app in the box below to confirm deletion of this app.
+          Please note that this is
+          <b> not reversible</b>.
+        </p>
+        {volumes.length > 0 && (
           <p>
-            You are about to delete <code>{appDef.appName}</code>. Enter the
-            name of this app in the box below to confirm deletion of this app.
-            Please note that this is
-            <b> not reversible</b>.
-          </p>
-          <p className={allVolumes.length ? "" : "hide-on-demand"}>
             Please select the volumes you want to delete. Note that if any of
             the volumes are being used by other CapRover apps, they will not be
             deleted even if you select them. <b>Note: </b>deleting volumes takes
             more than 10 seconds, please be patient
           </p>
-          {allVolumes.map(v => {
-            return (
-              <div key={v}>
-                <Checkbox
-                  defaultChecked={!!self.volumesToDelete[v]}
-                  onChange={(e: any) => {
-                    self.volumesToDelete[v] = !self.volumesToDelete[v];
-                  }}
-                >
-                  {v}
-                </Checkbox>
-              </div>
-            );
-          })}
-          <br />
-          <br />
-
-          <p>Confirm App Name:</p>
-          <Input
-            type="text"
-            placeholder={appDef.appName}
-            onChange={e => {
-              self.confirmedAppNameToDelete = e.target.value.trim();
-            }}
-          />
-        </div>
-      ),
-      onOk() {
-        if (self.confirmedAppNameToDelete !== appDef.appName) {
-          message.warning("App name did not match. Operation cancelled.");
-          return;
-        }
-
-        const volumes: string[] = [];
-        Object.keys(self.volumesToDelete).forEach(v => {
-          if (self.volumesToDelete[v]) {
-            volumes.push(v);
-          }
-        });
-
-        self.setState({ isLoading: true });
-        self.apiManager
-          .deleteApp(appDef.appName!, volumes)
-          .then(function(data) {
-            const volumesFailedToDelete = data.volumesFailedToDelete as string[];
-            if (volumesFailedToDelete && volumesFailedToDelete.length) {
-              Modal.info({
-                title: "Some volumes weren't deleted!",
-                content: (
-                  <div>
-                    <p>
-                      Some volumes weren't deleted because they were probably
-                      being used by other containers. Sometimes, this is because
-                      of a temporary delay when the original container deletion
-                      was done with a delay. Please see{" "}
-                      <a
-                        href="https://caprover.com/docs/app-configuration.html#removing-persistent-apps"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        documentations
-                      </a>{" "}
-                      and delete them manually if needed. Skipped volumes are:
-                    </p>
-                    <ul>
-                      {volumesFailedToDelete.map(v => (
-                        <li>
-                          <code>{v}</code>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )
-              });
-            }
-            message.success("App deleted!");
-          })
-          .then(function() {
-            self.goBackToApps();
-          })
-          .catch(
-            Toaster.createCatcher(function() {
-              self.setState({ isLoading: false });
-            })
+        )}
+        {volumes.map(v => {
+          return (
+            <div key={v}>
+              <Checkbox
+                defaultChecked={!!this.state.volumesToDelete[v]}
+                onChange={() => {
+                  this.setState({ volumesToDelete: { ...this.state.volumesToDelete, [v]: !this.state.volumesToDelete[v] }})
+                }}
+              >
+                {v}
+              </Checkbox>
+            </div>
           );
-      },
-      onCancel() {
-        // do nothing
+        })}
+        <br />
+        <br />
+
+        <p>Confirm App Name:</p>
+        <Input
+          type="text"
+          placeholder={app.appName}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            this.setState({ confirmedAppNameToDelete: e.target.value.trim() })
+          }}
+        />
+      </div>
+    )
+  }
+
+  async onDeleteConfirm() {
+    const { appDefinition: app } = this.context!;
+
+    if (this.state.confirmedAppNameToDelete !== app.appName) {
+      message.warning("App name did not match. Operation cancelled.");
+      return;
+    }
+
+    const volumes: string[] = [];
+    Object.keys(this.state.volumesToDelete).forEach(v => {
+      if (this.state.volumesToDelete[v]) {
+        volumes.push(v);
+      }
+    });
+
+    try {
+      const data = await this.context!.deleteApp(app.appName, volumes);
+
+      const volumesFailedToDelete = data ? data.volumesFailedToDelete as string[] : null;
+      if (volumesFailedToDelete && volumesFailedToDelete.length) {
+        Modal.info({
+          title: "Some volumes weren't deleted!",
+          content: (
+            <div>
+              <p>
+                Some volumes weren't deleted because they were probably
+                being used by other containers. Sometimes, this is because
+                of a temporary delay when the original container deletion
+                was done with a delay. Please see{" "}
+                <a
+                  href="https://caprover.com/docs/app-configuration.html#removing-persistent-apps"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  documentations
+                </a>{" "}
+                and delete them manually if needed. Skipped volumes are:
+              </p>
+              <ul>
+                {volumesFailedToDelete.map(v => (
+                  <li>
+                    <code>{v}</code>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        });
+      }
+      message.success("App deleted!");
+      this.goBackToApps();
+    } catch(err) {
+      Toaster.toast(err)
+    }
+  }
+
+  async onDeleteAppClicked() {
+    const self = this
+    const { appDefinition: app } = this.context!
+
+    const allVolumes: string[] = [];
+    const volumesToDelete: IHashMapGeneric<boolean> = {}
+
+    if (app.volumes) {
+      app.volumes.forEach((v: IAppVolume) => {
+        if (v.volumeName) {
+          allVolumes.push(v.volumeName);
+          volumesToDelete[v.volumeName] = true;
+        }
+      });
+    }
+
+    await this.asyncSetState({ volumesToDelete, confirmedAppNameToDelete: "" })
+
+    Modal.confirm({
+      title: "Confirm Permanent Delete?",
+      content: this.getDeleteModalContent(app, allVolumes),
+      onOk() {
+        self.onDeleteConfirm();
       }
     });
   }
 
-  renameAppTo(newName: string) {
-    const self = this;
-    const appDef = Utils.copyObject(self.state.apiData!.appDefinition);
-    self.setState({ isLoading: true });
-    this.apiManager
-      .renameApp(appDef.appName!, newName)
-      .then(function() {
-        return self.reFetchData();
-      })
-      .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
-      });
+  async renameAppTo(newName: string) {
+    try {
+      await this.context!.renameApp(newName);
+    } catch (err) {
+      Toaster.toast(err);
+    }
   }
 
   onUpdateConfigAndSave() {
-    const self = this;
-    const appDef = Utils.copyObject(self.state.apiData!.appDefinition);
-    self.setState({ isLoading: true });
-    this.apiManager
-      .updateConfigAndSave(appDef.appName!, appDef)
-      .then(function() {
-        return self.reFetchData();
-      })
-      .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
-      });
+    this.context!.save()
   }
 
   render() {
-    const self = this;
+    const { appData, appDefinition: app, isMobile } = this.context!
 
-    if (self.state.isLoading) {
+    if (appData.isLoading) {
       return <CenteredSpinner />;
     }
 
-    if (!self.reRenderTriggered) {
+    if (!this.reRenderTriggered) {
       //crazy hack to make sure the Affix is showing (delete and save & update)
-      self.reRenderTriggered = true;
-      setTimeout(function() {
-        self.setState({ renderCounterForAffixBug: 1 });
-      }, 50);
+      this.reRenderTriggered = true;
+      setTimeout(() =>
+        this.setState({ renderCounterForAffixBug: 1 })
+      , 50);
     }
 
-    if (!self.state.apiData) {
+    if (!app) {
       return <ErrorRetry />;
     }
-
-    const app = self.state.apiData.appDefinition;
 
     return (
       <Row>
         <Col span={20} offset={2}>
           <Card
             extra={
-              <ClickableLink onLinkClicked={() => self.goBackToApps()}>
+              <ClickableLink onLinkClicked={this.goBackToApps}>
                 <Tooltip title="Close">
                   <Icon type="close" />
                 </Tooltip>
@@ -331,7 +306,7 @@ class AppDetails extends ApiComponent<
             }
             title={
               <span>
-                <ClickableLink onLinkClicked={() => self.openRenameAppDialog()}>
+                <ClickableLink onLinkClicked={this.openRenameAppDialog}>
                   <Tooltip title="Rename app" placement="bottom">
                     <Icon type="edit" />
                   </Tooltip>
@@ -339,7 +314,7 @@ class AppDetails extends ApiComponent<
                 &nbsp;&nbsp;
                 {app.appName}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <ClickableLink onLinkClicked={() => self.viewDescription()}>
+                <ClickableLink onLinkClicked={this.viewDescription}>
                   <Popover
                     placement="bottom"
                     content={
@@ -357,57 +332,27 @@ class AppDetails extends ApiComponent<
           >
             <Tabs
               defaultActiveKey={WEB_SETTINGS}
-              onChange={key => {
-                self.setState({ activeTabKey: key });
-              }}
+              onChange={activeTabKey =>
+                this.setState({ activeTabKey })
+              }
             >
               <TabPane
                 tab={<span className="unselectable-span">HTTP Settings</span>}
                 key={WEB_SETTINGS}
               >
-                <HttpSettings
-                  isMobile={this.props.isMobile}
-                  setLoading={value => this.setState({ isLoading: value })}
-                  reFetchData={() => this.reFetchData()}
-                  apiData={this.state.apiData!}
-                  apiManager={this.apiManager}
-                  updateApiData={(newData: any) =>
-                    this.setState({ apiData: newData })
-                  }
-                  onUpdateConfigAndSave={() => self.onUpdateConfigAndSave()}
-                />
+                <HttpSettingsTab />
               </TabPane>
               <TabPane
                 tab={<span className="unselectable-span">App Configs</span>}
                 key={APP_CONFIGS}
               >
-                <AppConfigs
-                  isMobile={this.props.isMobile}
-                  setLoading={value => this.setState({ isLoading: value })}
-                  reFetchData={() => this.reFetchData()}
-                  apiData={this.state.apiData!}
-                  apiManager={this.apiManager}
-                  updateApiData={(newData: any) =>
-                    this.setState({ apiData: newData })
-                  }
-                  onUpdateConfigAndSave={() => self.onUpdateConfigAndSave()}
-                />
+                <AppConfigsTab />
               </TabPane>
               <TabPane
                 tab={<span className="unselectable-span">Deployment</span>}
                 key={DEPLOYMENT}
               >
-                <Deployment
-                  isMobile={this.props.isMobile}
-                  setLoading={value => this.setState({ isLoading: value })}
-                  reFetchData={() => this.reFetchData()}
-                  apiData={this.state.apiData!}
-                  apiManager={this.apiManager}
-                  onUpdateConfigAndSave={() => self.onUpdateConfigAndSave()}
-                  updateApiData={(newData: any) =>
-                    this.setState({ apiData: newData })
-                  }
-                />
+                <DeploymentTab />
               </TabPane>
             </Tabs>
             <div style={{ height: 70 }} />
@@ -415,13 +360,13 @@ class AppDetails extends ApiComponent<
             <Affix
               offsetBottom={10}
               target={() => {
-                const newLocal = self.props.mainContainer;
+                const newLocal = this.props.mainContainer;
                 return newLocal && newLocal.current ? newLocal.current : window;
               }}
             >
               <div
                 className={
-                  self.state.activeTabKey === DEPLOYMENT ? "hide-on-demand" : ""
+                  this.state.activeTabKey === DEPLOYMENT ? "hide-on-demand" : ""
                 }
                 style={{
                   borderRadius: 8,
@@ -434,12 +379,12 @@ class AppDetails extends ApiComponent<
                   <Col span={8}>
                     <div style={{ textAlign: "center" }}>
                       <Button
-                        style={{ minWidth: self.props.isMobile ? 35 : 135 }}
+                        style={{ minWidth: isMobile ? 35 : 135 }}
                         type="danger"
                         size="large"
-                        onClick={() => self.onDeleteAppClicked()}
+                        onClick={this.onDeleteAppClicked}
                       >
-                        {self.props.isMobile ? (
+                        {isMobile ? (
                           <Icon type="delete" />
                         ) : (
                           "Delete App"
@@ -450,12 +395,12 @@ class AppDetails extends ApiComponent<
                   <Col span={8}>
                     <div style={{ textAlign: "center" }}>
                       <Button
-                        style={{ minWidth: self.props.isMobile ? 35 : 135 }}
+                        style={{ minWidth: isMobile ? 35 : 135 }}
                         type="primary"
                         size="large"
-                        onClick={() => self.onUpdateConfigAndSave()}
+                        onClick={() => this.context!.save()}
                       >
-                        {self.props.isMobile ? (
+                        {isMobile ? (
                           <Icon type="save" />
                         ) : (
                           "Save & Update"
@@ -471,40 +416,6 @@ class AppDetails extends ApiComponent<
       </Row>
     );
   }
-
-  componentDidMount() {
-    this.reFetchData();
-  }
-
-  reFetchData() {
-    const self = this;
-    self.setState({ isLoading: true });
-    return this.apiManager
-      .getAllApps()
-      .then(function(data: any) {
-        for (let index = 0; index < data.appDefinitions.length; index++) {
-          const element = data.appDefinitions[index];
-          if (element.appName === self.props.match.params.appName) {
-            self.setState({
-              isLoading: false,
-              apiData: {
-                appDefinition: element,
-                rootDomain: data.rootDomain,
-                defaultNginxConfig: data.defaultNginxConfig
-              }
-            });
-            return;
-          }
-        }
-
-        // App Not Found!
-        self.goBackToApps();
-      })
-      .catch(Toaster.createCatcher())
-      .then(function() {
-        self.setState({ isLoading: false });
-      });
-  }
 }
 
 function mapStateToProps(state: any) {
@@ -513,7 +424,15 @@ function mapStateToProps(state: any) {
   };
 }
 
-export default connect(
+const AppDetailsConnect = connect(
   mapStateToProps,
   undefined
 )(AppDetails);
+
+export default (props: any) => (
+  <AppDetailsProvider {...props}>
+    <AppDetailsContext.Consumer>
+      {() => <AppDetailsConnect {...props} />}
+    </AppDetailsContext.Consumer>
+  </AppDetailsProvider>
+)
