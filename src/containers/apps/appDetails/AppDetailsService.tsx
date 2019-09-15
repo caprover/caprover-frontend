@@ -18,7 +18,7 @@ export class LogFetcher {
   }
 
   async fetchAppLogs(): Promise<({ appLogs: string | undefined, error: Error | undefined })> {
-    if (!this.started) {
+    if (!this.started || !this.apiManager) {
       return { appLogs: undefined, error: undefined }
     }
 
@@ -89,6 +89,10 @@ export class LogFetcher {
   }
 
   async fetchBuildLogs(): Promise<({ buildLogs: any, error: Error | undefined })> {
+    if (!this.started || !this.apiManager) {
+      return { buildLogs: undefined, error: undefined }
+    }
+
     try {
       const buildLogs : {
         isAppBuilding: boolean;
