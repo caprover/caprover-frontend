@@ -117,7 +117,7 @@ class AppDetailsProvider extends ApiComponent<(RouteComponentProps<any> & {
   }
 
   currentApp(): LoadedApp {
-    if (!this.state.appDefinition || !this.state.defaultNginxConfig || !this.state.appDefinition.appName) {
+    if (!this.state.appDefinition || !this.state.appDefinition.appName) {
       throw new Error("Missing app data");
     }
 
@@ -302,7 +302,12 @@ class AppDetailsProvider extends ApiComponent<(RouteComponentProps<any> & {
   }
 
   updateAppDefintion(update: any) {
-    return this.asyncSetState({ isDirty: true, appDefinition: { ...this.state.appDefinition, ...Utils.copyObject(update) }});
+    return this.asyncSetState({
+      isDirty: true,
+      appDefinition: {
+        ...this.state.appDefinition,
+        ...Utils.copyObject(update),
+      }});
   }
 
   uploadAppData(data: File) {

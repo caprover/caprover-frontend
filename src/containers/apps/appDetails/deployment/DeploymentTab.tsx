@@ -38,7 +38,7 @@ export default class DeploymentTab extends Component<
   }
 
   getWebookToken() {
-    const app = this.context.currentApp().app;
+    const { app } = this.context.currentApp();
     const hasPushToken =
       app.appPushWebhook && app.appPushWebhook.pushWebhookToken;
 
@@ -59,15 +59,12 @@ export default class DeploymentTab extends Component<
   }
 
   onGitRepoUpdate = (newRepo: RepoInfo) => {
-    const app = this.context.currentApp().app;
-    const repoInfo = Utils.copyObject(
-      newRepo
-    );
+    const { app } = this.context.currentApp();
 
     this.context.updateAppDefintion({
       appPushWebhook: {
         ...(app.appPushWebhook || {}),
-        repoInfo,
+        newRepo,
       },
     });
   }
