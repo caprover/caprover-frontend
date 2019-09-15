@@ -17,6 +17,7 @@ import {
 import React, { RefObject, Component } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
+import classnames from "classnames";
 import { IHashMapGeneric } from "../../../models/IHashMapGeneric";
 import Toaster from "../../../utils/Toaster";
 import CenteredSpinner from "../../global/CenteredSpinner";
@@ -27,6 +28,7 @@ import AppConfigsTab from "./appConfigs/AppConfigsTab";
 import DeploymentTab from "./deployment/DeploymentTab";
 import HttpSettingsTab from "./httpSettings/HttpSettingsTab";
 import AppDetailsProvider, { AppDetailsContext } from "./AppDetailsProvider";
+import ContainerStatus from "./components/ContainerStatus";
 const TabPane = Tabs.TabPane;
 
 const WEB_SETTINGS = "WEB_SETTINGS";
@@ -75,7 +77,7 @@ class AppDetails extends Component<
     this.props.history.push("/apps");
   }
 
-  openRenameAppDialog() {
+  openRenameAppDialog = () => {
     const self = this;
     const { appDefinition: app } = this.context!;
     const tempVal = { newName: app.appName };
@@ -105,7 +107,7 @@ class AppDetails extends Component<
     });
   }
 
-  viewDescription() {
+  viewDescription = () => {
     const self = this;
     const { appDefinition: app } = this.context!;
     const tempVal = { tempDescription: app.description };
@@ -277,7 +279,7 @@ class AppDetails extends Component<
   render() {
     const { appData, appDefinition: app, isMobile } = this.context!
 
-    if (appData.isLoading) {
+    if (!app && appData.isLoading) {
       return <CenteredSpinner />;
     }
 
@@ -305,36 +307,50 @@ class AppDetails extends Component<
               </ClickableLink>
             }
             title={
-              <span>
-                <ClickableLink onLinkClicked={this.openRenameAppDialog}>
-                  <Tooltip title="Rename app" placement="bottom">
-                    <Icon type="edit" />
-                  </Tooltip>
-                </ClickableLink>
-                &nbsp;&nbsp;
-                {app.appName}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <ClickableLink onLinkClicked={this.viewDescription}>
-                  <Popover
-                    placement="bottom"
-                    content={
-                      <div style={{ maxWidth: 300, whiteSpace: "pre-line" }}>
-                        {app.description || "Click to edit app description..."}
-                      </div>
-                    }
-                    title="App description"
-                  >
-                    <Icon type="read" />
-                  </Popover>
-                </ClickableLink>
-              </span>
+              <div>
+                <div>
+                  <ClickableLink onLinkClicked={this.openRenameAppDialog}>
+                    <Tooltip title="Rename app" placement="bottom">
+                      <Icon type="edit" />
+                    </Tooltip>
+                  </ClickableLink>
+                  &nbsp;&nbsp;
+                  {app.appName}
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <ClickableLink onLinkClicked={this.viewDescription}>
+                    <Popover
+                      placement="bottom"
+                      content={
+                        <div style={{ maxWidth: 300, whiteSpace: "pre-line" }}>
+                          {app.description || "Click to edit app description..."}
+                        </div>
+                      }
+                      title="App description"
+                    >
+                      <Icon type="read" />
+                    </Popover>
+                  </ClickableLink>
+                </div>
+                <div>
+                  <ContainerStatus />
+                </div>
+              </div>
             }
           >
+            {appData.isLoading && (
+              <div style={{
+                position: 'absolute',
+                left: '50%'
+              }}>
+                <CenteredSpinner />
+              </div>
+            )}
             <Tabs
               defaultActiveKey={WEB_SETTINGS}
               onChange={activeTabKey =>
                 this.setState({ activeTabKey })
               }
+              className={classnames({ "disabled": appData.isLoading })}
             >
               <TabPane
                 tab={<span className="unselectable-span">HTTP Settings</span>}
@@ -365,9 +381,10 @@ class AppDetails extends Component<
               }}
             >
               <div
-                className={
-                  this.state.activeTabKey === DEPLOYMENT ? "hide-on-demand" : ""
-                }
+                className={classnames({
+                  "hide-on-demand": this.state.activeTabKey === DEPLOYMENT,
+                  "disabled": appData.isLoading,
+                })}
                 style={{
                   borderRadius: 8,
                   background: "rgba(51,73,90,0.9)",

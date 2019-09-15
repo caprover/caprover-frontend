@@ -23,8 +23,10 @@ export default class Ports extends Component {
     switch(type) {
       case PortType.HostPort:
         ports[index].hostPort = port;
+        break;
       case PortType.ContainerPort:
         ports[index].containerPort = port;
+        break;
     }
     this.context!.updateAppDefintion({ ports });
   }

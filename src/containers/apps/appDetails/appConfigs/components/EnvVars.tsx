@@ -77,8 +77,10 @@ export default class EnvVars extends Component {
     switch(type) {
       case EnvType.Key:
         envVars[index].key = val;
+        break;
       case EnvType.Value:
         envVars[index].value = val;
+        break;
     }
     this.context!.updateAppDefintion({ envVars });
   };

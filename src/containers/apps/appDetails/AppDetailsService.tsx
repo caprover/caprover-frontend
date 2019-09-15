@@ -60,7 +60,7 @@ export class LogFetcher {
         .join("")
         .replace(ansiRegex, "");
 
-      logs = { appLogs: logsProcessed, error: undefined }
+      logs = { appLogs: logsProcessed, error: undefined };
     } catch(error) {
       console.log(error)
       logs = { appLogs: undefined, error }
@@ -81,7 +81,7 @@ export class LogFetcher {
       return
     }
 
-    this.callback({ appLogs, buildLogs}, appLogsError || buildLogsError)
+    this.callback({ appLogs, buildLogs }, appLogsError || buildLogsError)
 
     this.timer = setTimeout(async () =>
       this.fetchLogs()

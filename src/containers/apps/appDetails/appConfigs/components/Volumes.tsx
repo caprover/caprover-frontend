@@ -27,10 +27,13 @@ export default class Volumes extends Component {
     switch(type) {
       case VolumeType.ContainerPath:
         volumes[index].containerPath = val;
+        break;
       case VolumeType.HostPath:
-          volumes[index].hostPath = val;
+        volumes[index].hostPath = val;
+        break;
       case VolumeType.VolumeName:
-          volumes[index].volumeName = val;
+        volumes[index].volumeName = val;
+        break;
     }
     this.context!.updateAppDefintion({ volumes });
   };
