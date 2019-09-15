@@ -4,7 +4,7 @@ import { AppDetailsContext } from "../../AppDetailsProvider";
 
 const NginxSettings = () => {
   const context: AppDetailsContext = useContext(AppDetailsContext);
-  const { appDefinition: app } = context;
+  const { app } = context.currentApp();
 
   return (
     <>

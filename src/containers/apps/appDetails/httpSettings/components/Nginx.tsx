@@ -16,7 +16,7 @@ export default class Nginx extends Component {
   };
 
   render() {
-    const { appDefinition: app } = this.context;
+    const { app } = this.context.currentApp();
     const customNginxConfig = app.customNginxConfig;
 
     if (!customNginxConfig) {

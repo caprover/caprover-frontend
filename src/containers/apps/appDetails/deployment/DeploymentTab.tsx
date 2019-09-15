@@ -28,6 +28,7 @@ export default class DeploymentTab extends Component<
     buildLogRecreationId: "",
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   componentWillReceiveProps(next: any, nextContext: any) {
     if (nextContext.building && !this.context.building) {
       message.info("Build has started");
@@ -37,7 +38,7 @@ export default class DeploymentTab extends Component<
   }
 
   getWebookToken() {
-    const app = this.context.appDefinition;
+    const app = this.context.currentApp().app;
     const hasPushToken =
       app.appPushWebhook && app.appPushWebhook.pushWebhookToken;
 
@@ -58,7 +59,7 @@ export default class DeploymentTab extends Component<
   }
 
   onGitRepoUpdate = (newRepo: RepoInfo) => {
-    const app = this.context.appDefinition;
+    const app = this.context.currentApp().app;
     const repoInfo = Utils.copyObject(
       newRepo
     );
@@ -76,7 +77,8 @@ export default class DeploymentTab extends Component<
   }
 
   render() {
-    const { appDefinition: app, isMobile } = this.context;
+    const { app } = this.context.currentApp();
+    const { isMobile } = this.context;
     const hasPushToken =
       app.appPushWebhook && app.appPushWebhook.pushWebhookToken;
     const repoInfo = app.appPushWebhook

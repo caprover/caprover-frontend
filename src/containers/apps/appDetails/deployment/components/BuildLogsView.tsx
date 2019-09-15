@@ -37,8 +37,8 @@ export default class BuildLogsView extends Component<
         this.setState({ expandedLogs: true });
       }
 
-      const lines = logInfo.logs.lines;
-      const firstLineNumberOfLogs = logInfo.logs.firstLineNumber;
+      const lines = (logInfo && logInfo.logs.lines) || [];
+      const firstLineNumberOfLogs = logInfo && logInfo.logs.firstLineNumber || 0;
       let firstLinesToPrint = 0;
       if (firstLineNumberOfLogs > this.state.lastLineNumberPrinted) {
         if (firstLineNumberOfLogs < 0) {

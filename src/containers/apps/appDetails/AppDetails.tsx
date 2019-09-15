@@ -78,8 +78,8 @@ class AppDetailsClass extends Component<PropsInterface> {
   }
 
   openRenameAppDialog = () => {
-    const { appDefinition: app } = this.context;
-    const tempVal = { newName: app.appName };
+    const { appName } = this.context.currentApp();
+    const tempVal = { newName: appName };
 
     Modal.confirm({
       title: "Rename the app:",
@@ -92,7 +92,7 @@ class AppDetailsClass extends Component<PropsInterface> {
           <Input
             style={{ marginTop: 15 }}
             placeholder="app-name-here"
-            defaultValue={app.appName}
+            defaultValue={appName}
             onChange={e => {
               tempVal.newName = (e.target.value || "").trim();
             }}
@@ -100,14 +100,14 @@ class AppDetailsClass extends Component<PropsInterface> {
         </div>
       ),
       onOk: () => {
-        const changed = app.appName !== tempVal.newName;
+        const changed = appName !== tempVal.newName;
         if (changed && tempVal.newName) this.renameAppTo(tempVal.newName);
       },
     });
   }
 
   viewDescription = () => {
-    const { appDefinition: app } = this.context;
+    const { app } = this.context.currentApp();
     const tempVal = { tempDescription: app.description };
 
     Modal.confirm({
@@ -180,9 +180,9 @@ class AppDetailsClass extends Component<PropsInterface> {
   }
 
   async onDeleteConfirm() {
-    const { appDefinition: app } = this.context;
+    const { appName } = this.context.currentApp();
 
-    if (this.state.confirmedAppNameToDelete !== app.appName) {
+    if (this.state.confirmedAppNameToDelete !== appName) {
       message.warning("App name did not match. Operation cancelled.");
       return;
     }
@@ -195,7 +195,7 @@ class AppDetailsClass extends Component<PropsInterface> {
     });
 
     try {
-      const data = await this.context.deleteApp(app.appName, volumes);
+      const data = await this.context.deleteApp(appName, volumes);
 
       const volumesFailedToDelete = data ? data.volumesFailedToDelete as string[] : null;
       if (volumesFailedToDelete && volumesFailedToDelete.length) {
@@ -236,7 +236,7 @@ class AppDetailsClass extends Component<PropsInterface> {
   }
 
   async onDeleteAppClicked() {
-    const { appDefinition: app } = this.context;
+    const { app } = this.context.currentApp();
     const allVolumes: string[] = [];
     const volumesToDelete: IHashMapGeneric<boolean> = {};
 

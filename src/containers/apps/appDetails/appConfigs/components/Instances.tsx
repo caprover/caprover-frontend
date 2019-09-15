@@ -16,7 +16,8 @@ export default class Instances extends Component {
   };
 
   render() {
-    const { appDefinition: app, isMobile } = this.context;
+    const { app } = this.context.currentApp();
+    const { isMobile } = this.context;
 
     return (
       <Row>

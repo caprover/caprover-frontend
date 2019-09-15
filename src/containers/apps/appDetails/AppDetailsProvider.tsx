@@ -6,10 +6,11 @@ import ApiComponent from "../../global/ApiComponent";
 import { LogFetcher } from "./AppDetailsService";
 import Toaster from "../../../utils/Toaster";
 import { IAppDef, IAppVersion, IBuildLogs } from "../AppDefinition";
+import Utils from "../../../utils/Utils";
 
 export interface AppDetailsContext {
   building: boolean;
-  appDefinition: IAppDef;
+  appDefinition?: IAppDef;
   rootDomain?: string;
   defaultNginxConfig?: string;
   isDirty: boolean;
@@ -19,7 +20,7 @@ export interface AppDetailsContext {
   };
   logs: {
     appLogs?: string;
-    buildLogs: IBuildLogs;
+    buildLogs?: IBuildLogs;
   };
 
   enableSslForBaseDomain(): Promise<any>;
@@ -35,35 +36,37 @@ export interface AppDetailsContext {
   uploadCaptainDefinitionContent(content: string): Promise<any>;
   uploadAppData(file: File): Promise<any>;
   rollbackToVersion(version: IAppVersion): Promise<any>;
+  currentApp(): LoadedApp;
+}
+
+export interface LoadedApp {
+  app: IAppDef;
+  appName: string;
 }
 
 export const AppDetailsContext = React.createContext<AppDetailsContext>({} as AppDetailsContext);
 
-class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
+class AppDetailsProvider extends ApiComponent<(RouteComponentProps<any> & {
   isMobile: boolean;
-}, {
-}> {
-  state: any = {
-    building: false,
-    appDefinition: null,
-    rootDomain: null,
-    defaultNginxConfig: null,
-    isDirty: true,
-    appData: {
-      isLoading: true,
-    },
-    logs: {
-      appLogs: null,
-      buildLogs: null,
-    },
-  };
+}), AppDetailsContext> {
   logfetcher?: LogFetcher;
 
   constructor(props: any) {
     super(props);
 
     this.state = {
-      ...this.state,
+      building: false,
+      appDefinition: undefined,
+      rootDomain: undefined,
+      defaultNginxConfig: undefined,
+      isDirty: true,
+      appData: {
+        isLoading: true,
+      },
+      logs: {
+        appLogs: undefined,
+        buildLogs: undefined,
+      },
       isMobile: props.isMobile,
 
       // wire up all the public methods on the context
@@ -74,13 +77,13 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
       removeCustomDomain: this.removeCustomDomain.bind(this),
       enableSslForCustomDomain: this.enableSslForCustomDomain.bind(this),
       enableSslForBaseDomain: this.enableSslForBaseDomain.bind(this),
-      startLogFetcher: this.startLogFetcher.bind(this),
       rollbackToVersion: this.rollbackToVersion.bind(this),
       uploadAppData: this.uploadAppData.bind(this),
       uploadCaptainDefinitionContent: this.uploadCaptainDefinitionContent.bind(this),
       forceBuild: this.forceBuild.bind(this),
       renameApp: this.renameApp.bind(this),
       deleteApp: this.deleteApp.bind(this),
+      currentApp: this.currentApp.bind(this),
     };
   }
 
@@ -106,6 +109,23 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   }
 
   asyncSetState = async (state: any) => new Promise((resolve) => this.setState(state, resolve))
+
+  /* getters */
+
+  get appName(): string {
+    return this.currentApp().appName;
+  }
+
+  currentApp(): LoadedApp {
+    if (!this.state.appDefinition || !this.state.defaultNginxConfig || !this.state.appDefinition.appName) {
+      throw new Error("Missing app data");
+    }
+
+    return {
+      app: this.state.appDefinition,
+      appName: this.state.appDefinition.appName,
+    };
+  }
 
   /* modify the app */
 
@@ -133,7 +153,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
 
     try {
       await this.apiManager.renameApp(
-        this.state.appDefinition.appName,
+        this.appName,
         newName
       );
       this.props.history.replace(`/apps/details/${newName}`);
@@ -178,13 +198,13 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   async updateBuildVersionsWithoutLoad() {
     try {
       const apps = await this.apiManager.getAllApps();
-      const myApp = apps.appDefinitions.find((app: IAppDef) => app.appName === this.state.appDefinition.appName);
+      const myApp = apps.appDefinitions.find((app: IAppDef) => app.appName === this.appName);
 
       if (myApp) {
         this.setState({
           building: false,
           appDefinition: {
-            ...this.state.appDefinition,
+            ...this.currentApp().app,
             deployedVersion: myApp.deployedVersion,
             versions: myApp.versions,
           },
@@ -202,7 +222,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
 
   async uploadCaptainDefinitionContent(content: string) {
     await this.apiManager.uploadCaptainDefinitionContent(
-      this.state.appDefinition.appName,
+      this.appName,
       JSON.parse(content),
       "",
       true
@@ -215,7 +235,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
     // wait for the call to be successful before setting our build state
     await this.apiManager
       .uploadCaptainDefinitionContent(
-        this.state.appDefinition.appName,
+        this.appName,
         {
           schemaVersion: 2,
           // We should use imageName, but since imageName does not report build failure (since there is no build!)
@@ -241,7 +261,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
 
     if (logs) {
       // set our building state if we're meant to be building
-      if (!this.state.buiding && logs.buildLogs && logs.buildLogs.isAppBuilding) {
+      if (!this.state.building && logs.buildLogs && logs.buildLogs.isAppBuilding) {
         this.setState({ building: true });
       }
 
@@ -270,14 +290,10 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
 
   async save() {
     try {
-      if (!this.state.appDefinition.appName) {
-        throw new Error("App is missing a name");
-      }
-
       return await this.callApiWithRefetch(
         () => this.apiManager.updateConfigAndSave(
-          this.state.appDefinition.appName,
-          this.state.appDefinition
+          this.appName,
+          this.currentApp().app
         )
       );
     } catch (err) {
@@ -286,12 +302,12 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   }
 
   updateAppDefintion(update: any) {
-    return this.asyncSetState({ isDirty: true, appDefinition: { ...this.state.appDefinition, ...update }});
+    return this.asyncSetState({ isDirty: true, appDefinition: { ...this.state.appDefinition, ...Utils.copyObject(update) }});
   }
 
   uploadAppData(data: File) {
     return this.apiManager.uploadAppData(
-      this.state.appDefinition.appName,
+      this.appName,
       data
     );
   }
@@ -315,7 +331,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   addCustomDomain(name: string) {
     return this.callApiWithRefetch(
       () => this.apiManager.attachNewCustomDomainToApp(
-        this.state.appDefinition.appName,
+        this.appName,
         name
       )
     );
@@ -324,7 +340,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   removeCustomDomain(name: string) {
     return this.callApiWithRefetch(
       () => this.apiManager.removeCustomDomain(
-        this.state.appDefinition.appName,
+        this.appName,
         name
       )
     );
@@ -333,7 +349,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   enableSslForCustomDomain(name: string) {
     return this.callApiWithRefetch(
       () => this.apiManager.enableSslForCustomDomain(
-        this.state.appDefinition.appName,
+        this.appName,
         name
       )
     );
@@ -342,7 +358,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   enableSslForBaseDomain() {
     return this.callApiWithRefetch(
       () => this.apiManager.enableSslForBaseDomain(
-        this.state.appDefinition.appName
+        this.appName
       )
     );
   }

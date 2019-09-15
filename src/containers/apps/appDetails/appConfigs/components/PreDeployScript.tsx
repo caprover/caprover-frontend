@@ -12,7 +12,7 @@ export default class PreDeployScript extends Component {
   };
 
   render() {
-    const app = this.context.appDefinition;
+    const { app } = this.context.currentApp();
 
     return (
       <Row>

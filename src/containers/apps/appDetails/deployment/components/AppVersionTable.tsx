@@ -13,7 +13,7 @@ export default class AppVersionTable extends Component {
   context!: React.ContextType<typeof AppDetailsContext>;
 
   getStateRender(version: number, versionDetails: IAppVersion) {
-    const { appDefinition: app } = this.context;
+    const { app } = this.context.currentApp();
 
     if (version === app.deployedVersion) {
       return (
@@ -143,7 +143,7 @@ export default class AppVersionTable extends Component {
   }
 
   render() {
-    const { appDefinition: app } = this.context;
+    const { app } = this.context.currentApp();
     const versionsReversed = Utils.copyObject(app.versions as IAppVersion[]).reverse();
     const columns = this.getCols();
     const { isMobile } = this.context;

@@ -18,12 +18,12 @@ export default class Volumes extends Component {
   };
 
   onAddVolumeClicked = () => {
-    const volumes = this.context.appDefinition.volumes || [];
+    const volumes = this.context.currentApp().app.volumes || [];
     this.context.updateAppDefintion({ volumes: [...volumes, { containerPath: "", volumeName: "" }]});
   };
 
   onVolumeChange = (val: string, index: number, type: VolumeType) => {
-    const volumes = [...this.context.appDefinition.volumes];
+    const volumes = [...this.context.currentApp().app.volumes];
     switch(type) {
       case VolumeType.ContainerPath:
         volumes[index].containerPath = val;
@@ -39,7 +39,7 @@ export default class Volumes extends Component {
   };
 
   onHostPathClicked = (index: number) => {
-    const hostPath = this.context.appDefinition.volumes[index].hostPath ? "" : "/";
+    const hostPath = this.context.currentApp().app.volumes[index].hostPath ? "" : "/";
     this.onVolumeChange(hostPath, index, VolumeType.HostPath);
   };
 
@@ -48,7 +48,8 @@ export default class Volumes extends Component {
   };
 
   render() {
-    const { appDefinition: app, isMobile } = this.context;
+    const { app } = this.context.currentApp();
+    const { isMobile } = this.context;
     const volumes = app.volumes || [];
 
     if (!app.hasPersistentData) return <div />;

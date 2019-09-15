@@ -13,7 +13,7 @@ import HttpAuth from "./components/HttpAuth";
 
 const HttpSettingsTab = () => {
   const context: AppDetailsContext = useContext(AppDetailsContext);
-  const { appDefinition: app } = context;
+  const { app } = context.currentApp();
 
   return (
     <div>

@@ -68,12 +68,12 @@ export default class EnvVars extends Component {
   }
 
   onAddClicked = () => {
-    const envVars = this.context.appDefinition.envVars || [];
+    const envVars = this.context.currentApp().app.envVars || [];
     this.context.updateAppDefintion({ envVars: [...envVars, { key: "", value: "" }]});
   };
 
   onVarUpdated = (val: string, index: number, type: EnvType) => {
-    const envVars = [...this.context.appDefinition.envVars];
+    const envVars = [...this.context.currentApp().app.envVars];
     switch(type) {
       case EnvType.Key:
         envVars[index].key = val;
@@ -97,7 +97,9 @@ export default class EnvVars extends Component {
   };
 
   render() {
-    const { appDefinition: app, isMobile } = this.context;
+    const { app } = this.context.currentApp();
+    const { isMobile } = this.context;
+
     const envVars = app.envVars || [];
     const { bulkVals, envVarBulkEdit } = this.state;
 

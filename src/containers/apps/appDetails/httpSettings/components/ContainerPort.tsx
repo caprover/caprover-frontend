@@ -4,19 +4,19 @@ import { AppDetailsContext } from "../../AppDetailsProvider";
 
 const ContainerPort = () => {
   const context: AppDetailsContext = useContext(AppDetailsContext);
-  const { appDefinition: app, isMobile } = context;
+  const { app } = context.currentApp();
 
   return (
     <Row>
       <Col
         xs={{ span: 24 }}
         lg={{ span: 6 }}
-        style={{ width: isMobile ? "100%" : 300 }}
+        style={{ width: context.isMobile ? "100%" : 300 }}
       >
         <Tooltip title="HTTP port inside the container. Default is 80. Change only if the app is running in a different port. This is used only for HTTP apps, not databases.">
           <Input
             addonBefore={`Container ${
-              isMobile ? " " : "HTTP "
+              context.isMobile ? " " : "HTTP "
             }Port`}
             type="number"
             defaultValue={
