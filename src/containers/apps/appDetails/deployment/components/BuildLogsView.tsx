@@ -1,32 +1,34 @@
 import { Alert, Icon, Row, Spin } from "antd";
 import React, { Component } from "react";
 import Utils from "../../../../../utils/Utils";
-import { AppDetailsContext, IAppDetailsContext } from "../../AppDetailsProvider";
+import { AppDetailsContext } from "../../AppDetailsProvider";
 import ClickableLink from "../../../../global/ClickableLink";
 
 export default class BuildLogsView extends Component<
-  {
-    buildLogRecreationId: string;
-  },
-  {
-    expandedLogs: boolean;
-    buildLogs: string;
-    lastLineNumberPrinted: number;
-  }
+{
+  buildLogRecreationId: string;
+},
+{
+  expandedLogs: boolean;
+  buildLogs: string;
+  lastLineNumberPrinted: number;
+}
 > {
   static contextType = AppDetailsContext;
   context!: React.ContextType<typeof AppDetailsContext>
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(props: any) {
     super(props);
     this.state = {
       expandedLogs: !!this.props.buildLogRecreationId,
       buildLogs: "",
-      lastLineNumberPrinted: -10000
+      lastLineNumberPrinted: -10000,
     };
   }
 
-  componentWillReceiveProps(next: any, nextContext: IAppDetailsContext) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  componentWillReceiveProps(next: any, nextContext: AppDetailsContext) {
     if (nextContext.logs.buildLogs !== this.context.logs.buildLogs) {
       const logInfo = nextContext.logs.buildLogs;
 
@@ -35,8 +37,8 @@ export default class BuildLogsView extends Component<
         this.setState({ expandedLogs: true });
       }
 
-      let lines = logInfo.logs.lines;
-      let firstLineNumberOfLogs = logInfo.logs.firstLineNumber;
+      const lines = logInfo.logs.lines;
+      const firstLineNumberOfLogs = logInfo.logs.firstLineNumber;
       let firstLinesToPrint = 0;
       if (firstLineNumberOfLogs > this.state.lastLineNumberPrinted) {
         if (firstLineNumberOfLogs < 0) {
@@ -44,7 +46,7 @@ export default class BuildLogsView extends Component<
           firstLinesToPrint = -firstLineNumberOfLogs;
         } else {
           this.setState({
-            buildLogs: this.state.buildLogs + "[[ TRUNCATED ]]\n"
+            buildLogs: this.state.buildLogs + "[[ TRUNCATED ]]\n",
           });
         }
       } else {
@@ -53,7 +55,7 @@ export default class BuildLogsView extends Component<
       }
 
       this.setState({
-        lastLineNumberPrinted: firstLineNumberOfLogs + lines.length
+        lastLineNumberPrinted: firstLineNumberOfLogs + lines.length,
       });
 
       let lineAdded = false;
@@ -71,7 +73,7 @@ export default class BuildLogsView extends Component<
 
       if (lineAdded) {
         setTimeout(function() {
-          let textarea = document.getElementById("buildlog-text-id");
+          const textarea = document.getElementById("buildlog-text-id");
           if (textarea) textarea.scrollTop = textarea.scrollHeight;
         }, 100);
       }
@@ -138,7 +140,7 @@ export default class BuildLogsView extends Component<
                 id="buildlog-text-id"
                 className="logs-output"
                 style={{
-                  whiteSpace: "pre"
+                  whiteSpace: "pre",
                 }}
               >
                 {buildLogString}

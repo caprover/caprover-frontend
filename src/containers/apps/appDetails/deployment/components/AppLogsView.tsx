@@ -12,10 +12,11 @@ export default class AppLogsView extends Component {
     expandedLogs: true,
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   componentWillReceiveProps(next: any, nextContext: any) {
     const firstLogs = nextContext.logs.appLogs && !this.context.logs.appLogs;
 
-    let textareaNow = document.getElementById("applogs-text-id");
+    const textareaNow = document.getElementById("applogs-text-id");
 
     // Almost at the bottom. So keep the scroll at the bottom. Otherwise, user, may have manually scrolled up. Respect the user!
     const shouldScrollToBottom =
@@ -28,7 +29,7 @@ export default class AppLogsView extends Component {
 
     if (shouldScrollToBottom)
       setTimeout(function() {
-        let textarea = document.getElementById("applogs-text-id");
+        const textarea = document.getElementById("applogs-text-id");
         if (textarea) textarea.scrollTop = textarea.scrollHeight;
       }, 100);
   }
@@ -109,7 +110,7 @@ export default class AppLogsView extends Component {
                 id="applogs-text-id"
                 className="logs-output"
                 style={{
-                  whiteSpace: isWrapped ? "pre-line" : "pre"
+                  whiteSpace: isWrapped ? "pre-line" : "pre",
                 }}
               >
                 {appLogs}

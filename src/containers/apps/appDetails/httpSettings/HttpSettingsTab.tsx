@@ -4,15 +4,15 @@ import {
   Tooltip,
   Checkbox,
 } from "antd";
-import { AppDetailsContext, IAppDetailsContext } from "../AppDetailsProvider"
+import { AppDetailsContext } from "../AppDetailsProvider";
 import Domains from "./components/Domains";
 import Nginx from "./components/Nginx";
 import ContainerPort from "./components/ContainerPort";
 import NginxSettings from "./components/NginxSettings";
 import HttpAuth from "./components/HttpAuth";
 
-export default () => {
-  const context: IAppDetailsContext = useContext(AppDetailsContext);
+const HttpSettingsTab = () => {
+  const context: AppDetailsContext = useContext(AppDetailsContext);
   const { appDefinition: app } = context;
 
   return (
@@ -64,3 +64,5 @@ export default () => {
     </div>
   );
 };
+
+export default HttpSettingsTab;

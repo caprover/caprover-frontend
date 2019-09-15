@@ -12,8 +12,8 @@ export default class Ports extends Component {
   context!: React.ContextType<typeof AppDetailsContext>;
 
   onAddPortMappingClicked = () => {
-    const ports = this.context.appDefinition.ports || []
-    this.context.updateAppDefintion({ ports: [...ports, { containerPort: 0, hostPort: 0 }]})
+    const ports = this.context.appDefinition.ports || [];
+    this.context.updateAppDefintion({ ports: [...ports, { containerPort: 0, hostPort: 0 }]});
   }
 
   onPortChange = (val: string, index: number, type: PortType) => {
@@ -56,7 +56,7 @@ export default class Ports extends Component {
         {ports.map((value: IAppPort, index: number) => (
           <Row style={{ paddingBottom: 12 }} key={`${index}`}>
             <Col span={12}>
-            <Tooltip title="Make sure the port is not already used!">
+              <Tooltip title="Make sure the port is not already used!">
                 <Input
                   addonBefore="Server Port"
                   placeholder="5050"
@@ -64,15 +64,15 @@ export default class Ports extends Component {
                   type="number"
                   onChange={e => this.onPortChange(e.target.value, index, PortType.HostPort)}
                 />
-            </Tooltip>
+              </Tooltip>
             </Col>
             <Col style={{ paddingLeft: 12 }} span={12}>
-            <Input
+              <Input
                 addonBefore="Container Port"
                 placeholder="6060"
                 value={value.containerPort ? `${value.containerPort}` : ""}
                 onChange={e => this.onPortChange(e.target.value, index, PortType.ContainerPort)}
-            />
+              />
             </Col>
           </Row>
         ))}

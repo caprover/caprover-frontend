@@ -5,11 +5,11 @@ import Toaster from "../../../../../utils/Toaster";
 import { AppDetailsContext } from "../../AppDetailsProvider";
 
 export default class TarUploader extends Component<
-  {
-  },
-  {
-    fileToBeUploaded?: UploadFile;
-  }
+{
+},
+{
+  fileToBeUploaded?: UploadFile;
+}
 > {
   static contextType = AppDetailsContext;
   context!: React.ContextType<typeof AppDetailsContext>
@@ -17,11 +17,6 @@ export default class TarUploader extends Component<
   state = {
     fileToBeUploaded: undefined,
   }
-
-  beforeUpload = (file: File) => {
-    // We handle upload manually :)
-    return false;
-  };
 
   handleChange = (info: UploadChangeParam) => {
     if (info.fileList.length > 1) {
@@ -37,7 +32,7 @@ export default class TarUploader extends Component<
       return;
     }
 
-    let file = info.fileList[0];
+    const file = info.fileList[0];
 
     if (file.name.indexOf(".tar") < 0) {
       message.error("You can only upload a TAR file!");
@@ -48,15 +43,20 @@ export default class TarUploader extends Component<
   };
 
   async startUploadAndDeploy() {
-    const file: any = this.state.fileToBeUploaded!;
+    if (!this.state.fileToBeUploaded) {
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const file: any = this.state.fileToBeUploaded;
     this.setState({ fileToBeUploaded: undefined });
     message.info("Upload has started");
 
     try {
-      await this.context.uploadAppData(file.originFileObj! as File)
+      await this.context.uploadAppData(file.originFileObj as File);
     } catch(err) {
-      Toaster.toast(err)
-      this.setState({ fileToBeUploaded: file })
+      Toaster.toast(err);
+      this.setState({ fileToBeUploaded: file });
     }
   }
 
@@ -71,12 +71,13 @@ export default class TarUploader extends Component<
               multiple={false}
               fileList={
                 this.state.fileToBeUploaded
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   ? [this.state.fileToBeUploaded!]
                   : undefined
               }
               listType="text"
               onChange={this.handleChange}
-              beforeUpload={this.beforeUpload}
+              beforeUpload={() => false}
               action="//" // this is unused as beforeUpload always returns false
             >
               <p className="ant-upload-drag-icon">

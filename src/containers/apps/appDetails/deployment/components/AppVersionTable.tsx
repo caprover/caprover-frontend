@@ -54,12 +54,12 @@ export default class AppVersionTable extends Component {
         align: "center",
         dataIndex: "version" as "version",
         render: (version: number, versionDetails: IAppVersion) =>
-          this.getStateRender(version, versionDetails)
+          this.getStateRender(version, versionDetails),
       },
       {
         title: "Version",
         align: "center",
-        dataIndex: "version" as "version"
+        dataIndex: "version" as "version",
       },
       {
         title: "Deploy Time",
@@ -70,16 +70,16 @@ export default class AppVersionTable extends Component {
               <span>{new Date(timeStamp).toLocaleString()}</span>
             </Tooltip>
           );
-        }
+        },
       },
       {
         title: "Image Name",
-        dataIndex: "deployedImageName" as "deployedImageName"
+        dataIndex: "deployedImageName" as "deployedImageName",
       },
       {
         title: "git hash",
         dataIndex: "gitHash" as "gitHash",
-        render: (gitHashOriginal: string, versionDetails: IAppVersion) => {
+        render: (gitHashOriginal: string) => {
           let gitHash = gitHashOriginal || "";
           if (gitHash.length > 12) {
             gitHash = gitHash.substr(0, 10) + "...";
@@ -89,22 +89,25 @@ export default class AppVersionTable extends Component {
               <div className="code-input">{gitHash || "n/a"}</div>
             </Tooltip>
           );
-        }
-      }
+        },
+      },
     ];
     return columns;
   }
 
   onRollbackClicked(versionToRevert: IAppVersion) {
-    const self = this;
-    const imageName = versionToRevert.deployedImageName!;
+    if (!versionToRevert.deployedImageName) {
+      return;
+    }
+
+    const imageName = versionToRevert.deployedImageName;
     let content = (
       <span>
         {`If you had previously deleted this image explicitly through disk cleanup,
       this revert process will fail.`}
         <br />
         <br />
-        {`Do you want to continue with rolling back your app to `}
+        {"Do you want to continue with rolling back your app to "}
         <code>{imageName}</code>?
       </span>
     );
@@ -117,7 +120,7 @@ export default class AppVersionTable extends Component {
         you don't need to worry about this.`}
           <br />
           <br />
-          {`Do you want to continue with rolling back your app to `}
+          {"Do you want to continue with rolling back your app to "}
           <code>{imageName}</code>?
         </span>
       );
@@ -126,16 +129,16 @@ export default class AppVersionTable extends Component {
       title: "Rollback?",
       content,
       onOk: () => {
-        self.onVersionRollbackRequested(versionToRevert);
-      }
+        this.onVersionRollbackRequested(versionToRevert);
+      },
     });
   }
 
   onVersionRollbackRequested = async (version: IAppVersion) => {
     try {
-      this.context.rollbackToVersion(version)
+      this.context.rollbackToVersion(version);
     } catch(err) {
-      Toaster.toast(err)
+      Toaster.toast(err);
     }
   }
 

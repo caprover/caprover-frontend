@@ -14,37 +14,37 @@ export default class Domains extends Component {
 
   enableDefaultHttps = async () => {
     try {
-      await this.context.enableSslForBaseDomain()
+      await this.context.enableSslForBaseDomain();
       message.success("HTTPS is now enabled for your app");
     } catch(err) {
-      Toaster.toast(err)
+      Toaster.toast(err);
     };
   }
 
   onEnableCustomDomainSslClicked = async (customDomain: string) => {
     try {
-      await this.context.enableSslForCustomDomain(customDomain)
+      await this.context.enableSslForCustomDomain(customDomain);
       message.success("HTTPS is successfully activated for your domain!");
     } catch(err) {
-      Toaster.toast(err)
+      Toaster.toast(err);
     };
   }
 
   onRemoveCustomDomainClicked = async (customDomain: string) => {
     try {
-      await this.context.removeCustomDomain(customDomain)
+      await this.context.removeCustomDomain(customDomain);
       message.success("Your custom domain is successfully removed!");
     } catch(err) {
-      Toaster.toast(err)
+      Toaster.toast(err);
     };
   }
 
   onConnectNewDomainClicked = async (newDomain: string) => {
     try {
-      await this.context.addCustomDomain(newDomain)
+      await this.context.addCustomDomain(newDomain);
       message.success("New domain is now successfully connected!");
     } catch(err) {
-      Toaster.toast(err)
+      Toaster.toast(err);
     };
   }
 
@@ -78,7 +78,7 @@ export default class Domains extends Component {
           </Button.Group>
           <a
             style={{
-              marginLeft: 20
+              marginLeft: 20,
             }}
             href={
               "http" +

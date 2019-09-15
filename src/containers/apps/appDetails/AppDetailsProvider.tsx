@@ -1,12 +1,13 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import ApiComponent from "../../global/ApiComponent";
-import { LogFetcher } from './AppDetailsService';
+import { LogFetcher } from "./AppDetailsService";
 import Toaster from "../../../utils/Toaster";
-import { IAppDef, IAppVersion, IBuildLogs } from '../AppDefinition';
+import { IAppDef, IAppVersion, IBuildLogs } from "../AppDefinition";
 
-export interface IAppDetailsContext {
+export interface AppDetailsContext {
   building: boolean;
   appDefinition: IAppDef;
   rootDomain?: string;
@@ -15,11 +16,11 @@ export interface IAppDetailsContext {
   isMobile: boolean;
   appData: {
     isLoading: boolean;
-  },
+  };
   logs: {
     appLogs?: string;
     buildLogs: IBuildLogs;
-  }
+  };
 
   enableSslForBaseDomain(): Promise<any>;
   enableSslForCustomDomain(name: string): Promise<any>;
@@ -36,10 +37,10 @@ export interface IAppDetailsContext {
   rollbackToVersion(version: IAppVersion): Promise<any>;
 }
 
-export const AppDetailsContext = React.createContext<IAppDetailsContext>({} as IAppDetailsContext);
+export const AppDetailsContext = React.createContext<AppDetailsContext>({} as AppDetailsContext);
 
 class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
-  isMobile: boolean,
+  isMobile: boolean;
 }, {
 }> {
   state: any = {
@@ -80,7 +81,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
       forceBuild: this.forceBuild.bind(this),
       renameApp: this.renameApp.bind(this),
       deleteApp: this.deleteApp.bind(this),
-    }
+    };
   }
 
   /* lifecycle */
@@ -90,18 +91,18 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
       return {
         ...state,
         isMobile: props.isMobile,
-      }
+      };
     }
 
-    return state
+    return state;
   }
 
   componentWillUnmount() {
     if (this.logfetcher) {
-      this.logfetcher.stop()
+      this.logfetcher.stop();
     }
 
-    this.apiManager.destroy()
+    this.apiManager.destroy();
   }
 
   asyncSetState = async (state: any) => new Promise((resolve) => this.setState(state, resolve))
@@ -111,36 +112,36 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   async deleteApp(appName: string, volumes: string[]) {
     this.setState({ appData: { isLoading: true } });
     if (this.logfetcher) {
-      this.logfetcher.stop()
+      this.logfetcher.stop();
     }
 
     try {
       // do the call
-      await this.apiManager.deleteApp(appName, volumes)
+      await this.apiManager.deleteApp(appName, volumes);
     } catch(err) {
       // turn loading to off and bubble the error
       this.setState({ appData: { isLoading: false } });
-      throw err
+      throw err;
     }
   }
 
   async renameApp(newName: string) {
     this.setState({ appData: { isLoading: true } });
     if (this.logfetcher) {
-      this.logfetcher.stop()
+      this.logfetcher.stop();
     }
 
     try {
       await this.apiManager.renameApp(
         this.state.appDefinition.appName,
         newName
-      )
+      );
       this.props.history.replace(`/apps/details/${newName}`);
-      await this.fetchAppData()
+      await this.fetchAppData();
     } catch(err) {
       // turn loading to off and bubble the error
       this.setState({ appData: { isLoading: false } });
-      throw err
+      throw err;
     }
   }
 
@@ -156,7 +157,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
 
     if (myApp && myApp.appName) {
       if (!this.state.appDefinition || (myApp.appName !== this.state.appDefinition.appName)) {
-        this.startLogFetcher(myApp.appName)
+        this.startLogFetcher(myApp.appName);
       }
 
       this.setState({
@@ -171,7 +172,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
       return myApp;
     }
 
-    return undefined
+    return undefined;
   }
 
   async updateBuildVersionsWithoutLoad() {
@@ -186,14 +187,14 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
             ...this.state.appDefinition,
             deployedVersion: myApp.deployedVersion,
             versions: myApp.versions,
-          }
+          },
         });
       } else {
         throw new Error("app not found!");
       }
     }
     catch (err) {
-      Toaster.toast(err)
+      Toaster.toast(err);
     }
   }
 
@@ -205,9 +206,9 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
       JSON.parse(content),
       "",
       true
-    )
+    );
 
-    this.setState({ building: true })
+    this.setState({ building: true });
   }
 
   async rollbackToVersion(version: IAppVersion) {
@@ -219,64 +220,68 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
           schemaVersion: 2,
           // We should use imageName, but since imageName does not report build failure (since there is no build!)
           // If we use that, and the image is not available, the service will not work.
-          dockerfileLines: ["FROM " + version.deployedImageName]
+          dockerfileLines: ["FROM " + version.deployedImageName],
         },
         version.gitHash || "",
         true
-      )
+      );
 
-    this.setState({ building: true })
+    this.setState({ building: true });
   }
 
   async forceBuild(webhook: string) {
-    await this.apiManager.forceBuild(webhook)
-    this.setState({ building: true })
+    await this.apiManager.forceBuild(webhook);
+    this.setState({ building: true });
   }
 
-  onLogsFetched = (logs?: { buildLogs?: IBuildLogs, appLogs?: string }, error?: Error) => {
+  onLogsFetched = (logs?: { buildLogs?: IBuildLogs; appLogs?: string }, error?: Error) => {
     if (error) {
-      Toaster.toast(error)
+      Toaster.toast(error);
     }
 
     if (logs) {
       // set our building state if we're meant to be building
       if (!this.state.buiding && logs.buildLogs && logs.buildLogs.isAppBuilding) {
-        this.setState({ building: true })
+        this.setState({ building: true });
       }
 
       // see if a build is done
       if (logs.buildLogs &&
         !logs.buildLogs.isAppBuilding &&
         this.state.building) {
-          // if we stopped building, reload version
-          this.updateBuildVersionsWithoutLoad()
+        // if we stopped building, reload version
+        this.updateBuildVersionsWithoutLoad();
       }
 
-      this.setState({ logs })
+      this.setState({ logs });
     }
   }
 
   startLogFetcher(name: string) {
     if (this.logfetcher) {
-      this.logfetcher.stop()
+      this.logfetcher.stop();
     }
 
-    this.logfetcher = new LogFetcher(this.apiManager, name, this.onLogsFetched)
-    this.logfetcher.start()
+    this.logfetcher = new LogFetcher(this.apiManager, name, this.onLogsFetched);
+    this.logfetcher.start();
   }
 
   /* settings */
 
   async save() {
     try {
+      if (!this.state.appDefinition.appName) {
+        throw new Error("App is missing a name");
+      }
+
       return await this.callApiWithRefetch(
         () => this.apiManager.updateConfigAndSave(
-          this.state.appDefinition.appName!,
+          this.state.appDefinition.appName,
           this.state.appDefinition
         )
-      )
+      );
     } catch (err) {
-      Toaster.toast(err)
+      Toaster.toast(err);
     }
   }
 
@@ -287,8 +292,8 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   uploadAppData(data: File) {
     return this.apiManager.uploadAppData(
       this.state.appDefinition.appName,
-      data,
-    )
+      data
+    );
   }
 
   async callApiWithRefetch(call: Function) {
@@ -296,14 +301,14 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
 
     try {
       // do the call
-      await call()
+      await call();
 
       // refetch the data
-      await this.fetchAppData()
+      await this.fetchAppData();
     } catch(err) {
       // turn loading to off and bubble the error
       this.setState({ appData: { isLoading: false } });
-      throw err
+      throw err;
     }
   }
 
@@ -313,7 +318,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
         this.state.appDefinition.appName,
         name
       )
-    )
+    );
   }
 
   removeCustomDomain(name: string) {
@@ -322,7 +327,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
         this.state.appDefinition.appName,
         name
       )
-    )
+    );
   }
 
   enableSslForCustomDomain(name: string) {
@@ -331,7 +336,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
         this.state.appDefinition.appName,
         name
       )
-    )
+    );
   }
 
   enableSslForBaseDomain() {
@@ -339,7 +344,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
       () => this.apiManager.enableSslForBaseDomain(
         this.state.appDefinition.appName
       )
-    )
+    );
   }
 
   render() {
@@ -355,7 +360,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
 
 function mapStateToProps(state: any) {
   return {
-    isMobile: state.globalReducer.isMobile
+    isMobile: state.globalReducer.isMobile,
   };
 }
 

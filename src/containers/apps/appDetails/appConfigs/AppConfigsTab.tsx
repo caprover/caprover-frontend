@@ -5,7 +5,7 @@ import Volumes from "./components/Volumes";
 import Instances from "./components/Instances";
 import PreDeployScript from "./components/PreDeployScript";
 
-export default () => (
+const AppConfigsTab = () => (
   <div>
     <EnvVars />
 
@@ -32,3 +32,5 @@ export default () => (
     <PreDeployScript />
   </div>
 );
+
+export default AppConfigsTab;

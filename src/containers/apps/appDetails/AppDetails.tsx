@@ -12,7 +12,7 @@ import {
   Row,
   Tabs,
   Tooltip,
-  Alert
+  Alert,
 } from "antd";
 import React, { RefObject, Component } from "react";
 import { connect } from "react-redux";
@@ -42,13 +42,12 @@ export interface SingleAppApiData {
   defaultNginxConfig: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface PropsInterface extends RouteComponentProps<any> {
   mainContainer: RefObject<HTMLDivElement>;
 }
 
-class AppDetails extends Component<
-  PropsInterface
-> {
+class AppDetailsClass extends Component<PropsInterface> {
   static contextType = AppDetailsContext;
   context!: React.ContextType<typeof AppDetailsContext>;
   private reRenderTriggered = false;
@@ -62,15 +61,16 @@ class AppDetails extends Component<
 
   async componentDidMount() {
     try {
-      const app = await this.context.fetchAppData()
+      const app = await this.context.fetchAppData();
       if (!app) {
-        this.goBackToApps()
+        this.goBackToApps();
       }
     } catch (err) {
-      Toaster.toast(err)
+      Toaster.toast(err);
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   asyncSetState = async (state: any) => new Promise((resolve) => this.setState(state, resolve))
 
   goBackToApps = () => {
@@ -78,7 +78,6 @@ class AppDetails extends Component<
   }
 
   openRenameAppDialog = () => {
-    const self = this;
     const { appDefinition: app } = this.context;
     const tempVal = { newName: app.appName };
 
@@ -100,15 +99,14 @@ class AppDetails extends Component<
           />
         </div>
       ),
-      onOk() {
+      onOk: () => {
         const changed = app.appName !== tempVal.newName;
-        if (changed && tempVal.newName) self.renameAppTo(tempVal.newName);
-      }
+        if (changed && tempVal.newName) this.renameAppTo(tempVal.newName);
+      },
     });
   }
 
   viewDescription = () => {
-    const self = this;
     const { appDefinition: app } = this.context;
     const tempVal = { tempDescription: app.description };
 
@@ -127,11 +125,11 @@ class AppDetails extends Component<
           />
         </div>
       ),
-      onOk() {
+      onOk: () => {
         const changed = app.description !== tempVal.tempDescription;
         app.description = tempVal.tempDescription;
-        if (changed) self.onUpdateConfigAndSave();
-      }
+        if (changed) this.onUpdateConfigAndSave();
+      },
     });
   }
 
@@ -158,7 +156,7 @@ class AppDetails extends Component<
               <Checkbox
                 defaultChecked={!!this.state.volumesToDelete[v]}
                 onChange={() => {
-                  this.setState({ volumesToDelete: { ...this.state.volumesToDelete, [v]: !this.state.volumesToDelete[v] }})
+                  this.setState({ volumesToDelete: { ...this.state.volumesToDelete, [v]: !this.state.volumesToDelete[v] }});
                 }}
               >
                 {v}
@@ -174,11 +172,11 @@ class AppDetails extends Component<
           type="text"
           placeholder={app.appName}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            this.setState({ confirmedAppNameToDelete: e.target.value.trim() })
+            this.setState({ confirmedAppNameToDelete: e.target.value.trim() });
           }}
         />
       </div>
-    )
+    );
   }
 
   async onDeleteConfirm() {
@@ -206,7 +204,7 @@ class AppDetails extends Component<
           content: (
             <div>
               <p>
-                Some volumes weren't deleted because they were probably
+                Some volumes weren&apos;t deleted because they were probably
                 being used by other containers. Sometimes, this is because
                 of a temporary delay when the original container deletion
                 was done with a delay. Please see{" "}
@@ -220,14 +218,14 @@ class AppDetails extends Component<
                 and delete them manually if needed. Skipped volumes are:
               </p>
               <ul>
-                {volumesFailedToDelete.map(v => (
-                  <li>
+                {volumesFailedToDelete.map((v, idx) => (
+                  <li key={idx}>
                     <code>{v}</code>
                   </li>
                 ))}
               </ul>
             </div>
-          )
+          ),
         });
       }
       message.success("App deleted!");
@@ -238,9 +236,7 @@ class AppDetails extends Component<
   }
 
   async onDeleteAppClicked() {
-    const self = this;
     const { appDefinition: app } = this.context;
-
     const allVolumes: string[] = [];
     const volumesToDelete: IHashMapGeneric<boolean> = {};
 
@@ -258,9 +254,7 @@ class AppDetails extends Component<
     Modal.confirm({
       title: "Confirm Permanent Delete?",
       content: this.getDeleteModalContent(app, allVolumes),
-      onOk() {
-        self.onDeleteConfirm();
-      }
+      onOk: this.onDeleteConfirm,
     });
   }
 
@@ -336,8 +330,8 @@ class AppDetails extends Component<
           >
             {appData.isLoading && (
               <div style={{
-                position: 'absolute',
-                left: '50%'
+                position: "absolute",
+                left: "50%",
               }}>
                 <CenteredSpinner />
               </div>
@@ -386,7 +380,7 @@ class AppDetails extends Component<
                   borderRadius: 8,
                   background: "rgba(51,73,90,0.9)",
                   paddingTop: 20,
-                  paddingBottom: 20
+                  paddingBottom: 20,
                 }}
               >
                 <Row type="flex" justify="center" gutter={20}>
@@ -432,21 +426,25 @@ class AppDetails extends Component<
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapStateToProps(state: any) {
   return {
-    isMobile: state.globalReducer.isMobile
+    isMobile: state.globalReducer.isMobile,
   };
 }
 
 const AppDetailsConnect = connect(
   mapStateToProps,
   undefined
-)(AppDetails);
+)(AppDetailsClass);
 
-export default (props: any) => (
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const AppDetails = (props: any) => (
   <AppDetailsProvider {...props}>
     <AppDetailsContext.Consumer>
       {() => <AppDetailsConnect {...props} />}
     </AppDetailsContext.Consumer>
   </AppDetailsProvider>
 );
+
+export default AppDetails;

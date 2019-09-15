@@ -137,7 +137,7 @@ export default class Volumes extends Component {
         <br />
 
         <Row>
-          <Col span={6} style={{ width: isMobile ? '100%' : 300 }}>
+          <Col span={6} style={{ width: isMobile ? "100%" : 300 }}>
             <Tooltip title="Leave empty for automatic placement">
               <Input
                 addonBefore="Node ID"

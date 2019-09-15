@@ -12,6 +12,7 @@ export default class HttpAuth extends Component {
     dialogHttpUser: "",
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   asyncSetState = async (state: any) => new Promise((resolve) => this.setState(state, resolve));
 
   getUserPasswordModalContent = () => {
@@ -33,7 +34,7 @@ export default class HttpAuth extends Component {
             defaultValue={this.state.dialogHttpUser}
             onChange={event =>
               this.setState({
-                dialogHttpUser: (event.target.value || "").trim()
+                dialogHttpUser: (event.target.value || "").trim(),
               })
             }
           />
@@ -45,13 +46,13 @@ export default class HttpAuth extends Component {
             defaultValue={this.state.dialogHttpPass}
             onChange={event =>
               this.setState({
-                dialogHttpPass: (event.target.value || "").trim()
+                dialogHttpPass: (event.target.value || "").trim(),
               })
             }
           />
         </p>
       </div>
-    )
+    );
   };
 
   onEditHttpAuthClicked = async () => {
@@ -59,35 +60,35 @@ export default class HttpAuth extends Component {
     const auth = app.httpAuth;
 
     const updateAuth = async () => {
-      const { dialogHttpUser, dialogHttpPass } = this.state
+      const { dialogHttpUser, dialogHttpPass } = this.state;
       const { appDefinition: app } = this.context;
 
-      let httpAuth: IHttpAuth | undefined
+      let httpAuth: IHttpAuth | undefined;
 
       if (!dialogHttpUser || !dialogHttpUser) {
-        httpAuth = undefined
+        httpAuth = undefined;
       } else {
-        httpAuth = app.httpAuth || { user: "" }
-        httpAuth.user = dialogHttpUser
-        httpAuth.password = dialogHttpPass
+        httpAuth = app.httpAuth || { user: "" };
+        httpAuth.user = dialogHttpUser;
+        httpAuth.password = dialogHttpPass;
       }
 
       // wait for the state to be updated
-      await this.context.updateAppDefintion({ httpAuth })
-      this.context.save()
-    }
+      await this.context.updateAppDefintion({ httpAuth });
+      this.context.save();
+    };
 
     await this.asyncSetState({
       dialogHttpPass: auth ? auth.password || "" : "",
-      dialogHttpUser: auth ? auth.user || "" : ""
-    })
+      dialogHttpUser: auth ? auth.user || "" : "",
+    });
 
     // pop the modal
     Modal.confirm({
       title: "Edit HTTP Basic Auth",
       content: this.getUserPasswordModalContent(),
-      onOk() { updateAuth() }
-    })
+      onOk() { updateAuth(); },
+    });
   };
 
   render() {

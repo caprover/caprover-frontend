@@ -14,18 +14,18 @@ import UploaderPlainTextCaptainDefinition from "./components/UploaderPlainTextCa
 import UploaderPlainTextDockerfile from "./components/UploaderPlainTextDockerfile";
 
 export default class DeploymentTab extends Component<
-  { },
-  {
-    forceEditableCaptainDefinitionPath: boolean;
-    buildLogRecreationId: string;
-  }
+{ },
+{
+  forceEditableCaptainDefinitionPath: boolean;
+  buildLogRecreationId: string;
+}
 > {
   static contextType = AppDetailsContext
   context!: React.ContextType<typeof AppDetailsContext>
 
   state = {
     forceEditableCaptainDefinitionPath: false,
-    buildLogRecreationId: ""
+    buildLogRecreationId: "",
   }
 
   componentWillReceiveProps(next: any, nextContext: any) {
@@ -41,19 +41,19 @@ export default class DeploymentTab extends Component<
     const hasPushToken =
       app.appPushWebhook && app.appPushWebhook.pushWebhookToken;
 
-    return hasPushToken
+    return hasPushToken && app.appPushWebhook
       ? "/user/apps/webhooks/triggerbuild?namespace=captain&token=" +
-        app.appPushWebhook!.pushWebhookToken
+        app.appPushWebhook.pushWebhookToken
       : "";
   }
 
   onForceBuild = () => {
     try {
       this.context
-        .forceBuild(this.getWebookToken())
+        .forceBuild(this.getWebookToken());
     }
     catch (err) {
-      Toaster.toast(err)
+      Toaster.toast(err);
     }
   }
 
@@ -66,13 +66,13 @@ export default class DeploymentTab extends Component<
     this.context.updateAppDefintion({
       appPushWebhook: {
         ...(app.appPushWebhook || {}),
-        repoInfo
-      }
+        repoInfo,
+      },
     });
   }
 
   onUpdateCaptainPath = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.context.updateAppDefintion({ captainDefinitionRelativeFilePath: e.target.value })
+    this.context.updateAppDefintion({ captainDefinitionRelativeFilePath: e.target.value });
   }
 
   render() {
@@ -82,12 +82,12 @@ export default class DeploymentTab extends Component<
     const repoInfo = app.appPushWebhook
       ? app.appPushWebhook.repoInfo
       : {
-          user: "",
-          password: "",
-          branch: "",
-          sshKey: "",
-          repo: ""
-        };
+        user: "",
+        password: "",
+        branch: "",
+        sshKey: "",
+        repo: "",
+      };
 
     const webhookPushUrlRelativePath = this.getWebookToken();
 
@@ -102,7 +102,7 @@ export default class DeploymentTab extends Component<
       <div>
         <BuildLogsView
           buildLogRecreationId={this.state.buildLogRecreationId}
-          key={app.appName! + "-" + this.state.buildLogRecreationId}
+          key={(app.appName || "") + "-" + this.state.buildLogRecreationId}
         />
         <div style={{ height: 20 }} />
         <hr />
@@ -236,7 +236,7 @@ export default class DeploymentTab extends Component<
             <div
               style={{
                 paddingLeft: isMobile ? 0 : 24,
-                marginTop: isMobile ? 8 : 0
+                marginTop: isMobile ? 8 : 0,
               }}
             >
               <Tooltip title="You shouldn't need to change this path unless you have a repository with multiple captain-definition files (mono repos). Read docs for captain definition before editing this">
@@ -254,7 +254,7 @@ export default class DeploymentTab extends Component<
               <Button
                 style={{
                   marginLeft: isMobile ? 0 : 20,
-                  marginTop: isMobile ? 8 : 0
+                  marginTop: isMobile ? 8 : 0,
                 }}
                 block={isMobile}
                 disabled={!this.state.forceEditableCaptainDefinitionPath}

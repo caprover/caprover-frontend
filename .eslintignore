@@ -1,0 +1,3 @@
+*.tsx
+*.js
+!/src/containers/apps/appDetails/**/*.tsx

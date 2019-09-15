@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { Col, Input, Row, Tooltip } from "antd";
-import { AppDetailsContext, IAppDetailsContext } from "../../AppDetailsProvider";
+import { AppDetailsContext } from "../../AppDetailsProvider";
 
-export default () => {
-  const context: IAppDetailsContext = useContext(AppDetailsContext);
+const ContainerPort = () => {
+  const context: AppDetailsContext = useContext(AppDetailsContext);
   const { appDefinition: app, isMobile } = context;
 
   return (
@@ -31,3 +31,5 @@ export default () => {
     </Row>
   );
 };
+
+export default ContainerPort;

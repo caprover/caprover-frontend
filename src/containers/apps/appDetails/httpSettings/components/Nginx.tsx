@@ -17,7 +17,7 @@ export default class Nginx extends Component {
 
   render() {
     const { appDefinition: app } = this.context;
-    const customNginxConfig = app.customNginxConfig!;
+    const customNginxConfig = app.customNginxConfig;
 
     if (!customNginxConfig) {
       return (
@@ -37,12 +37,12 @@ export default class Nginx extends Component {
         <p>
           Templates are built using EJS template pattern. Do not change the
           areas between <code>&lt;%</code> and <code>%&gt;</code> , unless you
-          really know what you're doing! To revert to default, simply remove all
+          really know what you&apos;re doing! To revert to default, simply remove all
           the content.
         </p>
         <Input.TextArea
           style={{
-            fontFamily: "monospace"
+            fontFamily: "monospace",
           }}
           onChange={this.onConfigChange}
           rows={17}

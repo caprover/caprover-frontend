@@ -10,10 +10,10 @@ import NetDataDescription from "./NetDataDescription";
 import NetDataSettingsForm from "./NetDataSettingsForm";
 
 class NetDataInfo extends ApiComponent<
-  {
-    isMobile: boolean;
-  },
-  { apiData: any; isLoading: boolean }
+{
+  isMobile: boolean;
+},
+{ apiData: any; isLoading: boolean }
 > {
   constructor(props: any) {
     super(props);
@@ -174,7 +174,6 @@ function mapStateToProps(state: any) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  undefined
+export default connect<{ isMobile: boolean }>(
+  mapStateToProps
 )(NetDataInfo);

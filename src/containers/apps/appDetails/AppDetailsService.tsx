@@ -2,18 +2,18 @@ import Utils from "../../../utils/Utils";
 import ApiManager from "../../../api/ApiManager";
 import { IBuildLogs } from "../AppDefinition";
 
-export interface ILogCallback {
-  (logs?: { buildLogs?: IBuildLogs, appLogs?: string }, error?: Error): void;
+export interface LogCallback {
+  (logs?: { buildLogs?: IBuildLogs; appLogs?: string }, error?: Error): void;
 }
 
 export class LogFetcher {
   private apiManager?: ApiManager;
-  private callback: ILogCallback;
+  private callback: LogCallback;
   private timer?: NodeJS.Timeout;
   started: boolean;
   appName: string;
 
-  constructor(apiManager:ApiManager, appName: string, callback: ILogCallback) {
+  constructor(apiManager: ApiManager, appName: string, callback: LogCallback) {
     this.apiManager = apiManager;
     this.started = false;
     this.callback = callback;
@@ -21,9 +21,9 @@ export class LogFetcher {
     this.appName = appName;
   }
 
-  async fetchAppLogs(): Promise<({ appLogs?: string, error?: Error })> {
+  async fetchAppLogs(): Promise<({ appLogs?: string; error?: Error })> {
     if (!this.started || !this.apiManager) {
-      return { appLogs: undefined, error: undefined }
+      return { appLogs: undefined, error: undefined };
     }
 
     // See https://docs.docker.com/engine/api/v1.30/#operation/ContainerAttach for logs headers
@@ -31,20 +31,20 @@ export class LogFetcher {
       "00000000",
       "01000000",
       "02000000",
-      "03000000" // This is not in the Docker docs, but can actually happen when the log stream is broken https://github.com/caprover/caprover/issues/366
+      "03000000", // This is not in the Docker docs, but can actually happen when the log stream is broken https://github.com/caprover/caprover/issues/366
     ];
 
     const ansiRegex = Utils.getAnsiColorRegex();
-    let logs: { appLogs?: string, error?: Error } | null = null;
+    let logs: { appLogs?: string; error?: Error } | null = null;
 
     try{
-      const logInfo: { logs: string } = await this.apiManager!.fetchAppLogsInHex(this.appName)
+      const logInfo: { logs: string } = await this.apiManager.fetchAppLogsInHex(this.appName);
       const logsProcessed = logInfo.logs
         .split(new RegExp(separators.join("|"), "g"))
         .map(rawRow => {
           let time = 0;
 
-          let textUtf8 = Utils.convertHexStringToUtf8(rawRow);
+          const textUtf8 = Utils.convertHexStringToUtf8(rawRow);
 
           try {
             time = new Date(textUtf8.substring(0, 30)).getTime();
@@ -54,7 +54,7 @@ export class LogFetcher {
 
           return {
             text: textUtf8,
-            time: time
+            time: time,
           };
         })
         .sort((a, b) => (a.time > b.time ? 1 : b.time > a.time ? -1 : 0))
@@ -66,57 +66,57 @@ export class LogFetcher {
 
       logs = { appLogs: logsProcessed, error: undefined };
     } catch(error) {
-      console.log(error)
-      logs = { appLogs: undefined, error }
+      console.log(error);
+      logs = { appLogs: undefined, error };
     }
 
-    return logs
+    return logs;
   }
 
   async fetchLogs() {
     if (!this.started) {
-      return
+      return;
     }
 
-    const { appLogs, error: appLogsError }  = await this.fetchAppLogs()
-    const { buildLogs, error: buildLogsError } = await this.fetchBuildLogs()
+    const { appLogs, error: appLogsError }  = await this.fetchAppLogs();
+    const { buildLogs, error: buildLogsError } = await this.fetchBuildLogs();
 
     if (!this.started) {
-      return
+      return;
     }
 
-    this.callback({ appLogs, buildLogs }, appLogsError || buildLogsError)
+    this.callback({ appLogs, buildLogs }, appLogsError || buildLogsError);
 
     this.timer = setTimeout(async () =>
       this.fetchLogs()
-    , 2000)
+    , 2000);
   }
 
-  async fetchBuildLogs(): Promise<({ buildLogs?: IBuildLogs, error?: Error })> {
+  async fetchBuildLogs(): Promise<({ buildLogs?: IBuildLogs; error?: Error })> {
     if (!this.started || !this.apiManager) {
-      return { buildLogs: undefined, error: undefined }
+      return { buildLogs: undefined, error: undefined };
     }
 
     try {
-      const buildLogs: IBuildLogs = await this.apiManager!.fetchBuildLogs(this.appName)
+      const buildLogs: IBuildLogs = await this.apiManager.fetchBuildLogs(this.appName);
 
-      return { buildLogs, error: undefined }
+      return { buildLogs, error: undefined };
     } catch(error) {
-      console.log(error)
-      return  { error, buildLogs: undefined }
+      console.log(error);
+      return  { error, buildLogs: undefined };
     }
   }
 
   start() {
-    this.started = true
-    this.fetchLogs()
+    this.started = true;
+    this.fetchLogs();
   }
 
   stop() {
     if (this.timer) {
-      clearTimeout(this.timer)
+      clearTimeout(this.timer);
     }
-    this.started = false
-    this.apiManager = undefined
+    this.started = false;
+    this.apiManager = undefined;
   }
 }

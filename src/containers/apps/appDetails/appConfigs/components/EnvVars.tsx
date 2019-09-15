@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Col, Input, Row, Switch } from "antd";
 import { IHashMapGeneric } from "../../../../../models/IHashMapGeneric";
 import { IAppEnvVar } from "../../../AppDefinition";
-import { AppDetailsContext } from '../../AppDetailsProvider'
+import { AppDetailsContext } from "../../AppDetailsProvider";
 
 enum EnvType {
   Key, Value
@@ -25,7 +25,7 @@ export default class EnvVars extends Component {
     src
       .toString()
       .split("\n")
-      .forEach(function(line, idx) {
+      .forEach(function(line) {
         // matching "KEY' and 'VAL' in 'KEY=VAL'
         const keyValueArr = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
         // matched?
@@ -39,8 +39,8 @@ export default class EnvVars extends Component {
           const len = value ? value.length : 0;
           if (
             len > 0 &&
-            value.charAt(0) === '"' &&
-            value.charAt(len - 1) === '"'
+            value.charAt(0) === "\"" &&
+            value.charAt(len - 1) === "\""
           ) {
             value = value.replace(/\\n/gm, "\n");
           }
@@ -60,7 +60,7 @@ export default class EnvVars extends Component {
       .map(e => {
         let val = e.value;
         if (val.indexOf("\n") >= 0) {
-          val = '"' + val.split("\n").join("\\n") + '"';
+          val = "\"" + val.split("\n").join("\\n") + "\"";
         }
         return e.key + "=" + val;
       })
@@ -69,7 +69,7 @@ export default class EnvVars extends Component {
 
   onAddClicked = () => {
     const envVars = this.context.appDefinition.envVars || [];
-    this.context.updateAppDefintion({ envVars: [...envVars, { key: '', value: '' }]});
+    this.context.updateAppDefintion({ envVars: [...envVars, { key: "", value: "" }]});
   };
 
   onVarUpdated = (val: string, index: number, type: EnvType) => {
@@ -86,20 +86,20 @@ export default class EnvVars extends Component {
   };
 
   onBulkVarUpdated = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const val = e.target.value
+    const val = e.target.value;
     const keyVals = this.parseEnvVars(val);
     const envVars: IAppEnvVar[] = [];
     Object.keys(keyVals).forEach(k => {
       envVars.push({ key: k, value: keyVals[k] });
     });
-    this.context.updateAppDefintion({ envVars })
+    this.context.updateAppDefintion({ envVars });
     this.setState({ bulkVals: val });
   };
 
   render() {
     const { appDefinition: app, isMobile } = this.context;
     const envVars = app.envVars || [];
-    const { bulkVals, envVarBulkEdit } = this.state
+    const { bulkVals, envVarBulkEdit } = this.state;
 
     return (
       <div>

@@ -20,7 +20,7 @@ export default class Instances extends Component {
 
     return (
       <Row>
-        <Col span={6} style={{ width: isMobile ? '100%' : 300 }}>
+        <Col span={6} style={{ width: isMobile ? "100%" : 300 }}>
           <Tooltip title="Number of running instances of this app">
             <Input
               addonBefore="Instance Count"

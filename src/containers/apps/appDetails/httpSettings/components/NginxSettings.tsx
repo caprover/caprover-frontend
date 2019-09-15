@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { Row, Icon, Tooltip, Checkbox } from "antd";
-import { AppDetailsContext, IAppDetailsContext } from "../../AppDetailsProvider";
+import { AppDetailsContext } from "../../AppDetailsProvider";
 
-export default () => {
-  const context: IAppDetailsContext = useContext(AppDetailsContext);
+const NginxSettings = () => {
+  const context: AppDetailsContext = useContext(AppDetailsContext);
   const { appDefinition: app } = context;
 
   return (
@@ -41,3 +41,5 @@ export default () => {
     </>
   );
 };
+
+export default NginxSettings;
