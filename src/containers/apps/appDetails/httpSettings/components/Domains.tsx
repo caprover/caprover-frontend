@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { Col, Input, Row, Icon, Tooltip, Button, message } from "antd";
-import { AppDetailsContext, IAppDetailsContext } from "../../AppDetailsProvider";
+import { AppDetailsContext } from "../../AppDetailsProvider";
 import Toaster from "../../../../../utils/Toaster";
 import { IAppCustomDomain } from "../../../AppDefinition";
 

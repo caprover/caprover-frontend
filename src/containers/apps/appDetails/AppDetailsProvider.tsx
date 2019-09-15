@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import ApiComponent from "../../global/ApiComponent";
-import { LogFetcher, ILogCallback } from './AppDetailsService';
+import { LogFetcher } from './AppDetailsService';
 import Toaster from "../../../utils/Toaster";
 import { IAppDef, IAppVersion, IBuildLogs } from '../AppDefinition';
 

@@ -31,9 +31,11 @@ import AppDetailsProvider, { AppDetailsContext } from "./AppDetailsProvider";
 import ContainerStatus from "./components/ContainerStatus";
 const TabPane = Tabs.TabPane;
 
-const WEB_SETTINGS = "WEB_SETTINGS";
-const APP_CONFIGS = "APP_CONFIGS";
-const DEPLOYMENT = "DEPLOYMENT";
+enum DETIALS_TAB {
+  WEB_SETTINGS = "WEB_SETTINGS",
+  APP_CONFIGS = "APP_CONFIGS",
+  DEPLOYMENT = "DEPLOYMENT",
+};
 
 export interface SingleAppApiData {
   appDefinition: IAppDef;
@@ -53,27 +55,26 @@ class AppDetails extends Component<
   private reRenderTriggered = false;
 
   state = {
-    activeTabKey: WEB_SETTINGS,
+    activeTabKey: DETIALS_TAB.WEB_SETTINGS,
     renderCounterForAffixBug: 0,
     confirmedAppNameToDelete: "",
     volumesToDelete: {} as IHashMapGeneric<boolean>,
   }
 
-  componentDidMount() {
-    this.context.fetchAppData()
+  async componentDidMount() {
+    try {
+      const app = await this.context.fetchAppData()
+      if (!app) {
+        this.goBackToApps()
+      }
+    } catch (err) {
+      Toaster.toast(err)
+    }
   }
 
   asyncSetState = async (state: any) => new Promise((resolve) => this.setState(state, resolve))
 
-  async reFetchData() {
-    const app = await this.context.fetchAppData()
-    if (!app) {
-      // App Not Found!
-      this.goBackToApps();
-    }
-  }
-
-  goBackToApps() {
+  goBackToApps = () => {
     this.props.history.push("/apps");
   }
 
@@ -233,16 +234,16 @@ class AppDetails extends Component<
       message.success("App deleted!");
       this.goBackToApps();
     } catch(err) {
-      Toaster.toast(err)
+      Toaster.toast(err);
     }
   }
 
   async onDeleteAppClicked() {
-    const self = this
-    const { appDefinition: app } = this.context
+    const self = this;
+    const { appDefinition: app } = this.context;
 
     const allVolumes: string[] = [];
-    const volumesToDelete: IHashMapGeneric<boolean> = {}
+    const volumesToDelete: IHashMapGeneric<boolean> = {};
 
     if (app.volumes) {
       app.volumes.forEach((v: IAppVolume) => {
@@ -253,7 +254,7 @@ class AppDetails extends Component<
       });
     }
 
-    await this.asyncSetState({ volumesToDelete, confirmedAppNameToDelete: "" })
+    await this.asyncSetState({ volumesToDelete, confirmedAppNameToDelete: "" });
 
     Modal.confirm({
       title: "Confirm Permanent Delete?",
@@ -273,11 +274,11 @@ class AppDetails extends Component<
   }
 
   onUpdateConfigAndSave() {
-    this.context.save()
+    this.context.save();
   }
 
   render() {
-    const { appData, appDefinition: app, isMobile } = this.context
+    const { appData, appDefinition: app, isMobile } = this.context;
 
     if (!app && appData.isLoading) {
       return <CenteredSpinner />;
@@ -346,7 +347,7 @@ class AppDetails extends Component<
               </div>
             )}
             <Tabs
-              defaultActiveKey={WEB_SETTINGS}
+              defaultActiveKey={DETIALS_TAB.WEB_SETTINGS}
               onChange={activeTabKey =>
                 this.setState({ activeTabKey })
               }
@@ -354,19 +355,19 @@ class AppDetails extends Component<
             >
               <TabPane
                 tab={<span className="unselectable-span">HTTP Settings</span>}
-                key={WEB_SETTINGS}
+                key={DETIALS_TAB.WEB_SETTINGS}
               >
                 <HttpSettingsTab />
               </TabPane>
               <TabPane
                 tab={<span className="unselectable-span">App Configs</span>}
-                key={APP_CONFIGS}
+                key={DETIALS_TAB.APP_CONFIGS}
               >
                 <AppConfigsTab />
               </TabPane>
               <TabPane
                 tab={<span className="unselectable-span">Deployment</span>}
-                key={DEPLOYMENT}
+                key={DETIALS_TAB.DEPLOYMENT}
               >
                 <DeploymentTab />
               </TabPane>
@@ -382,7 +383,7 @@ class AppDetails extends Component<
             >
               <div
                 className={classnames({
-                  "hide-on-demand": this.state.activeTabKey === DEPLOYMENT,
+                  "hide-on-demand": this.state.activeTabKey === DETIALS_TAB.DEPLOYMENT,
                   "disabled": appData.isLoading,
                 })}
                 style={{
@@ -452,4 +453,4 @@ export default (props: any) => (
       {() => <AppDetailsConnect {...props} />}
     </AppDetailsContext.Consumer>
   </AppDetailsProvider>
-)
+);

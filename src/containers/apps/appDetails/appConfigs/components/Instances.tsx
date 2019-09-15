@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Col, Input, Row, Icon, Tooltip, Button } from "antd";
+import { Col, Input, Row, Tooltip, Button } from "antd";
 import { AppDetailsContext } from "../../AppDetailsProvider";
 
 export default class Instances extends Component {
