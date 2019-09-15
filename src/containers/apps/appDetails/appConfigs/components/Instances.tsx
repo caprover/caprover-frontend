@@ -12,15 +12,15 @@ export default class Instances extends Component {
 
   onInstanceCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const instanceCount = Number(e.target.value);
-    this.context!.updateAppDefintion({ instanceCount });
+    this.context.updateAppDefintion({ instanceCount });
   };
 
   render() {
-    const app = this.context!.appDefinition;
+    const { appDefinition: app, isMobile } = this.context;
 
     return (
       <Row>
-        <Col span={6} style={{ width: this.context!.isMobile ? '100%' : 300 }}>
+        <Col span={6} style={{ width: isMobile ? '100%' : 300 }}>
           <Tooltip title="Number of running instances of this app">
             <Input
               addonBefore="Instance Count"

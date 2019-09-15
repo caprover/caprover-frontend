@@ -8,11 +8,11 @@ export default class PreDeployScript extends Component {
 
   onScriptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const preDeployFunction = e.target.value;
-    this.context!.updateAppDefintion({ preDeployFunction });
+    this.context.updateAppDefintion({ preDeployFunction });
   };
 
   render() {
-    const app = this.context!.appDefinition;
+    const app = this.context.appDefinition;
 
     return (
       <Row>

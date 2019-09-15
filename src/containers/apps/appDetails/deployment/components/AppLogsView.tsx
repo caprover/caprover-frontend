@@ -13,7 +13,7 @@ export default class AppLogsView extends Component {
   };
 
   componentWillReceiveProps(next: any, nextContext: any) {
-    const firstLogs = nextContext.logs.appLogs && !this.context!.logs.appLogs;
+    const firstLogs = nextContext.logs.appLogs && !this.context.logs.appLogs;
 
     let textareaNow = document.getElementById("applogs-text-id");
 
@@ -38,7 +38,7 @@ export default class AppLogsView extends Component {
   }
 
   render() {
-    const { appLogs } = this.context!.logs;
+    const { appLogs } = this.context.logs;
     const { isWrapped, expandedLogs } = this.state;
 
     return (

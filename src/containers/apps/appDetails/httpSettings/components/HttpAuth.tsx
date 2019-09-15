@@ -55,12 +55,12 @@ export default class HttpAuth extends Component {
   };
 
   onEditHttpAuthClicked = async () => {
-    const { appDefinition: app } = this.context!;
+    const { appDefinition: app } = this.context;
     const auth = app.httpAuth;
 
     const updateAuth = async () => {
       const { dialogHttpUser, dialogHttpPass } = this.state
-      const { appDefinition: app } = this.context!;
+      const { appDefinition: app } = this.context;
 
       let httpAuth: IHttpAuth | undefined
 
@@ -73,8 +73,8 @@ export default class HttpAuth extends Component {
       }
 
       // wait for the state to be updated
-      await this.context!.updateAppDefintion({ httpAuth })
-      this.context!.save()
+      await this.context.updateAppDefintion({ httpAuth })
+      this.context.save()
     }
 
     await this.asyncSetState({
@@ -91,7 +91,7 @@ export default class HttpAuth extends Component {
   };
 
   render() {
-    const { appDefinition: app, isMobile } = this.context!;
+    const { appDefinition: app, isMobile } = this.context;
     const basicAuthUsername = app.httpAuth
       ? app.httpAuth.user
       : "";

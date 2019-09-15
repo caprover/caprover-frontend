@@ -13,7 +13,7 @@ export default class AppVersionTable extends Component {
   context!: React.ContextType<typeof AppDetailsContext>;
 
   getStateRender(version: number, versionDetails: IAppVersion) {
-    const { appDefinition: app } = this.context!;
+    const { appDefinition: app } = this.context;
 
     if (version === app.deployedVersion) {
       return (
@@ -133,17 +133,17 @@ export default class AppVersionTable extends Component {
 
   onVersionRollbackRequested = async (version: IAppVersion) => {
     try {
-      this.context!.rollbackToVersion(version)
+      this.context.rollbackToVersion(version)
     } catch(err) {
       Toaster.toast(err)
     }
   }
 
   render() {
-    const { appDefinition: app } = this.context!;
+    const { appDefinition: app } = this.context;
     const versionsReversed = Utils.copyObject(app.versions as IAppVersion[]).reverse();
     const columns = this.getCols();
-    const { isMobile } = this.context!;
+    const { isMobile } = this.context;
 
     return (
       <div>

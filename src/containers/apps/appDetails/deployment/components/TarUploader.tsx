@@ -8,7 +8,7 @@ export default class TarUploader extends Component<
   {
   },
   {
-    fileToBeUploaded: UploadFile | undefined;
+    fileToBeUploaded?: UploadFile;
   }
 > {
   static contextType = AppDetailsContext;
@@ -53,7 +53,7 @@ export default class TarUploader extends Component<
     message.info("Upload has started");
 
     try {
-      await this.context!.uploadAppData(file.originFileObj! as File)
+      await this.context.uploadAppData(file.originFileObj! as File)
     } catch(err) {
       Toaster.toast(err)
       this.setState({ fileToBeUploaded: file })

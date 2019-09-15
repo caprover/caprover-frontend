@@ -12,7 +12,7 @@ import NginxSettings from "./components/NginxSettings";
 import HttpAuth from "./components/HttpAuth";
 
 export default () => {
-  const context: IAppDetailsContext = useContext(AppDetailsContext)!;
+  const context: IAppDetailsContext = useContext(AppDetailsContext);
   const { appDefinition: app } = context;
 
   return (

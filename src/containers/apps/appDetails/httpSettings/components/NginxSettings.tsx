@@ -3,7 +3,7 @@ import { Row, Icon, Tooltip, Checkbox } from "antd";
 import { AppDetailsContext, IAppDetailsContext } from "../../AppDetailsProvider";
 
 export default () => {
-  const context: IAppDetailsContext = useContext(AppDetailsContext)!;
+  const context: IAppDetailsContext = useContext(AppDetailsContext);
   const { appDefinition: app } = context;
 
   return (

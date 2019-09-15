@@ -3,7 +3,7 @@ import { Col, Input, Row, Tooltip } from "antd";
 import { AppDetailsContext, IAppDetailsContext } from "../../AppDetailsProvider";
 
 export default () => {
-  const context: IAppDetailsContext = useContext(AppDetailsContext)!;
+  const context: IAppDetailsContext = useContext(AppDetailsContext);
   const { appDefinition: app, isMobile } = context;
 
   return (

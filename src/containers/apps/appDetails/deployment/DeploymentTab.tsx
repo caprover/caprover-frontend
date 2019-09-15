@@ -29,7 +29,7 @@ export default class DeploymentTab extends Component<
   }
 
   componentWillReceiveProps(next: any, nextContext: any) {
-    if (nextContext.building && !this.context!.building) {
+    if (nextContext.building && !this.context.building) {
       message.info("Build has started");
       this.setState({ buildLogRecreationId: "" + new Date().getTime() });
       DomUtils.scrollToTopBar();
@@ -37,7 +37,7 @@ export default class DeploymentTab extends Component<
   }
 
   getWebookToken() {
-    const app = this.context!.appDefinition;
+    const app = this.context.appDefinition;
     const hasPushToken =
       app.appPushWebhook && app.appPushWebhook.pushWebhookToken;
 
@@ -49,7 +49,7 @@ export default class DeploymentTab extends Component<
 
   onForceBuild = () => {
     try {
-      this.context!
+      this.context
         .forceBuild(this.getWebookToken())
     }
     catch (err) {
@@ -58,12 +58,12 @@ export default class DeploymentTab extends Component<
   }
 
   onGitRepoUpdate = (newRepo: RepoInfo) => {
-    const app = this.context!.appDefinition;
+    const app = this.context.appDefinition;
     const repoInfo = Utils.copyObject(
       newRepo
     );
 
-    this.context!.updateAppDefintion({
+    this.context.updateAppDefintion({
       appPushWebhook: {
         ...(app.appPushWebhook || {}),
         repoInfo
@@ -72,11 +72,11 @@ export default class DeploymentTab extends Component<
   }
 
   onUpdateCaptainPath = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.context!.updateAppDefintion({ captainDefinitionRelativeFilePath: e.target.value })
+    this.context.updateAppDefintion({ captainDefinitionRelativeFilePath: e.target.value })
   }
 
   render() {
-    const { appDefinition: app, isMobile } = this.context!;
+    const { appDefinition: app, isMobile } = this.context;
     const hasPushToken =
       app.appPushWebhook && app.appPushWebhook.pushWebhookToken;
     const repoInfo = app.appPushWebhook
@@ -94,7 +94,7 @@ export default class DeploymentTab extends Component<
     const webhookPushUrlFullPath =
       window.location.protocol +
       "//captain." +
-      this.context!.rootDomain +
+      this.context.rootDomain +
       "/api/v2" +
       webhookPushUrlRelativePath;
 
@@ -193,7 +193,7 @@ export default class DeploymentTab extends Component<
             type="primary"
             style={{ marginTop: isMobile ? 15 : 0 }}
             block={isMobile}
-            onClick={() => this.context!.save()}
+            onClick={() => this.context.save()}
           >
             Save &amp; Update
           </Button>
@@ -259,7 +259,7 @@ export default class DeploymentTab extends Component<
                 block={isMobile}
                 disabled={!this.state.forceEditableCaptainDefinitionPath}
                 type="primary"
-                onClick={() => this.context!.save()}
+                onClick={() => this.context.save()}
               >
                 Save &amp; Update
               </Button>

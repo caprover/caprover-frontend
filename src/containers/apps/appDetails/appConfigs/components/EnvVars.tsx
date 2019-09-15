@@ -68,12 +68,12 @@ export default class EnvVars extends Component {
   }
 
   onAddClicked = () => {
-      const envVars = this.context!.appDefinition.envVars || [];
-      this.context!.updateAppDefintion({ envVars: [...envVars, { key: '', value: '' }]});
+    const envVars = this.context.appDefinition.envVars || [];
+    this.context.updateAppDefintion({ envVars: [...envVars, { key: '', value: '' }]});
   };
 
   onVarUpdated = (val: string, index: number, type: EnvType) => {
-    const envVars = [...this.context!.appDefinition.envVars];
+    const envVars = [...this.context.appDefinition.envVars];
     switch(type) {
       case EnvType.Key:
         envVars[index].key = val;
@@ -82,7 +82,7 @@ export default class EnvVars extends Component {
         envVars[index].value = val;
         break;
     }
-    this.context!.updateAppDefintion({ envVars });
+    this.context.updateAppDefintion({ envVars });
   };
 
   onBulkVarUpdated = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -92,12 +92,13 @@ export default class EnvVars extends Component {
     Object.keys(keyVals).forEach(k => {
       envVars.push({ key: k, value: keyVals[k] });
     });
-    this.context!.updateAppDefintion({ envVars })
+    this.context.updateAppDefintion({ envVars })
     this.setState({ bulkVals: val });
   };
 
   render() {
-    const envVars = this.context!.appDefinition.envVars || [];
+    const { appDefinition: app, isMobile } = this.context;
+    const envVars = app.envVars || [];
     const { bulkVals, envVarBulkEdit } = this.state
 
     return (
@@ -168,7 +169,7 @@ export default class EnvVars extends Component {
 
             <br />
 
-            <Button block={this.context!.isMobile} type="default" onClick={this.onAddClicked}>
+            <Button block={isMobile} type="default" onClick={this.onAddClicked}>
               Add Key/Value Pair
             </Button>
           </div>

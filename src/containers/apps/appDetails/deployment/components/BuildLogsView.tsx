@@ -1,7 +1,7 @@
 import { Alert, Icon, Row, Spin } from "antd";
 import React, { Component } from "react";
 import Utils from "../../../../../utils/Utils";
-import { AppDetailsContext } from "../../AppDetailsProvider";
+import { AppDetailsContext, IAppDetailsContext } from "../../AppDetailsProvider";
 import ClickableLink from "../../../../global/ClickableLink";
 
 export default class BuildLogsView extends Component<
@@ -26,8 +26,8 @@ export default class BuildLogsView extends Component<
     };
   }
 
-  componentWillReceiveProps(next: any, nextContext: any) {
-    if (nextContext.logs.buildLogs !== this.context!.logs.buildLogs) {
+  componentWillReceiveProps(next: any, nextContext: IAppDetailsContext) {
+    if (nextContext.logs.buildLogs !== this.context.logs.buildLogs) {
       const logInfo = nextContext.logs.buildLogs;
 
       if (nextContext.building) {
@@ -84,7 +84,7 @@ export default class BuildLogsView extends Component<
 
   render() {
     const { expandedLogs, buildLogs: buildLogString } = this.state;
-    const { building } = this.context!;
+    const { building } = this.context;
 
     return (
       <div>

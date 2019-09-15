@@ -2,24 +2,23 @@ import React from 'react';
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import ApiComponent from "../../global/ApiComponent";
-import { LogFetcher } from './AppDetailsService';
+import { LogFetcher, ILogCallback } from './AppDetailsService';
 import Toaster from "../../../utils/Toaster";
-import { IAppDef, IAppVersion } from '../AppDefinition';
+import { IAppDef, IAppVersion, IBuildLogs } from '../AppDefinition';
 
 export interface IAppDetailsContext {
-  building: boolean,
-  appDefinition: IAppDef,
-  rootDomain: string | null,
-  defaultNginxConfig: string | null,
-  isDirty: boolean,
-  isMobile: boolean,
+  building: boolean;
+  appDefinition: IAppDef;
+  rootDomain?: string;
+  defaultNginxConfig?: string;
+  isDirty: boolean;
+  isMobile: boolean;
   appData: {
-    isLoading: boolean,
-    isError: boolean,
+    isLoading: boolean;
   },
   logs: {
-    appLogs: string | null,
-    buildLogs: string | null,
+    appLogs?: string;
+    buildLogs: IBuildLogs;
   }
 
   enableSslForBaseDomain(): Promise<any>;
@@ -28,7 +27,7 @@ export interface IAppDetailsContext {
   addCustomDomain(name: string): Promise<any>;
   updateAppDefintion(update: any): void;
   save(): Promise<any>;
-  fetchAppData(): Promise<any>;
+  fetchAppData(): Promise<IAppDef | undefined>;
   deleteApp(name: string, volumes: string[]): Promise<any>;
   renameApp(name: string): Promise<any>;
   forceBuild(token: string): Promise<any>;
@@ -37,7 +36,7 @@ export interface IAppDetailsContext {
   rollbackToVersion(version: IAppVersion): Promise<any>;
 }
 
-export const AppDetailsContext = React.createContext<IAppDetailsContext | null>(null)!;
+export const AppDetailsContext = React.createContext<IAppDetailsContext>({} as IAppDetailsContext);
 
 class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   isMobile: boolean,
@@ -51,14 +50,13 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
     isDirty: true,
     appData: {
       isLoading: true,
-      isError: false,
     },
     logs: {
       appLogs: null,
       buildLogs: null,
     },
   };
-  logfetcher: LogFetcher | undefined;
+  logfetcher?: LogFetcher;
 
   constructor(props: any) {
     super(props);
@@ -66,6 +64,8 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
     this.state = {
       ...this.state,
       isMobile: props.isMobile,
+
+      // wire up all the public methods on the context
       updateAppDefintion: this.updateAppDefintion.bind(this),
       fetchAppData: this.fetchAppData.bind(this),
       save: this.save.bind(this),
@@ -109,7 +109,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   /* modify the app */
 
   async deleteApp(appName: string, volumes: string[]) {
-    this.setState({ appData: { isLoading: true, isError: false } });
+    this.setState({ appData: { isLoading: true } });
     if (this.logfetcher) {
       this.logfetcher.stop()
     }
@@ -119,13 +119,13 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
       await this.apiManager.deleteApp(appName, volumes)
     } catch(err) {
       // turn loading to off and bubble the error
-      this.setState({ appData: { isLoading: false, isError: false } });
+      this.setState({ appData: { isLoading: false } });
       throw err
     }
   }
 
   async renameApp(newName: string) {
-    this.setState({ appData: { isLoading: true, isError: false } });
+    this.setState({ appData: { isLoading: true } });
     if (this.logfetcher) {
       this.logfetcher.stop()
     }
@@ -139,22 +139,22 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
       await this.fetchAppData()
     } catch(err) {
       // turn loading to off and bubble the error
-      this.setState({ appData: { isLoading: false, isError: false } });
+      this.setState({ appData: { isLoading: false } });
       throw err
     }
   }
 
   /* get app data */
 
-  async fetchAppData() {
-    this.setState({ appData: { isLoading: true, isError: false }});
+  async fetchAppData(): Promise<IAppDef | undefined> {
+    this.setState({ appData: { isLoading: true }});
     const allApps = await this.apiManager.getAllApps();
-    this.setState({ appData: { isLoading: false, isError: false }});
+    this.setState({ appData: { isLoading: false }});
 
-    const myApp = allApps.appDefinitions
+    const myApp: IAppDef = allApps.appDefinitions
       .find((app: IAppDef) => app.appName === this.props.match.params.appName );
 
-    if (myApp) {
+    if (myApp && myApp.appName) {
       if (!this.state.appDefinition || (myApp.appName !== this.state.appDefinition.appName)) {
         this.startLogFetcher(myApp.appName)
       }
@@ -165,12 +165,13 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
         defaultNginxConfig: allApps.defaultNginxConfig,
         appData: {
           isLoading: false,
-          isError: false,
         },
       });
+
+      return myApp;
     }
 
-    return myApp;
+    return undefined
   }
 
   async updateBuildVersionsWithoutLoad() {
@@ -232,9 +233,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
     this.setState({ building: true })
   }
 
-  /* logs */
-
-  onLogsFetched = (logs: any, error: Error) => {
+  onLogsFetched = (logs?: { buildLogs?: IBuildLogs, appLogs?: string }, error?: Error) => {
     if (error) {
       Toaster.toast(error)
     }
@@ -293,7 +292,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
   }
 
   async callApiWithRefetch(call: Function) {
-    this.setState({ appData: { isLoading: true, isError: false } });
+    this.setState({ appData: { isLoading: true } });
 
     try {
       // do the call
@@ -303,7 +302,7 @@ class AppDetailsProvider extends ApiComponent<RouteComponentProps<any> & {
       await this.fetchAppData()
     } catch(err) {
       // turn loading to off and bubble the error
-      this.setState({ appData: { isLoading: false, isError: false } });
+      this.setState({ appData: { isLoading: false } });
       throw err
     }
   }

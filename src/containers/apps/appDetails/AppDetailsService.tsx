@@ -1,15 +1,19 @@
 import Utils from "../../../utils/Utils";
-import Login from "../../Login";
 import ApiManager from "../../../api/ApiManager";
+import { IBuildLogs } from "../AppDefinition";
+
+export interface ILogCallback {
+  (logs?: { buildLogs?: IBuildLogs, appLogs?: string }, error?: Error): void;
+}
 
 export class LogFetcher {
-  private apiManager: ApiManager | null;
-  private callback: Function;
-  private timer: NodeJS.Timeout | null = null;
+  private apiManager?: ApiManager;
+  private callback: ILogCallback;
+  private timer?: NodeJS.Timeout;
   started: boolean;
   appName: string;
 
-  constructor(apiManager:ApiManager, appName: string, callback: Function) {
+  constructor(apiManager:ApiManager, appName: string, callback: ILogCallback) {
     this.apiManager = apiManager;
     this.started = false;
     this.callback = callback;
@@ -17,7 +21,7 @@ export class LogFetcher {
     this.appName = appName;
   }
 
-  async fetchAppLogs(): Promise<({ appLogs: string | undefined, error: Error | undefined })> {
+  async fetchAppLogs(): Promise<({ appLogs?: string, error?: Error })> {
     if (!this.started || !this.apiManager) {
       return { appLogs: undefined, error: undefined }
     }
@@ -31,7 +35,7 @@ export class LogFetcher {
     ];
 
     const ansiRegex = Utils.getAnsiColorRegex();
-    let logs: { appLogs: string | undefined, error: Error | undefined } | null = null;
+    let logs: { appLogs?: string, error?: Error } | null = null;
 
     try{
       const logInfo: { logs: string } = await this.apiManager!.fetchAppLogsInHex(this.appName)
@@ -88,20 +92,13 @@ export class LogFetcher {
     , 2000)
   }
 
-  async fetchBuildLogs(): Promise<({ buildLogs: any, error: Error | undefined })> {
+  async fetchBuildLogs(): Promise<({ buildLogs?: IBuildLogs, error?: Error })> {
     if (!this.started || !this.apiManager) {
       return { buildLogs: undefined, error: undefined }
     }
 
     try {
-      const buildLogs : {
-        isAppBuilding: boolean;
-        isBuildFailed: boolean;
-        logs: {
-          firstLineNumber: number;
-          lines: string[];
-        }
-      } = await this.apiManager!.fetchBuildLogs(this.appName)
+      const buildLogs: IBuildLogs = await this.apiManager!.fetchBuildLogs(this.appName)
 
       return { buildLogs, error: undefined }
     } catch(error) {
@@ -120,6 +117,6 @@ export class LogFetcher {
       clearTimeout(this.timer)
     }
     this.started = false
-    this.apiManager = null
+    this.apiManager = undefined
   }
 }

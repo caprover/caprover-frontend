@@ -18,12 +18,12 @@ export default class Volumes extends Component {
   };
 
   onAddVolumeClicked = () => {
-    const volumes = this.context!.appDefinition.volumes || [];
-    this.context!.updateAppDefintion({ volumes: [...volumes, { containerPath: "", volumeName: "" }]});
+    const volumes = this.context.appDefinition.volumes || [];
+    this.context.updateAppDefintion({ volumes: [...volumes, { containerPath: "", volumeName: "" }]});
   };
 
   onVolumeChange = (val: string, index: number, type: VolumeType) => {
-    const volumes = [...this.context!.appDefinition.volumes];
+    const volumes = [...this.context.appDefinition.volumes];
     switch(type) {
       case VolumeType.ContainerPath:
         volumes[index].containerPath = val;
@@ -35,20 +35,20 @@ export default class Volumes extends Component {
         volumes[index].volumeName = val;
         break;
     }
-    this.context!.updateAppDefintion({ volumes });
+    this.context.updateAppDefintion({ volumes });
   };
 
   onHostPathClicked = (index: number) => {
-    const hostPath = this.context!.appDefinition.volumes[index].hostPath ? "" : "/";
+    const hostPath = this.context.appDefinition.volumes[index].hostPath ? "" : "/";
     this.onVolumeChange(hostPath, index, VolumeType.HostPath);
   };
 
   onNodeIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.context!.updateAppDefintion({ nodeId: e.target.value });
+    this.context.updateAppDefintion({ nodeId: e.target.value });
   };
 
   render() {
-    const app = this.context!.appDefinition;
+    const { appDefinition: app, isMobile } = this.context;
     const volumes = app.volumes || [];
 
     if (!app.hasPersistentData) return <div />;
@@ -137,7 +137,7 @@ export default class Volumes extends Component {
         <br />
 
         <Row>
-          <Col span={6} style={{ width: this.context!.isMobile ? '100%' : 300 }}>
+          <Col span={6} style={{ width: isMobile ? '100%' : 300 }}>
             <Tooltip title="Leave empty for automatic placement">
               <Input
                 addonBefore="Node ID"

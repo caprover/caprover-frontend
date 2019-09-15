@@ -47,15 +47,24 @@ export interface IAppVersion {
   gitHash: string | undefined;
 }
 
+export interface IBuildLogs {
+  isAppBuilding: boolean;
+  isBuildFailed: boolean;
+  logs: {
+    firstLineNumber: number;
+    lines: string[];
+  }
+}
+
 export interface IAppCustomDomain {
   publicDomain: string;
   hasSsl: boolean;
 }
 
 export interface IHttpAuth {
-  user: string
-  password?: string
-  passwordHashed?: string
+  user: string;
+  password?: string;
+  passwordHashed?: string;
 }
 
 interface IAppDefinitionBase {

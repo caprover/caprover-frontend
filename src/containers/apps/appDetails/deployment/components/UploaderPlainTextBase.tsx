@@ -28,7 +28,7 @@ export default abstract class UploaderPlainTextBase extends Component<
   async startDeploy(captainDefinitionToBeUploaded: string) {
     this.setState({ uploadInProcess: true });
     try {
-      await this.context!.uploadCaptainDefinitionContent(captainDefinitionToBeUploaded);
+      await this.context.uploadCaptainDefinitionContent(captainDefinitionToBeUploaded);
       this.setState({ userEnteredValue: "" });
     } catch (err) {
       Toaster.toast(err)

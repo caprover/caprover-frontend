@@ -49,7 +49,7 @@ class AppDetails extends Component<
   PropsInterface
 > {
   static contextType = AppDetailsContext;
-  context!: React.ContextType<typeof AppDetailsContext>
+  context!: React.ContextType<typeof AppDetailsContext>;
   private reRenderTriggered = false;
 
   state = {
@@ -60,13 +60,13 @@ class AppDetails extends Component<
   }
 
   componentDidMount() {
-    this.context!.fetchAppData()
+    this.context.fetchAppData()
   }
 
   asyncSetState = async (state: any) => new Promise((resolve) => this.setState(state, resolve))
 
   async reFetchData() {
-    const app = await this.context!.fetchAppData()
+    const app = await this.context.fetchAppData()
     if (!app) {
       // App Not Found!
       this.goBackToApps();
@@ -79,7 +79,7 @@ class AppDetails extends Component<
 
   openRenameAppDialog = () => {
     const self = this;
-    const { appDefinition: app } = this.context!;
+    const { appDefinition: app } = this.context;
     const tempVal = { newName: app.appName };
 
     Modal.confirm({
@@ -109,7 +109,7 @@ class AppDetails extends Component<
 
   viewDescription = () => {
     const self = this;
-    const { appDefinition: app } = this.context!;
+    const { appDefinition: app } = this.context;
     const tempVal = { tempDescription: app.description };
 
     Modal.confirm({
@@ -182,7 +182,7 @@ class AppDetails extends Component<
   }
 
   async onDeleteConfirm() {
-    const { appDefinition: app } = this.context!;
+    const { appDefinition: app } = this.context;
 
     if (this.state.confirmedAppNameToDelete !== app.appName) {
       message.warning("App name did not match. Operation cancelled.");
@@ -197,7 +197,7 @@ class AppDetails extends Component<
     });
 
     try {
-      const data = await this.context!.deleteApp(app.appName, volumes);
+      const data = await this.context.deleteApp(app.appName, volumes);
 
       const volumesFailedToDelete = data ? data.volumesFailedToDelete as string[] : null;
       if (volumesFailedToDelete && volumesFailedToDelete.length) {
@@ -239,7 +239,7 @@ class AppDetails extends Component<
 
   async onDeleteAppClicked() {
     const self = this
-    const { appDefinition: app } = this.context!
+    const { appDefinition: app } = this.context
 
     const allVolumes: string[] = [];
     const volumesToDelete: IHashMapGeneric<boolean> = {}
@@ -266,18 +266,18 @@ class AppDetails extends Component<
 
   async renameAppTo(newName: string) {
     try {
-      await this.context!.renameApp(newName);
+      await this.context.renameApp(newName);
     } catch (err) {
       Toaster.toast(err);
     }
   }
 
   onUpdateConfigAndSave() {
-    this.context!.save()
+    this.context.save()
   }
 
   render() {
-    const { appData, appDefinition: app, isMobile } = this.context!
+    const { appData, appDefinition: app, isMobile } = this.context
 
     if (!app && appData.isLoading) {
       return <CenteredSpinner />;
@@ -415,7 +415,7 @@ class AppDetails extends Component<
                         style={{ minWidth: isMobile ? 35 : 135 }}
                         type="primary"
                         size="large"
-                        onClick={() => this.context!.save()}
+                        onClick={() => this.context.save()}
                       >
                         {isMobile ? (
                           <Icon type="save" />

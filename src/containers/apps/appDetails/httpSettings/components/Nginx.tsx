@@ -7,16 +7,16 @@ export default class Nginx extends Component {
   context!: ContextType<typeof AppDetailsContext>;
 
   onEditDefaultNginxConfigClicked = () => {
-    const { defaultNginxConfig } = this.context!;
-    this.context!.updateAppDefintion({ customNginxConfig: defaultNginxConfig });
+    const { defaultNginxConfig } = this.context;
+    this.context.updateAppDefintion({ customNginxConfig: defaultNginxConfig });
   };
 
   onConfigChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    this.context!.updateAppDefintion({ customNginxConfig: e.target.value });
+    this.context.updateAppDefintion({ customNginxConfig: e.target.value });
   };
 
   render() {
-    const { appDefinition: app } = this.context!;
+    const { appDefinition: app } = this.context;
     const customNginxConfig = app.customNginxConfig!;
 
     if (!customNginxConfig) {

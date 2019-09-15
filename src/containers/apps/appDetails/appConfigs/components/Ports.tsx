@@ -12,12 +12,12 @@ export default class Ports extends Component {
   context!: React.ContextType<typeof AppDetailsContext>;
 
   onAddPortMappingClicked = () => {
-    const ports = this.context!.appDefinition.ports || []
-    this.context!.updateAppDefintion({ ports: [...ports, { containerPort: 0, hostPort: 0 }]})
+    const ports = this.context.appDefinition.ports || []
+    this.context.updateAppDefintion({ ports: [...ports, { containerPort: 0, hostPort: 0 }]})
   }
 
   onPortChange = (val: string, index: number, type: PortType) => {
-    const ports = [...this.context!.appDefinition.ports];
+    const ports = [...this.context.appDefinition.ports];
     const p = Number(val.trim());
     const port = p > 0 ? p : 0; // to avoid NaN
     switch(type) {
@@ -28,11 +28,11 @@ export default class Ports extends Component {
         ports[index].containerPort = port;
         break;
     }
-    this.context!.updateAppDefintion({ ports });
+    this.context.updateAppDefintion({ ports });
   }
 
   render() {
-    const app = this.context!.appDefinition;
+    const { appDefinition: app, isMobile } = this.context;
     const ports = app.ports || [];
 
     return (
@@ -78,7 +78,7 @@ export default class Ports extends Component {
         ))}
         <br />
 
-        <Button block={this.context!.isMobile} type="default" onClick={this.onAddPortMappingClicked}>
+        <Button block={isMobile} type="default" onClick={this.onAddPortMappingClicked}>
           Add Port Mapping
         </Button>
       </div>
