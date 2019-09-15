@@ -28,7 +28,6 @@ import AppConfigsTab from "./appConfigs/AppConfigsTab";
 import DeploymentTab from "./deployment/DeploymentTab";
 import HttpSettingsTab from "./httpSettings/HttpSettingsTab";
 import AppDetailsProvider, { AppDetailsContext } from "./AppDetailsProvider";
-import ContainerStatus from "./components/ContainerStatus";
 const TabPane = Tabs.TabPane;
 
 enum DETIALS_TAB {
@@ -331,9 +330,6 @@ class AppDetails extends Component<
                       <Icon type="read" />
                     </Popover>
                   </ClickableLink>
-                </div>
-                <div>
-                  <ContainerStatus />
                 </div>
               </div>
             }
