@@ -2,7 +2,6 @@ import { Button, Col, Icon, Input, message, Row, Tooltip } from "antd";
 import React, { Component } from "react";
 import DomUtils from "../../../../utils/DomUtils";
 import Toaster from "../../../../utils/Toaster";
-import Utils from "../../../../utils/Utils";
 import { AppDetailsContext } from "../AppDetailsProvider";
 import { RepoInfo } from "../../AppDefinition";
 import AppLogsView from "./components/AppLogsView";
