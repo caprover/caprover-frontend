@@ -57,13 +57,13 @@ export default class DeploymentTab extends Component<
     }
   }
 
-  onGitRepoUpdate = (newRepo: RepoInfo) => {
+  onGitRepoUpdate = (repoInfo: RepoInfo) => {
     const { app } = this.context.currentApp();
 
     this.context.updateAppDefintion({
       appPushWebhook: {
         ...(app.appPushWebhook || {}),
-        newRepo,
+        repoInfo,
       },
     });
   }
