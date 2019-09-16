@@ -49,8 +49,8 @@ export default class Domains extends Component {
   }
 
   render() {
-    const { isMobile, rootDomain } = this.context;
-    const { app } = this.context.currentApp();
+    const { isMobile } = this.context;
+    const { app, rootDomain } = this.context.currentApp();
     const customDomains = app.customDomain || [];
 
     return (

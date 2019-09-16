@@ -14,7 +14,6 @@ export default class AppLogsView extends Component {
 
   componentWillReceiveProps(props: {}, nextContext: AppDetailsContext) {
     const firstLogs = nextContext.logs.appLogs && !this.context.logs.appLogs;
-
     const textareaNow = document.getElementById("applogs-text-id");
 
     // Almost at the bottom. So keep the scroll at the bottom. Otherwise, user, may have manually scrolled up. Respect the user!

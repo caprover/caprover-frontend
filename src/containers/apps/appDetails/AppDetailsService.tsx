@@ -117,6 +117,10 @@ export class LogFetcher {
       clearTimeout(this.timer);
     }
     this.started = false;
+  }
+
+  destroy() {
+    this.stop();
     this.apiManager = undefined;
   }
 }

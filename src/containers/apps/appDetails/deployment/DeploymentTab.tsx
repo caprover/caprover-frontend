@@ -72,7 +72,7 @@ export default class DeploymentTab extends Component<
   }
 
   render() {
-    const { app } = this.context.currentApp();
+    const { app, rootDomain } = this.context.currentApp();
     const { isMobile } = this.context;
     const hasPushToken =
       app.appPushWebhook && app.appPushWebhook.pushWebhookToken;
@@ -91,7 +91,7 @@ export default class DeploymentTab extends Component<
     const webhookPushUrlFullPath =
       window.location.protocol +
       "//captain." +
-      this.context.rootDomain +
+      rootDomain +
       "/api/v2" +
       webhookPushUrlRelativePath;
 

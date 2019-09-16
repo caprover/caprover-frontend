@@ -4,8 +4,7 @@ import Toaster from "../../../../../utils/Toaster";
 import { AppDetailsContext } from "../../AppDetailsProvider";
 
 export default abstract class UploaderPlainTextBase extends Component<
-{
-},
+{},
 {
   userEnteredValue: string;
   uploadInProcess: boolean;

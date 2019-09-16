@@ -36,7 +36,7 @@ export interface AppDetailsContext extends AppDetailsState{
   uploadCaptainDefinitionContent(content: string): Promise<void>;
   uploadAppData(file: File): Promise<void>;
   rollbackToVersion(version: IAppVersion): Promise<void>;
-  currentApp(): LoadedApp;
+  currentApp(): SingleAppApiData;
 }
 
 export interface AppDeleteResponse {
@@ -45,9 +45,10 @@ export interface AppDeleteResponse {
   };
 }
 
-export interface LoadedApp {
+export interface SingleAppApiData {
   app: IAppDef;
   appName: string;
+  rootDomain: string;
 }
 
 interface AppDetailsProviderProps extends RouteComponentProps<{ appName: string }> {
@@ -110,7 +111,7 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
 
   componentWillUnmount() {
     if (this.logfetcher) {
-      this.logfetcher.stop();
+      this.logfetcher.destroy();
     }
 
     this.apiManager.destroy();
@@ -124,14 +125,18 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
     return this.currentApp().appName;
   }
 
-  currentApp(): LoadedApp {
-    if (!this.state.appDefinition || !this.state.appDefinition.appName) {
+  currentApp(): SingleAppApiData {
+    if (!this.state.appDefinition ||
+      !this.state.appDefinition.appName ||
+      !this.state.rootDomain
+    ) {
       throw new Error("Missing app data");
     }
 
     return {
       app: this.state.appDefinition,
       appName: this.state.appDefinition.appName,
+      rootDomain: this.state.rootDomain,
     };
   }
 
@@ -140,7 +145,7 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
   async deleteApp(appName: string, volumes: string[]) {
     this.setState({ appData: { isLoading: true } });
     if (this.logfetcher) {
-      this.logfetcher.stop();
+      this.logfetcher.destroy();
     }
 
     try {
@@ -158,7 +163,7 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
   async renameApp(newName: string) {
     this.setState({ appData: { isLoading: true } });
     if (this.logfetcher) {
-      this.logfetcher.stop();
+      this.logfetcher.destroy();
     }
 
     try {
@@ -186,7 +191,11 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
       .find((app: IAppDef) => app.appName === this.props.match.params.appName );
 
     if (myApp && myApp.appName) {
-      if (!this.state.appDefinition || (myApp.appName !== this.state.appDefinition.appName)) {
+      if (!this.state.appDefinition ||
+        (myApp.appName !== this.state.appDefinition.appName) ||
+        !this.logfetcher ||
+        !this.logfetcher.started
+      ) {
         this.startLogFetcher(myApp.appName);
       }
 
@@ -289,7 +298,7 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
 
   startLogFetcher(name: string) {
     if (this.logfetcher) {
-      this.logfetcher.stop();
+      this.logfetcher.destroy();
     }
 
     this.logfetcher = new LogFetcher(this.apiManager, name, this.onLogsFetched);
