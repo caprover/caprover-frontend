@@ -12,11 +12,12 @@ import TarUploader from "./components/TarUploader";
 import UploaderPlainTextCaptainDefinition from "./components/UploaderPlainTextCaptainDefinition";
 import UploaderPlainTextDockerfile from "./components/UploaderPlainTextDockerfile";
 
-export default class DeploymentTab extends Component<
-{ },
+class DeploymentTab extends Component<
+{ building: boolean },
 {
   forceEditableCaptainDefinitionPath: boolean;
   buildLogRecreationId: string;
+  building: boolean;
 }
 > {
   static contextType = AppDetailsContext
@@ -25,10 +26,11 @@ export default class DeploymentTab extends Component<
   state = {
     forceEditableCaptainDefinitionPath: false,
     buildLogRecreationId: "",
+    building: false,
   }
 
-  componentWillReceiveProps(props: {}, nextContext: AppDetailsContext) {
-    if (nextContext.building && !this.context.building) {
+  componentDidUpdate(prevProps: { building: boolean }) {
+    if (this.props.building && !prevProps.building) {
       message.info("Build has started");
       this.setState({ buildLogRecreationId: "" + new Date().getTime() });
       DomUtils.scrollToTopBar();
@@ -269,3 +271,11 @@ export default class DeploymentTab extends Component<
     );
   }
 }
+
+const DeploymentTabHOC = () => (
+  <AppDetailsContext.Consumer>{context => (
+    <DeploymentTab building={context.building} />
+  )}</AppDetailsContext.Consumer>
+);
+
+export default DeploymentTabHOC;

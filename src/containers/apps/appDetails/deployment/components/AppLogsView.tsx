@@ -1,9 +1,11 @@
 import { Icon, Row, Tooltip } from "antd";
 import React, { Component } from "react";
-import { AppDetailsContext } from "../../AppDetailsProvider";
+import { AppDetailsContext, AppLogs } from "../../AppDetailsProvider";
 import ClickableLink from "../../../../global/ClickableLink";
 
-export default class AppLogsView extends Component {
+class AppLogsView extends Component<{
+  logs: AppLogs;
+}> {
   static contextType = AppDetailsContext;
   context!: React.ContextType<typeof AppDetailsContext>;
 
@@ -12,8 +14,8 @@ export default class AppLogsView extends Component {
     expandedLogs: true,
   };
 
-  componentWillReceiveProps(props: {}, nextContext: AppDetailsContext) {
-    const firstLogs = nextContext.logs.appLogs && !this.context.logs.appLogs;
+  componentDidUpdate(prevProps: { logs: AppLogs }) {
+    const firstLogs = prevProps.logs.appLogs && !this.props.logs.appLogs;
     const textareaNow = document.getElementById("applogs-text-id");
 
     // Almost at the bottom. So keep the scroll at the bottom. Otherwise, user, may have manually scrolled up. Respect the user!
@@ -120,3 +122,11 @@ export default class AppLogsView extends Component {
     );
   }
 }
+
+const AppLogsViewHOC = () => (
+  <AppDetailsContext.Consumer>{context => (
+    <AppLogsView logs={context.logs} />
+  )}</AppDetailsContext.Consumer>
+);
+
+export default AppLogsViewHOC;

@@ -1,11 +1,13 @@
 import { Alert, Icon, Row, Spin } from "antd";
 import React, { Component } from "react";
 import Utils from "../../../../../utils/Utils";
-import { AppDetailsContext } from "../../AppDetailsProvider";
+import { AppDetailsContext, AppLogs } from "../../AppDetailsProvider";
 import ClickableLink from "../../../../global/ClickableLink";
 
 interface BuildLogsViewProps {
   buildLogRecreationId: string;
+  logs: AppLogs;
+  building: boolean;
 }
 
 class BuildLogsView extends Component<
@@ -28,11 +30,11 @@ BuildLogsViewProps,
     };
   }
 
-  componentWillReceiveProps(props: BuildLogsViewProps, nextContext: AppDetailsContext) {
-    if (nextContext.logs.buildLogs !== this.context.logs.buildLogs) {
-      const logInfo = nextContext.logs.buildLogs;
+  componentDidUpdate(prevProps: { logs: AppLogs }) {
+    if (prevProps.logs.buildLogs !== this.context.logs.buildLogs) {
+      const logInfo = this.props.logs.buildLogs;
 
-      if (nextContext.building) {
+      if (this.props.building) {
         // forcefully expanding the view such that when building finishes it doesn't collapses automatically
         this.setState({ expandedLogs: true });
       }
@@ -153,4 +155,10 @@ BuildLogsViewProps,
   }
 }
 
-export default BuildLogsView;
+const BuildLogsViewHOC = (props: { buildLogRecreationId: string }) => (
+  <AppDetailsContext.Consumer>{context => (
+    <BuildLogsView {...props } logs={context.logs} building={context.building} />
+  )}</AppDetailsContext.Consumer>
+);
+
+export default BuildLogsViewHOC;

@@ -7,6 +7,11 @@ import Toaster from "../../../utils/Toaster";
 import { IAppDef, IAppVersion, IBuildLogs } from "../AppDefinition";
 import ErrorFactory from "../../../utils/ErrorFactory";
 
+export interface AppLogs {
+  appLogs?: string;
+  buildLogs?: IBuildLogs;
+}
+
 export interface AppDetailsState {
   building: boolean;
   appDefinition?: IAppDef;
@@ -17,10 +22,7 @@ export interface AppDetailsState {
   appData: {
     isLoading: boolean;
   };
-  logs: {
-    appLogs?: string;
-    buildLogs?: IBuildLogs;
-  };
+  logs: AppLogs;
 }
 
 export interface AppDetailsContext extends AppDetailsState{
