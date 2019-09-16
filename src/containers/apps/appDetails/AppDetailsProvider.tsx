@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
@@ -6,9 +5,8 @@ import ApiComponent from "../../global/ApiComponent";
 import { LogFetcher } from "./AppDetailsService";
 import Toaster from "../../../utils/Toaster";
 import { IAppDef, IAppVersion, IBuildLogs } from "../AppDefinition";
-import Utils from "../../../utils/Utils";
 
-export interface AppDetailsContext {
+export interface AppDetailsState {
   building: boolean;
   appDefinition?: IAppDef;
   rootDomain?: string;
@@ -22,21 +20,29 @@ export interface AppDetailsContext {
     appLogs?: string;
     buildLogs?: IBuildLogs;
   };
+}
 
-  enableSslForBaseDomain(): Promise<any>;
-  enableSslForCustomDomain(name: string): Promise<any>;
-  removeCustomDomain(name: string): Promise<any>;
-  addCustomDomain(name: string): Promise<any>;
-  updateAppDefintion(update: any): void;
-  save(): Promise<any>;
+export interface AppDetailsContext extends AppDetailsState{
+  enableSslForBaseDomain(): Promise<void>;
+  enableSslForCustomDomain(name: string): Promise<void>;
+  removeCustomDomain(name: string): Promise<void>;
+  addCustomDomain(name: string): Promise<void>;
+  updateAppDefintion(update: Partial<IAppDef>): void;
+  save(): Promise<void>;
   fetchAppData(): Promise<IAppDef | undefined>;
-  deleteApp(name: string, volumes: string[]): Promise<any>;
-  renameApp(name: string): Promise<any>;
-  forceBuild(token: string): Promise<any>;
-  uploadCaptainDefinitionContent(content: string): Promise<any>;
-  uploadAppData(file: File): Promise<any>;
-  rollbackToVersion(version: IAppVersion): Promise<any>;
+  deleteApp(name: string, volumes: string[]): Promise<AppDeleteResponse | undefined>;
+  renameApp(name: string): Promise<void>;
+  forceBuild(token: string): Promise<void>;
+  uploadCaptainDefinitionContent(content: string): Promise<void>;
+  uploadAppData(file: File): Promise<void>;
+  rollbackToVersion(version: IAppVersion): Promise<void>;
   currentApp(): LoadedApp;
+}
+
+export interface AppDeleteResponse {
+  data: {
+    volumesFailedToDelete?: string[];
+  };
 }
 
 export interface LoadedApp {
@@ -44,14 +50,16 @@ export interface LoadedApp {
   appName: string;
 }
 
+interface AppDetailsProviderProps extends RouteComponentProps<{ appName: string }> {
+  isMobile: boolean;
+}
+
 export const AppDetailsContext = React.createContext<AppDetailsContext>({} as AppDetailsContext);
 
-class AppDetailsProvider extends ApiComponent<(RouteComponentProps<any> & {
-  isMobile: boolean;
-}), AppDetailsContext> {
+class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetailsContext> {
   logfetcher?: LogFetcher;
 
-  constructor(props: any) {
+  constructor(props: AppDetailsProviderProps) {
     super(props);
 
     this.state = {
@@ -89,7 +97,7 @@ class AppDetailsProvider extends ApiComponent<(RouteComponentProps<any> & {
 
   /* lifecycle */
 
-  static getDerivedStateFromProps(props: any, state: any) {
+  static getDerivedStateFromProps(props: AppDetailsProviderProps, state: AppDetailsContext) {
     if (props.isMobile !== state.isMobile) {
       return {
         ...state,
@@ -108,7 +116,7 @@ class AppDetailsProvider extends ApiComponent<(RouteComponentProps<any> & {
     this.apiManager.destroy();
   }
 
-  asyncSetState = async (state: any) => new Promise((resolve) => this.setState(state, resolve))
+  asyncSetState = async (state: Partial<AppDetailsState>) => new Promise((resolve) => this.setState(state as AppDetailsState, resolve))
 
   /* getters */
 
@@ -136,8 +144,10 @@ class AppDetailsProvider extends ApiComponent<(RouteComponentProps<any> & {
     }
 
     try {
-      // do the call
-      await this.apiManager.deleteApp(appName, volumes);
+      const response = await this.apiManager.deleteApp(appName, volumes);
+      return response && response.data && response.data.volumesFailedToDelete
+        ? response
+        : undefined;
     } catch(err) {
       // turn loading to off and bubble the error
       this.setState({ appData: { isLoading: false } });
@@ -301,12 +311,37 @@ class AppDetailsProvider extends ApiComponent<(RouteComponentProps<any> & {
     }
   }
 
-  updateAppDefintion(update: any) {
+  // a version of copy that preserves undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  deepCopy(obj: any): any {
+    if(typeof obj !== "object" || obj === null) {
+      return obj;
+    }
+
+    if(obj instanceof Date) {
+      return new Date(obj.getTime());
+    }
+
+    if(obj instanceof Array) {
+      return obj.reduce((arr, item, i) => {
+        arr[i] = this.deepCopy(item);
+        return arr;
+      }, []);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return Object.keys(obj).reduce((newObj: any, key) => {
+      newObj[key] = this.deepCopy(obj[key]);
+      return newObj;
+    }, {});
+  }
+
+  updateAppDefintion(update: Partial<IAppDef>) {
     return this.asyncSetState({
       isDirty: true,
       appDefinition: {
-        ...this.state.appDefinition,
-        ...Utils.copyObject(update),
+        ...this.currentApp().app,
+        ...this.deepCopy(update),
       }});
   }
 
@@ -379,6 +414,7 @@ class AppDetailsProvider extends ApiComponent<(RouteComponentProps<any> & {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapStateToProps(state: any) {
   return {
     isMobile: state.globalReducer.isMobile,
@@ -386,6 +422,5 @@ function mapStateToProps(state: any) {
 }
 
 export default connect(
-  mapStateToProps,
-  undefined
+  mapStateToProps
 )(AppDetailsProvider);

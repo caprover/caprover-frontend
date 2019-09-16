@@ -27,8 +27,7 @@ export default class DeploymentTab extends Component<
     buildLogRecreationId: "",
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  componentWillReceiveProps(next: any, nextContext: any) {
+  componentWillReceiveProps(props: {}, nextContext: AppDetailsContext) {
     if (nextContext.building && !this.context.building) {
       message.info("Build has started");
       this.setState({ buildLogRecreationId: "" + new Date().getTime() });

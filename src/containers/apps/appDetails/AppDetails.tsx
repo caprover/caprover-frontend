@@ -42,12 +42,18 @@ export interface SingleAppApiData {
   defaultNginxConfig: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface PropsInterface extends RouteComponentProps<any> {
+interface PropsInterface extends RouteComponentProps {
   mainContainer: RefObject<HTMLDivElement>;
 }
 
-class AppDetailsClass extends Component<PropsInterface> {
+interface AppDetailsState {
+  activeTabKey: DETIALS_TAB;
+  renderCounterForAffixBug: number;
+  confirmedAppNameToDelete: string;
+  volumesToDelete: IHashMapGeneric<boolean>;
+}
+
+class AppDetailsClass extends Component<PropsInterface, AppDetailsState> {
   static contextType = AppDetailsContext;
   context!: React.ContextType<typeof AppDetailsContext>;
   private reRenderTriggered = false;
@@ -70,8 +76,7 @@ class AppDetailsClass extends Component<PropsInterface> {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  asyncSetState = async (state: any) => new Promise((resolve) => this.setState(state, resolve))
+  asyncSetState = async (state: Partial<AppDetailsState>) => new Promise((resolve) => this.setState(state as AppDetailsState, resolve))
 
   goBackToApps = () => {
     this.props.history.push("/apps");
@@ -179,7 +184,7 @@ class AppDetailsClass extends Component<PropsInterface> {
     );
   }
 
-  async onDeleteConfirm() {
+  onDeleteConfirm = async () => {
     const { appName } = this.context.currentApp();
 
     if (this.state.confirmedAppNameToDelete !== appName) {
@@ -195,9 +200,9 @@ class AppDetailsClass extends Component<PropsInterface> {
     });
 
     try {
-      const data = await this.context.deleteApp(appName, volumes);
+      const response = await this.context.deleteApp(appName, volumes);
+      const volumesFailedToDelete = response && response.data ? response.data.volumesFailedToDelete : null;
 
-      const volumesFailedToDelete = data ? data.volumesFailedToDelete as string[] : null;
       if (volumesFailedToDelete && volumesFailedToDelete.length) {
         Modal.info({
           title: "Some volumes weren't deleted!",
@@ -235,7 +240,7 @@ class AppDetailsClass extends Component<PropsInterface> {
     }
   }
 
-  async onDeleteAppClicked() {
+  onDeleteAppClicked = async () => {
     const { app } = this.context.currentApp();
     const allVolumes: string[] = [];
     const volumesToDelete: IHashMapGeneric<boolean> = {};
@@ -339,7 +344,7 @@ class AppDetailsClass extends Component<PropsInterface> {
             <Tabs
               defaultActiveKey={DETIALS_TAB.WEB_SETTINGS}
               onChange={activeTabKey =>
-                this.setState({ activeTabKey })
+                this.setState({ activeTabKey: activeTabKey as DETIALS_TAB })
               }
               className={classnames({ "disabled": appData.isLoading })}
             >

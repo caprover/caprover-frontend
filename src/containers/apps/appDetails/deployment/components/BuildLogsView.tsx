@@ -4,10 +4,12 @@ import Utils from "../../../../../utils/Utils";
 import { AppDetailsContext } from "../../AppDetailsProvider";
 import ClickableLink from "../../../../global/ClickableLink";
 
-export default class BuildLogsView extends Component<
-{
+interface BuildLogsViewProps {
   buildLogRecreationId: string;
-},
+}
+
+class BuildLogsView extends Component<
+BuildLogsViewProps,
 {
   expandedLogs: boolean;
   buildLogs: string;
@@ -17,8 +19,7 @@ export default class BuildLogsView extends Component<
   static contextType = AppDetailsContext;
   context!: React.ContextType<typeof AppDetailsContext>
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(props: any) {
+  constructor(props: BuildLogsViewProps) {
     super(props);
     this.state = {
       expandedLogs: !!this.props.buildLogRecreationId,
@@ -27,8 +28,7 @@ export default class BuildLogsView extends Component<
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  componentWillReceiveProps(next: any, nextContext: AppDetailsContext) {
+  componentWillReceiveProps(props: BuildLogsViewProps, nextContext: AppDetailsContext) {
     if (nextContext.logs.buildLogs !== this.context.logs.buildLogs) {
       const logInfo = nextContext.logs.buildLogs;
 
@@ -38,7 +38,7 @@ export default class BuildLogsView extends Component<
       }
 
       const lines = (logInfo && logInfo.logs.lines) || [];
-      const firstLineNumberOfLogs = logInfo && logInfo.logs.firstLineNumber || 0;
+      const firstLineNumberOfLogs = (logInfo && logInfo.logs.firstLineNumber) || 0;
       let firstLinesToPrint = 0;
       if (firstLineNumberOfLogs > this.state.lastLineNumberPrinted) {
         if (firstLineNumberOfLogs < 0) {
@@ -152,3 +152,5 @@ export default class BuildLogsView extends Component<
     );
   }
 }
+
+export default BuildLogsView;

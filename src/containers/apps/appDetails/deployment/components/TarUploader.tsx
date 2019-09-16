@@ -5,8 +5,7 @@ import Toaster from "../../../../../utils/Toaster";
 import { AppDetailsContext } from "../../AppDetailsProvider";
 
 export default class TarUploader extends Component<
-{
-},
+{},
 {
   fileToBeUploaded?: UploadFile;
 }
@@ -14,8 +13,12 @@ export default class TarUploader extends Component<
   static contextType = AppDetailsContext;
   context!: React.ContextType<typeof AppDetailsContext>
 
-  state = {
-    fileToBeUploaded: undefined,
+  constructor(props: {}) {
+    super(props);
+
+    this.state = {
+      fileToBeUploaded: undefined,
+    };
   }
 
   handleChange = (info: UploadChangeParam) => {
@@ -43,12 +46,11 @@ export default class TarUploader extends Component<
   };
 
   async startUploadAndDeploy() {
-    if (!this.state.fileToBeUploaded) {
+    const file = this.state.fileToBeUploaded;
+    if (!file || !file.originFileObj) {
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const file: any = this.state.fileToBeUploaded;
     this.setState({ fileToBeUploaded: undefined });
     message.info("Upload has started");
 

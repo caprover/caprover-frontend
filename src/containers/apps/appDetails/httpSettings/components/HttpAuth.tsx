@@ -3,7 +3,12 @@ import { Input, Row, Button, Modal } from "antd";
 import { AppDetailsContext } from "../../AppDetailsProvider";
 import { IHttpAuth } from "../../../AppDefinition";
 
-export default class HttpAuth extends Component {
+interface HttpAuthState {
+  dialogHttpPass: string;
+  dialogHttpUser: string;
+}
+
+export default class HttpAuth extends Component<{}, HttpAuthState> {
   static contextType = AppDetailsContext;
   context!: React.ContextType<typeof AppDetailsContext>
 
@@ -12,8 +17,7 @@ export default class HttpAuth extends Component {
     dialogHttpUser: "",
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  asyncSetState = async (state: any) => new Promise((resolve) => this.setState(state, resolve));
+  asyncSetState = async (state: Partial<HttpAuthState>) => new Promise((resolve) => this.setState(state as HttpAuthState, resolve));
 
   getUserPasswordModalContent = () => {
     return (
@@ -59,25 +63,6 @@ export default class HttpAuth extends Component {
     const { app } = this.context.currentApp();
     const auth = app.httpAuth;
 
-    const updateAuth = async () => {
-      const { dialogHttpUser, dialogHttpPass } = this.state;
-      const { app } = this.context.currentApp();
-
-      let httpAuth: IHttpAuth | undefined;
-
-      if (!dialogHttpUser || !dialogHttpUser) {
-        httpAuth = undefined;
-      } else {
-        httpAuth = app.httpAuth || { user: "" };
-        httpAuth.user = dialogHttpUser;
-        httpAuth.password = dialogHttpPass;
-      }
-
-      // wait for the state to be updated
-      await this.context.updateAppDefintion({ httpAuth });
-      this.context.save();
-    };
-
     await this.asyncSetState({
       dialogHttpPass: auth ? auth.password || "" : "",
       dialogHttpUser: auth ? auth.user || "" : "",
@@ -87,9 +72,26 @@ export default class HttpAuth extends Component {
     Modal.confirm({
       title: "Edit HTTP Basic Auth",
       content: this.getUserPasswordModalContent(),
-      onOk() { updateAuth(); },
+      onOk: async () => {
+        const { dialogHttpUser, dialogHttpPass } = this.state;
+        const { app } = this.context.currentApp();
+
+        let httpAuth: IHttpAuth | undefined;
+
+        if (!dialogHttpUser || !dialogHttpPass) {
+          httpAuth = undefined;
+        } else {
+          httpAuth = app.httpAuth || { user: "" };
+          httpAuth.user = dialogHttpUser;
+          httpAuth.password = dialogHttpPass;
+        }
+
+        // wait for the state to be updated
+        await this.context.updateAppDefintion({ httpAuth });
+        this.context.save();
+      },
     });
-  };
+  }
 
   render() {
     const { isMobile, currentApp } = this.context;

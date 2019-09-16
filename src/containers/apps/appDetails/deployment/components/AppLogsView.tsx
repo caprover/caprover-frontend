@@ -12,8 +12,7 @@ export default class AppLogsView extends Component {
     expandedLogs: true,
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  componentWillReceiveProps(next: any, nextContext: any) {
+  componentWillReceiveProps(props: {}, nextContext: AppDetailsContext) {
     const firstLogs = nextContext.logs.appLogs && !this.context.logs.appLogs;
 
     const textareaNow = document.getElementById("applogs-text-id");
