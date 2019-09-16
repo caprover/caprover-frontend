@@ -4,7 +4,7 @@ import { AppDetailsContext } from "../../AppDetailsProvider";
 import { IAppPort } from "../../../AppDefinition";
 
 enum PortType {
-  HostPort, ContainerPort
+  HostPort = "hostPort", ContainerPort = "containerPort"
 }
 
 export default class Ports extends Component {
@@ -20,14 +20,7 @@ export default class Ports extends Component {
     const ports = [...this.context.currentApp().app.ports];
     const p = Number(val.trim());
     const port = p > 0 ? p : 0; // to avoid NaN
-    switch(type) {
-      case PortType.HostPort:
-        ports[index].hostPort = port;
-        break;
-      case PortType.ContainerPort:
-        ports[index].containerPort = port;
-        break;
-    }
+    ports[index] = { ...ports[index], [type]: port };
     this.context.updateAppDefintion({ ports });
   }
 

@@ -5,6 +5,7 @@ import ApiComponent from "../../global/ApiComponent";
 import { LogFetcher } from "./AppDetailsService";
 import Toaster from "../../../utils/Toaster";
 import { IAppDef, IAppVersion, IBuildLogs } from "../AppDefinition";
+import ErrorFactory from "../../../utils/ErrorFactory";
 
 export interface AppDetailsState {
   building: boolean;
@@ -240,9 +241,19 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
   /* fire builds */
 
   async uploadCaptainDefinitionContent(content: string) {
+    let json;
+    try {
+      json = JSON.parse(content);
+    } catch(err) {
+      throw ErrorFactory.createError(
+        ErrorFactory.UNKNOWN_ERROR,
+        "Invalid JSON!"
+      );
+    }
+
     await this.apiManager.uploadCaptainDefinitionContent(
       this.appName,
-      JSON.parse(content),
+      json,
       "",
       true
     );

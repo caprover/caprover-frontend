@@ -4,9 +4,9 @@ import { AppDetailsContext } from "../../AppDetailsProvider";
 import { IAppVolume } from "../../../AppDefinition";
 
 enum VolumeType {
-  HostPath,
-  ContainerPath,
-  VolumeName,
+  HostPath = "hostPath",
+  ContainerPath = "containerPath",
+  VolumeName = "volumeName",
 }
 
 export default class Volumes extends Component {
@@ -24,17 +24,7 @@ export default class Volumes extends Component {
 
   onVolumeChange = (val: string, index: number, type: VolumeType) => {
     const volumes = [...this.context.currentApp().app.volumes];
-    switch(type) {
-      case VolumeType.ContainerPath:
-        volumes[index].containerPath = val;
-        break;
-      case VolumeType.HostPath:
-        volumes[index].hostPath = val;
-        break;
-      case VolumeType.VolumeName:
-        volumes[index].volumeName = val;
-        break;
-    }
+    volumes[index] = { ...volumes[index], [type]: val };
     this.context.updateAppDefintion({ volumes });
   };
 

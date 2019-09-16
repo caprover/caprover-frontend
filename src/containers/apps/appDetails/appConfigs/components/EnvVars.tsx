@@ -5,7 +5,7 @@ import { IAppEnvVar } from "../../../AppDefinition";
 import { AppDetailsContext } from "../../AppDetailsProvider";
 
 enum EnvType {
-  Key, Value
+  Key = "key", Value = "value"
 }
 
 export default class EnvVars extends Component {
@@ -74,14 +74,7 @@ export default class EnvVars extends Component {
 
   onVarUpdated = (val: string, index: number, type: EnvType) => {
     const envVars = [...this.context.currentApp().app.envVars];
-    switch(type) {
-      case EnvType.Key:
-        envVars[index].key = val;
-        break;
-      case EnvType.Value:
-        envVars[index].value = val;
-        break;
-    }
+    envVars[index] = { ...envVars[index], [type]: val };
     this.context.updateAppDefintion({ envVars });
   };
 
