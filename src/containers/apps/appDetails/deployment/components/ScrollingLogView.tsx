@@ -50,13 +50,11 @@ class ScrollingLogView extends Component<
   }
 
   scrollLogs() {
-    setTimeout(() => {
-      console.log("scrolling the logs");
-      const textarea = this.logView.current;
-      if (textarea) textarea.scrollTop = textarea.scrollHeight;
-    }, 100);
-
-    this.setState({ initialLogScroll: true });
+    const textarea = this.logView.current;
+    if (textarea) {
+      textarea.scrollTop = textarea.scrollHeight;
+      this.setState({ initialLogScroll: true });
+    }
   }
 
   render() {
