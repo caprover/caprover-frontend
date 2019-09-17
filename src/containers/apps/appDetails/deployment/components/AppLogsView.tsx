@@ -1,38 +1,17 @@
 import { Icon, Row, Tooltip } from "antd";
 import React, { Component } from "react";
-import { AppDetailsContext, AppLogs } from "../../AppDetailsProvider";
+import { AppDetailsContext } from "../../AppDetailsProvider";
 import ClickableLink from "../../../../global/ClickableLink";
+import ScrollingLogView from "./ScrollingLogView";
 
-class AppLogsView extends Component<{
-  logs: AppLogs;
-}> {
+class AppLogsView extends Component {
   static contextType = AppDetailsContext;
   context!: React.ContextType<typeof AppDetailsContext>;
-
+  logView = React.createRef<HTMLDivElement>();
   state = {
     isWrapped: true,
     expandedLogs: true,
   };
-
-  componentDidUpdate(prevProps: { logs: AppLogs }) {
-    const firstLogs = prevProps.logs.appLogs && !this.props.logs.appLogs;
-    const textareaNow = document.getElementById("applogs-text-id");
-
-    // Almost at the bottom. So keep the scroll at the bottom. Otherwise, user, may have manually scrolled up. Respect the user!
-    const shouldScrollToBottom =
-      firstLogs ||
-      (!!textareaNow &&
-        Math.abs(
-          textareaNow.scrollTop -
-            (textareaNow.scrollHeight - textareaNow.offsetHeight)
-        ) < 100);
-
-    if (shouldScrollToBottom)
-      setTimeout(function() {
-        const textarea = document.getElementById("applogs-text-id");
-        if (textarea) textarea.scrollTop = textarea.scrollHeight;
-      }, 100);
-  }
 
   onExpandLogClicked = () => {
     this.setState({ expandedLogs: !this.state.expandedLogs });
@@ -106,15 +85,10 @@ class AppLogsView extends Component<{
             <div
               style={{ padding: 5 }}
             >
-              <div
-                id="applogs-text-id"
-                className="logs-output"
-                style={{
-                  whiteSpace: isWrapped ? "pre-line" : "pre",
-                }}
-              >
-                {appLogs}
-              </div>
+              <ScrollingLogView
+                wrap={isWrapped}
+                logs={appLogs}
+              />
             </div>
           )}
         </div>
@@ -123,10 +97,4 @@ class AppLogsView extends Component<{
   }
 }
 
-const AppLogsViewHOC = () => (
-  <AppDetailsContext.Consumer>{context => (
-    <AppLogsView logs={context.logs} />
-  )}</AppDetailsContext.Consumer>
-);
-
-export default AppLogsViewHOC;
+export default AppLogsView;

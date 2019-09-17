@@ -16,8 +16,8 @@ class DeploymentTab extends Component<
 { building: boolean },
 {
   forceEditableCaptainDefinitionPath: boolean;
-  buildLogRecreationId: string;
   building: boolean;
+  buildLogRecreationId: string;
 }
 > {
   static contextType = AppDetailsContext
@@ -100,7 +100,6 @@ class DeploymentTab extends Component<
     return (
       <div>
         <BuildLogsView
-          buildLogRecreationId={this.state.buildLogRecreationId}
           key={(app.appName || "") + "-" + this.state.buildLogRecreationId}
         />
         <div style={{ height: 20 }} />

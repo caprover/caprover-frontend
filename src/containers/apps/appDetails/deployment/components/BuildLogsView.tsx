@@ -3,35 +3,26 @@ import React, { Component } from "react";
 import Utils from "../../../../../utils/Utils";
 import { AppDetailsContext, AppLogs } from "../../AppDetailsProvider";
 import ClickableLink from "../../../../global/ClickableLink";
+import ScrollingLogView from "./ScrollingLogView";
 
 interface BuildLogsViewProps {
-  buildLogRecreationId: string;
   logs: AppLogs;
   building: boolean;
 }
 
 class BuildLogsView extends Component<
-BuildLogsViewProps,
-{
-  expandedLogs: boolean;
-  buildLogs: string;
-  lastLineNumberPrinted: number;
-}
-> {
+BuildLogsViewProps> {
   static contextType = AppDetailsContext;
   context!: React.ContextType<typeof AppDetailsContext>
 
-  constructor(props: BuildLogsViewProps) {
-    super(props);
-    this.state = {
-      expandedLogs: !!this.props.buildLogRecreationId,
-      buildLogs: "",
-      lastLineNumberPrinted: -10000,
-    };
-  }
+  state = {
+    expandedLogs: this.props.building,
+    buildLogs: "",
+    lastLineNumberPrinted: -10000,
+  };
 
   componentDidUpdate(prevProps: { logs: AppLogs }) {
-    if (prevProps.logs.buildLogs !== this.context.logs.buildLogs) {
+    if (prevProps.logs.buildLogs !== this.props.logs.buildLogs) {
       const logInfo = this.props.logs.buildLogs;
 
       if (this.props.building) {
@@ -60,25 +51,15 @@ BuildLogsViewProps,
         lastLineNumberPrinted: firstLineNumberOfLogs + lines.length,
       });
 
-      let lineAdded = false;
-
       let buildLogs = this.state.buildLogs;
       const ansiRegex = Utils.getAnsiColorRegex();
 
       for (let i = firstLinesToPrint; i < lines.length; i++) {
         const newLine = (lines[i] || "").trim().replace(ansiRegex, "");
         buildLogs += newLine + "\n";
-        lineAdded = true;
       }
 
       this.setState({ buildLogs: buildLogs });
-
-      if (lineAdded) {
-        setTimeout(function() {
-          const textarea = document.getElementById("buildlog-text-id");
-          if (textarea) textarea.scrollTop = textarea.scrollHeight;
-        }, 100);
-      }
     }
   }
 
@@ -138,15 +119,9 @@ BuildLogsViewProps,
             <div
               style={{ padding: 5 }}
             >
-              <div
-                id="buildlog-text-id"
-                className="logs-output"
-                style={{
-                  whiteSpace: "pre",
-                }}
-              >
-                {buildLogString}
-              </div>
+              <ScrollingLogView
+                logs={buildLogString}
+              />
             </div>
           )}
         </div>
@@ -155,9 +130,9 @@ BuildLogsViewProps,
   }
 }
 
-const BuildLogsViewHOC = (props: { buildLogRecreationId: string }) => (
+const BuildLogsViewHOC = () => (
   <AppDetailsContext.Consumer>{context => (
-    <BuildLogsView {...props } logs={context.logs} building={context.building} />
+    <BuildLogsView logs={context.logs} building={context.building} />
   )}</AppDetailsContext.Consumer>
 );
 
