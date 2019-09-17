@@ -33,7 +33,7 @@ class ScrollingLogView extends Component<
     return null;
   }
 
-  componentDidUpdate(prevProps: { logs?: string }, prevState: {}, scrollPos?: number) {
+  componentDidUpdate(prevProps: { logs?: string }, _prevState: {}, scrollPos?: number) {
     // if the logs changed
     if (prevProps.logs !== this.props.logs) {
       const textarea = this.logView.current;
