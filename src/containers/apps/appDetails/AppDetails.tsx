@@ -142,8 +142,7 @@ class AppDetailsClass extends Component<PropsInterface, {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapStateToProps(state: any) {
+function mapStateToProps(state: { globalReducer: { isMobile: boolean } }) {
   return {
     isMobile: state.globalReducer.isMobile,
   };
