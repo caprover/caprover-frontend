@@ -367,11 +367,12 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
       }});
   }
 
-  uploadAppData(data: File) {
-    return this.apiManager.uploadAppData(
+  async uploadAppData(data: File) {
+    await this.apiManager.uploadAppData(
       this.appName,
       data
     );
+    this.setState({ building: true });
   }
 
   async callApiWithRefetch(call: Function) {
@@ -436,8 +437,7 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapStateToProps(state: any) {
+function mapStateToProps(state: { globalReducer: { isMobile: boolean } }) {
   return {
     isMobile: state.globalReducer.isMobile,
   };

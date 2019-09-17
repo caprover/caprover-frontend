@@ -150,8 +150,7 @@ function mapStateToProps(state: any) {
 }
 
 const AppDetailsConnect = connect(
-  mapStateToProps,
-  undefined
+  mapStateToProps
 )(AppDetailsClass);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
