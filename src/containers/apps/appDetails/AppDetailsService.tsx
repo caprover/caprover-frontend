@@ -2,6 +2,8 @@ import Utils from "../../../utils/Utils";
 import ApiManager from "../../../api/ApiManager";
 import { IBuildLogs } from "../AppDefinition";
 
+const LOG_FETCH_TIME_INTERVAL = 2000; // 2 seconds
+
 export interface LogCallback {
   (logs?: { buildLogs?: IBuildLogs; appLogs?: string }, error?: Error): void;
 }
@@ -89,7 +91,7 @@ export class LogFetcher {
 
     this.timer = setTimeout(async () =>
       this.fetchLogs()
-    , 2000);
+    , LOG_FETCH_TIME_INTERVAL);
   }
 
   async fetchBuildLogs(): Promise<({ buildLogs?: IBuildLogs; error?: Error })> {
