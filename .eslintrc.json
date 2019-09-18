@@ -33,6 +33,17 @@
       "imports": "always-multiline",
       "exports": "always-multiline",
       "functions": "never"
+    }],
+    "react/sort-comp": ["error", {
+      "order": [
+        "static-methods",
+        "instance-variables",
+        "lifecycle",
+        "everything-else",
+        "/^on.+$/",
+        "/^render.+$/",
+        "render"
+      ]
     }]
   }
 }
