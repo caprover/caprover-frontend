@@ -37,7 +37,7 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
-    "lint": "eslint ./src/containers/apps/appDetails/**/*.tsx"
+    "lint": "eslint \"**/*.tsx\""
   },
   "eslintConfig": {
     "extends": "react-app"
