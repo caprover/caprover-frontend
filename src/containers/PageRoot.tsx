@@ -360,7 +360,7 @@ class PageRoot extends ApiComponent<
               <Switch>
                 <Route path="/dashboard/" component={Dashboard} />
                 <Route
-                  path="/apps/details/:appName"
+                  path="/apps/details/:appName/:tab?"
                   render={props => (
                     <AppDetails {...props} mainContainer={self.mainContainer} />
                   )}

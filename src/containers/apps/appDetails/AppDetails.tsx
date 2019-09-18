@@ -15,12 +15,12 @@ import ActionBar from "./components/ActionBar";
 const TabPane = Tabs.TabPane;
 
 enum DETIALS_TAB {
-  WEB_SETTINGS = "WEB_SETTINGS",
-  APP_CONFIGS = "APP_CONFIGS",
-  DEPLOYMENT = "DEPLOYMENT",
+  WEB_SETTINGS = "web_settings",
+  APP_CONFIGS = "app_config",
+  DEPLOYMENT = "deployment",
 };
 
-interface PropsInterface extends RouteComponentProps {
+interface PropsInterface extends RouteComponentProps<{ tab?: string }> {
   mainContainer: RefObject<HTMLDivElement>;
 }
 
@@ -32,9 +32,17 @@ class AppDetailsClass extends Component<PropsInterface, {
   context!: React.ContextType<typeof AppDetailsContext>;
   private reRenderTriggered = false;
 
-  state = {
-    activeTabKey: DETIALS_TAB.WEB_SETTINGS,
-    renderCounterForAffixBug: 0,
+  constructor(props: PropsInterface) {
+    super(props);
+
+    const activeTabKey = props.match.params.tab && props.match.params.tab as DETIALS_TAB
+      ? props.match.params.tab as DETIALS_TAB
+      : DETIALS_TAB.WEB_SETTINGS;
+
+    this.state = {
+      activeTabKey,
+      renderCounterForAffixBug: 0,
+    };
   }
 
   async componentDidMount() {
@@ -48,8 +56,22 @@ class AppDetailsClass extends Component<PropsInterface, {
     }
   }
 
+  componentDidUpdate(prev: PropsInterface) {
+    if (this.props.match.params.tab &&
+      this.props.match.params.tab !== prev.match.params.tab &&
+      this.props.match.params.tab as DETIALS_TAB
+    ) {
+      this.setState({ activeTabKey: this.props.match.params.tab as DETIALS_TAB });
+    }
+  }
+
   goBackToApps = () => {
     this.props.history.push("/apps");
+  }
+
+  onChangeTab = (activeTabKey: string) => {
+    const { appName } = this.context.currentApp();
+    this.props.history.push(`/apps/details/${appName}/${activeTabKey}`);
   }
 
   render() {
@@ -86,10 +108,8 @@ class AppDetailsClass extends Component<PropsInterface, {
               </div>
             )}
             <Tabs
-              defaultActiveKey={DETIALS_TAB.WEB_SETTINGS}
-              onChange={activeTabKey =>
-                this.setState({ activeTabKey: activeTabKey as DETIALS_TAB })
-              }
+              defaultActiveKey={this.state.activeTabKey}
+              onChange={this.onChangeTab}
               className={classnames({ "disabled": appData.isLoading })}
             >
               <TabPane
