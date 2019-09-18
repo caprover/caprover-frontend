@@ -76,6 +76,7 @@ class AppDetailsClass extends Component<PropsInterface, {
 
   render() {
     const { appData, appDefinition: app } = this.context;
+    const { activeTabKey } = this.state;
 
     if (!app && appData.isLoading) {
       return <CenteredSpinner />;
@@ -108,7 +109,7 @@ class AppDetailsClass extends Component<PropsInterface, {
               </div>
             )}
             <Tabs
-              defaultActiveKey={this.state.activeTabKey}
+              defaultActiveKey={activeTabKey}
               onChange={this.onChangeTab}
               className={classnames({ "disabled": appData.isLoading })}
             >
@@ -142,7 +143,7 @@ class AppDetailsClass extends Component<PropsInterface, {
             >
               <div
                 className={classnames({
-                  "hide-on-demand": this.state.activeTabKey === DETIALS_TAB.DEPLOYMENT,
+                  "hide-on-demand": activeTabKey === DETIALS_TAB.DEPLOYMENT,
                   "disabled": appData.isLoading,
                 })}
                 style={{
