@@ -14,7 +14,6 @@ module.exports = override(
         javascriptEnabled: true,
         modifyVars: {
             "@primary-color": "#1b8ad3",
-            '@font-family': '"Google Sans", "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif',
         },
     })
 );

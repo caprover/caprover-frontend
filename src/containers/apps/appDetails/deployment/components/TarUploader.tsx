@@ -1,29 +1,25 @@
 import { Button, Col, Icon, message, Row, Upload } from "antd";
 import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
-import React from "react";
-import Toaster from "../../../../utils/Toaster";
-import ApiComponent from "../../../global/ApiComponent";
+import React, { Component } from "react";
+import Toaster from "../../../../../utils/Toaster";
+import { AppDetailsContext } from "../../AppDetailsProvider";
 
-export default class TarUploader extends ApiComponent<
-  {
-    appName: string;
-    onUploadSucceeded: () => void;
-  },
-  {
-    fileToBeUploaded: UploadFile | undefined;
-  }
+export default class TarUploader extends Component<
+{},
+{
+  fileToBeUploaded?: UploadFile;
+}
 > {
-  constructor(props: any) {
+  static contextType = AppDetailsContext;
+  context!: React.ContextType<typeof AppDetailsContext>
+
+  constructor(props: {}) {
     super(props);
+
     this.state = {
-      fileToBeUploaded: undefined
+      fileToBeUploaded: undefined,
     };
   }
-
-  beforeUpload = (file: File) => {
-    // We handle upload manually :)
-    return false;
-  };
 
   handleChange = (info: UploadChangeParam) => {
     if (info.fileList.length > 1) {
@@ -39,7 +35,7 @@ export default class TarUploader extends ApiComponent<
       return;
     }
 
-    let file = info.fileList[0];
+    const file = info.fileList[0];
 
     if (file.name.indexOf(".tar") < 0) {
       message.error("You can only upload a TAR file!");
@@ -49,28 +45,21 @@ export default class TarUploader extends ApiComponent<
     this.setState({ fileToBeUploaded: file });
   };
 
-  startUploadAndDeploy() {
-    const self = this;
+  async startUploadAndDeploy() {
+    const file = this.state.fileToBeUploaded;
+    if (!file || !file.originFileObj) {
+      return;
+    }
 
-    const file = self.state.fileToBeUploaded!;
-    self.setState({ fileToBeUploaded: undefined });
+    this.setState({ fileToBeUploaded: undefined });
     message.info("Upload has started");
 
-    Promise.resolve()
-      .then(function() {
-        return self.apiManager.uploadAppData(
-          self.props.appName,
-          file.originFileObj! as File
-        );
-      })
-      .then(function() {
-        self.props.onUploadSucceeded();
-      })
-      .catch(
-        Toaster.createCatcher(function() {
-          self.setState({ fileToBeUploaded: file });
-        })
-      );
+    try {
+      await this.context.uploadAppData(file.originFileObj as File);
+    } catch(err) {
+      Toaster.toast(err);
+      this.setState({ fileToBeUploaded: file });
+    }
   }
 
   render() {
@@ -84,12 +73,13 @@ export default class TarUploader extends ApiComponent<
               multiple={false}
               fileList={
                 this.state.fileToBeUploaded
-                  ? [this.state.fileToBeUploaded]
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  ? [this.state.fileToBeUploaded!]
                   : undefined
               }
               listType="text"
               onChange={this.handleChange}
-              beforeUpload={this.beforeUpload}
+              beforeUpload={() => false}
               action="//" // this is unused as beforeUpload always returns false
             >
               <p className="ant-upload-drag-icon">

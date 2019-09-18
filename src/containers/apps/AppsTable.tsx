@@ -236,7 +236,6 @@ function mapStateToProps(state: any) {
   };
 }
 
-export default connect(
+export default connect<{ isMobile: boolean }>(
   mapStateToProps,
-  undefined
 )(AppsTable);

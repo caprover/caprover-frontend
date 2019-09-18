@@ -10,13 +10,13 @@ export interface IAppEnvVar {
   value: string;
 }
 
-interface IAppVolume {
+export interface IAppVolume {
   containerPath: string;
   volumeName?: string;
   hostPath?: string;
 }
 
-interface IAppPort {
+export interface IAppPort {
   containerPort: number;
   hostPort: number;
   protocol?: "udp" | "tcp";
@@ -47,9 +47,24 @@ export interface IAppVersion {
   gitHash: string | undefined;
 }
 
-interface IAppCustomDomain {
+export interface IBuildLogs {
+  isAppBuilding: boolean;
+  isBuildFailed: boolean;
+  logs: {
+    firstLineNumber: number;
+    lines: string[];
+  }
+}
+
+export interface IAppCustomDomain {
   publicDomain: string;
   hasSsl: boolean;
+}
+
+export interface IHttpAuth {
+  user: string;
+  password?: string;
+  passwordHashed?: string;
 }
 
 interface IAppDefinitionBase {
@@ -59,11 +74,7 @@ interface IAppDefinitionBase {
   hasPersistentData: boolean;
   hasDefaultSubDomainSsl: boolean;
   containerHttpPort: number;
-  httpAuth?: {
-      user: string
-      password?: string
-      passwordHashed?: string
-  }
+  httpAuth?: IHttpAuth;
   captainDefinitionRelativeFilePath: string;
 
   forceSsl: boolean;

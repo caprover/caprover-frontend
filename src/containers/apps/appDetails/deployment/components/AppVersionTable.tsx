@@ -2,18 +2,20 @@ import { Card, Icon, Modal, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import moment from "moment";
 import React, { Component, Fragment } from "react";
-import Utils from "../../../../utils/Utils";
-import ClickableLink from "../../../global/ClickableLink";
-import { IAppVersion } from "../../AppDefinition";
+import Utils from "../../../../../utils/Utils";
+import { AppDetailsContext } from "../../AppDetailsProvider";
+import ClickableLink from "../../../../global/ClickableLink";
+import { IAppVersion } from "../../../AppDefinition";
+import Toaster from "../../../../../utils/Toaster";
 
-export default class AppVersionTable extends Component<{
-  versions: IAppVersion[];
-  deployedVersion: number;
-  onVersionRollbackRequested: (versionToRevert: IAppVersion) => void;
-  isMobile: boolean;
-}> {
+export default class AppVersionTable extends Component {
+  static contextType = AppDetailsContext;
+  context!: React.ContextType<typeof AppDetailsContext>;
+
   getStateRender(version: number, versionDetails: IAppVersion) {
-    if (version === this.props.deployedVersion) {
+    const { app } = this.context.currentApp();
+
+    if (version === app.deployedVersion) {
       return (
         <Tooltip title="Current Version">
           <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
@@ -52,12 +54,12 @@ export default class AppVersionTable extends Component<{
         align: "center",
         dataIndex: "version" as "version",
         render: (version: number, versionDetails: IAppVersion) =>
-          this.getStateRender(version, versionDetails)
+          this.getStateRender(version, versionDetails),
       },
       {
         title: "Version",
         align: "center",
-        dataIndex: "version" as "version"
+        dataIndex: "version" as "version",
       },
       {
         title: "Deploy Time",
@@ -68,16 +70,16 @@ export default class AppVersionTable extends Component<{
               <span>{new Date(timeStamp).toLocaleString()}</span>
             </Tooltip>
           );
-        }
+        },
       },
       {
         title: "Image Name",
-        dataIndex: "deployedImageName" as "deployedImageName"
+        dataIndex: "deployedImageName" as "deployedImageName",
       },
       {
         title: "git hash",
         dataIndex: "gitHash" as "gitHash",
-        render: (gitHashOriginal: string, versionDetails: IAppVersion) => {
+        render: (gitHashOriginal: string) => {
           let gitHash = gitHashOriginal || "";
           if (gitHash.length > 12) {
             gitHash = gitHash.substr(0, 10) + "...";
@@ -87,35 +89,38 @@ export default class AppVersionTable extends Component<{
               <div className="code-input">{gitHash || "n/a"}</div>
             </Tooltip>
           );
-        }
-      }
+        },
+      },
     ];
     return columns;
   }
 
   onRollbackClicked(versionToRevert: IAppVersion) {
-    const self = this;
-    const imageName = versionToRevert.deployedImageName!;
+    if (!versionToRevert.deployedImageName) {
+      return;
+    }
+
+    const imageName = versionToRevert.deployedImageName;
     let content = (
       <span>
-        {`If you had previously deleted this image explicitly through disk cleanup, 
+        {`If you had previously deleted this image explicitly through disk cleanup,
       this revert process will fail.`}
         <br />
         <br />
-        {`Do you want to continue with rolling back your app to `}
+        {"Do you want to continue with rolling back your app to "}
         <code>{imageName}</code>?
       </span>
     );
     if (imageName.indexOf("/") > 0) {
       content = (
         <span>
-          {`${imageName} appears to be hosted on Docker Registry. 
-        Make sure you have not deleted this image from the repository since it was originally deployed. 
-        Deletion usually does not happen automatically, so if you have not deleted the image intentionally, 
+          {`${imageName} appears to be hosted on Docker Registry.
+        Make sure you have not deleted this image from the repository since it was originally deployed.
+        Deletion usually does not happen automatically, so if you have not deleted the image intentionally,
         you don't need to worry about this.`}
           <br />
           <br />
-          {`Do you want to continue with rolling back your app to `}
+          {"Do you want to continue with rolling back your app to "}
           <code>{imageName}</code>?
         </span>
       );
@@ -124,20 +129,30 @@ export default class AppVersionTable extends Component<{
       title: "Rollback?",
       content,
       onOk: () => {
-        self.props.onVersionRollbackRequested(versionToRevert);
-      }
+        this.onVersionRollbackRequested(versionToRevert);
+      },
     });
   }
 
+  onVersionRollbackRequested = async (version: IAppVersion) => {
+    try {
+      this.context.rollbackToVersion(version);
+    } catch(err) {
+      Toaster.toast(err);
+    }
+  }
+
   render() {
-    const self = this;
-    const versionsReversed = Utils.copyObject(self.props.versions).reverse();
+    const { app } = this.context.currentApp();
+    const versionsReversed = Utils.copyObject(app.versions as IAppVersion[]).reverse();
     const columns = this.getCols();
+    const { isMobile } = this.context;
+
     return (
       <div>
         <h3>Version History</h3>
         <div>
-          {this.props.isMobile ? (
+          {isMobile ? (
             versionsReversed.map(
               (version, i) =>
                 i <= 5 && (
