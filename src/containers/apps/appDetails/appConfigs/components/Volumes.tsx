@@ -19,7 +19,7 @@ export default class Volumes extends Component {
 
   onAddVolumeClicked = () => {
     const volumes = this.context.currentApp().app.volumes || [];
-    this.context.updateAppDefintion({ volumes: [...volumes, { containerPath: "", volumeName: "" }]});
+    this.context.updateAppDefintion({ volumes: [...volumes, { containerPath: "", volumeName: "" }] });
   };
 
   onVolumeChange = (val: string, index: number, type: VolumeType) => {
@@ -42,7 +42,7 @@ export default class Volumes extends Component {
     const { isMobile } = this.context;
     const volumes = app.volumes || [];
 
-    if (!app.hasPersistentData) return <div />;
+    if (!app.hasPersistentData) { return <div />; }
 
     return (
       <div>

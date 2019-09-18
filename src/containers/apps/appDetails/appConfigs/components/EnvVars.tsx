@@ -69,7 +69,7 @@ export default class EnvVars extends Component {
 
   onAddClicked = () => {
     const envVars = this.context.currentApp().app.envVars || [];
-    this.context.updateAppDefintion({ envVars: [...envVars, { key: "", value: "" }]});
+    this.context.updateAppDefintion({ envVars: [...envVars, { key: "", value: "" }] });
   };
 
   onVarUpdated = (val: string, index: number, type: EnvType) => {

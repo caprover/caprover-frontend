@@ -55,7 +55,7 @@ export default class ActionBar extends Component<{
               <Checkbox
                 defaultChecked={!!this.state.volumesToDelete[v]}
                 onChange={() => {
-                  this.setState({ volumesToDelete: { ...this.state.volumesToDelete, [v]: !this.state.volumesToDelete[v] }});
+                  this.setState({ volumesToDelete: { ...this.state.volumesToDelete, [v]: !this.state.volumesToDelete[v] } });
                 }}
               >
                 {v}

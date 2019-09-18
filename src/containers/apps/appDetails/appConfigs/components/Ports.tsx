@@ -13,7 +13,7 @@ export default class Ports extends Component {
 
   onAddPortMappingClicked = () => {
     const ports = this.context.currentApp().app.ports || [];
-    this.context.updateAppDefintion({ ports: [...ports, { containerPort: 0, hostPort: 0 }]});
+    this.context.updateAppDefintion({ ports: [...ports, { containerPort: 0, hostPort: 0 }] });
   }
 
   onPortChange = (val: string, index: number, type: PortType) => {

@@ -186,9 +186,9 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
   /* get app data */
 
   async fetchAppData(): Promise<IAppDef | undefined> {
-    this.setState({ appData: { isLoading: true }});
+    this.setState({ appData: { isLoading: true } });
     const allApps = await this.apiManager.getAllApps();
-    this.setState({ appData: { isLoading: false }});
+    this.setState({ appData: { isLoading: false } });
 
     const myApp: IAppDef = allApps.appDefinitions
       .find((app: IAppDef) => app.appName === this.props.match.params.appName );
@@ -364,7 +364,7 @@ class AppDetailsProvider extends ApiComponent<AppDetailsProviderProps, AppDetail
       appDefinition: {
         ...this.currentApp().app,
         ...this.deepCopy(update),
-      }});
+      } });
   }
 
   async uploadAppData(data: File) {

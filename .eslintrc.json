@@ -23,12 +23,16 @@
     "quotes": [2, "double"],
     "function-call-argument-newline": [2, "consistent"],
     "eol-last": [2, "always"],
+    "curly": [2, "all"],
+    "object-curly-spacing": ["error", "always"],
+    "space-before-blocks": ["error", "always"],
+    "block-spacing": ["error", "always"],
     "comma-dangle": ["error", {
       "arrays": "always-multiline",
       "objects": "always-multiline",
       "imports": "always-multiline",
       "exports": "always-multiline",
       "functions": "never"
-  }]
+    }]
   }
 }

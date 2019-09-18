@@ -34,7 +34,7 @@ export default class DetailsCard extends Component<{
       ),
       onOk: () => {
         const changed = appName !== tempVal.newName;
-        if (changed && tempVal.newName) this.renameAppTo(tempVal.newName);
+        if (changed && tempVal.newName) { this.renameAppTo(tempVal.newName); }
       },
     });
   }
