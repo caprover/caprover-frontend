@@ -46,3 +46,9 @@ hr {
 .logs-output:focus {
     outline: none;
 }
+
+.disabled {
+    opacity: .4;
+    cursor: hand;
+    pointer-events: none;
+}
