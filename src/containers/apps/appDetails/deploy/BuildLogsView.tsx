@@ -166,15 +166,15 @@ export default class BuildLogsView extends ApiComponent<
             }
             style={{ padding: 5 }}
           >
-            <div
+            <textarea
               id="buildlog-text-id"
               className="logs-output"
               style={{
                 whiteSpace: "pre"
               }}
-            >
-              {self.state.buildLogs}
-            </div>
+              readOnly
+              value={self.state.buildLogs}
+            />
           </div>
         </div>
       </div>

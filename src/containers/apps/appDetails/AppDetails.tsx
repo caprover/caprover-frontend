@@ -15,6 +15,7 @@ import {
   Alert
 } from "antd";
 import React, { RefObject } from "react";
+import classnames from 'classnames';
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import ApiManager from "../../../api/ApiManager";
@@ -300,7 +301,7 @@ class AppDetails extends ApiComponent<
   render() {
     const self = this;
 
-    if (self.state.isLoading) {
+    if (!self.state.apiData && self.state.isLoading) {
       return <CenteredSpinner />;
     }
 
@@ -355,11 +356,20 @@ class AppDetails extends ApiComponent<
               </span>
             }
           >
+            {this.state.isLoading && (
+              <div style={{ 
+                position: 'absolute',
+                left: '50%'
+              }}>
+                <CenteredSpinner /> 
+              </div>
+            )}
             <Tabs
               defaultActiveKey={WEB_SETTINGS}
               onChange={key => {
                 self.setState({ activeTabKey: key });
               }}
+              className={classnames({ "disabled": this.state.isLoading })}
             >
               <TabPane
                 tab={<span className="unselectable-span">HTTP Settings</span>}
@@ -420,9 +430,10 @@ class AppDetails extends ApiComponent<
               }}
             >
               <div
-                className={
-                  self.state.activeTabKey === DEPLOYMENT ? "hide-on-demand" : ""
-                }
+                className={classnames({
+                  "hide-on-demand": self.state.activeTabKey === DEPLOYMENT,
+                  "disabled": this.state.isLoading,
+                })}
                 style={{
                   borderRadius: 8,
                   background: "rgba(51,73,90,0.9)",
