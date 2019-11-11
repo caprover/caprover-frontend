@@ -4,7 +4,7 @@ import DomUtils from "../../../../utils/DomUtils";
 import Toaster from "../../../../utils/Toaster";
 import Utils from "../../../../utils/Utils";
 import ApiComponent from "../../../global/ApiComponent";
-import { IAppDef, IAppVersion } from "../../AppDefinition";
+import { IAppDef, IAppVersion, RepoInfo } from "../../AppDefinition";
 import { AppDetailsTabProps } from "../AppDetails";
 import AppLogsView from "./AppLogsView";
 import AppVersionTable from "./AppVersionTable";
@@ -13,6 +13,7 @@ import GitRepoForm from "./GitRepoForm";
 import TarUploader from "./TarUploader";
 import UploaderPlainTextCaptainDefinition from "./UploaderPlainTextCaptainDefinition";
 import UploaderPlainTextDockerfile from "./UploaderPlainTextDockerfile";
+import deepEqual from "deep-equal";
 
 export default class Deployment extends ApiComponent<
   AppDetailsTabProps,
@@ -25,13 +26,26 @@ export default class Deployment extends ApiComponent<
       | undefined;
   }
 > {
-  constructor(props: any) {
+  initRepoInfo: RepoInfo;
+
+  constructor(props: AppDetailsTabProps) {
     super(props);
     this.state = {
       dummyVar: undefined,
       forceEditableCaptainDefinitionPath: false,
       updatedVersions: undefined,
       buildLogRecreationId: ""
+    };
+
+    const { appPushWebhook } = props.apiData.appDefinition;
+    this.initRepoInfo = appPushWebhook 
+      ? {...appPushWebhook.repoInfo} 
+      : {
+          user: "",
+          password: "",
+          branch: "",
+          sshKey: "",
+          repo: ""
     };
   }
 
@@ -243,7 +257,7 @@ export default class Deployment extends ApiComponent<
             Force Build
           </Button>
           <Button
-            disabled={!repoInfo.repo}
+            disabled={deepEqual(repoInfo, self.initRepoInfo)}
             type="primary"
             style={{ marginTop: this.props.isMobile ? 15 : 0 }}
             block={this.props.isMobile}

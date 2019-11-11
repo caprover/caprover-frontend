@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/classnames": "^2.2.9",
+    "@types/deep-equal": "^1.0.1",
     "@types/jest": "^24.0.17",
     "@types/node": "^12.7.1",
     "@types/query-string": "^6.3.0",
@@ -19,6 +20,7 @@
     "bcryptjs": "^2.4.3",
     "classnames": "^2.2.6",
     "customize-cra": "^0.5.0",
+    "deep-equal": "^1.1.0",
     "moment": "^2.24.0",
     "query-string": "^6.8.2",
     "react": "^16.9.0",
