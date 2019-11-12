@@ -8,7 +8,6 @@ import {
 import ClickableLink from "../global/ClickableLink";
 import Utils from "../../utils/Utils";
 import { ColumnProps } from "antd/lib/table";
-import PasswordField from "../global/PasswordField";
 
 const EDITING_MODAL = "EDITING_MODAL";
 const DELETING_MODAL = "DELETING_MODAL";
@@ -139,7 +138,7 @@ export default class DockerRegistryTable extends Component<
           }}
         />
         <div style={{ height: 20 }} />
-        <PasswordField
+        <Input.Password
           addonBefore="Password"
           placeholder="mypassword"
           defaultValue={self.state.remoteRegistryToEdit!.registryPassword}
@@ -219,7 +218,7 @@ export default class DockerRegistryTable extends Component<
         </Modal>
         <h3>Docker Registries</h3>
         <div>
-          {this.props.isMobile ? 
+          {this.props.isMobile ?
           this.props.apiData.registries.map(registry => (
             <Card
             type="inner"
@@ -240,7 +239,7 @@ export default class DockerRegistryTable extends Component<
               <b>Image Prefix:</b> {registry.registryUser}
             </div>
             <div>
-              <b>Actions:</b> 
+              <b>Actions:</b>
               <span>
                 <ClickableLink
                   onLinkClicked={() => {

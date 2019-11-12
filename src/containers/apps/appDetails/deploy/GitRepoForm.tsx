@@ -1,7 +1,6 @@
 import { Col, Input, Row } from "antd";
 import React, { Component } from "react";
 import Utils from "../../../../utils/Utils";
-import PasswordField from "../../../global/PasswordField";
 import { RepoInfo } from "../../AppDefinition";
 
 export default class GitRepoForm extends Component<{
@@ -76,7 +75,7 @@ export default class GitRepoForm extends Component<{
                 this.props.gitRepoValues.sshKey ? "hide-on-demand" : ""
               }
             >
-              <PasswordField
+              <Input.Password
                 defaultValue={this.props.gitRepoValues.password}
                 addonBefore="Password"
                 placeholder="githubpassword"
