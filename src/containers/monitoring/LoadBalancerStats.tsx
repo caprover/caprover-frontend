@@ -103,7 +103,7 @@ export default class LoadBalancerStats extends ApiComponent<
             <Card title="Load Balancer Stats">
               <Row type="flex" gutter={10} justify="center">
                 <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                  <Tooltip title="Constantly going up as refreshing the values">
+                  <Tooltip title="Constantly refreshes as the value goes up">
                     <div>
                       <LoadBalancerStatsCard
                         icon="global"
