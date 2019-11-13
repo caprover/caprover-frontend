@@ -52,3 +52,21 @@ hr {
     cursor: hand;
     pointer-events: none;
 }
+
+.one-click-app.ant-card {
+    width: 20em;
+    margin: 1em;
+}
+
+.one-click-app img {
+    transition: filter 0.3s ease-in-out;
+    filter: grayscale(100%);
+    padding-top: 24px;
+    height: 7em;
+    width: 100%;
+    object-fit: contain;
+}
+
+.one-click-app:hover img {
+    filter: none;
+}

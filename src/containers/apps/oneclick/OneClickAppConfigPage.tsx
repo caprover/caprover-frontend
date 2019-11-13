@@ -2,7 +2,7 @@ import { Card, Col, message, Row } from "antd";
 import queryString from "query-string";
 import React from "react";
 import { RouteComponentProps } from "react-router";
-import OneClickAppsApi from "../../../api/OneClickAppsApi";
+import { getOneClickApp } from "../../../api/OneClickAppsApi";
 import { IOneClickTemplate } from "../../../models/IOneClickAppModels";
 import DomUtils from "../../../utils/DomUtils";
 import Toaster from "../../../utils/Toaster";
@@ -11,10 +11,6 @@ import OneClickAppDeployManager, {
   IDeploymentState
 } from "./OneClickAppDeployManager";
 import OneClickAppDeployProgress from "./OneClickAppDeployProgress";
-import {
-  TEMPLATE_ONE_CLICK_APP,
-  ONE_CLICK_APP_STRINGIFIED_KEY
-} from "./OneClickAppSelector";
 import OneClickVariablesSection from "./OneClickVariablesSection";
 import Utils from "../../../utils/Utils";
 import ApiComponent from "../../global/ApiComponent";
@@ -56,52 +52,34 @@ export default class OneClickAppConfigPage extends ApiComponent<
     this.isUnmount = true;
   }
 
-  componentDidMount() {
-    const self = this;
+  async componentDidMount() {
+    try {
+      let app = await getOneClickApp(this.props.match.params.appName);
 
-    const appNameFromPath = this.props.match.params.appName;
-    let promiseToFetchOneClick =
-      appNameFromPath === TEMPLATE_ONE_CLICK_APP
-        ? new Promise<any>(function(resolve) {
-            resolve(
-              JSON.parse(queryString.parse(self.props.location.search)[
-                ONE_CLICK_APP_STRINGIFIED_KEY
-              ] as string)
-            );
-          })
-        : new OneClickAppsApi().getOneClickAppByName(appNameFromPath);
+      if ((app.captainVersion || "").toString() !== "2") {
+        message.error(
+          `One-click app version is ${app.captainVersion}, this version supports "v2". Make sure your CapRover is up-to-date with the latest version!!`
+        );
+        return;
+      }
 
-    let apiData: IOneClickTemplate;
-
-    promiseToFetchOneClick
-      .then(function(data: IOneClickTemplate) {
-        if ((data.captainVersion || "").toString() !== "2") {
-          message.error(
-            `One-click app version is ${
-              data.captainVersion
-            }, this version supports "v2". Make sure your CapRover is up-to-date with the latest version!!`
-          );
-          return;
-        }
-
-        data.variables = data.variables || [];
+      app.variables = [
         // Adding app name to all one click apps
-        data.variables.unshift({
+        {
           id: ONE_CLICK_APP_NAME_VAR_NAME,
           label: "App Name",
           description:
             "This is your app name. Pick a name such as my-first-1-click-app",
           validRegex: "/^([a-z0-9]+\\-)*[a-z0-9]+$/" // string version of /^([a-z0-9]+\-)*[a-z0-9]+$/
-        });
+        },
+        ...(app.variables || [])
+      ];
 
-        apiData = data;
-
-        return self.apiManager.getCaptainInfo();
-      })
-      .then(function(captainInfo) {
-        self.setState({ apiData: apiData, rootDomain: captainInfo.rootDomain });
-      })
-      .catch(Toaster.createCatcher());
+      const captainInfo = await this.apiManager.getCaptainInfo();
+      this.setState({ apiData: app, rootDomain: captainInfo.rootDomain });
+    } catch (err) {
+      Toaster.createCatcher()(err);
+    }
   }
 
   render() {
