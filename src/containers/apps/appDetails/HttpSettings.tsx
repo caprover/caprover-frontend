@@ -242,7 +242,7 @@ export default class HttpSettings extends Component<
 
     return (
       <div>
-        <p>Your app is available to public at:</p>
+        <p>Your app is publicly available at:</p>
         <Row>
           <Button.Group size="small">
             <Tooltip
