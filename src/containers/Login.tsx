@@ -1,7 +1,7 @@
 import { Button, Card, Collapse, Form, Icon, Input, Radio } from "antd";
 import RadioGroup from "antd/lib/radio/group";
 import React from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, Redirect } from "react-router";
 import ApiManager from "../api/ApiManager";
 import StorageHelper from "../utils/StorageHelper";
 import Toaster from "../utils/Toaster";
@@ -41,6 +41,9 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
 
   render() {
     const self = this;
+
+    if(ApiManager.isLoggedIn()) return <Redirect to="/dashboard" />
+
     return (
       <div>
         <div
