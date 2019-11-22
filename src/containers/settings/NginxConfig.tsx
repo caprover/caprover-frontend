@@ -96,7 +96,7 @@ export default class NginxConfig extends ApiComponent<
           special routing, http2 and etc.
         </p>
         <p>
-          Note that templates are build using EJS template pattern. Do not
+          Note that templates are built using EJS template pattern. Do not
           change the areas between <code>&lt;%</code> and <code>%&gt;</code>{" "}
           unless you really know what you're doing!
         </p>
