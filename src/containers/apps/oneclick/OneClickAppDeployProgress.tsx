@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Prompt } from "react-router-dom";
 import { IDeploymentState } from "./OneClickAppDeployManager";
 import { Row, Col, Card, Steps, Icon, Button, Alert } from "antd";
 
@@ -42,11 +43,30 @@ export default class OneClickAppDeployProgress extends Component<{
     });
   }
 
+  isRunning() {
+    const { successMessage, error } = this.props.deploymentState;
+    return !successMessage && !error;
+  }
+
+  blockNavigationIfRunning() {
+    return (
+      <Prompt
+        when={this.isRunning()}
+        message={
+          "A deployement is running!\n" +
+          "Are you sure you want to leave this page?\n" +
+          "It will interrupt the deployment at the current step, leaving the applications in potentially inconsistent state."
+        }
+      />
+    );
+  }
+
   render() {
     const self = this;
 
     return (
       <div>
+        {self.blockNavigationIfRunning()}
         <div>
           <Row type="flex" justify="center">
             <Col xs={{ span: 23 }} lg={{ span: 16 }}>
