@@ -44,7 +44,7 @@ https://github.com/caprover/caprover/blob/master/dockerfile-captain.release#L18
 
 ## Learn More!
 
-For more details and documentation, please visit https://CapRover.com/
+For more details and documentation, please visit https://CapRover.com
 
 
 
