@@ -53,7 +53,7 @@ export default class OneClickAppDeployProgress extends Component<{
       <Prompt
         when={this.isRunning()}
         message={
-          "A deployement is running!\n" +
+          "A deployment is running!\n" +
           "Are you sure you want to leave this page?\n" +
           "It will interrupt the deployment at the current step, leaving the applications in potentially inconsistent state."
         }
