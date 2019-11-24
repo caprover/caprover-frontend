@@ -10,10 +10,10 @@ export default class HttpClient {
   public readonly GET = "GET";
   public readonly POST = "POST";
   public isDestroyed = false;
+  private authToken: string = "";
 
   constructor(
     private baseUrl: string,
-    private authToken: string,
     private onAuthFailure: () => Promise<any>
   ) {
     //

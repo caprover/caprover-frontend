@@ -5,6 +5,7 @@ import { IVersionInfo } from "../models/IVersionInfo";
 import Logger from "../utils/Logger";
 import StorageHelper from "../utils/StorageHelper";
 import HttpClient from "./HttpClient";
+import ErrorFactory from "../utils/ErrorFactory";
 
 const BASE_DOMAIN = process.env.REACT_APP_API_URL
   ? process.env.REACT_APP_API_URL
@@ -13,19 +14,22 @@ const URL = BASE_DOMAIN + "/api/v2";
 Logger.dev("API URL: " + URL);
 
 export default class ApiManager {
-  private static lastKnownPassword: string = process.env
-    .REACT_APP_DEFAULT_PASSWORD
-    ? process.env.REACT_APP_DEFAULT_PASSWORD + ""
-    : "captain42";
+  private static lastKnownPassword: string = "";
   private static authToken = StorageHelper.getAuthKeyFromStorage() || "";
 
   private http: HttpClient;
 
   constructor() {
     const self = this;
-    this.http = new HttpClient(URL, ApiManager.authToken, function() {
+    this.http = new HttpClient(URL, function() {
+      if (!ApiManager.lastKnownPassword) {
+        return Promise.reject(
+          new Error("No saved password. Ignore if initial call.")
+        );
+      }
       return self.getAuthToken(ApiManager.lastKnownPassword);
     });
+    this.http.setAuthToken(ApiManager.authToken);
   }
 
   getApiBaseUrl() {
@@ -59,6 +63,20 @@ export default class ApiManager {
       .then(http.fetch(http.POST, "/login", { password }))
       .then(function(data) {
         self.setAuthToken(data.token);
+      })
+      .catch(function(error) {
+        // Upon wrong password or back-off error, we force logout the user
+        // to avoid getting stuck with wrong password loop
+        if (
+          error.captainStatus + "" ===
+            ErrorFactory.STATUS_PASSWORD_BACK_OFF + "" ||
+          error.captainStatus + "" === ErrorFactory.STATUS_WRONG_PASSWORD + ""
+        ) {
+          self.setAuthToken("");
+          ApiManager.lastKnownPassword = "";
+        }
+
+        return Promise.reject(error);
       });
   }
 

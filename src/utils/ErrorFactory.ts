@@ -14,6 +14,12 @@ class ErrorFactory {
   public readonly STATUS_WRONG_PASSWORD = 1105;
   public readonly STATUS_AUTH_TOKEN_INVALID = 1106;
   public readonly VERIFICATION_FAILED = 1107;
+  public readonly ILLEGAL_OPERATION = 1108
+  public readonly BUILD_ERROR = 1109
+  public readonly ILLEGAL_PARAMETER = 1110
+  public readonly NOT_FOUND = 1111
+  public readonly AUTHENTICATION_FAILED = 1112
+  public readonly STATUS_PASSWORD_BACK_OFF = 1113
 
   public readonly UNKNOWN_ERROR = 1999;
 
