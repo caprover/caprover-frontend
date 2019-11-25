@@ -28,6 +28,9 @@ export interface IDockerComposeService {
 
 export interface IOneClickTemplate {
   captainVersion: number;
+  shortDesc: string;
+  displayName: string;
+  useDefaultLogo?: boolean;
   dockerCompose: {
     version: string;
     services: IHashMapGeneric<IDockerComposeService>;

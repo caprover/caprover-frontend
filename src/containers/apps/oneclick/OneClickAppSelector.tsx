@@ -6,6 +6,7 @@ import { IOneClickAppIdentifier } from "../../../models/IOneClickAppModels";
 import Toaster from "../../../utils/Toaster";
 import Utils from "../../../utils/Utils";
 import CenteredSpinner from "../../global/CenteredSpinner";
+import NewTabLink from "../../global/NewTabLink";
 
 export const TEMPLATE_ONE_CLICK_APP = "TEMPLATE_ONE_CLICK_APP";
 export const ONE_CLICK_APP_STRINGIFIED_KEY = "oneClickAppStringifiedData";
@@ -76,13 +77,9 @@ export default class OneClickAppSelector extends Component<
               </p>
               <p>
                 One click apps are retrieved from :{" "}
-                <a
-                  href="https://github.com/caprover/one-click-apps"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <NewTabLink url="https://github.com/caprover/one-click-apps">
                   CapRover One Click Apps Repository
-                </a>
+                </NewTabLink>
               </p>
               {Utils.isSafari() ? (
                 <Alert
@@ -117,13 +114,9 @@ export default class OneClickAppSelector extends Component<
                   <p>
                     This is mainly for testing. You can copy and paste your
                     custom One-Click app template here. See{" "}
-                    <a
-                      href="https://github.com/caprover/one-click-apps/tree/master/public/v1/apps"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <NewTabLink url="https://github.com/caprover/one-click-apps/tree/master/public/v1/apps">
                       the main one click apps GitHub repository
-                    </a>{" "}
+                    </NewTabLink>{" "}
                     for samples and ideas.
                   </p>
                 </div>
@@ -153,13 +146,9 @@ export default class OneClickAppSelector extends Component<
               <div style={{ height: 30 }} />
               <Row type="flex" justify="space-between" align="middle">
                 <div>
-                  <a
-                    href="https://caprover.com/docs/one-click-apps.html#what-about-other-apps"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <NewTabLink url="https://caprover.com/docs/one-click-apps.html#what-about-other-apps">
                     <Icon type="info-circle" />
-                  </a>
+                  </NewTabLink>
                   &nbsp; What if the app/database I want is not listed here?
                   &nbsp;
                 </div>
