@@ -22,7 +22,10 @@ export default class NetDataDescription extends Component {
         <p>
           NetData is fast and efficient, designed to permanently run on all
           systems (physical &amp; virtual servers, containers, IoT devices),
-          without disrupting their core function.
+          without disrupting their core function. The current image of NetData
+          embeded in CapRover uses a default configuration for 
+          <a href="https://docs.netdata.cloud/docs/anonymous-statistics/">telemetry data</a>.
+          You can recompile CapRover with a different customized image if you'd like.
         </p>
         <p>
           CapRover provides a simple interface to enable NetData on your
