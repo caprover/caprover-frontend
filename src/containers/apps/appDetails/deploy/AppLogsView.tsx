@@ -3,6 +3,7 @@ import React from "react";
 import Utils from "../../../../utils/Utils";
 import ApiComponent from "../../../global/ApiComponent";
 import ClickableLink from "../../../global/ClickableLink";
+import NewTabLink from "../../../global/NewTabLink";
 
 export default class AppLogsView extends ApiComponent<
   {
@@ -141,13 +142,9 @@ export default class AppLogsView extends ApiComponent<
 
                   <span style={{ marginLeft: 20, paddingBottom: 3 }}>
                     <Tooltip title="View full application logs (not truncated)">
-                      <a
-                        href="https://caprover.com/docs/troubleshooting.html#how-to-view-my-application-s-log"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <NewTabLink url="https://caprover.com/docs/troubleshooting.html#how-to-view-my-application-s-log">
                         <Icon type="info-circle" />
-                      </a>
+                      </NewTabLink>
                     </Tooltip>
                   </span>
                 </Row>

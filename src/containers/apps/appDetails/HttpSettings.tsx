@@ -13,6 +13,7 @@ import {
 import Toaster from "../../../utils/Toaster";
 import Utils from "../../../utils/Utils";
 import { AppDetailsTabProps } from "./AppDetails";
+import NewTabLink from "../../global/NewTabLink";
 
 const Search = Input.Search;
 
@@ -171,13 +172,9 @@ export default class HttpSettings extends Component<
             </Button>
           </Button.Group>
 
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={"http://" + c.publicDomain}
-          >
+          <NewTabLink url={"http://" + c.publicDomain}>
             {c.publicDomain}
-          </a>
+          </NewTabLink>
         </Row>
       );
       rows.push(row);
@@ -264,11 +261,8 @@ export default class HttpSettings extends Component<
               </Button>
             </Tooltip>
           </Button.Group>
-          <a
-            style={{
-              marginLeft: 20
-            }}
-            href={
+          <NewTabLink
+            url={
               "http" +
               (app.hasDefaultSubDomainSsl ? "s" : "") +
               "://" +
@@ -276,16 +270,20 @@ export default class HttpSettings extends Component<
               "." +
               rootDomain
             }
-            target="_blank"
-            rel="noopener noreferrer"
           >
-            {"http" +
-              (app.hasDefaultSubDomainSsl ? "s" : "") +
-              "://" +
-              app.appName +
-              "." +
-              rootDomain}
-          </a>
+            <span
+              style={{
+                marginLeft: 20
+              }}
+            >
+              {"http" +
+                (app.hasDefaultSubDomainSsl ? "s" : "") +
+                "://" +
+                app.appName +
+                "." +
+                rootDomain}
+            </span>
+          </NewTabLink>
         </Row>
         {this.createCustomDomainRows()}
         <br />

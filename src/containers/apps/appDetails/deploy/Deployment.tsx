@@ -14,6 +14,7 @@ import TarUploader from "./TarUploader";
 import UploaderPlainTextCaptainDefinition from "./UploaderPlainTextCaptainDefinition";
 import UploaderPlainTextDockerfile from "./UploaderPlainTextDockerfile";
 import deepEqual from "deep-equal";
+import NewTabLink from "../../../global/NewTabLink";
 
 export default class Deployment extends ApiComponent<
   AppDetailsTabProps,
@@ -38,15 +39,15 @@ export default class Deployment extends ApiComponent<
     };
 
     const { appPushWebhook } = props.apiData.appDefinition;
-    this.initRepoInfo = appPushWebhook 
-      ? {...appPushWebhook.repoInfo} 
+    this.initRepoInfo = appPushWebhook
+      ? { ...appPushWebhook.repoInfo }
       : {
           user: "",
           password: "",
           branch: "",
           sshKey: "",
           repo: ""
-    };
+        };
   }
 
   onUploadSuccess() {
@@ -168,13 +169,9 @@ export default class Deployment extends ApiComponent<
           Use CLI deploy command. This is the easiest method as it only requires
           a simply command like <code>caprover deploy</code>. Read more about it
           in the{" "}
-          <a
-            href="https://caprover.com/docs/get-started.html#step-4-deploy-the-test-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <NewTabLink url="https://caprover.com/docs/get-started.html#step-4-deploy-the-test-app">
             docs
-          </a>
+          </NewTabLink>
         </p>
         <div style={{ height: 20 }} />
         <h4>

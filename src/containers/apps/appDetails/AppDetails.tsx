@@ -15,7 +15,7 @@ import {
   Alert
 } from "antd";
 import React, { RefObject } from "react";
-import classnames from 'classnames';
+import classnames from "classnames";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import ApiManager from "../../../api/ApiManager";
@@ -30,6 +30,7 @@ import { IAppDef } from "../AppDefinition";
 import AppConfigs from "./AppConfigs";
 import Deployment from "./deploy/Deployment";
 import HttpSettings from "./HttpSettings";
+import NewTabLink from "../../global/NewTabLink";
 const TabPane = Tabs.TabPane;
 
 const WEB_SETTINGS = "WEB_SETTINGS";
@@ -231,13 +232,9 @@ class AppDetails extends ApiComponent<
                       being used by other containers. Sometimes, this is because
                       of a temporary delay when the original container deletion
                       was done with a delay. Please see{" "}
-                      <a
-                        href="https://caprover.com/docs/app-configuration.html#removing-persistent-apps"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <NewTabLink url="https://caprover.com/docs/app-configuration.html#removing-persistent-apps">
                         documentations
-                      </a>{" "}
+                      </NewTabLink>{" "}
                       and delete them manually if needed. Skipped volumes are:
                     </p>
                     <ul>
@@ -357,11 +354,13 @@ class AppDetails extends ApiComponent<
             }
           >
             {this.state.isLoading && (
-              <div style={{ 
-                position: 'absolute',
-                left: '50%'
-              }}>
-                <CenteredSpinner /> 
+              <div
+                style={{
+                  position: "absolute",
+                  left: "50%"
+                }}
+              >
+                <CenteredSpinner />
               </div>
             )}
             <Tabs
@@ -369,7 +368,7 @@ class AppDetails extends ApiComponent<
               onChange={key => {
                 self.setState({ activeTabKey: key });
               }}
-              className={classnames({ "disabled": this.state.isLoading })}
+              className={classnames({ disabled: this.state.isLoading })}
             >
               <TabPane
                 tab={<span className="unselectable-span">HTTP Settings</span>}
@@ -432,7 +431,7 @@ class AppDetails extends ApiComponent<
               <div
                 className={classnames({
                   "hide-on-demand": self.state.activeTabKey === DEPLOYMENT,
-                  "disabled": this.state.isLoading,
+                  disabled: this.state.isLoading
                 })}
                 style={{
                   borderRadius: 8,
@@ -524,7 +523,4 @@ function mapStateToProps(state: any) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  undefined
-)(AppDetails);
+export default connect(mapStateToProps, undefined)(AppDetails);

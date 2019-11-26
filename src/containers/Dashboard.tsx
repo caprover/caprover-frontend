@@ -4,6 +4,7 @@ import Toaster from "../utils/Toaster";
 import ApiComponent from "./global/ApiComponent";
 import CenteredSpinner from "./global/CenteredSpinner";
 import ErrorRetry from "./global/ErrorRetry";
+import NewTabLink from "./global/NewTabLink";
 const Search = Input.Search;
 
 export default class Dashboard extends ApiComponent<
@@ -111,13 +112,9 @@ export default class Dashboard extends ApiComponent<
               <div>
                 <p>
                   CapRover uses{" "}
-                  <a
-                    href="https://letsencrypt.org/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <NewTabLink url="https://letsencrypt.org/">
                     Let&#39;s Encrypt
-                  </a>{" "}
+                  </NewTabLink>{" "}
                   to provide free SSL Certificates (HTTPS). This email address
                   is very important as Let&#39;s Encrypt uses it for validation
                   purposes. Please provide a valid email here.
@@ -276,14 +273,10 @@ export default class Dashboard extends ApiComponent<
                 <i>
                   NOTE: DNS settings might take several hours to take into
                   effect. See{" "}
-                  <a
-                    href="https://ca.godaddy.com/help/what-factors-affect-dns-propagation-time-1746"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <NewTabLink url="https://ca.godaddy.com/help/what-factors-affect-dns-propagation-time-1746">
                     {" "}
                     here
-                  </a>{" "}
+                  </NewTabLink>{" "}
                   for more details.
                 </i>
               </p>

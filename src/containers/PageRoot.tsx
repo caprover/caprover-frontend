@@ -18,6 +18,7 @@ import Toaster from "../utils/Toaster";
 import { IVersionInfo } from "../models/IVersionInfo";
 import * as GlobalActions from "../redux/actions/GlobalActions";
 import { connect } from "react-redux";
+import NewTabLink from "./global/NewTabLink";
 
 const { Header, Content, Sider } = Layout;
 
@@ -207,23 +208,17 @@ class PageRoot extends ApiComponent<
               {!self.props.isMobile && (
                 <Col span={12}>
                   <Row type="flex" justify="end">
-                    <a
-                      href="https://github.com/caprover/caprover"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ marginRight: 20 }}
-                    >
-                      GitHub
-                    </a>
+                    <NewTabLink url="https://github.com/caprover/caprover">
+                      <span style={{ marginRight: 20 }}>GitHub</span>
+                    </NewTabLink>
 
-                    <a
-                      href="https://caprover.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ marginRight: 70 }}
+                    <span
+                      style={{
+                        marginRight: 70
+                      }}
                     >
-                      Docs
-                    </a>
+                      <NewTabLink url="https://caprover.com">Docs</NewTabLink>
+                    </span>
                     <span>
                       <span
                         style={{
@@ -294,14 +289,10 @@ class PageRoot extends ApiComponent<
                     role="menuitem"
                     style={{ paddingLeft: 24 }}
                   >
-                    <a
-                      href="https://github.com/caprover/caprover"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <NewTabLink url="https://github.com/caprover/caprover">
                       <Icon type="github" />
                       GitHub
-                    </a>
+                    </NewTabLink>
                   </div>
 
                   <div
@@ -309,14 +300,10 @@ class PageRoot extends ApiComponent<
                     role="menuitem"
                     style={{ paddingLeft: 24 }}
                   >
-                    <a
-                      href="https://caprover.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <NewTabLink url="https://caprover.com">
                       <Icon type="file-text" />
                       Docs
-                    </a>
+                    </NewTabLink>
                   </div>
 
                   <div
@@ -391,9 +378,6 @@ function mapStateToProps(state: any) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    emitSizeChanged: GlobalActions.emitSizeChanged
-  }
-)(PageRoot);
+export default connect(mapStateToProps, {
+  emitSizeChanged: GlobalActions.emitSizeChanged
+})(PageRoot);

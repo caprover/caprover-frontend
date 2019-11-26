@@ -4,6 +4,7 @@ import { IHashMapGeneric } from "../../../models/IHashMapGeneric";
 import Utils from "../../../utils/Utils";
 import { IAppEnvVar } from "../AppDefinition";
 import { AppDetailsTabProps } from "./AppDetails";
+import NewTabLink from "../../global/NewTabLink";
 
 export default class AppConfigs extends Component<
   AppDetailsTabProps,
@@ -151,7 +152,11 @@ export default class AppConfigs extends Component<
 
         <br />
 
-        <Button block={this.props.isMobile} type="default" onClick={() => self.addEnvVarClicked()}>
+        <Button
+          block={this.props.isMobile}
+          type="default"
+          onClick={() => self.addEnvVarClicked()}
+        >
           Add Key/Value Pair
         </Button>
       </div>
@@ -292,13 +297,9 @@ export default class AppConfigs extends Component<
       <div>
         <h4>
           Persistent Directories &nbsp;
-          <a
-            href="https://caprover.com/docs/app-configuration.html#persistent-or-not"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <NewTabLink url="https://caprover.com/docs/app-configuration.html#persistent-or-not">
             <Icon type="info-circle" />
-          </a>
+          </NewTabLink>
         </h4>
         <div
           className={
@@ -318,7 +319,7 @@ export default class AppConfigs extends Component<
         <br />
 
         <Row>
-        <Col span={6} style={{ width: this.props.isMobile ? '100%' : 300 }}>
+          <Col span={6} style={{ width: this.props.isMobile ? "100%" : 300 }}>
             <Tooltip title="Leave empty for automatic placement">
               <Input
                 addonBefore="Node ID"
@@ -387,13 +388,9 @@ export default class AppConfigs extends Component<
 
         <h4>
           Port Mapping &nbsp;
-          <a
-            href="https://caprover.com/docs/app-configuration.html#port-mapping"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <NewTabLink url="https://caprover.com/docs/app-configuration.html#port-mapping">
             <Icon type="info-circle" />
-          </a>
+          </NewTabLink>
         </h4>
         <div
           className={app.ports && !!app.ports.length ? "hide-on-demand" : ""}
@@ -405,7 +402,11 @@ export default class AppConfigs extends Component<
 
         <br />
 
-        <Button block={this.props.isMobile} type="default" onClick={() => this.addPortMappingClicked()}>
+        <Button
+          block={this.props.isMobile}
+          type="default"
+          onClick={() => this.addPortMappingClicked()}
+        >
           Add Port Mapping
         </Button>
         <br />
@@ -414,7 +415,7 @@ export default class AppConfigs extends Component<
         {this.createVolSection()}
         <br />
         <Row>
-          <Col span={6} style={{ width: this.props.isMobile ? '100%' : 300 }}>
+          <Col span={6} style={{ width: this.props.isMobile ? "100%" : 300 }}>
             <Tooltip title="Number of running instances of this app">
               <Input
                 addonBefore="Instance Count"
@@ -460,14 +461,9 @@ export default class AppConfigs extends Component<
           <br />
           <h4>
             Pre-Deploy Script
-            <a
-              style={{ paddingLeft: 10 }}
-              href="https://caprover.com/docs/pre-deploy-script.html"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon type="info-circle" />
-            </a>
+            <NewTabLink url="https://caprover.com/docs/pre-deploy-script.html">
+              <Icon style={{ paddingLeft: 10 }} type="info-circle" />
+            </NewTabLink>
           </h4>
 
           <Input.TextArea

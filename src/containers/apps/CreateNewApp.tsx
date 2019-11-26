@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { Row, Col, Card, Checkbox, Button, Icon, Tooltip, Input } from "antd";
 import Search from "antd/lib/input/Search";
 import { connect } from "react-redux";
+import NewTabLink from "../global/NewTabLink";
 
 class CreateNewApp extends Component<
   {
@@ -70,15 +71,13 @@ class CreateNewApp extends Component<
               </Checkbox>
               &nbsp;&nbsp;
               <Tooltip title="Mostly used for databases, see docs for details.">
-                <a
-                  href="https://caprover.com/docs/persistent-apps.html"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <NewTabLink
+                  url="https://caprover.com/docs/persistent-apps.html"
                 >
                   <span>
                     <Icon type="question-circle" theme="filled" />
                   </span>
-                </a>
+                </NewTabLink>
               </Tooltip>
             </Row>
 

@@ -5,6 +5,7 @@ import ClickableLink from "../global/ClickableLink";
 import { History } from "history";
 import { ColumnProps } from "antd/lib/table";
 import { connect } from "react-redux";
+import NewTabLink from "../global/NewTabLink";
 
 class AppsTable extends Component<
   {
@@ -95,8 +96,8 @@ class AppsTable extends Component<
           }
 
           return (
-            <a
-              href={
+            <NewTabLink
+              url={
                 "http" +
                 (app.hasDefaultSubDomainSsl ? "s" : "") +
                 "://" +
@@ -104,11 +105,9 @@ class AppsTable extends Component<
                 "." +
                 self.props.rootDomain
               }
-              target="_blank"
-              rel="noopener noreferrer"
             >
               <Icon type="link" />{" "}
-            </a>
+            </NewTabLink>
           );
         }
       }
@@ -194,8 +193,8 @@ class AppsTable extends Component<
                       <p>
                         Open in Browser:{" "}
                         {!!notExposeAsWebApp ? null : (
-                          <a
-                            href={
+                          <NewTabLink
+                            url={
                               "http" +
                               (hasDefaultSubDomainSsl ? "s" : "") +
                               "://" +
@@ -203,11 +202,9 @@ class AppsTable extends Component<
                               "." +
                               self.props.rootDomain
                             }
-                            target="_blank"
-                            rel="noopener noreferrer"
                           >
                             <Icon type="link" />{" "}
-                          </a>
+                          </NewTabLink>
                         )}
                       </p>
                     </Card>
@@ -236,7 +233,4 @@ function mapStateToProps(state: any) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  undefined
-)(AppsTable);
+export default connect(mapStateToProps, undefined)(AppsTable);
