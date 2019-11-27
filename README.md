@@ -7,6 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Run CapRover backend service in debug mode. Change `.env.development` to match your backend. Then run `npm start`
 
+We strive to keep CapRover code base consistent. This will ensure a high level of consistency and lower maintenance load.
 
 ## Available Scripts
 
