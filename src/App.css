@@ -52,3 +52,23 @@ hr {
     cursor: hand;
     pointer-events: none;
 }
+
+.one-click-app-card {
+    width: 18em;
+    margin: 1em;
+}
+
+.one-click-app-card img {
+    transition: 0.3s ease-in-out;
+    opacity: 1;
+    padding-top: 24px;
+    padding-right: 24px;
+    padding-left: 12px;
+    height: 9em;
+    width: 100%;
+    object-fit: contain;
+}
+
+.one-click-app-card:hover img {
+    opacity: 0.8;
+} 

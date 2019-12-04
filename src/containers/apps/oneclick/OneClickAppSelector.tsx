@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Col, Icon, Input, Row, Select } from "antd";
+import { Alert, Button, Card, Col, Input, Row } from "antd";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router";
 import OneClickAppsApi from "../../../api/OneClickAppsApi";
@@ -7,6 +7,7 @@ import Toaster from "../../../utils/Toaster";
 import Utils from "../../../utils/Utils";
 import CenteredSpinner from "../../global/CenteredSpinner";
 import NewTabLink from "../../global/NewTabLink";
+import OneClickGrid from "./OneClickGrid";
 
 export const TEMPLATE_ONE_CLICK_APP = "TEMPLATE_ONE_CLICK_APP";
 export const ONE_CLICK_APP_STRINGIFIED_KEY = "oneClickAppStringifiedData";
@@ -15,7 +16,7 @@ export default class OneClickAppSelector extends Component<
   RouteComponentProps<any>,
   {
     oneClickAppList: IOneClickAppIdentifier[] | undefined;
-    selectedApp: string | undefined;
+    isOneClickAppSelected: boolean;
     templateOneClickAppData: string;
   }
 > {
@@ -23,7 +24,7 @@ export default class OneClickAppSelector extends Component<
     super(props);
     this.state = {
       oneClickAppList: undefined,
-      selectedApp: undefined,
+      isOneClickAppSelected: false,
       templateOneClickAppData: ""
     };
   }
@@ -33,6 +34,14 @@ export default class OneClickAppSelector extends Component<
     new OneClickAppsApi()
       .getAllOneClickApps()
       .then(function(data) {
+        data.push({
+          name: TEMPLATE_ONE_CLICK_APP,
+          description:
+            "A template for creating one-click apps. Mainly for development!",
+          logoUrl: "/icon-512x512.png",
+          jsonUrl: "",
+          displayName: ">> TEMPLATE <<"
+        });
         self.setState({
           oneClickAppList: data
         });
@@ -40,47 +49,51 @@ export default class OneClickAppSelector extends Component<
       .catch(Toaster.createCatcher());
   }
 
-  createOptions() {
-    let options = this.state.oneClickAppList!.map(app => {
-      return (
-        <Select.Option key={app.name} value={app.name}>
-          {app.name}
-        </Select.Option>
-      );
-    });
-
-    options.push(
-      <Select.Option
-        key={TEMPLATE_ONE_CLICK_APP}
-        value={TEMPLATE_ONE_CLICK_APP}
-      >
-        {`>>`} TEMPLATE {`<<`}
-      </Select.Option>
-    );
-
-    return options;
-  }
-
   render() {
     const self = this;
 
     if (!this.state.oneClickAppList) return <CenteredSpinner />;
 
+    let isOneClickJsonValid = true;
+    if (this.state.templateOneClickAppData) {
+      try {
+        JSON.parse(this.state.templateOneClickAppData);
+      } catch (error) {
+        isOneClickJsonValid = false;
+      }
+    }
+
     return (
       <div>
         <Row type="flex" justify="center">
-          <Col xs={{ span: 23 }} lg={{ span: 16 }}>
+          <Col xs={{ span: 23 }} lg={{ span: 23 }}>
             <Card title="One Click Apps">
-              <p>
-                Choose an app, a database or a bundle (app+database) from the
-                list below. The rest is magic, well... Wizard!
-              </p>
-              <p>
-                One click apps are retrieved from :{" "}
-                <NewTabLink url="https://github.com/caprover/one-click-apps">
-                  CapRover One Click Apps Repository
-                </NewTabLink>
-              </p>
+              <div
+                className={
+                  self.state.isOneClickAppSelected ? "hide-on-demand" : ""
+                }
+              >
+                <p>
+                  Choose an app, a database or a bundle (app+database) from the
+                  list below. The rest is magic, well... Wizard!
+                </p>
+                <p>
+                  One click apps are retrieved from :{" "}
+                  <NewTabLink url="https://github.com/caprover/one-click-apps">
+                    CapRover One Click Apps Repository
+                  </NewTabLink>
+                </p>
+                <OneClickGrid
+                  onAppSelectionChanged={appName => {
+                    if (appName === TEMPLATE_ONE_CLICK_APP) {
+                      self.setState({ isOneClickAppSelected: true });
+                    } else {
+                      self.props.history.push(`/apps/oneclick/${appName}`);
+                    }
+                  }}
+                  oneClickAppList={self.state.oneClickAppList!}
+                />
+              </div>
               {Utils.isSafari() ? (
                 <Alert
                   message="You seem to be using Safari. Deployment of one-click apps may be unstable on Safari. Using Chrome is recommended"
@@ -90,31 +103,16 @@ export default class OneClickAppSelector extends Component<
                 <div />
               )}
               <div style={{ height: 50 }} />
-              <Row type="flex" justify="end" align="middle">
-                <b>One-Click Apps List: &nbsp;&nbsp;</b>
-                <Select
-                  showSearch
-                  style={{ minWidth: 180 }}
-                  onChange={value => {
-                    self.setState({ selectedApp: value.toString() });
-                  }}
-                >
-                  {self.createOptions()}
-                </Select>
-              </Row>
-              <div style={{ height: 30 }} />
               <div
                 className={
-                  self.state.selectedApp === TEMPLATE_ONE_CLICK_APP
-                    ? ""
-                    : "hide-on-demand"
+                  self.state.isOneClickAppSelected ? "" : "hide-on-demand"
                 }
               >
                 <div>
                   <p>
                     This is mainly for testing. You can copy and paste your
                     custom One-Click app template here. See{" "}
-                    <NewTabLink url="https://github.com/caprover/one-click-apps/tree/master/public/v1/apps">
+                    <NewTabLink url="https://github.com/caprover/one-click-apps/tree/master/public/v2/apps">
                       the main one click apps GitHub repository
                     </NewTabLink>{" "}
                     for samples and ideas.
@@ -142,35 +140,38 @@ export default class OneClickAppSelector extends Component<
                     self.setState({ templateOneClickAppData: e.target.value });
                   }}
                 />
-              </div>
-              <div style={{ height: 30 }} />
-              <Row type="flex" justify="space-between" align="middle">
-                <div>
-                  <NewTabLink url="https://caprover.com/docs/one-click-apps.html#what-about-other-apps">
-                    <Icon type="info-circle" />
-                  </NewTabLink>
-                  &nbsp; What if the app/database I want is not listed here?
-                  &nbsp;
-                </div>
-                <Button
-                  onClick={() =>
-                    self.props.history.push(
-                      `/apps/oneclick/${self.state.selectedApp}` +
-                        (self.state.selectedApp === TEMPLATE_ONE_CLICK_APP
-                          ? `?${ONE_CLICK_APP_STRINGIFIED_KEY}=` +
+                <div style={{ height: 10 }} />
+                {!isOneClickJsonValid ? (
+                  <Alert
+                    message="One Click data that you've entered is not a valid JSON."
+                    type="error"
+                  />
+                ) : (
+                  <div />
+                )}
+                <div style={{ height: 30 }} />
+                <Row type="flex" justify="space-between" align="middle">
+                  <Button
+                    onClick={() =>
+                      self.props.history.push(
+                        `/apps/oneclick/${TEMPLATE_ONE_CLICK_APP}` +
+                          (`?${ONE_CLICK_APP_STRINGIFIED_KEY}=` +
                             encodeURIComponent(
                               self.state.templateOneClickAppData
-                            )
-                          : "")
-                    )
-                  }
-                  disabled={!self.state.selectedApp}
-                  style={{ minWidth: 150 }}
-                  type="primary"
-                >
-                  Next
-                </Button>
-              </Row>
+                            ))
+                      )
+                    }
+                    disabled={
+                      !self.state.templateOneClickAppData ||
+                      !isOneClickJsonValid
+                    }
+                    style={{ minWidth: 150 }}
+                    type="primary"
+                  >
+                    Next
+                  </Button>
+                </Row>
+              </div>
             </Card>
           </Col>
         </Row>
