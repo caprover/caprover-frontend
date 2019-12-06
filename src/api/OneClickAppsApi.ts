@@ -26,7 +26,6 @@ export default class OneClickAppsApi {
       .then(function(res) {
         // res contains data, headers, and etc...
         const apps = res.data.appDetails as IOneClickAppIdentifier[];
-        let i = 0;
         return apps.map(element => {
           const ret: IOneClickAppIdentifier = {
             name: element.name,

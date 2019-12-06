@@ -64,9 +64,11 @@ export default class OneClickAppConfigPage extends ApiComponent<
       appNameFromPath === TEMPLATE_ONE_CLICK_APP
         ? new Promise<any>(function(resolve) {
             resolve(
-              JSON.parse(queryString.parse(self.props.location.search)[
-                ONE_CLICK_APP_STRINGIFIED_KEY
-              ] as string)
+              JSON.parse(
+                queryString.parse(self.props.location.search)[
+                  ONE_CLICK_APP_STRINGIFIED_KEY
+                ] as string
+              )
             );
           })
         : new OneClickAppsApi().getOneClickAppByName(appNameFromPath);
@@ -77,9 +79,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
       .then(function(data: IOneClickTemplate) {
         if ((data.captainVersion || "").toString() !== "2") {
           message.error(
-            `One-click app version is ${
-              data.captainVersion
-            }, this version supports "v2". Make sure your CapRover is up-to-date with the latest version!!`
+            `One-click app version is ${data.captainVersion}, this version supports "v2". Make sure your CapRover is up-to-date with the latest version!!`
           );
           return;
         }
@@ -108,6 +108,11 @@ export default class OneClickAppConfigPage extends ApiComponent<
     const self = this;
     const deploymentState = this.state.deploymentState;
     const apiData = this.state.apiData;
+    const displayName =
+      apiData && apiData.displayName
+        ? apiData.displayName
+        : self.props.match.params.appName[0].toUpperCase() +
+          self.props.match.params.appName.slice(1);
 
     if (!apiData) {
       return <CenteredSpinner />;
@@ -128,8 +133,8 @@ export default class OneClickAppConfigPage extends ApiComponent<
       <div>
         <Row type="flex" justify="center">
           <Col xs={{ span: 23 }} lg={{ span: 16 }}>
-            <Card title={`Setup your ${this.props.match.params.appName}`}>
-              <h2>{this.props.match.params.appName}</h2>
+            <Card title={`Setup your ${displayName}`}>
+              <h2>{displayName}</h2>
               <p
                 style={{
                   whiteSpace: "pre-line",
