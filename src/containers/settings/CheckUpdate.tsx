@@ -86,6 +86,17 @@ export default class CheckUpdate extends ApiComponent<
         <p>
           <b>Latest Stable Version</b>: {versionInfo.latestVersion}
         </p>
+        <div>
+          <p
+            className={
+              versionInfo.changeLogMessage
+                ? "pre-line-content"
+                : "hide-on-demand"
+            }
+          >
+            {versionInfo.changeLogMessage}
+          </p>
+        </div>
         <div className={versionInfo.canUpdate ? "" : "hide-on-demand"}>
           <Row type="flex" justify="end">
             <Button
