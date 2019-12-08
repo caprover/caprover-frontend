@@ -33,7 +33,7 @@ export default {
         // eslint-disable-next-line
         !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
     } catch (error) {
-      // Don't let the error to ruin everything!
+      // Don't let the error ruin everything!
       console.log(error);
     }
 
