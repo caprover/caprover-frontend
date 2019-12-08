@@ -2,19 +2,21 @@ import { Input, Empty, Card, Icon } from "antd";
 import React, { Component, Fragment } from "react";
 import { IOneClickAppIdentifier } from "../../../models/IOneClickAppModels";
 import NewTabLink from "../../global/NewTabLink";
+import StringSimilarity from "../../../utils/StringSimilarity";
+import { IHashMapGeneric } from "../../../models/IHashMapGeneric";
 
 export default class OneClickGrid extends Component<
   {
     oneClickAppList: IOneClickAppIdentifier[];
     onAppSelectionChanged: (appName: string) => void;
   },
-  { searchTerm: string; selectedApp: string | undefined }
+  { sortScores: IHashMapGeneric<number>; selectedApp: string | undefined }
 > {
   constructor(props: any) {
     super(props);
     this.state = {
       selectedApp: undefined,
-      searchTerm: ""
+      sortScores: {}
     };
   }
 
@@ -36,11 +38,21 @@ export default class OneClickGrid extends Component<
 
   render() {
     const self = this;
-    const apps = self.props.oneClickAppList.filter(it => {
-      const str = (this.state.searchTerm || "").trim();
-      // Use npm i string-similarity --save
-      return !str || it.name.toLowerCase().indexOf(str.toLowerCase()) >= 0;
-    });
+
+    let apps = self.props.oneClickAppList;
+    if (Object.keys(self.state.sortScores).length > 0) {
+      const appsSorted = apps.concat().sort((a, b) => {
+        return (
+          (self.state.sortScores[b.name] || 0) -
+          (self.state.sortScores[a.name] || 0)
+        );
+      });
+
+      apps = appsSorted.filter(it => {
+        return self.state.sortScores[it.name] > 0.5;
+      });
+    }
+
     return (
       <Fragment>
         <div style={{ height: 40 }} />
@@ -54,9 +66,42 @@ export default class OneClickGrid extends Component<
           <Input.Search
             style={{ maxWidth: 200, marginBottom: 30 }}
             placeholder="Search for an app..."
-            onChange={({ currentTarget }) =>
-              self.setState({ searchTerm: currentTarget.value })
-            }
+            onChange={({ currentTarget }) => {
+              const searchTerm = (currentTarget.value || "")
+                .trim()
+                .toLowerCase();
+              const sortScores: IHashMapGeneric<number> = {};
+
+              if (searchTerm) {
+                self.props.oneClickAppList.forEach(app => {
+                  let score = 0;
+
+                  const appNameForSearch = (
+                    (app.displayName || "").trim() || app.name
+                  )
+                    .toLowerCase()
+                    .trim();
+
+                  if (appNameForSearch.toLowerCase().includes(searchTerm)) {
+                    score = 1;
+                  } else if (
+                    app.description &&
+                    app.description.toLowerCase().includes(searchTerm)
+                  ) {
+                    score = 0.99;
+                  } else {
+                    score = StringSimilarity.compareTwoStrings(
+                      searchTerm,
+                      appNameForSearch
+                    );
+                  }
+
+                  sortScores[app.name] = score || 0;
+                });
+              }
+
+              self.setState({ sortScores });
+            }}
           />
         </div>
         <div
