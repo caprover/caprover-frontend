@@ -106,7 +106,9 @@ class PageRoot extends ApiComponent<
         .then(function(data) {
           self.setState({ versionInfo: data });
         })
-        .catch(Toaster.createCatcher());
+        .catch(err => {
+          //ignore error
+        });
     }
   }
 
