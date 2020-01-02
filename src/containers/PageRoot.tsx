@@ -14,7 +14,6 @@ import Settings from "./settings/Settings";
 import OneClickAppSelector from "./apps/oneclick/OneClickAppSelector";
 import OneClickAppConfigPage from "./apps/oneclick/OneClickAppConfigPage";
 import ApiComponent from "./global/ApiComponent";
-import Toaster from "../utils/Toaster";
 import { IVersionInfo } from "../models/IVersionInfo";
 import * as GlobalActions from "../redux/actions/GlobalActions";
 import { connect } from "react-redux";
