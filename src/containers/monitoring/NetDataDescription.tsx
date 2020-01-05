@@ -22,7 +22,7 @@ export default class NetDataDescription extends Component {
           without disrupting their core function. The current image of NetData
           embeded in CapRover uses a default configuration for
           <NewTabLink url="https://docs.netdata.cloud/docs/anonymous-statistics/">
-            analytics data
+           &nbsp;statistics
           </NewTabLink>
           . You can recompile CapRover with a different customized image if
           you'd like.
