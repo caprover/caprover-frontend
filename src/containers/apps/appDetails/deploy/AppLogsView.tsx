@@ -142,7 +142,7 @@ export default class AppLogsView extends ApiComponent<
 
                   <span style={{ marginLeft: 20, paddingBottom: 3 }}>
                     <Tooltip title="View full application logs (not truncated)">
-                      <NewTabLink url="https://caprover.com/docs/troubleshooting.html#how-to-view-my-application-s-log">
+                      <NewTabLink url="https://caprover.com/docs/troubleshooting.html#how-to-view-my-applications-log">
                         <Icon type="info-circle" />
                       </NewTabLink>
                     </Tooltip>
