@@ -36,7 +36,7 @@ export default class NetDataDescription extends Component {
           <NewTabLink url="https://github.com/moby/moby/issues/25885/">
             {" "}
             see here
-          </NewTabLink>{" "}
+          </NewTabLink>
           .
         </p>
         <p>

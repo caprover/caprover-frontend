@@ -30,7 +30,7 @@ export default class NetDataSettingsForm extends Component<{
 
         <p>
           NetData offers multiple ways for you to receive notifications if
-          something is going wrong with your server resource usage.
+          something is going wrong with your server resource usage. 
           <i>All notification options are completely OPTIONAL.</i>
         </p>
         <hr />
