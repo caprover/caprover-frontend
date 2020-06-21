@@ -500,6 +500,22 @@ export default class ApiManager {
       .then(http.fetch(http.GET, "/user/system/nodes", {}));
   }
 
+  getAllOneClickApps() {
+    const http = this.http;
+
+    return Promise.resolve() //
+      .then(http.fetch(http.GET, "/user/oneclick/template/list", {}));
+  }
+
+  getOneClickAppByName(appName:string, baseDomain:string){
+    const http = this.http;
+
+    return Promise.resolve() //
+      .then(http.fetch(http.GET, "/user/oneclick/template/app", {
+        appName, baseDomain
+      }));
+  }
+
   addDockerNode(
     nodeType: string,
     privateKey: string,

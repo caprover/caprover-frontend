@@ -1,10 +1,10 @@
 import { Alert, Button, Card, Col, Input, Row } from "antd";
-import React, { Component } from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router";
-import OneClickAppsApi from "../../../api/OneClickAppsApi";
 import { IOneClickAppIdentifier } from "../../../models/IOneClickAppModels";
 import Toaster from "../../../utils/Toaster";
 import Utils from "../../../utils/Utils";
+import ApiComponent from "../../global/ApiComponent";
 import CenteredSpinner from "../../global/CenteredSpinner";
 import NewTabLink from "../../global/NewTabLink";
 import OneClickGrid from "./OneClickGrid";
@@ -12,7 +12,7 @@ import OneClickGrid from "./OneClickGrid";
 export const TEMPLATE_ONE_CLICK_APP = "TEMPLATE_ONE_CLICK_APP";
 export const ONE_CLICK_APP_STRINGIFIED_KEY = "oneClickAppStringifiedData";
 
-export default class OneClickAppSelector extends Component<
+export default class OneClickAppSelector extends ApiComponent<
   RouteComponentProps<any>,
   {
     oneClickAppList: IOneClickAppIdentifier[] | undefined;
@@ -36,19 +36,20 @@ export default class OneClickAppSelector extends Component<
 
   fetchData() {
     const self = this;
-    new OneClickAppsApi()
+    self.apiManager
       .getAllOneClickApps()
       .then(function (data) {
-        data.push({
+        const apps  = data.oneClickApps as IOneClickAppIdentifier[]
+        apps.push({
           name: TEMPLATE_ONE_CLICK_APP,
           description:
             "A template for creating one-click apps. Mainly for development!",
           logoUrl: "/icon-512x512.png",
-          jsonUrl: "",
+          baseUrl: "",
           displayName: ">> TEMPLATE <<",
         });
         self.setState({
-          oneClickAppList: data,
+          oneClickAppList: apps,
         });
       })
       .catch(Toaster.createCatcher());
@@ -138,11 +139,11 @@ export default class OneClickAppSelector extends Component<
 
     return (
       <OneClickGrid
-        onAppSelectionChanged={(appName) => {
+        onAppSelectionChanged={(appName, baseDomain) => {
           if (appName === TEMPLATE_ONE_CLICK_APP) {
             self.setState({ isCustomTemplateSelected: true });
           } else {
-            self.props.history.push(`/apps/oneclick/${appName}`);
+            self.props.history.push(`/apps/oneclick/${appName}?baseDomain=${encodeURIComponent(baseDomain)}`);
           }
         }}
         oneClickAppList={self.state.oneClickAppList!}

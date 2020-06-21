@@ -8,7 +8,7 @@ import { IHashMapGeneric } from "../../../models/IHashMapGeneric";
 export default class OneClickGrid extends Component<
   {
     oneClickAppList: IOneClickAppIdentifier[];
-    onAppSelectionChanged: (appName: string) => void;
+    onAppSelectionChanged: (appName: string, baseDomain: string) => void;
   },
   { sortScores: IHashMapGeneric<number>; selectedApp: string | undefined }
 > {
@@ -24,7 +24,7 @@ export default class OneClickGrid extends Component<
     return (
       <div key={app.name} className="one-click-app-card">
         <Card
-          onClick={() => this.props.onAppSelectionChanged(app.name)}
+          onClick={() => this.props.onAppSelectionChanged(app.name, app.baseUrl)}
           cover={
             <img style={{ margin: 10 }} src={app.logoUrl} alt="App logo" />
           }

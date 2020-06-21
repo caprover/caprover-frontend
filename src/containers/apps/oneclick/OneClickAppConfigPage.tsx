@@ -2,7 +2,6 @@ import { Card, Col, message, Row } from "antd";
 import queryString from "query-string";
 import React from "react";
 import { RouteComponentProps } from "react-router";
-import OneClickAppsApi from "../../../api/OneClickAppsApi";
 import { IOneClickTemplate } from "../../../models/IOneClickAppModels";
 import DomUtils from "../../../utils/DomUtils";
 import Toaster from "../../../utils/Toaster";
@@ -60,6 +59,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
     const self = this;
 
     const appNameFromPath = this.props.match.params.appName;
+    const baseDomainFromPath = queryString.parse(self.props.location.search)['baseDomain']+'';
     let promiseToFetchOneClick =
       appNameFromPath === TEMPLATE_ONE_CLICK_APP
         ? new Promise<any>(function(resolve) {
@@ -71,7 +71,10 @@ export default class OneClickAppConfigPage extends ApiComponent<
               )
             );
           })
-        : new OneClickAppsApi().getOneClickAppByName(appNameFromPath);
+        : self.apiManager.getOneClickAppByName(appNameFromPath, baseDomainFromPath)
+        .then(function(data) {
+           return data.appTemplate
+        });
 
     let apiData: IOneClickTemplate;
 

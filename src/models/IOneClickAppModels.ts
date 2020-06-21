@@ -6,7 +6,7 @@ export interface IOneClickAppIdentifier {
   displayName: string;
   description: string;
   logoUrl: string;
-  jsonUrl: string;
+  baseUrl: string;
 }
 
 export interface IOneClickVariable {
