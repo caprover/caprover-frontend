@@ -2,21 +2,21 @@ import { Card, Col, message, Row } from 'antd'
 import queryString from 'query-string'
 import React from 'react'
 import { RouteComponentProps } from 'react-router'
-import { IOneClickTemplate } from '../../../models/IOneClickAppModels'
-import DomUtils from '../../../utils/DomUtils'
-import Toaster from '../../../utils/Toaster'
-import CenteredSpinner from '../../global/CenteredSpinner'
+import { IOneClickTemplate } from '../../../../models/IOneClickAppModels'
+import DomUtils from '../../../../utils/DomUtils'
+import Toaster from '../../../../utils/Toaster'
+import Utils from '../../../../utils/Utils'
+import ApiComponent from '../../../global/ApiComponent'
+import CenteredSpinner from '../../../global/CenteredSpinner'
 import OneClickAppDeployManager, {
     IDeploymentState,
-} from './OneClickAppDeployManager'
-import OneClickAppDeployProgress from './OneClickAppDeployProgress'
+} from '../OneClickAppDeployManager'
+import OneClickAppDeployProgress from '../OneClickAppDeployProgress'
 import {
-    TEMPLATE_ONE_CLICK_APP,
     ONE_CLICK_APP_STRINGIFIED_KEY,
-} from './OneClickAppSelector'
+    TEMPLATE_ONE_CLICK_APP,
+} from '../selector/OneClickAppSelector'
 import OneClickVariablesSection from './OneClickVariablesSection'
-import Utils from '../../../utils/Utils'
-import ApiComponent from '../../global/ApiComponent'
 
 export const ONE_CLICK_APP_NAME_VAR_NAME = '$$cap_appname'
 export const ONE_CLICK_ROOT_DOMAIN_VAR_NAME = '$$cap_root_domain'
@@ -51,6 +51,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
     }
 
     componentWillUnmount() {
+        // @ts-ignore
         if (super.componentWillUnmount) super.componentWillUnmount()
         this.isUnmount = true
     }

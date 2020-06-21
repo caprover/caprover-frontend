@@ -1,9 +1,9 @@
-import { Input, Empty, Card, Icon } from 'antd'
+import { Card, Empty, Icon, Input } from 'antd'
 import React, { Component, Fragment } from 'react'
-import { IOneClickAppIdentifier } from '../../../models/IOneClickAppModels'
-import NewTabLink from '../../global/NewTabLink'
-import StringSimilarity from '../../../utils/StringSimilarity'
-import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
+import { IHashMapGeneric } from '../../../../models/IHashMapGeneric'
+import { IOneClickAppIdentifier } from '../../../../models/IOneClickAppModels'
+import StringSimilarity from '../../../../utils/StringSimilarity'
+import NewTabLink from '../../../global/NewTabLink'
 
 export default class OneClickGrid extends Component<
     {
