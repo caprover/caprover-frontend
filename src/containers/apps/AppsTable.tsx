@@ -3,6 +3,7 @@ import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { IMobileComponent } from '../../models/ContainerProps'
 import ClickableLink from '../global/ClickableLink'
 import NewTabLink from '../global/NewTabLink'
 import { IAppDef } from './AppDefinition'
@@ -250,4 +251,7 @@ function mapStateToProps(state: any) {
     }
 }
 
-export default connect(mapStateToProps, undefined)(AppsTable)
+export default connect<IMobileComponent, any, any>(
+    mapStateToProps,
+    undefined
+)(AppsTable)

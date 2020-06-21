@@ -30,6 +30,7 @@ export default class BuildLogsView extends ApiComponent<
     }
 
     componentWillUnmount() {
+        // @ts-ignore
         if (super.componentWillUnmount) super.componentWillUnmount()
         if (this.fetchBuildLogsInterval) {
             clearInterval(this.fetchBuildLogsInterval)

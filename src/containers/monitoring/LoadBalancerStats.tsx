@@ -71,6 +71,7 @@ export default class LoadBalancerStats extends ApiComponent<
     }
 
     componentWillUnmount() {
+        // @ts-ignore
         if (super.componentWillUnmount) {
             super.componentWillUnmount()
         }

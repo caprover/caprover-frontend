@@ -1,6 +1,7 @@
 import { Card, Col, Row } from 'antd'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { IMobileComponent } from '../../models/ContainerProps'
 import BackupCreator from './BackupCreator'
 import ChangePass from './ChangePass'
 import CheckUpdate from './CheckUpdate'
@@ -83,4 +84,7 @@ function mapStateToProps(state: any) {
     }
 }
 
-export default connect(mapStateToProps, undefined)(Settings)
+export default connect<IMobileComponent, any, any>(
+    mapStateToProps,
+    undefined
+)(Settings)

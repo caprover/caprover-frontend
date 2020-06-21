@@ -76,6 +76,7 @@ class PageRoot extends ApiComponent<
     updateDimensions = () => this.props.emitSizeChanged()
 
     componentWillUnmount() {
+        // @ts-ignore
         if (super.componentWillUnmount) super.componentWillUnmount()
         this.updateDimensions()
         window.removeEventListener('resize', this.updateDimensions)

@@ -1,5 +1,6 @@
 import {
     Affix,
+    Alert,
     Button,
     Card,
     Checkbox,
@@ -12,13 +13,13 @@ import {
     Row,
     Tabs,
     Tooltip,
-    Alert,
 } from 'antd'
-import React, { RefObject } from 'react'
 import classnames from 'classnames'
+import React, { RefObject } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import ApiManager from '../../../api/ApiManager'
+import { IMobileComponent } from '../../../models/ContainerProps'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
@@ -26,11 +27,11 @@ import ApiComponent from '../../global/ApiComponent'
 import CenteredSpinner from '../../global/CenteredSpinner'
 import ClickableLink from '../../global/ClickableLink'
 import ErrorRetry from '../../global/ErrorRetry'
+import NewTabLink from '../../global/NewTabLink'
 import { IAppDef } from '../AppDefinition'
 import AppConfigs from './AppConfigs'
 import Deployment from './deploy/Deployment'
 import HttpSettings from './HttpSettings'
-import NewTabLink from '../../global/NewTabLink'
 const TabPane = Tabs.TabPane
 
 const WEB_SETTINGS = 'WEB_SETTINGS'
@@ -598,4 +599,7 @@ function mapStateToProps(state: any) {
     }
 }
 
-export default connect(mapStateToProps, undefined)(AppDetails)
+export default connect<IMobileComponent, any, any>(
+    mapStateToProps,
+    undefined
+)(AppDetails)

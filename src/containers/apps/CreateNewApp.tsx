@@ -1,18 +1,17 @@
-import React, { Component, Fragment } from 'react'
-import { Row, Col, Card, Checkbox, Button, Icon, Tooltip, Input } from 'antd'
+import { Button, Card, Checkbox, Col, Icon, Input, Row, Tooltip } from 'antd'
 import Search from 'antd/lib/input/Search'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
+import { IMobileComponent } from '../../models/ContainerProps'
 import NewTabLink from '../global/NewTabLink'
 
+interface MyProps {
+    onCreateNewAppClicked: (appName: string, hasPersistency: boolean) => void
+    onCreateOneClickAppClicked: () => void
+}
+
 class CreateNewApp extends Component<
-    {
-        onCreateNewAppClicked: (
-            appName: string,
-            hasPersistency: boolean
-        ) => void
-        onCreateOneClickAppClicked: () => void
-        isMobile: boolean
-    },
+    MyProps & IMobileComponent,
     { appName: string; hasPersistency: boolean }
 > {
     constructor(props: any) {
@@ -140,4 +139,7 @@ function mapStateToProps(state: any) {
     }
 }
 
-export default connect(mapStateToProps, undefined)(CreateNewApp)
+export default connect<IMobileComponent, any, any>(
+    mapStateToProps,
+    undefined
+)(CreateNewApp)

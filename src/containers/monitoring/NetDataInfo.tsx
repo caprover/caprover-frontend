@@ -1,6 +1,7 @@
 import { Button, Card, Col, Icon, message, Row } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux'
+import { IMobileComponent } from '../../models/ContainerProps'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import ApiComponent from '../global/ApiComponent'
@@ -200,4 +201,7 @@ function mapStateToProps(state: any) {
     }
 }
 
-export default connect(mapStateToProps, undefined)(NetDataInfo)
+export default connect<IMobileComponent, any, any>(
+    mapStateToProps,
+    undefined
+)(NetDataInfo)
