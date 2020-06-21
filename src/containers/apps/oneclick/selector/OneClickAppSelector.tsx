@@ -8,6 +8,7 @@ import ApiComponent from '../../../global/ApiComponent'
 import CenteredSpinner from '../../../global/CenteredSpinner'
 import NewTabLink from '../../../global/NewTabLink'
 import OneClickGrid from './OneClickGrid'
+import OneClickReposList from './OneClickReposList'
 
 export const TEMPLATE_ONE_CLICK_APP = 'TEMPLATE_ONE_CLICK_APP'
 export const ONE_CLICK_APP_STRINGIFIED_KEY = 'oneClickAppStringifiedData'
@@ -193,7 +194,12 @@ export default class OneClickAppSelector extends ApiComponent<
                                     by default. You can add other public/private
                                     repositories if you want to.
                                 </p>
+
                                 {self.createOneClickAppListGrid()}
+
+                                <div style={{ height: 50 }} />
+
+                                <OneClickReposList />
                             </div>
                             {Utils.isSafari() ? (
                                 <Alert

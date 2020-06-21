@@ -2,10 +2,10 @@ import { IAppDef } from '../containers/apps/AppDefinition'
 import { ICaptainDefinition } from '../models/ICaptainDefinition'
 import { IRegistryInfo } from '../models/IRegistryInfo'
 import { IVersionInfo } from '../models/IVersionInfo'
+import ErrorFactory from '../utils/ErrorFactory'
 import Logger from '../utils/Logger'
 import StorageHelper from '../utils/StorageHelper'
 import HttpClient from './HttpClient'
-import ErrorFactory from '../utils/ErrorFactory'
 
 const BASE_DOMAIN = process.env.REACT_APP_API_URL
     ? process.env.REACT_APP_API_URL
@@ -548,6 +548,35 @@ export default class ApiManager {
                 http.fetch(http.GET, '/user/oneclick/template/app', {
                     appName,
                     baseDomain,
+                })
+            )
+    }
+
+    getAllOneClickAppRepos() {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/user/oneclick/repositories', {}))
+    }
+
+    addNewCustomOneClickRepo(repositoryUrl: string) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/oneclick/repositories/insert', {
+                    repositoryUrl,
+                })
+            )
+    }
+
+    deleteCustomOneClickRepo(repositoryUrl: string) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/oneclick/repositories/delete', {
+                    repositoryUrl,
                 })
             )
     }
