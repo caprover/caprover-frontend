@@ -2,9 +2,9 @@ import { Button, Col, Icon, Input, Row, Switch, Tooltip } from 'antd'
 import React, { Component } from 'react'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import Utils from '../../../utils/Utils'
+import NewTabLink from '../../global/NewTabLink'
 import { IAppEnvVar } from '../AppDefinition'
 import { AppDetailsTabProps } from './AppDetails'
-import NewTabLink from '../../global/NewTabLink'
 
 export default class AppConfigs extends Component<
     AppDetailsTabProps,
@@ -38,7 +38,7 @@ export default class AppConfigs extends Component<
                 // matching "KEY' and 'VAL' in 'KEY=VAL'
                 const keyValueArr = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/)
                 // matched?
-                if (keyValueArr != undefined) {
+                if (!!keyValueArr) {
                     const key = keyValueArr[1]
 
                     // default undefined or missing values to empty string
