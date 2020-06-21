@@ -27,6 +27,10 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
         userEnteredValue: string
     ): string
 
+    protected isSingleLine(): boolean {
+        return false
+    }
+
     startDeploy(captainDefinitionToBeUploaded: string) {
         const self = this
 
@@ -50,23 +54,43 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
             })
     }
 
+    createTextArea() {
+        const self = this
+        if (self.isSingleLine()) {
+            return (
+                <Input
+                    className="code-input"
+                    placeholder={self.getPlaceHolderValue()}
+                    value={self.state.userEnteredValue}
+                    onChange={(e) => {
+                        self.setState({
+                            userEnteredValue: e.target.value,
+                        })
+                    }}
+                />
+            )
+        }
+
+        return (
+            <Input.TextArea
+                className="code-input"
+                placeholder={self.getPlaceHolderValue()}
+                rows={7}
+                value={self.state.userEnteredValue}
+                onChange={(e) => {
+                    self.setState({
+                        userEnteredValue: e.target.value,
+                    })
+                }}
+            />
+        )
+    }
+
     render() {
         const self = this
         return (
             <div style={{ padding: 16 }}>
-                <Row>
-                    <Input.TextArea
-                        className="code-input"
-                        placeholder={self.getPlaceHolderValue()}
-                        rows={7}
-                        value={self.state.userEnteredValue}
-                        onChange={(e) => {
-                            self.setState({
-                                userEnteredValue: e.target.value,
-                            })
-                        }}
-                    />
-                </Row>
+                <Row>{self.createTextArea()}</Row>
                 <div style={{ height: 20 }} />
                 <Row justify="end">
                     <Button

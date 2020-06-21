@@ -16,6 +16,7 @@ import GitRepoForm from './GitRepoForm'
 import TarUploader from './TarUploader'
 import UploaderPlainTextCaptainDefinition from './UploaderPlainTextCaptainDefinition'
 import UploaderPlainTextDockerfile from './UploaderPlainTextDockerfile'
+import UploaderPlainTextImageName from './UploaderPlainTextImageName'
 
 export default class Deployment extends ApiComponent<
     AppDetailsTabProps,
@@ -284,6 +285,14 @@ export default class Deployment extends ApiComponent<
                     <RocketOutlined /> Method 5: Deploy captain-definition file
                 </h4>
                 <UploaderPlainTextCaptainDefinition
+                    appName={app.appName!}
+                    onUploadSucceeded={() => self.onUploadSuccess()}
+                />
+                <div style={{ height: 20 }} />
+                <h4>
+                    <RocketOutlined /> Method 6: Deploy via ImageName
+                </h4>
+                <UploaderPlainTextImageName
                     appName={app.appName!}
                     onUploadSucceeded={() => self.onUploadSuccess()}
                 />
