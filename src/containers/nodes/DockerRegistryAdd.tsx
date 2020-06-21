@@ -1,9 +1,10 @@
+import { InfoCircleOutlined } from '@ant-design/icons'
+import { Button, Input, Modal, Row, Tooltip } from 'antd'
 import React, { Component } from 'react'
-import { Button, Row, Modal, Input, Tooltip, Icon } from 'antd'
 import {
+    IRegistryApi,
     IRegistryInfo,
     IRegistryTypes,
-    IRegistryApi,
 } from '../../models/IRegistryInfo'
 import Utils from '../../utils/Utils'
 import PasswordField from '../global/PasswordField'
@@ -140,7 +141,7 @@ export default class DockerRegistryAdd extends Component<
                             placeholder="username"
                             addonAfter={
                                 <Tooltip title="Your images will be tagged as RegistryDomain/ImagePrefix/ImageName. For most providers, Image Prefix is exactly your username, unless the field DOMAIN is specific to you, in that case, this prefix is empty.">
-                                    <Icon type="info-circle" />
+                                    <InfoCircleOutlined />
                                 </Tooltip>
                             }
                             type="text"
@@ -160,7 +161,7 @@ export default class DockerRegistryAdd extends Component<
                 </Modal>
 
                 <div className={hasSelfHostedRegistry ? 'hide-on-demand' : ''}>
-                    <Row type="flex" justify="end">
+                    <Row justify="end">
                         <Button
                             block={this.props.isMobile}
                             onClick={() =>
@@ -173,7 +174,7 @@ export default class DockerRegistryAdd extends Component<
                 </div>
 
                 <div style={{ height: 20 }} />
-                <Row type="flex" justify="end">
+                <Row justify="end">
                     <Button
                         block={this.props.isMobile}
                         onClick={() =>

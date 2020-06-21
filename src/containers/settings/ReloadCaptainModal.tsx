@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
 import { Modal } from 'antd'
+import React, { Component } from 'react'
 
 export default class ReloadCaptainModal extends Component<
     {

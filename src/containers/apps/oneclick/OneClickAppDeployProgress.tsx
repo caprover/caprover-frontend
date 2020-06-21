@@ -1,7 +1,8 @@
+import { LoadingOutlined } from '@ant-design/icons'
+import { Alert, Button, Card, Col, Row, Steps } from 'antd'
 import React, { Component } from 'react'
 import { Prompt } from 'react-router-dom'
 import { IDeploymentState } from './OneClickAppDeployManager'
-import { Row, Col, Card, Steps, Icon, Button, Alert } from 'antd'
 
 const Step = Steps.Step
 
@@ -22,12 +23,11 @@ export default class OneClickAppDeployProgress extends Component<{
                         <span>
                             {index === this.props.deploymentState.currentStep &&
                             !this.props.deploymentState.error ? (
-                                <Icon
+                                <LoadingOutlined
                                     style={{
                                         fontSize: '16px',
                                         paddingRight: 12,
                                     }}
-                                    type="loading"
                                 />
                             ) : (
                                 <span />
@@ -71,7 +71,7 @@ export default class OneClickAppDeployProgress extends Component<{
             <div>
                 {self.blockNavigationIfRunning()}
                 <div>
-                    <Row type="flex" justify="center">
+                    <Row justify="center">
                         <Col xs={{ span: 23 }} lg={{ span: 16 }}>
                             <Card
                                 title={`Deploying your ${this.props.appName}`}
@@ -126,7 +126,7 @@ export default class OneClickAppDeployProgress extends Component<{
                                             }
                                         />
                                         <div style={{ height: 80 }} />
-                                        <Row type="flex" justify="end">
+                                        <Row justify="end">
                                             <Button
                                                 style={{ minWidth: 150 }}
                                                 size="large"
@@ -157,7 +157,7 @@ export default class OneClickAppDeployProgress extends Component<{
                                         />
                                         <div style={{ height: 80 }} />
 
-                                        <Row type="flex" justify="end">
+                                        <Row justify="end">
                                             <Button
                                                 size="large"
                                                 type="primary"

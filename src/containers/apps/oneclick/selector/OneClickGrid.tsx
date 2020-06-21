@@ -1,4 +1,5 @@
-import { Card, Empty, Icon, Input, Row, Tooltip } from 'antd'
+import { FlagTwoTone, InfoCircleOutlined } from '@ant-design/icons'
+import { Card, Empty, Input, Row, Tooltip } from 'antd'
 import React, { Component, Fragment } from 'react'
 import { IHashMapGeneric } from '../../../../models/IHashMapGeneric'
 import { IOneClickAppIdentifier } from '../../../../models/IOneClickAppModels'
@@ -29,9 +30,9 @@ export default class OneClickGrid extends Component<
 
         return (
             <div style={{ marginTop: 20 }}>
-                <Row align="middle" justify="end" type="flex">
+                <Row align="middle" justify="end">
                     <Tooltip title={'From: ' + app.baseUrl}>
-                        <Icon type="flag" theme="twoTone" />
+                        <FlagTwoTone />
                     </Tooltip>
                 </Row>
             </div>
@@ -157,7 +158,7 @@ export default class OneClickGrid extends Component<
                                 What if the app/database I want is not listed
                                 here? &nbsp;
                                 <NewTabLink url="https://caprover.com/docs/one-click-apps.html#what-about-other-apps">
-                                    <Icon type="info-circle" />
+                                    <InfoCircleOutlined />
                                 </NewTabLink>
                             </div>
                         </div>

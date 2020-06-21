@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
-import { createStore, applyMiddleware } from 'redux'
-import { Route, Switch, HashRouter } from 'react-router-dom'
+import { HashRouter, Route, Switch } from 'react-router-dom'
+import { applyMiddleware, createStore } from 'redux'
 import thunk from 'redux-thunk'
-
 import './App.css'
-
-import reducers from './redux/reducers'
-
-import PageRoot from './containers/PageRoot'
 import Login from './containers/Login'
+import PageRoot from './containers/PageRoot'
+import reducers from './redux/reducers'
 import CrashReporter from './utils/CrashReporter'
 
 CrashReporter.getInstance().init()

@@ -1,4 +1,5 @@
-import { Alert, Icon, Modal, Select } from 'antd'
+import { EditOutlined } from '@ant-design/icons'
+import { Alert, Modal, Select } from 'antd'
 import React, { Component } from 'react'
 import { IRegistryApi } from '../../models/IRegistryInfo'
 import Utils from '../../utils/Utils'
@@ -119,8 +120,7 @@ export default class DefaultDockerRegistry extends Component<
                             })
                         }}
                     >
-                        <code>{this.getDefaultRegText()}</code>{' '}
-                        <Icon type="edit" />
+                        <code>{this.getDefaultRegText()}</code> <EditOutlined />
                     </ClickableLink>
                 </p>
             </div>

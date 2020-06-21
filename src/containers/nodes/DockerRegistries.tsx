@@ -1,12 +1,12 @@
 import { Alert, message } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux'
-import { emitDefaultRegistryChanged } from '../../redux/actions/DefaultRegistryActions'
 import {
     IRegistryApi,
     IRegistryInfo,
     IRegistryTypes,
 } from '../../models/IRegistryInfo'
+import { emitDefaultRegistryChanged } from '../../redux/actions/DefaultRegistryActions'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
@@ -76,8 +76,7 @@ class DockerRegistries extends ApiComponent<
                 .indexOf(true) >= 0
 
         this.setState({ apiData: undefined, isLoading: true })
-
-        ; (isSelfHosted
+        ;(isSelfHosted
             ? this.apiManager.disableSelfHostedDockerRegistry()
             : this.apiManager.deleteDockerRegistry(id)
         )
@@ -108,7 +107,7 @@ class DockerRegistries extends ApiComponent<
     addDockerRegistry(dockerRegistry: IRegistryInfo) {
         const self = this
         this.setState({ apiData: undefined, isLoading: true })
-        ; (dockerRegistry.registryType === IRegistryTypes.LOCAL_REG
+        ;(dockerRegistry.registryType === IRegistryTypes.LOCAL_REG
             ? self.apiManager.enableSelfHostedDockerRegistry()
             : self.apiManager.addDockerRegistry(dockerRegistry)
         )

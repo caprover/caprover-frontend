@@ -1,4 +1,5 @@
-import { Card, Col, Icon, Input, Row, Table } from 'antd'
+import { CheckOutlined, CodeOutlined, LinkOutlined } from '@ant-design/icons'
+import { Card, Col, Input, Row, Table } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component } from 'react'
@@ -62,7 +63,7 @@ class AppsTable extends Component<
 
                     return (
                         <span>
-                            <Icon type="check" />
+                            <CheckOutlined />
                         </span>
                     )
                 },
@@ -79,7 +80,7 @@ class AppsTable extends Component<
 
                     return (
                         <span>
-                            <Icon type="check" />
+                            <CheckOutlined />
                         </span>
                     )
                 },
@@ -111,7 +112,7 @@ class AppsTable extends Component<
                                 self.props.rootDomain
                             }
                         >
-                            <Icon type="link" />{' '}
+                            <LinkOutlined />{' '}
                         </NewTabLink>
                     )
                 },
@@ -141,7 +142,7 @@ class AppsTable extends Component<
         )
 
         return (
-            <Row type="flex" justify="center">
+            <Row justify="center">
                 <Col
                     xs={{ span: 23 }}
                     lg={{ span: 16 }}
@@ -152,7 +153,7 @@ class AppsTable extends Component<
                         title={
                             <React.Fragment>
                                 <span>
-                                    <Icon type="code" />
+                                    <CodeOutlined />
                                     &nbsp;&nbsp;&nbsp;Your Apps
                                 </span>
                                 <br />
@@ -190,7 +191,7 @@ class AppsTable extends Component<
                                                 Persistent Data:{' '}
                                                 {!hasPersistentData ? undefined : (
                                                     <span>
-                                                        <Icon type="check" />
+                                                        <CheckOutlined />
                                                     </span>
                                                 )}
                                             </p>
@@ -198,7 +199,7 @@ class AppsTable extends Component<
                                                 Exposed Webapp:{' '}
                                                 {!!notExposeAsWebApp ? undefined : (
                                                     <span>
-                                                        <Icon type="check" />
+                                                        <CheckOutlined />
                                                     </span>
                                                 )}
                                             </p>
@@ -221,7 +222,7 @@ class AppsTable extends Component<
                                                                 .rootDomain
                                                         }
                                                     >
-                                                        <Icon type="link" />{' '}
+                                                        <LinkOutlined />{' '}
                                                     </NewTabLink>
                                                 )}
                                             </p>

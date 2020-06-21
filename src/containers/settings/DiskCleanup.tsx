@@ -1,4 +1,5 @@
-import { Button, Col, Icon, Input, message, Row, Tooltip } from 'antd'
+import { DeleteOutlined, SyncOutlined } from '@ant-design/icons'
+import { Button, Col, Input, message, Row, Tooltip } from 'antd'
 import React from 'react'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
@@ -130,13 +131,13 @@ export default class DiskCleanup extends ApiComponent<
                         </Tooltip>
                     </Col>
                     <Col span={12}>
-                        <Row type="flex" justify="end">
+                        <Row justify="end">
                             <Button
                                 type="default"
                                 onClick={() => this.refreshOldImagesList()}
                             >
                                 <span>
-                                    <Icon type="sync" />
+                                    <SyncOutlined />
                                 </span>{' '}
                                 &nbsp; Get List
                             </Button>
@@ -148,7 +149,7 @@ export default class DiskCleanup extends ApiComponent<
                     className={unusedImages.length > 0 ? '' : 'hide-on-demand'}
                 >
                     <div style={{ height: 20 }} />
-                    <Row type="flex" justify="end">
+                    <Row justify="end">
                         <Tooltip
                             title={
                                 hasSelectedImagesForRemoval
@@ -165,7 +166,7 @@ export default class DiskCleanup extends ApiComponent<
                                 }}
                             >
                                 <span>
-                                    <Icon type="delete" />{' '}
+                                    <DeleteOutlined />{' '}
                                 </span>{' '}
                                 &nbsp; Remove Unused Images
                             </Button>

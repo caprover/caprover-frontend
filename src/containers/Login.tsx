@@ -1,7 +1,10 @@
-import { Button, Card, Collapse, Form, Icon, Input, Radio } from 'antd'
+import { Form } from '@ant-design/compatible'
+import '@ant-design/compatible/assets/index.css'
+import { LockOutlined } from '@ant-design/icons'
+import { Button, Card, Collapse, Input, Radio } from 'antd'
 import RadioGroup from 'antd/lib/radio/group'
 import React from 'react'
-import { RouteComponentProps, Redirect } from 'react-router'
+import { Redirect, RouteComponentProps } from 'react-router'
 import ApiManager from '../api/ApiManager'
 import StorageHelper from '../utils/StorageHelper'
 import Toaster from '../utils/Toaster'
@@ -114,8 +117,7 @@ class NormalLoginForm extends React.Component<any, any> {
                     })(
                         <Input.Password
                             prefix={
-                                <Icon
-                                    type="lock"
+                                <LockOutlined
                                     style={{ color: 'rgba(0,0,0,.25)' }}
                                 />
                             }

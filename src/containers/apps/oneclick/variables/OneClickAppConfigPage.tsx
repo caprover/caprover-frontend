@@ -142,7 +142,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
 
         return (
             <div>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 16 }}>
                         <Card title={`Setup your ${displayName}`}>
                             <h2>{displayName}</h2>

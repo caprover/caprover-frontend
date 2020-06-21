@@ -1,7 +1,7 @@
+import { Button, Input, message, Row } from 'antd'
 import React from 'react'
-import ApiComponent from '../global/ApiComponent'
-import { Input, Button, Row, message } from 'antd'
 import Toaster from '../../utils/Toaster'
+import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 
 export default class ChangePass extends ApiComponent<
@@ -70,7 +70,7 @@ export default class ChangePass extends ApiComponent<
                     onChange={(e) => this.setState({ new2: e.target.value })}
                 />
                 <div style={{ height: 40 }} />
-                <Row type="flex" justify="end">
+                <Row justify="end">
                     <Button
                         block={this.props.isMobile}
                         onClick={() => this.onChangePasswordClicked()}

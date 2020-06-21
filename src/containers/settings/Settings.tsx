@@ -17,7 +17,7 @@ class Settings extends Component<
     render() {
         return (
             <div>
-                <Row type="flex" justify="center" gutter={20}>
+                <Row justify="center" gutter={20}>
                     <Col
                         style={{ marginBottom: 20 }}
                         lg={{ span: 10 }}

@@ -1,11 +1,17 @@
 import {
+    CloseOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    ReadOutlined,
+    SaveOutlined,
+} from '@ant-design/icons'
+import {
     Affix,
     Alert,
     Button,
     Card,
     Checkbox,
     Col,
-    Icon,
     Input,
     message,
     Modal,
@@ -337,7 +343,7 @@ class AppDetails extends ApiComponent<
                                 onLinkClicked={() => self.goBackToApps()}
                             >
                                 <Tooltip title="Close">
-                                    <Icon type="close" />
+                                    <CloseOutlined />
                                 </Tooltip>
                             </ClickableLink>
                         }
@@ -352,7 +358,7 @@ class AppDetails extends ApiComponent<
                                         title="Rename app"
                                         placement="bottom"
                                     >
-                                        <Icon type="edit" />
+                                        <EditOutlined />
                                     </Tooltip>
                                 </ClickableLink>
                                 &nbsp;&nbsp;
@@ -376,7 +382,7 @@ class AppDetails extends ApiComponent<
                                         }
                                         title="App description"
                                     >
-                                        <Icon type="read" />
+                                        <ReadOutlined />
                                     </Popover>
                                 </ClickableLink>
                             </span>
@@ -498,7 +504,7 @@ class AppDetails extends ApiComponent<
                                     paddingBottom: 20,
                                 }}
                             >
-                                <Row type="flex" justify="center" gutter={20}>
+                                <Row justify="center" gutter={20}>
                                     <Col span={8}>
                                         <div style={{ textAlign: 'center' }}>
                                             <Button
@@ -508,14 +514,14 @@ class AppDetails extends ApiComponent<
                                                         ? 35
                                                         : 135,
                                                 }}
-                                                type="danger"
+                                                danger
                                                 size="large"
                                                 onClick={() =>
                                                     self.onDeleteAppClicked()
                                                 }
                                             >
                                                 {self.props.isMobile ? (
-                                                    <Icon type="delete" />
+                                                    <DeleteOutlined />
                                                 ) : (
                                                     'Delete App'
                                                 )}
@@ -538,7 +544,7 @@ class AppDetails extends ApiComponent<
                                                 }
                                             >
                                                 {self.props.isMobile ? (
-                                                    <Icon type="save" />
+                                                    <SaveOutlined />
                                                 ) : (
                                                     'Save & Update'
                                                 )}

@@ -1,4 +1,5 @@
-import { Button, Icon, message, Row } from 'antd'
+import { CloudDownloadOutlined } from '@ant-design/icons'
+import { Button, message, Row } from 'antd'
 import React from 'react'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
@@ -65,14 +66,14 @@ export default class BackupCreator extends ApiComponent<
                 <p>Note that this is, currently, an EXPERIMENTAL FEATURE.</p>
                 <br />
 
-                <Row type="flex" justify="end">
+                <Row justify="end">
                     <Button
                         type="primary"
                         block={this.props.isMobile}
                         onClick={() => this.onCreateBackupClicked()}
                     >
                         <span>
-                            <Icon type="cloud-download" />
+                            <CloudDownloadOutlined />
                         </span>{' '}
                         &nbsp; Create Backup
                     </Button>

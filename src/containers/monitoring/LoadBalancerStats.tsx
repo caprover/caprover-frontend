@@ -1,3 +1,4 @@
+import { Icon as LegacyIcon } from '@ant-design/compatible'
 import { Avatar, Card, Col, Row, Tooltip } from 'antd'
 import React, { Component } from 'react'
 import Toaster from '../../utils/Toaster'
@@ -22,7 +23,7 @@ class LoadBalancerStatsCard extends Component<any, any> {
                     <Avatar
                         style={{ backgroundColor: this.props.color }}
                         size={64}
-                        icon={this.props.icon}
+                        icon={<LegacyIcon type={this.props.icon} />}
                     />
                 </div>
                 <div style={{ textAlign: 'center' }}>
@@ -99,10 +100,10 @@ export default class LoadBalancerStats extends ApiComponent<
 
         return (
             <div>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 22 }}>
                         <Card title="Load Balancer Stats">
-                            <Row type="flex" gutter={10} justify="center">
+                            <Row gutter={10} justify="center">
                                 <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                                     <Tooltip title="Constantly going up as refreshing the values">
                                         <div>

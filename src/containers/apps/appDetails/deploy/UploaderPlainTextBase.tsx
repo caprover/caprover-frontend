@@ -68,7 +68,7 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
                     />
                 </Row>
                 <div style={{ height: 20 }} />
-                <Row type="flex" justify="end">
+                <Row justify="end">
                     <Button
                         disabled={
                             self.state.uploadInProcess ||

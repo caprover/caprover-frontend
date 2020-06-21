@@ -80,7 +80,7 @@ class CurrentNodes extends ApiComponent<
                         backgroundColor: '#fcfcfc',
                     }}
                 >
-                    <Row type="flex" justify="center">
+                    <Row justify="center">
                         <b>Node ID:&nbsp;&nbsp;</b> {node.nodeId}
                     </Row>
                     <hr />
@@ -193,7 +193,7 @@ class CurrentNodes extends ApiComponent<
                 </Divider>
                 <div style={{ height: 30 }} />
 
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Col lg={{ span: 14 }} xs={{ span: 23 }}>
                         {self.createNodes()}
                     </Col>

@@ -1,19 +1,19 @@
-import React, { Component, Fragment } from 'react'
+import { InfoCircleOutlined } from '@ant-design/icons'
 import {
-    message,
-    Row,
     Button,
-    Input,
-    Col,
-    Icon,
-    Tooltip,
     Checkbox,
+    Col,
+    Input,
+    message,
     Modal,
+    Row,
+    Tooltip,
 } from 'antd'
+import React, { Component, Fragment } from 'react'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
-import { AppDetailsTabProps } from './AppDetails'
 import NewTabLink from '../../global/NewTabLink'
+import { AppDetailsTabProps } from './AppDetails'
 
 const Search = Input.Search
 
@@ -331,7 +331,7 @@ export default class HttpSettings extends Component<
                     &nbsp;&nbsp;&nbsp;
                     <Tooltip title="Make sure the new domain points to this IP, otherwise verification will fail.">
                         <span>
-                            <Icon style={{ marginTop: 9 }} type="info-circle" />
+                            <InfoCircleOutlined style={{ marginTop: 9 }} />
                         </span>
                     </Tooltip>
                 </Row>
@@ -393,7 +393,7 @@ export default class HttpSettings extends Component<
                         Force HTTPS by redirecting all HTTP traffic to HTTPS
                     </Checkbox>
                     <Tooltip title="Forcing HTTPS causes domains without HTTPS to malfunction. Make sure you enable HTTPS for the domain you want to use, before enabling Force HTTPS option.">
-                        <Icon type="info-circle" />
+                        <InfoCircleOutlined />
                     </Tooltip>
                 </Row>
                 <br />
@@ -416,7 +416,7 @@ export default class HttpSettings extends Component<
                         Websocket Support
                     </Checkbox>
                     <Tooltip title="Adds the upgrade proxy headers to NGINX config.">
-                        <Icon type="info-circle" />
+                        <InfoCircleOutlined />
                     </Tooltip>
                 </Row>
                 <br />
@@ -565,7 +565,7 @@ export default class HttpSettings extends Component<
                     Do not expose as web-app
                 </Checkbox>
                 <Tooltip title="Use this if you don't want your app be externally available.">
-                    <Icon type="info-circle" />
+                    <InfoCircleOutlined />
                 </Tooltip>
 
                 <div style={{ height: 35 }} />

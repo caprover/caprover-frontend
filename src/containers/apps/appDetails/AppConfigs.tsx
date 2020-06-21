@@ -1,4 +1,5 @@
-import { Button, Col, Icon, Input, Row, Switch, Tooltip } from 'antd'
+import { InfoCircleOutlined } from '@ant-design/icons'
+import { Button, Col, Input, Row, Switch, Tooltip } from 'antd'
 import React, { Component } from 'react'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import Utils from '../../../utils/Utils'
@@ -336,7 +337,7 @@ export default class AppConfigs extends Component<
                 <h4>
                     Persistent Directories &nbsp;
                     <NewTabLink url="https://caprover.com/docs/app-configuration.html#persistent-or-not">
-                        <Icon type="info-circle" />
+                        <InfoCircleOutlined />
                     </NewTabLink>
                 </h4>
                 <div
@@ -410,7 +411,7 @@ export default class AppConfigs extends Component<
         return (
             <div>
                 <h4>Environmental Variables:</h4>
-                <Row align="middle" justify="end" type="flex">
+                <Row align="middle" justify="end">
                     <h5>
                         Bulk Edit&nbsp;{' '}
                         <Switch
@@ -445,7 +446,7 @@ export default class AppConfigs extends Component<
                 <h4>
                     Port Mapping &nbsp;
                     <NewTabLink url="https://caprover.com/docs/app-configuration.html#port-mapping">
-                        <Icon type="info-circle" />
+                        <InfoCircleOutlined />
                     </NewTabLink>
                 </h4>
                 <div
@@ -534,10 +535,7 @@ export default class AppConfigs extends Component<
                     <h4>
                         Pre-Deploy Script
                         <NewTabLink url="https://caprover.com/docs/pre-deploy-script.html">
-                            <Icon
-                                style={{ paddingLeft: 10 }}
-                                type="info-circle"
-                            />
+                            <InfoCircleOutlined style={{ paddingLeft: 10 }} />
                         </NewTabLink>
                     </h4>
 

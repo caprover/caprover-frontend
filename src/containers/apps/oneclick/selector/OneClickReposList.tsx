@@ -1,4 +1,5 @@
-import { Button, Icon, Modal } from 'antd'
+import { DeleteOutlined } from '@ant-design/icons'
+import { Button, Modal } from 'antd'
 import Search from 'antd/lib/input/Search'
 import React from 'react'
 import Toaster from '../../../../utils/Toaster'
@@ -86,10 +87,10 @@ export default class OneClickReposList extends ApiComponent<
                         self.onDeleteUrlClicked(url)
                     }}
                     size="small"
-                    type="danger"
+                    danger
                 >
                     <span>
-                        <Icon type="delete" />
+                        <DeleteOutlined />
                     </span>
                 </Button>
 

@@ -1,4 +1,5 @@
-import { Button, Icon, Input, Row } from 'antd'
+import { SyncOutlined } from '@ant-design/icons'
+import { Button, Input, Row } from 'antd'
 import React from 'react'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
@@ -158,7 +159,7 @@ export default class NginxConfig extends ApiComponent<
                 </div>
                 <div style={{ height: 40 }} />
                 <div>
-                    <Row type="flex" justify="end">
+                    <Row justify="end">
                         <Button
                             type="default"
                             block={this.props.isMobile}
@@ -172,14 +173,14 @@ export default class NginxConfig extends ApiComponent<
 
                     <div style={{ height: 20 }} />
 
-                    <Row type="flex" justify="end">
+                    <Row justify="end">
                         <Button
                             type="primary"
                             block={this.props.isMobile}
                             onClick={() => self.onUpdateNginxConfigClicked()}
                         >
                             <span>
-                                <Icon type="sync" />
+                                <SyncOutlined />
                             </span>{' '}
                             &nbsp; Save and Update
                         </Button>

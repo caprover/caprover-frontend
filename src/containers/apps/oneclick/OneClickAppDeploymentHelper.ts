@@ -1,8 +1,8 @@
 import ApiManager from '../../../api/ApiManager'
-import { IAppDef } from '../AppDefinition'
 import { ICaptainDefinition } from '../../../models/ICaptainDefinition'
-import Utils from '../../../utils/Utils'
 import { IDockerComposeService } from '../../../models/IOneClickAppModels'
+import Utils from '../../../utils/Utils'
+import { IAppDef } from '../AppDefinition'
 
 export default class OneClickAppDeploymentHelper {
     private apiManager: ApiManager = new ApiManager()

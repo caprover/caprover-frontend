@@ -9,7 +9,7 @@ class ErrorRetry extends Component<any, {}> {
         return (
             <div style={{ textAlign: 'center', padding: 36 }}>
                 <p>An error occurred. Please try again.</p>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Button
                         type="primary"
                         onClick={() => {

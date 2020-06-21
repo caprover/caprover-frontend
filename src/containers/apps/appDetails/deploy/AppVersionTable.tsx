@@ -1,4 +1,9 @@
-import { Card, Icon, Modal, Table, Tooltip } from 'antd'
+import {
+    CheckCircleTwoTone,
+    ExclamationCircleOutlined,
+    RetweetOutlined,
+} from '@ant-design/icons'
+import { Card, Modal, Table, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import moment from 'moment'
 import React, { Component, Fragment } from 'react'
@@ -16,11 +21,7 @@ export default class AppVersionTable extends Component<{
         if (version === this.props.deployedVersion) {
             return (
                 <Tooltip title="Current Version">
-                    <Icon
-                        type="check-circle"
-                        theme="twoTone"
-                        twoToneColor="#52c41a"
-                    />
+                    <CheckCircleTwoTone twoToneColor="#52c41a" />
                 </Tooltip>
             )
         }
@@ -30,7 +31,7 @@ export default class AppVersionTable extends Component<{
         if (!imageName) {
             return (
                 <Tooltip title="Failed deploy">
-                    <Icon type="exclamation-circle" />
+                    <ExclamationCircleOutlined />
                 </Tooltip>
             )
         }
@@ -41,7 +42,7 @@ export default class AppVersionTable extends Component<{
             >
                 <Tooltip title="Revert to this version">
                     <span>
-                        <Icon type="retweet" />
+                        <RetweetOutlined />
                     </span>
                 </Tooltip>
             </ClickableLink>

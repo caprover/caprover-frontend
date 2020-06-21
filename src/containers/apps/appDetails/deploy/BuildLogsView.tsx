@@ -1,4 +1,6 @@
-import { Alert, Icon, Row, Spin } from 'antd'
+import { Icon as LegacyIcon } from '@ant-design/compatible'
+import { LoadingOutlined } from '@ant-design/icons'
+import { Alert, Row, Spin } from 'antd'
 import React from 'react'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
@@ -136,8 +138,7 @@ export default class BuildLogsView extends ApiComponent<
                                     &nbsp;&nbsp;
                                     <Spin
                                         indicator={
-                                            <Icon
-                                                type="loading"
+                                            <LoadingOutlined
                                                 style={{ fontSize: 24 }}
                                                 spin
                                             />
@@ -164,7 +165,7 @@ export default class BuildLogsView extends ApiComponent<
                             }}
                         >
                             <h4 className="unselectable-span">
-                                <Icon
+                                <LegacyIcon
                                     type={
                                         !this.state.expandedLogs
                                             ? 'down-circle'

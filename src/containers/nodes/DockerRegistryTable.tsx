@@ -1,13 +1,18 @@
+import {
+    DeleteOutlined,
+    FormOutlined,
+    InfoCircleOutlined,
+} from '@ant-design/icons'
+import { Card, Input, message, Modal, Table, Tooltip } from 'antd'
+import { ColumnProps } from 'antd/lib/table'
 import React, { Component } from 'react'
-import { Table, Icon, message, Modal, Input, Tooltip, Card } from 'antd'
 import {
     IRegistryApi,
     IRegistryInfo,
     IRegistryTypes,
 } from '../../models/IRegistryInfo'
-import ClickableLink from '../global/ClickableLink'
 import Utils from '../../utils/Utils'
-import { ColumnProps } from 'antd/lib/table'
+import ClickableLink from '../global/ClickableLink'
 import PasswordField from '../global/PasswordField'
 
 const EDITING_MODAL = 'EDITING_MODAL'
@@ -105,7 +110,7 @@ export default class DockerRegistryTable extends Component<
                                     self.editRegistry(reg)
                                 }}
                             >
-                                <Icon type="form" />
+                                <FormOutlined />
                             </ClickableLink>
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             <ClickableLink
@@ -113,7 +118,7 @@ export default class DockerRegistryTable extends Component<
                                     self.deleteRegistry(reg.id)
                                 }}
                             >
-                                <Icon type="delete" />
+                                <DeleteOutlined />
                             </ClickableLink>
                         </span>
                     )
@@ -176,7 +181,7 @@ export default class DockerRegistryTable extends Component<
                     placeholder="username"
                     addonAfter={
                         <Tooltip title="Your images will be tagged as RegistryDomain/ImagePrefix/ImageName. For most providers, Image Prefix is exactly your username, unless the field DOMAIN is specific to you, in that case, this prefix is empty.">
-                            <Icon type="info-circle" />
+                            <InfoCircleOutlined />
                         </Tooltip>
                     }
                     type="text"
@@ -264,7 +269,7 @@ export default class DockerRegistryTable extends Component<
                                                 self.editRegistry(registry)
                                             }}
                                         >
-                                            <Icon type="form" />
+                                            <FormOutlined />
                                         </ClickableLink>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
                                         <ClickableLink
@@ -272,7 +277,7 @@ export default class DockerRegistryTable extends Component<
                                                 self.deleteRegistry(registry.id)
                                             }}
                                         >
-                                            <Icon type="delete" />
+                                            <DeleteOutlined />
                                         </ClickableLink>
                                     </span>
                                 </div>

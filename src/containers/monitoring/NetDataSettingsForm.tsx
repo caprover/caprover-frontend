@@ -38,9 +38,9 @@ export default class NetDataSettingsForm extends Component<{
                 <br />
                 <h4>Email (SMTP)</h4>
 
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 20 }}>
-                        <Row type="flex" gutter={20} align="middle">
+                        <Row gutter={20} align="middle">
                             <Col
                                 className="netdata-field"
                                 xs={{ span: 24 }}
@@ -187,9 +187,9 @@ export default class NetDataSettingsForm extends Component<{
                 </Row>
                 <br />
                 <h4>Slack</h4>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Col xs={{ span: 24 }} lg={{ span: 20 }}>
-                        <Row type="flex" gutter={20} align="middle">
+                        <Row gutter={20} align="middle">
                             <Col
                                 className="netdata-field"
                                 xs={{ span: 24 }}
@@ -233,9 +233,9 @@ export default class NetDataSettingsForm extends Component<{
                 </Row>
                 <br />
                 <h4>Telegram</h4>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Col xs={{ span: 24 }} lg={{ span: 20 }}>
-                        <Row type="flex" gutter={20} align="middle">
+                        <Row gutter={20} align="middle">
                             <Col
                                 className="netdata-field"
                                 xs={{ span: 24 }}
@@ -279,9 +279,9 @@ export default class NetDataSettingsForm extends Component<{
                 </Row>
                 <br />
                 <h4>Push Bullet</h4>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Col xs={{ span: 24 }} lg={{ span: 20 }}>
-                        <Row type="flex" gutter={20} align="middle">
+                        <Row gutter={20} align="middle">
                             <Col
                                 className="netdata-field"
                                 xs={{ span: 24 }}

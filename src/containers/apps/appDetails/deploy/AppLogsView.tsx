@@ -1,4 +1,6 @@
-import { Icon, Row, Tooltip } from 'antd'
+import { Icon as LegacyIcon } from '@ant-design/compatible'
+import { InfoCircleOutlined, MenuFoldOutlined } from '@ant-design/icons'
+import { Row, Tooltip } from 'antd'
 import React from 'react'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
@@ -124,9 +126,9 @@ export default class AppLogsView extends ApiComponent<
 
                 <div>
                     <div>
-                        <Row type="flex" justify="space-between" align="middle">
+                        <Row justify="space-between" align="middle">
                             <span>
-                                <Row type="flex" justify="start" align="middle">
+                                <Row justify="start" align="middle">
                                     <span>
                                         <ClickableLink
                                             onLinkClicked={() => {
@@ -134,7 +136,7 @@ export default class AppLogsView extends ApiComponent<
                                             }}
                                         >
                                             <h4 className="unselectable-span">
-                                                <Icon
+                                                <LegacyIcon
                                                     type={
                                                         !this.state.expandedLogs
                                                             ? 'down-circle'
@@ -158,7 +160,7 @@ export default class AppLogsView extends ApiComponent<
                                     >
                                         <Tooltip title="View full application logs (not truncated)">
                                             <NewTabLink url="https://caprover.com/docs/troubleshooting.html#how-to-view-my-applications-log">
-                                                <Icon type="info-circle" />
+                                                <InfoCircleOutlined />
                                             </NewTabLink>
                                         </Tooltip>
                                     </span>
@@ -179,7 +181,7 @@ export default class AppLogsView extends ApiComponent<
                                     }}
                                 >
                                     <h4 className="unselectable-span">
-                                        <Icon type="menu-fold" />
+                                        <MenuFoldOutlined />
                                         &nbsp;&nbsp;{' '}
                                         {this.state.isWrapped
                                             ? "Don't"

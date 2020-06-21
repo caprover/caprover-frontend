@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { Table, Card, Checkbox } from 'antd'
+import { Card, Checkbox, Table } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
+import React, { Component } from 'react'
 import { IUnusedImage } from './DiskCleanup'
 
 export default class UnusedImagesTable extends Component<{

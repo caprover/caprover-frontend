@@ -117,7 +117,7 @@ export default class OneClickAppSelector extends ApiComponent<
                     <div />
                 )}
                 <div style={{ height: 30 }} />
-                <Row type="flex" justify="space-between" align="middle">
+                <Row justify="space-between" align="middle">
                     <Button
                         onClick={() =>
                             self.props.history.push(
@@ -170,7 +170,7 @@ export default class OneClickAppSelector extends ApiComponent<
 
         return (
             <div>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 23 }}>
                         <Card title="One Click Apps">
                             <div

@@ -1,4 +1,5 @@
-import { Button, Card, Checkbox, Col, Icon, Input, Row, Tooltip } from 'antd'
+import { PlusCircleOutlined, QuestionCircleFilled } from '@ant-design/icons'
+import { Button, Card, Checkbox, Col, Input, Row, Tooltip } from 'antd'
 import Search from 'antd/lib/input/Search'
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
@@ -37,12 +38,12 @@ class CreateNewApp extends Component<
         const self = this
 
         return (
-            <Row type="flex" justify="center">
+            <Row justify="center">
                 <Col xs={{ span: 23 }} lg={{ span: 10 }}>
                     <Card
                         title={
                             <span>
-                                <Icon type="plus-circle" />
+                                <PlusCircleOutlined />
                                 &nbsp;&nbsp;&nbsp;Create A New App
                             </span>
                         }
@@ -85,10 +86,7 @@ class CreateNewApp extends Component<
                             )}
                         </Row>
                         <br />
-                        <Row
-                            type="flex"
-                            justify={self.props.isMobile ? 'start' : 'end'}
-                        >
+                        <Row justify={self.props.isMobile ? 'start' : 'end'}>
                             <Checkbox
                                 onChange={(e: any) =>
                                     self.setState({
@@ -102,10 +100,7 @@ class CreateNewApp extends Component<
                             <Tooltip title="Mostly used for databases, see docs for details.">
                                 <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
                                     <span>
-                                        <Icon
-                                            type="question-circle"
-                                            theme="filled"
-                                        />
+                                        <QuestionCircleFilled />
                                     </span>
                                 </NewTabLink>
                             </Tooltip>

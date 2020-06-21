@@ -1,4 +1,12 @@
-import { Button, Col, Icon, Layout, Menu, Row } from 'antd'
+import { Icon as LegacyIcon } from '@ant-design/compatible'
+import {
+    BarsOutlined,
+    FileTextOutlined,
+    GiftTwoTone,
+    GithubOutlined,
+    LogoutOutlined,
+} from '@ant-design/icons'
+import { Button, Col, Layout, Menu, Row } from 'antd'
 import { SelectParam } from 'antd/lib/menu'
 import React, { Fragment, RefObject } from 'react'
 import { connect } from 'react-redux'
@@ -128,32 +136,24 @@ class PageRoot extends ApiComponent<
                 <ClickableLink
                     onLinkClicked={() => self.props.history.push('/settings')}
                 >
-                    <Icon
-                        type="gift"
-                        theme="twoTone"
+                    <GiftTwoTone
                         style={{
                             marginLeft: 50,
                         }}
                     />
-                    <Icon
-                        type="gift"
-                        theme="twoTone"
+                    <GiftTwoTone
                         style={{
                             marginRight: 10,
                             marginLeft: 3,
                         }}
                     />
                     Update Available!
-                    <Icon
-                        type="gift"
-                        theme="twoTone"
+                    <GiftTwoTone
                         style={{
                             marginLeft: 10,
                         }}
                     />
-                    <Icon
-                        type="gift"
-                        theme="twoTone"
+                    <GiftTwoTone
                         style={{
                             marginLeft: 3,
                         }}
@@ -187,7 +187,7 @@ class PageRoot extends ApiComponent<
                                 <Col span={4}>
                                     <Button
                                         ghost
-                                        icon="bars"
+                                        icon={<BarsOutlined />}
                                         onClick={this.toggleSider}
                                     />
                                 </Col>
@@ -213,7 +213,7 @@ class PageRoot extends ApiComponent<
                             )}
                             {!self.props.isMobile && (
                                 <Col span={12}>
-                                    <Row type="flex" justify="end">
+                                    <Row justify="end">
                                         <NewTabLink url="https://github.com/caprover/caprover">
                                             <span style={{ marginRight: 20 }}>
                                                 GitHub
@@ -245,8 +245,7 @@ class PageRoot extends ApiComponent<
                                                         self.goToLogin()
                                                     }}
                                                 >
-                                                    Logout{' '}
-                                                    <Icon type="logout" />
+                                                    Logout <LogoutOutlined />
                                                 </ClickableLink>
                                             </span>
                                         </span>
@@ -283,7 +282,7 @@ class PageRoot extends ApiComponent<
                             {MENU_ITEMS.map((item) => (
                                 <Menu.Item key={item.key}>
                                     <span>
-                                        <Icon type={item.icon} />
+                                        <LegacyIcon type={item.icon} />
                                         <span>{item.name}</span>
                                     </span>
                                 </Menu.Item>
@@ -306,7 +305,7 @@ class PageRoot extends ApiComponent<
                                         style={{ paddingLeft: 24 }}
                                     >
                                         <NewTabLink url="https://github.com/caprover/caprover">
-                                            <Icon type="github" />
+                                            <GithubOutlined />
                                             GitHub
                                         </NewTabLink>
                                     </div>
@@ -317,7 +316,7 @@ class PageRoot extends ApiComponent<
                                         style={{ paddingLeft: 24 }}
                                     >
                                         <NewTabLink url="https://caprover.com">
-                                            <Icon type="file-text" />
+                                            <FileTextOutlined />
                                             Docs
                                         </NewTabLink>
                                     </div>
@@ -334,7 +333,7 @@ class PageRoot extends ApiComponent<
                                             }}
                                         >
                                             {' '}
-                                            <Icon type="logout" />
+                                            <LogoutOutlined />
                                             Logout
                                         </ClickableLink>
                                     </div>

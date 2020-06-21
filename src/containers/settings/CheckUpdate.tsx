@@ -1,4 +1,5 @@
-import { Alert, Button, Icon, Row } from 'antd'
+import { CloudDownloadOutlined } from '@ant-design/icons'
+import { Alert, Button, Row } from 'antd'
 import React from 'react'
 import { IVersionInfo } from '../../models/IVersionInfo'
 import Toaster from '../../utils/Toaster'
@@ -99,14 +100,14 @@ export default class CheckUpdate extends ApiComponent<
                     </p>
                 </div>
                 <div className={versionInfo.canUpdate ? '' : 'hide-on-demand'}>
-                    <Row type="flex" justify="end">
+                    <Row justify="end">
                         <Button
                             type="primary"
                             block={this.props.isMobile}
                             onClick={() => this.onPerformUpdateClicked()}
                         >
                             <span>
-                                <Icon type="cloud-download" />
+                                <CloudDownloadOutlined />
                             </span>{' '}
                             &nbsp; Install Update
                         </Button>

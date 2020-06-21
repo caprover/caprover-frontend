@@ -1,5 +1,6 @@
+import { ClusterOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import { Button, Card, Col, Input, Radio, Row, Tooltip } from 'antd'
 import React, { Component } from 'react'
-import { Card, Row, Col, Input, Button, Icon, Radio, Tooltip } from 'antd'
 import Utils from '../../utils/Utils'
 
 export interface INodeToAdd {
@@ -47,7 +48,7 @@ export default class AddNode extends Component<
                     type="inner"
                     title="Attach New Node"
                 >
-                    <Row type="flex" justify="space-between">
+                    <Row justify="space-between">
                         <Col lg={{ span: 11 }} xs={{ span: 24 }}>
                             <Input
                                 style={{ marginBottom: 10 }}
@@ -97,7 +98,7 @@ export default class AddNode extends Component<
                             />
                         </Col>
                     </Row>
-                    <Row type="flex" justify="end">
+                    <Row justify="end">
                         <Radio.Group
                             defaultValue="a"
                             buttonStyle="outline"
@@ -116,14 +117,13 @@ export default class AddNode extends Component<
                         </Radio.Group>
                         &nbsp;
                         <Tooltip title="Tip: For every 5 workers, add 2 manager nodes, keeping manager node count as an odd number. Therefore, use worker node for the first 4 nodes you add to your cluster.">
-                            <Icon
+                            <InfoCircleOutlined
                                 style={{ paddingTop: 8, paddingLeft: 8 }}
-                                type="info-circle"
                             />
                         </Tooltip>
                     </Row>
 
-                    <Row type="flex" justify="end">
+                    <Row justify="end">
                         <Button
                             type="primary"
                             block={this.props.isMobile}
@@ -133,7 +133,7 @@ export default class AddNode extends Component<
                                 )
                             }
                         >
-                            <Icon type="cluster" /> &nbsp; Join Cluster
+                            <ClusterOutlined /> &nbsp; Join Cluster
                         </Button>
                     </Row>
                 </Card>

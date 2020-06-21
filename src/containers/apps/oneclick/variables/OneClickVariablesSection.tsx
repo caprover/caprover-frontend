@@ -141,7 +141,7 @@ export default class OneClickVariablesSection extends Component<
         return (
             <div>
                 <div>{this.createTextFields()}</div>
-                <Row type="flex" justify="end">
+                <Row justify="end">
                     <Button
                         size="large"
                         style={{ minWidth: 150 }}

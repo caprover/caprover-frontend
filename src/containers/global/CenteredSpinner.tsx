@@ -1,9 +1,10 @@
+import { LoadingOutlined } from '@ant-design/icons'
+import { Spin } from 'antd'
 import React, { Component } from 'react'
-import { Spin, Icon } from 'antd'
 
 export default class CenteredSpinner extends Component {
     render() {
-        const antIcon = <Icon type="loading" style={{ fontSize: 32 }} spin />
+        const antIcon = <LoadingOutlined style={{ fontSize: 32 }} spin />
 
         return (
             <div

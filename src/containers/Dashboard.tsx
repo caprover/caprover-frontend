@@ -268,7 +268,7 @@ export default class Dashboard extends ApiComponent<
     createSetupPanel() {
         const self = this
         return (
-            <Row type="flex" justify="center">
+            <Row justify="center">
                 <Col xs={{ span: 23 }} lg={{ span: 16 }}>
                     <Card title="CapRover Root Domain Configurations">
                         <div>
@@ -331,7 +331,7 @@ export default class Dashboard extends ApiComponent<
                             </div>
                             <br />
                             <br />
-                            <Row type="flex" justify="end">
+                            <Row justify="end">
                                 <Tooltip title="Using Let's Encrypt Free Service">
                                     <Button
                                         disabled={
@@ -374,7 +374,7 @@ export default class Dashboard extends ApiComponent<
         }
 
         return (
-            <Row type="flex" justify="center">
+            <Row justify="center">
                 <Col xs={{ span: 23 }} lg={{ span: 16 }}>
                     <Card title="CapRover Initial Setup">
                         <div>

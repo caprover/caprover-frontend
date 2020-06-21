@@ -1,4 +1,5 @@
-import { Button, Col, Icon, message, Row, Upload } from 'antd'
+import { InboxOutlined } from '@ant-design/icons'
+import { Button, Col, message, Row, Upload } from 'antd'
 import { UploadChangeParam, UploadFile } from 'antd/lib/upload/interface'
 import React from 'react'
 import Toaster from '../../../../utils/Toaster'
@@ -76,7 +77,7 @@ export default class TarUploader extends ApiComponent<
     render() {
         return (
             <div>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                         <Upload.Dragger
                             name="files"
@@ -93,7 +94,7 @@ export default class TarUploader extends ApiComponent<
                             action="//" // this is unused as beforeUpload always returns false
                         >
                             <p className="ant-upload-drag-icon">
-                                <Icon type="inbox" />
+                                <InboxOutlined />
                             </p>
                             <p className="ant-upload-text">
                                 Click or drag TAR file to this area to upload
@@ -106,7 +107,7 @@ export default class TarUploader extends ApiComponent<
                     </Col>
                 </Row>
 
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Button
                         style={{ marginTop: 40 }}
                         disabled={!this.state.fileToBeUploaded}

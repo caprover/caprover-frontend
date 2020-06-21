@@ -1,4 +1,5 @@
-import { Button, Card, Col, Icon, message, Row } from 'antd'
+import { AreaChartOutlined, PoweroffOutlined } from '@ant-design/icons'
+import { Button, Card, Col, message, Row } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
@@ -81,7 +82,7 @@ class NetDataInfo extends ApiComponent<
 
         return (
             <div>
-                <Row type="flex" justify="center">
+                <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 18 }}>
                         <Card title="NetData Monitoring Tool">
                             <NetDataDescription />
@@ -94,7 +95,7 @@ class NetDataInfo extends ApiComponent<
                                         : ''
                                 }
                             >
-                                <Row type="flex" justify="end">
+                                <Row justify="end">
                                     <Button
                                         onClick={() =>
                                             self.toggleNetDataClicked(true)
@@ -103,7 +104,7 @@ class NetDataInfo extends ApiComponent<
                                     >
                                         <span>
                                             Start NetData Engine &nbsp;
-                                            <Icon type="poweroff" />
+                                            <PoweroffOutlined />
                                         </span>
                                     </Button>
                                 </Row>
@@ -116,7 +117,7 @@ class NetDataInfo extends ApiComponent<
                                         : ''
                                 }
                             >
-                                <Row type="flex" justify="end" gutter={20}>
+                                <Row justify="end" gutter={20}>
                                     <Button
                                         style={{
                                             marginRight: self.props.isMobile
@@ -130,11 +131,11 @@ class NetDataInfo extends ApiComponent<
                                         onClick={() =>
                                             self.toggleNetDataClicked(false)
                                         }
-                                        type="danger"
+                                        danger
                                     >
                                         <span>
                                             Turn NetData Off &nbsp;
-                                            <Icon type="poweroff" />
+                                            <PoweroffOutlined />
                                         </span>
                                     </Button>
                                     <a
@@ -155,7 +156,7 @@ class NetDataInfo extends ApiComponent<
                                         >
                                             <span>
                                                 Open NetData &nbsp;
-                                                <Icon type="area-chart" />
+                                                <AreaChartOutlined />
                                             </span>
                                         </Button>
                                     </a>
@@ -172,7 +173,7 @@ class NetDataInfo extends ApiComponent<
 
                                 <br />
 
-                                <Row type="flex" justify="end">
+                                <Row justify="end">
                                     <Button
                                         type="primary"
                                         onClick={() =>

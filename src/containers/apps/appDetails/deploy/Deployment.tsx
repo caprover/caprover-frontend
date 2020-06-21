@@ -1,9 +1,12 @@
-import { Button, Col, Icon, Input, message, Row, Tooltip } from 'antd'
+import { RocketOutlined } from '@ant-design/icons'
+import { Button, Col, Input, message, Row, Tooltip } from 'antd'
+import deepEqual from 'deep-equal'
 import React from 'react'
 import DomUtils from '../../../../utils/DomUtils'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
+import NewTabLink from '../../../global/NewTabLink'
 import { IAppDef, IAppVersion, RepoInfo } from '../../AppDefinition'
 import { AppDetailsTabProps } from '../AppDetails'
 import AppLogsView from './AppLogsView'
@@ -13,8 +16,6 @@ import GitRepoForm from './GitRepoForm'
 import TarUploader from './TarUploader'
 import UploaderPlainTextCaptainDefinition from './UploaderPlainTextCaptainDefinition'
 import UploaderPlainTextDockerfile from './UploaderPlainTextDockerfile'
-import deepEqual from 'deep-equal'
-import NewTabLink from '../../../global/NewTabLink'
 
 export default class Deployment extends ApiComponent<
     AppDetailsTabProps,
@@ -169,7 +170,7 @@ export default class Deployment extends ApiComponent<
                 <hr />
                 <div style={{ height: 40 }} />
                 <h4>
-                    <Icon type="rocket" /> Method 1: Official CLI
+                    <RocketOutlined /> Method 1: Official CLI
                 </h4>
                 <p>
                     Use CLI deploy command. This is the easiest method as it
@@ -181,7 +182,7 @@ export default class Deployment extends ApiComponent<
                 </p>
                 <div style={{ height: 20 }} />
                 <h4>
-                    <Icon type="rocket" /> Method 2: Tarball
+                    <RocketOutlined /> Method 2: Tarball
                 </h4>
                 <p>
                     You can simply create a tarball (<code>.tar</code>) of your
@@ -195,7 +196,7 @@ export default class Deployment extends ApiComponent<
 
                 <div style={{ height: 40 }} />
                 <h4>
-                    <Icon type="rocket" /> Method 3: Deploy from
+                    <RocketOutlined /> Method 3: Deploy from
                     Github/Bitbucket/Gitlab
                 </h4>
                 <p>
@@ -242,7 +243,6 @@ export default class Deployment extends ApiComponent<
                     }}
                 />
                 <Row
-                    type="flex"
                     justify="end"
                     style={{ marginTop: this.props.isMobile ? 15 : 0 }}
                 >
@@ -273,7 +273,7 @@ export default class Deployment extends ApiComponent<
                 </Row>
                 <div style={{ height: 20 }} />
                 <h4>
-                    <Icon type="rocket" /> Method 4: Deploy plain Dockerfile
+                    <RocketOutlined /> Method 4: Deploy plain Dockerfile
                 </h4>
                 <UploaderPlainTextDockerfile
                     appName={app.appName!}
@@ -281,8 +281,7 @@ export default class Deployment extends ApiComponent<
                 />
                 <div style={{ height: 20 }} />
                 <h4>
-                    <Icon type="rocket" /> Method 5: Deploy captain-definition
-                    file
+                    <RocketOutlined /> Method 5: Deploy captain-definition file
                 </h4>
                 <UploaderPlainTextCaptainDefinition
                     appName={app.appName!}

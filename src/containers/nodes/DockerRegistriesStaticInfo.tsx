@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
 import { Collapse } from 'antd'
+import React, { Component } from 'react'
 
 export default class DockerRegistriesStaticInfo extends Component {
     render() {

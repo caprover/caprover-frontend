@@ -1,5 +1,5 @@
-import { ROOT_KEY_CHANGED, SIZE_CHANGED } from '../actions/GlobalActions'
 import Utils from '../../utils/Utils'
+import { ROOT_KEY_CHANGED, SIZE_CHANGED } from '../actions/GlobalActions'
 
 export default function (state = {}, action: { payload: any; type: string }) {
     switch (action.type) {
