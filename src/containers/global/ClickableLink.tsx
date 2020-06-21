@@ -1,16 +1,16 @@
-import React, { Component, MouseEvent } from "react";
+import React, { Component, MouseEvent } from 'react'
 
 export default class ClickableLink extends Component<
-  { onLinkClicked: Function },
-  {}
+    { onLinkClicked: Function },
+    {}
 > {
-  handleClick(e: MouseEvent) {
-    e.preventDefault();
-    if (this.props.onLinkClicked) this.props.onLinkClicked();
-  }
+    handleClick(e: MouseEvent) {
+        e.preventDefault()
+        if (this.props.onLinkClicked) this.props.onLinkClicked()
+    }
 
-  render() {
-    // eslint-disable-next-line
-    return <a onClick={e => this.handleClick(e)}>{this.props.children}</a>;
-  }
+    render() {
+        // eslint-disable-next-line
+        return <a onClick={(e) => this.handleClick(e)}>{this.props.children}</a>
+    }
 }

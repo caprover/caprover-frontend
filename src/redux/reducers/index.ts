@@ -1,10 +1,10 @@
-import { combineReducers } from "redux";
-import DefaultRegistryReducer from "./DefaultRegistryReducer";
-import GlobalReducer from "./GlobalReducer";
+import { combineReducers } from 'redux'
+import DefaultRegistryReducer from './DefaultRegistryReducer'
+import GlobalReducer from './GlobalReducer'
 
 const rootReducer = combineReducers({
-  registryReducer: DefaultRegistryReducer,
-  globalReducer: GlobalReducer
-});
+    registryReducer: DefaultRegistryReducer,
+    globalReducer: GlobalReducer,
+})
 
-export default rootReducer;
+export default rootReducer

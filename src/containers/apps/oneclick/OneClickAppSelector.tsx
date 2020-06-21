@@ -1,88 +1,92 @@
-import { Alert, Button, Card, Col, Input, Row } from "antd";
-import React from "react";
-import { RouteComponentProps } from "react-router";
-import { IOneClickAppIdentifier } from "../../../models/IOneClickAppModels";
-import Toaster from "../../../utils/Toaster";
-import Utils from "../../../utils/Utils";
-import ApiComponent from "../../global/ApiComponent";
-import CenteredSpinner from "../../global/CenteredSpinner";
-import NewTabLink from "../../global/NewTabLink";
-import OneClickGrid from "./OneClickGrid";
+import { Alert, Button, Card, Col, Input, Row } from 'antd'
+import React from 'react'
+import { RouteComponentProps } from 'react-router'
+import { IOneClickAppIdentifier } from '../../../models/IOneClickAppModels'
+import Toaster from '../../../utils/Toaster'
+import Utils from '../../../utils/Utils'
+import ApiComponent from '../../global/ApiComponent'
+import CenteredSpinner from '../../global/CenteredSpinner'
+import NewTabLink from '../../global/NewTabLink'
+import OneClickGrid from './OneClickGrid'
 
-export const TEMPLATE_ONE_CLICK_APP = "TEMPLATE_ONE_CLICK_APP";
-export const ONE_CLICK_APP_STRINGIFIED_KEY = "oneClickAppStringifiedData";
+export const TEMPLATE_ONE_CLICK_APP = 'TEMPLATE_ONE_CLICK_APP'
+export const ONE_CLICK_APP_STRINGIFIED_KEY = 'oneClickAppStringifiedData'
 
 export default class OneClickAppSelector extends ApiComponent<
-  RouteComponentProps<any>,
-  {
-    oneClickAppList: IOneClickAppIdentifier[] | undefined;
-    isCustomTemplateSelected: boolean;
-    templateOneClickAppData: string;
-  }
+    RouteComponentProps<any>,
+    {
+        oneClickAppList: IOneClickAppIdentifier[] | undefined
+        isCustomTemplateSelected: boolean
+        templateOneClickAppData: string
+    }
 > {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      oneClickAppList: undefined,
-      isCustomTemplateSelected: false,
-      templateOneClickAppData: "",
-    };
-  }
-
-  componentDidMount() {
-    const self = this;
-    self.fetchData();
-  }
-
-  fetchData() {
-    const self = this;
-    self.apiManager
-      .getAllOneClickApps()
-      .then(function (data) {
-        const apps  = data.oneClickApps as IOneClickAppIdentifier[]
-        apps.push({
-          name: TEMPLATE_ONE_CLICK_APP,
-          description:
-            "A template for creating one-click apps. Mainly for development!",
-          logoUrl: "/icon-512x512.png",
-          baseUrl: "",
-          displayName: ">> TEMPLATE <<",
-        });
-        self.setState({
-          oneClickAppList: apps,
-        });
-      })
-      .catch(Toaster.createCatcher());
-  }
-
-  createCustomTemplateInput() {
-    const self = this;
-
-    let isOneClickJsonValid = true;
-    if (this.state.templateOneClickAppData) {
-      try {
-        JSON.parse(this.state.templateOneClickAppData);
-      } catch (error) {
-        isOneClickJsonValid = false;
-      }
+    constructor(props: any) {
+        super(props)
+        this.state = {
+            oneClickAppList: undefined,
+            isCustomTemplateSelected: false,
+            templateOneClickAppData: '',
+        }
     }
 
-    return (
-      <div className={self.state.isCustomTemplateSelected ? "" : "hide-on-demand"}>
-        <div>
-          <p>
-            This is mainly for testing. You can copy and paste your custom
-            One-Click app template here. See{" "}
-            <NewTabLink url="https://github.com/caprover/one-click-apps/tree/master/public/v2/apps">
-              the main one click apps GitHub repository
-            </NewTabLink>{" "}
-            for samples and ideas.
-          </p>
-        </div>
+    componentDidMount() {
+        const self = this
+        self.fetchData()
+    }
 
-        <Input.TextArea
-          className="code-input"
-          placeholder={`{
+    fetchData() {
+        const self = this
+        self.apiManager
+            .getAllOneClickApps()
+            .then(function (data) {
+                const apps = data.oneClickApps as IOneClickAppIdentifier[]
+                apps.push({
+                    name: TEMPLATE_ONE_CLICK_APP,
+                    description:
+                        'A template for creating one-click apps. Mainly for development!',
+                    logoUrl: '/icon-512x512.png',
+                    baseUrl: '',
+                    displayName: '>> TEMPLATE <<',
+                })
+                self.setState({
+                    oneClickAppList: apps,
+                })
+            })
+            .catch(Toaster.createCatcher())
+    }
+
+    createCustomTemplateInput() {
+        const self = this
+
+        let isOneClickJsonValid = true
+        if (this.state.templateOneClickAppData) {
+            try {
+                JSON.parse(this.state.templateOneClickAppData)
+            } catch (error) {
+                isOneClickJsonValid = false
+            }
+        }
+
+        return (
+            <div
+                className={
+                    self.state.isCustomTemplateSelected ? '' : 'hide-on-demand'
+                }
+            >
+                <div>
+                    <p>
+                        This is mainly for testing. You can copy and paste your
+                        custom One-Click app template here. See{' '}
+                        <NewTabLink url="https://github.com/caprover/one-click-apps/tree/master/public/v2/apps">
+                            the main one click apps GitHub repository
+                        </NewTabLink>{' '}
+                        for samples and ideas.
+                    </p>
+                </div>
+
+                <Input.TextArea
+                    className="code-input"
+                    placeholder={`{
   "captainVersion": "2",
   "dockerCompose": {
   "services": {
@@ -95,104 +99,117 @@ export default class OneClickAppSelector extends ApiComponent<
     }
   }
 }`}
-          rows={10}
-          onChange={(e) => {
-            self.setState({ templateOneClickAppData: e.target.value });
-          }}
-        />
-        <div style={{ height: 10 }} />
-        {!isOneClickJsonValid ? (
-          <Alert
-            message="One Click data that you've entered is not a valid JSON."
-            type="error"
-          />
-        ) : (
-          <div />
-        )}
-        <div style={{ height: 30 }} />
-        <Row type="flex" justify="space-between" align="middle">
-          <Button
-            onClick={() =>
-              self.props.history.push(
-                `/apps/oneclick/${TEMPLATE_ONE_CLICK_APP}` +
-                  (`?${ONE_CLICK_APP_STRINGIFIED_KEY}=` +
-                    encodeURIComponent(self.state.templateOneClickAppData))
-              )
-            }
-            disabled={
-              !self.state.templateOneClickAppData || !isOneClickJsonValid
-            }
-            style={{ minWidth: 150 }}
-            type="primary"
-          >
-            Next
-          </Button>
-        </Row>
-      </div>
-    );
-  }
-
-  createOneClickAppListGrid() {
-    const self = this;
-
-    if (!this.state.oneClickAppList) return <CenteredSpinner />;
-
-    return (
-      <OneClickGrid
-        onAppSelectionChanged={(appName, baseDomain) => {
-          if (appName === TEMPLATE_ONE_CLICK_APP) {
-            self.setState({ isCustomTemplateSelected: true });
-          } else {
-            self.props.history.push(`/apps/oneclick/${appName}?baseDomain=${encodeURIComponent(baseDomain)}`);
-          }
-        }}
-        oneClickAppList={self.state.oneClickAppList!}
-      />
-    );
-  }
-
-  render() {
-    const self = this;
-
-    return (
-      <div>
-        <Row type="flex" justify="center">
-          <Col xs={{ span: 23 }} lg={{ span: 23 }}>
-            <Card title="One Click Apps">
-              <div
-                className={
-                  self.state.isCustomTemplateSelected ? "hide-on-demand" : ""
-                }
-              >
-                <p>
-                  Choose an app, a database or a bundle (app+database) from the
-                  list below. The rest is magic, well... Wizard!
-                </p>
-                <p>
-                  One click apps are retrieved from the official{" "}
-                  <NewTabLink url="https://github.com/caprover/one-click-apps">
-                    CapRover One Click Apps Repository{" "}
-                  </NewTabLink>
-                  by default. You can add other public/private repositories if
-                  you want to.
-                </p>
-                {self.createOneClickAppListGrid()}
-              </div>
-              {Utils.isSafari() ? (
-                <Alert
-                  message="You seem to be using Safari. Deployment of one-click apps may be unstable on Safari. Using Chrome is recommended"
-                  type="warning"
+                    rows={10}
+                    onChange={(e) => {
+                        self.setState({
+                            templateOneClickAppData: e.target.value,
+                        })
+                    }}
                 />
-              ) : (
-                <div />
-              )}
-              <div style={{ height: 50 }} />
+                <div style={{ height: 10 }} />
+                {!isOneClickJsonValid ? (
+                    <Alert
+                        message="One Click data that you've entered is not a valid JSON."
+                        type="error"
+                    />
+                ) : (
+                    <div />
+                )}
+                <div style={{ height: 30 }} />
+                <Row type="flex" justify="space-between" align="middle">
+                    <Button
+                        onClick={() =>
+                            self.props.history.push(
+                                `/apps/oneclick/${TEMPLATE_ONE_CLICK_APP}` +
+                                    (`?${ONE_CLICK_APP_STRINGIFIED_KEY}=` +
+                                        encodeURIComponent(
+                                            self.state.templateOneClickAppData
+                                        ))
+                            )
+                        }
+                        disabled={
+                            !self.state.templateOneClickAppData ||
+                            !isOneClickJsonValid
+                        }
+                        style={{ minWidth: 150 }}
+                        type="primary"
+                    >
+                        Next
+                    </Button>
+                </Row>
+            </div>
+        )
+    }
 
-              {self.createCustomTemplateInput()}
-            </Card>
-          </Col>
-        </Row>
-      </div>
-    );
-  }
+    createOneClickAppListGrid() {
+        const self = this
+
+        if (!this.state.oneClickAppList) return <CenteredSpinner />
+
+        return (
+            <OneClickGrid
+                onAppSelectionChanged={(appName, baseDomain) => {
+                    if (appName === TEMPLATE_ONE_CLICK_APP) {
+                        self.setState({ isCustomTemplateSelected: true })
+                    } else {
+                        self.props.history.push(
+                            `/apps/oneclick/${appName}?baseDomain=${encodeURIComponent(
+                                baseDomain
+                            )}`
+                        )
+                    }
+                }}
+                oneClickAppList={self.state.oneClickAppList!}
+            />
+        )
+    }
+
+    render() {
+        const self = this
+
+        return (
+            <div>
+                <Row type="flex" justify="center">
+                    <Col xs={{ span: 23 }} lg={{ span: 23 }}>
+                        <Card title="One Click Apps">
+                            <div
+                                className={
+                                    self.state.isCustomTemplateSelected
+                                        ? 'hide-on-demand'
+                                        : ''
+                                }
+                            >
+                                <p>
+                                    Choose an app, a database or a bundle
+                                    (app+database) from the list below. The rest
+                                    is magic, well... Wizard!
+                                </p>
+                                <p>
+                                    One click apps are retrieved from the
+                                    official{' '}
+                                    <NewTabLink url="https://github.com/caprover/one-click-apps">
+                                        CapRover One Click Apps Repository{' '}
+                                    </NewTabLink>
+                                    by default. You can add other public/private
+                                    repositories if you want to.
+                                </p>
+                                {self.createOneClickAppListGrid()}
+                            </div>
+                            {Utils.isSafari() ? (
+                                <Alert
+                                    message="You seem to be using Safari. Deployment of one-click apps may be unstable on Safari. Using Chrome is recommended"
+                                    type="warning"
+                                />
+                            ) : (
+                                <div />
+                            )}
+                            <div style={{ height: 50 }} />
+
+                            {self.createCustomTemplateInput()}
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
+        )
+    }
 }
