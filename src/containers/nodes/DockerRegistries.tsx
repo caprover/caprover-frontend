@@ -76,10 +76,12 @@ class DockerRegistries extends ApiComponent<
                 .indexOf(true) >= 0
 
         this.setState({ apiData: undefined, isLoading: true })
-        ;(isSelfHosted
+
+        const promiseToStart = isSelfHosted
             ? this.apiManager.disableSelfHostedDockerRegistry()
             : this.apiManager.deleteDockerRegistry(id)
-        )
+
+        promiseToStart
             .then(function () {
                 message.success('Registry deleted.')
             })
@@ -107,10 +109,13 @@ class DockerRegistries extends ApiComponent<
     addDockerRegistry(dockerRegistry: IRegistryInfo) {
         const self = this
         this.setState({ apiData: undefined, isLoading: true })
-        ;(dockerRegistry.registryType === IRegistryTypes.LOCAL_REG
-            ? self.apiManager.enableSelfHostedDockerRegistry()
-            : self.apiManager.addDockerRegistry(dockerRegistry)
-        )
+
+        const promiseToStart =
+            dockerRegistry.registryType === IRegistryTypes.LOCAL_REG
+                ? self.apiManager.enableSelfHostedDockerRegistry()
+                : self.apiManager.addDockerRegistry(dockerRegistry)
+
+        promiseToStart
             .then(function () {
                 message.success('Docker registry successfully added!')
             })
