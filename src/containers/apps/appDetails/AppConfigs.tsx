@@ -38,7 +38,7 @@ export default class AppConfigs extends Component<
                 // matching "KEY' and 'VAL' in 'KEY=VAL'
                 const keyValueArr = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/)
                 // matched?
-                if (keyValueArr != null) {
+                if (keyValueArr != undefined) {
                     const key = keyValueArr[1]
 
                     // default undefined or missing values to empty string

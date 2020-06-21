@@ -25,7 +25,7 @@ export default class BackupCreator extends ApiComponent<
         self.apiManager
             .createBackup()
             .then(function (data) {
-                let link = document.createElement('a') //create 'a' element
+                let link = document.createElement('a') // create 'a' element
                 link.setAttribute(
                     'href',
                     self.apiManager.getApiBaseUrl() +

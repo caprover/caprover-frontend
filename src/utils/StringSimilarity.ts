@@ -1,7 +1,7 @@
 // Taken from https://github.com/aceakash/string-similarity
 
 /*
- 
+
 MIT License
 
 Copyright (c) 2018 Akash Kurdekar

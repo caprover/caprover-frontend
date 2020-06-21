@@ -314,7 +314,7 @@ class AppDetails extends ApiComponent<
         }
 
         if (!self.reRenderTriggered) {
-            //crazy hack to make sure the Affix is showing (delete and save & update)
+            // crazy hack to make sure the Affix is showing (delete and save & update)
             self.reRenderTriggered = true
             setTimeout(function () {
                 self.setState({ renderCounterForAffixBug: 1 })

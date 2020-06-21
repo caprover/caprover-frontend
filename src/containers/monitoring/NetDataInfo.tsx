@@ -149,7 +149,7 @@ class NetDataInfo extends ApiComponent<
                                     >
                                         <Button
                                             block={self.props.isMobile}
-                                            //onClick={() => self.onStartNetDataClicked()}
+                                            // onClick={() => self.onStartNetDataClicked()}
                                             type="primary"
                                         >
                                             <span>

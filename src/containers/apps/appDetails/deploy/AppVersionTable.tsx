@@ -104,7 +104,7 @@ export default class AppVersionTable extends Component<{
         const imageName = versionToRevert.deployedImageName!
         let content = (
             <span>
-                {`If you had previously deleted this image explicitly through disk cleanup, 
+                {`If you had previously deleted this image explicitly through disk cleanup,
       this revert process will fail.`}
                 <br />
                 <br />
@@ -115,9 +115,9 @@ export default class AppVersionTable extends Component<{
         if (imageName.indexOf('/') > 0) {
             content = (
                 <span>
-                    {`${imageName} appears to be hosted on Docker Registry. 
-        Make sure you have not deleted this image from the repository since it was originally deployed. 
-        Deletion usually does not happen automatically, so if you have not deleted the image intentionally, 
+                    {`${imageName} appears to be hosted on Docker Registry.
+        Make sure you have not deleted this image from the repository since it was originally deployed.
+        Deletion usually does not happen automatically, so if you have not deleted the image intentionally,
         you don't need to worry about this.`}
                     <br />
                     <br />

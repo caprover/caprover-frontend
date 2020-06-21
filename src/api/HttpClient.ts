@@ -2,9 +2,9 @@ import axios from 'axios'
 import ErrorFactory from '../utils/ErrorFactory'
 import Logger from '../utils/Logger'
 
-var TOKEN_HEADER = 'x-captain-auth'
-var NAMESPACE = 'x-namespace'
-var CAPTAIN = 'captain'
+let TOKEN_HEADER = 'x-captain-auth'
+let NAMESPACE = 'x-namespace'
+let CAPTAIN = 'captain'
 
 export default class HttpClient {
     public readonly GET = 'GET'
@@ -119,7 +119,7 @@ export default class HttpClient {
                 headers: self.createHeaders(),
             }) //
             .then(function (data) {
-                //console.log(data);
+                // console.log(data);
                 return data
             })
     }
@@ -131,7 +131,7 @@ export default class HttpClient {
                 headers: self.createHeaders(),
             }) //
             .then(function (data) {
-                //console.log(data);
+                // console.log(data);
                 return data
             })
     }

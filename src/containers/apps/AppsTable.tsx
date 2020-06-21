@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import { Row, Col, Card, Icon, Input, Table } from 'antd'
-import { IAppDef } from './AppDefinition'
-import ClickableLink from '../global/ClickableLink'
-import { History } from 'history'
+import { Card, Col, Icon, Input, Row, Table } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
+import { History } from 'history'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import ClickableLink from '../global/ClickableLink'
 import NewTabLink from '../global/NewTabLink'
+import { IAppDef } from './AppDefinition'
 
 class AppsTable extends Component<
     {
@@ -187,7 +187,7 @@ class AppsTable extends Component<
                                         >
                                             <p>
                                                 Persistent Data:{' '}
-                                                {!hasPersistentData ? null : (
+                                                {!hasPersistentData ? undefined : (
                                                     <span>
                                                         <Icon type="check" />
                                                     </span>
@@ -195,7 +195,7 @@ class AppsTable extends Component<
                                             </p>
                                             <p>
                                                 Exposed Webapp:{' '}
-                                                {!!notExposeAsWebApp ? null : (
+                                                {!!notExposeAsWebApp ? undefined : (
                                                     <span>
                                                         <Icon type="check" />
                                                     </span>
@@ -206,7 +206,7 @@ class AppsTable extends Component<
                                             </p>
                                             <p>
                                                 Open in Browser:{' '}
-                                                {!!notExposeAsWebApp ? null : (
+                                                {!!notExposeAsWebApp ? undefined : (
                                                     <NewTabLink
                                                         url={
                                                             'http' +

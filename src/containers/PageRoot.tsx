@@ -1,23 +1,23 @@
-import React, { RefObject, Fragment } from 'react'
-import { RouteComponentProps, Switch, Route } from 'react-router'
-import ApiManager from '../api/ApiManager'
-import { Layout, Menu, Icon, Row, Col, Button } from 'antd'
-import ClickableLink from './global/ClickableLink'
-import Dashboard from './Dashboard'
-import LoggedInCatchAll from './LoggedInCatchAll'
-import Cluster from './nodes/Cluster'
-import Apps from './apps/Apps'
+import { Button, Col, Icon, Layout, Menu, Row } from 'antd'
 import { SelectParam } from 'antd/lib/menu'
-import AppDetails from './apps/appDetails/AppDetails'
-import Monitoring from './monitoring/Monitoring'
-import Settings from './settings/Settings'
-import OneClickAppSelector from './apps/oneclick/OneClickAppSelector'
-import OneClickAppConfigPage from './apps/oneclick/OneClickAppConfigPage'
-import ApiComponent from './global/ApiComponent'
+import React, { Fragment, RefObject } from 'react'
+import { connect } from 'react-redux'
+import { Route, RouteComponentProps, Switch } from 'react-router'
+import ApiManager from '../api/ApiManager'
 import { IVersionInfo } from '../models/IVersionInfo'
 import * as GlobalActions from '../redux/actions/GlobalActions'
-import { connect } from 'react-redux'
+import AppDetails from './apps/appDetails/AppDetails'
+import Apps from './apps/Apps'
+import OneClickAppConfigPage from './apps/oneclick/OneClickAppConfigPage'
+import OneClickAppSelector from './apps/oneclick/OneClickAppSelector'
+import Dashboard from './Dashboard'
+import ApiComponent from './global/ApiComponent'
+import ClickableLink from './global/ClickableLink'
 import NewTabLink from './global/NewTabLink'
+import LoggedInCatchAll from './LoggedInCatchAll'
+import Monitoring from './monitoring/Monitoring'
+import Cluster from './nodes/Cluster'
+import Settings from './settings/Settings'
 
 const { Header, Content, Sider } = Layout
 
@@ -106,7 +106,7 @@ class PageRoot extends ApiComponent<
                     self.setState({ versionInfo: data })
                 })
                 .catch((err) => {
-                    //ignore error
+                    // ignore error
                 })
         }
     }
@@ -119,7 +119,7 @@ class PageRoot extends ApiComponent<
         const self = this
 
         if (!self.state.versionInfo || !self.state.versionInfo.canUpdate) {
-            return null
+            return undefined
         }
 
         return (
@@ -259,7 +259,7 @@ class PageRoot extends ApiComponent<
                 <Layout>
                     <Sider
                         breakpoint="lg"
-                        trigger={this.props.isMobile && null}
+                        trigger={this.props.isMobile && undefined}
                         collapsible
                         collapsed={this.state.collapsed}
                         width={200}

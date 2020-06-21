@@ -1,11 +1,11 @@
+import { Card, Col, Row } from 'antd'
 import React, { Component } from 'react'
-import { Row, Col, Card } from 'antd'
 import { connect } from 'react-redux'
+import BackupCreator from './BackupCreator'
 import ChangePass from './ChangePass'
 import CheckUpdate from './CheckUpdate'
-import NginxConfig from './NginxConfig'
 import DiskCleanup from './DiskCleanup'
-import BackupCreator from './BackupCreator'
+import NginxConfig from './NginxConfig'
 
 class Settings extends Component<
     {
@@ -83,4 +83,4 @@ function mapStateToProps(state: any) {
     }
 }
 
-export default connect(mapStateToProps, null)(Settings)
+export default connect(mapStateToProps, undefined)(Settings)

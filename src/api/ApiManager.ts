@@ -147,7 +147,7 @@ export default class ApiManager {
 
     uploadAppData(appName: string, file: File) {
         const http = this.http
-        var formData = new FormData()
+        let formData = new FormData()
         formData.append('sourceFile', file)
         return Promise.resolve() //
             .then(
@@ -185,22 +185,22 @@ export default class ApiManager {
     }
 
     updateConfigAndSave(appName: string, appDefinition: IAppDef) {
-        var instanceCount = appDefinition.instanceCount
-        var captainDefinitionRelativeFilePath =
+        let instanceCount = appDefinition.instanceCount
+        let captainDefinitionRelativeFilePath =
             appDefinition.captainDefinitionRelativeFilePath
-        var envVars = appDefinition.envVars
-        var notExposeAsWebApp = appDefinition.notExposeAsWebApp
-        var forceSsl = appDefinition.forceSsl
-        var websocketSupport = appDefinition.websocketSupport
-        var volumes = appDefinition.volumes
-        var ports = appDefinition.ports
-        var nodeId = appDefinition.nodeId
-        var appPushWebhook = appDefinition.appPushWebhook
-        var customNginxConfig = appDefinition.customNginxConfig
-        var preDeployFunction = appDefinition.preDeployFunction
-        var containerHttpPort = appDefinition.containerHttpPort
-        var description = appDefinition.description
-        var httpAuth = appDefinition.httpAuth
+        let envVars = appDefinition.envVars
+        let notExposeAsWebApp = appDefinition.notExposeAsWebApp
+        let forceSsl = appDefinition.forceSsl
+        let websocketSupport = appDefinition.websocketSupport
+        let volumes = appDefinition.volumes
+        let ports = appDefinition.ports
+        let nodeId = appDefinition.nodeId
+        let appPushWebhook = appDefinition.appPushWebhook
+        let customNginxConfig = appDefinition.customNginxConfig
+        let preDeployFunction = appDefinition.preDeployFunction
+        let containerHttpPort = appDefinition.containerHttpPort
+        let description = appDefinition.description
+        let httpAuth = appDefinition.httpAuth
         const http = this.http
 
         return Promise.resolve() //
