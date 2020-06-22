@@ -149,7 +149,7 @@ class AppsTable extends Component<
                     style={{ paddingBottom: 300 }}
                 >
                     <Card
-                        extra={!!!self.props.isMobile && searchAppInput}
+                        extra={!self.props.isMobile && searchAppInput}
                         title={
                             <React.Fragment>
                                 <span>
@@ -161,7 +161,7 @@ class AppsTable extends Component<
                             </React.Fragment>
                         }
                     >
-                        <Row>
+                        <Row justify="center">
                             {self.props.isMobile ? (
                                 appsToRender.map(
                                     ({
@@ -230,13 +230,19 @@ class AppsTable extends Component<
                                     )
                                 )
                             ) : (
-                                <Table<IAppDef>
-                                    rowKey="appName"
-                                    columns={self.createColumns()}
-                                    dataSource={appsToRender}
-                                    pagination={false}
-                                    size="middle"
-                                />
+                                <div
+                                    style={{
+                                        width: '100%',
+                                    }}
+                                >
+                                    <Table<IAppDef>
+                                        rowKey="appName"
+                                        columns={self.createColumns()}
+                                        dataSource={appsToRender}
+                                        pagination={false}
+                                        size="middle"
+                                    />
+                                </div>
                             )}
                         </Row>
                     </Card>
