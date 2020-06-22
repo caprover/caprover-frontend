@@ -301,10 +301,8 @@ export default class Dashboard extends ApiComponent<
                                 </i>
                             </p>
                         </div>
-
                         <hr />
                         <br />
-
                         <Row>
                             <div>
                                 <p>
@@ -329,38 +327,34 @@ export default class Dashboard extends ApiComponent<
                                     />
                                 </div>
                             </div>
-                            <br />
-                            <br />
-                            <Row justify="end">
-                                <Tooltip title="Using Let's Encrypt Free Service">
-                                    <Button
-                                        disabled={
-                                            self.state.apiData.hasRootSsl ||
-                                            !self.state.apiData.rootDomain
-                                        }
-                                        onClick={() =>
-                                            self.onEnableSslClicked()
-                                        }
-                                    >
-                                        Enable HTTPS
-                                    </Button>
-                                </Tooltip>
-                                &nbsp;&nbsp;
-                                <Tooltip title="Redirect all HTTP to HTTPS">
-                                    <Button
-                                        disabled={
-                                            !self.state.apiData.hasRootSsl ||
-                                            self.state.apiData.forceSsl
-                                        }
-                                        onClick={() => self.onForceSslClicked()}
-                                    >
-                                        Force HTTPS
-                                    </Button>
-                                </Tooltip>
-                            </Row>
-
-                            <div />
                         </Row>
+                        <div style={{ height: 20 }} />
+                        <Row justify="end">
+                            <Tooltip title="Using Let's Encrypt Free Service">
+                                <Button
+                                    disabled={
+                                        self.state.apiData.hasRootSsl ||
+                                        !self.state.apiData.rootDomain
+                                    }
+                                    onClick={() => self.onEnableSslClicked()}
+                                >
+                                    Enable HTTPS
+                                </Button>
+                            </Tooltip>
+                            &nbsp;&nbsp;
+                            <Tooltip title="Redirect all HTTP to HTTPS">
+                                <Button
+                                    disabled={
+                                        !self.state.apiData.hasRootSsl ||
+                                        self.state.apiData.forceSsl
+                                    }
+                                    onClick={() => self.onForceSslClicked()}
+                                >
+                                    Force HTTPS
+                                </Button>
+                            </Tooltip>
+                        </Row>
+                        ``
                     </Card>
                 </Col>
             </Row>
