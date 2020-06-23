@@ -154,7 +154,7 @@ class DockerRegistries extends ApiComponent<
                 >
                     <Alert
                         type="info"
-                        message="No registries is added yet. Go ahead and add your first registry!"
+                        message="No registries have been added yet. Go ahead and add your first registry!"
                     />
                 </div>
 
