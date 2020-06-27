@@ -219,7 +219,7 @@ export default class Deployment extends ApiComponent<
                         className="code-input"
                         readOnly={true}
                         disabled={!hasPushToken}
-                        defaultValue={
+                        value={
                             hasPushToken
                                 ? webhookPushUrlFullPath
                                 : '** Add repo info and save for this webhook to appear **'
