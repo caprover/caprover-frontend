@@ -9,13 +9,19 @@ const Search = Input.Search
 
 export default class Dashboard extends ApiComponent<
     {},
-    { isLoading: boolean; apiData: any; userEmail: string }
+    {
+        isLoading: boolean
+        isForceChangingDomain: boolean
+        apiData: any
+        userEmail: string
+    }
 > {
     constructor(props: any) {
         super(props)
         this.state = {
             userEmail: '',
             isLoading: true,
+            isForceChangingDomain: false,
             apiData: undefined,
         }
     }
@@ -258,15 +264,22 @@ export default class Dashboard extends ApiComponent<
 
         return (
             <div>
-                {self.createInitialSetup()}
+                {self.createInitialSetupIfNoRootSsl()}
                 <br />
-                {self.createSetupPanel()}
+                {self.createPostFullSetupIfHasForceSsl()}
+                <br />
+                {self.createSetupPanelIfNoForceSsl()}
             </div>
         )
     }
 
-    createSetupPanel() {
+    createSetupPanelIfNoForceSsl() {
         const self = this
+        if (this.state.apiData.forceSsl && !self.state.isForceChangingDomain) {
+            // User has set up the machine, no need to update your domain again - unless user really wants this!
+            return undefined
+        }
+
         return (
             <Row justify="center">
                 <Col xs={{ span: 23 }} lg={{ span: 16 }}>
@@ -361,7 +374,7 @@ export default class Dashboard extends ApiComponent<
         )
     }
 
-    createInitialSetup() {
+    createInitialSetupIfNoRootSsl() {
         if (this.state.apiData.hasRootSsl) {
             // User has set up the machine, no need to show the welcome message
             return <div />
@@ -403,6 +416,79 @@ export default class Dashboard extends ApiComponent<
                                     of experimentation.
                                 </li>
                             </ul>
+                        </div>
+                    </Card>
+                </Col>
+            </Row>
+        )
+    }
+
+    createPostFullSetupIfHasForceSsl() {
+        const self = this
+        if (!this.state.apiData.forceSsl) {
+            // User has not fully set up the machine, do not show the post installation message
+            return undefined
+        }
+
+        return (
+            <Row justify="center">
+                <Col xs={{ span: 23 }} lg={{ span: 16 }}>
+                    <Card title="CapRover">
+                        <div>
+                            <h3>
+                                Congratulations!{' '}
+                                <span aria-label="Congrats" role="img">
+                                    🎉🎉
+                                </span>
+                            </h3>
+                            <p>
+                                You have installed and set CapRover up
+                                successfully! You can now deploy your apps!
+                                Remember, with CapRover, you can deploy
+                                applications from source code (such as NodeJS,
+                                php, java, Ruby, python etc...), and you can
+                                also deploy ready to go applications such as
+                                MySQL, MongoDB, WordPress, Redis, and many more!
+                            </p>
+
+                            <p>
+                                For more information on how to deploy
+                                applications from source code, make sure to have
+                                a look at our
+                                <a
+                                    href="https://caprover.com/docs/sample-apps.html"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {' '}
+                                    sample apps
+                                </a>
+                            </p>
+
+                            <p>
+                                <i>
+                                    You can always update your root domain, but
+                                    be careful! Your SSL certificates will get
+                                    invoked because of this domain change. Make
+                                    sure to choose a good root domain from the
+                                    beginning so you don't have to make changes
+                                    later on.
+                                </i>
+                            </p>
+
+                            <Row justify="end">
+                                <Button
+                                    disabled={this.state.isForceChangingDomain}
+                                    type="ghost"
+                                    onClick={() => {
+                                        self.setState({
+                                            isForceChangingDomain: true,
+                                        })
+                                    }}
+                                >
+                                    Change Root Domain Anyways
+                                </Button>
+                            </Row>
                         </div>
                     </Card>
                 </Col>
