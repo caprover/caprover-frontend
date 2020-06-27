@@ -31,7 +31,7 @@ export default class OneClickGrid extends Component<
         return (
             <div style={{ marginTop: 20 }}>
                 <Row align="middle" justify="end">
-                    <Tooltip title={'From: ' + app.baseUrl}>
+                    <Tooltip title={`From: ${app.baseUrl}`}>
                         <FlagTwoTone />
                     </Tooltip>
                 </Row>

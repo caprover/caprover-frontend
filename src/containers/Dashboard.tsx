@@ -82,16 +82,14 @@ export default class Dashboard extends ApiComponent<
                             onOk() {
                                 if (isUsingHttp) {
                                     window.location.replace(
-                                        'https://captain.' +
-                                            self.state.apiData.rootDomain
+                                        `https://captain.${self.state.apiData.rootDomain}`
                                     )
                                 }
                             },
                             onCancel() {
                                 if (isUsingHttp) {
                                     window.location.replace(
-                                        'https://' +
-                                            self.state.apiData.rootDomain
+                                        `https://${self.state.apiData.rootDomain}`
                                     )
                                 }
                             },
@@ -180,7 +178,7 @@ export default class Dashboard extends ApiComponent<
                             <p>
                                 You can now use{' '}
                                 <code>
-                                    {'https://' + self.state.apiData.rootDomain}
+                                    {`https://${self.state.apiData.rootDomain}`}
                                 </code>
                                 . Next step is to Force HTTPS to disallow plain
                                 HTTP traffic.
@@ -244,7 +242,7 @@ export default class Dashboard extends ApiComponent<
                         </div>
                     ),
                     onOk() {
-                        window.location.replace('http://captain.' + rootDomain)
+                        window.location.replace(`http://captain.${rootDomain}`)
                     },
                 })
             })

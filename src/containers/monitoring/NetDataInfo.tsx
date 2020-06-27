@@ -140,7 +140,7 @@ class NetDataInfo extends ApiComponent<
                                     </Button>
                                     <a
                                         type="submit"
-                                        href={'//' + netDataInfo.netDataUrl}
+                                        href={`//${netDataInfo.netDataUrl}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         style={{

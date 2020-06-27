@@ -70,9 +70,9 @@ export default class AppConfigs extends Component<
             .map((e) => {
                 let val = e.value
                 if (val.indexOf('\n') >= 0) {
-                    val = '"' + val.split('\n').join('\\n') + '"'
+                    val = `"${val.split('\n').join('\\n')}"`
                 }
-                return e.key + '=' + val
+                return `${e.key}=${val}`
             })
             .join('\n')
     }
@@ -122,7 +122,7 @@ export default class AppConfigs extends Component<
 
         const rows = envVars.map((value, index) => {
             return (
-                <Row style={{ paddingBottom: 12 }} key={'' + index}>
+                <Row style={{ paddingBottom: 12 }} key={`${index}`}>
                     <Col span={8}>
                         <Input
                             className="code-input"
@@ -181,7 +181,7 @@ export default class AppConfigs extends Component<
         const ports = this.props.apiData.appDefinition.ports || []
         return ports.map((value, index) => {
             return (
-                <Row style={{ paddingBottom: 12 }} key={'' + index}>
+                <Row style={{ paddingBottom: 12 }} key={`${index}`}>
                     <Col span={12}>
                         <Tooltip title="Make sure the port is not already used!">
                             <Input
@@ -235,7 +235,7 @@ export default class AppConfigs extends Component<
         const volumes = this.props.apiData.appDefinition.volumes || []
         return volumes.map((value, index) => {
             return (
-                <Row style={{ paddingBottom: 12 }} key={'' + index}>
+                <Row style={{ paddingBottom: 12 }} key={`${index}`}>
                     <Col span={8}>
                         <Input
                             addonBefore="Path in App"

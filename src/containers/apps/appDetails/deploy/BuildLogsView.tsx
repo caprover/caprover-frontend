@@ -71,8 +71,7 @@ export default class BuildLogsView extends ApiComponent<
                         firstLinesToPrint = -firstLineNumberOfLogs
                     } else {
                         self.setState({
-                            buildLogs:
-                                self.state.buildLogs + '[[ TRUNCATED ]]\n',
+                            buildLogs: `${self.state.buildLogs}[[ TRUNCATED ]]\n`,
                         })
                     }
                 } else {

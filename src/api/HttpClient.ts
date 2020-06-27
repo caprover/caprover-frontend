@@ -108,7 +108,7 @@ export default class HttpClient {
 
         if (method === this.POST) return this.postReq(endpoint, variables)
 
-        throw new Error('Unknown method: ' + method)
+        throw new Error(`Unknown method: ${method}`)
     }
 
     getReq(endpoint: string, variables: any) {

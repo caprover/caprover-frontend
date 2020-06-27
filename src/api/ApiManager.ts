@@ -11,7 +11,7 @@ const BASE_DOMAIN = process.env.REACT_APP_API_URL
     ? process.env.REACT_APP_API_URL
     : ''
 const URL = BASE_DOMAIN + '/api/v2'
-Logger.dev('API URL: ' + URL)
+Logger.dev(`API URL: ${URL}`)
 
 export default class ApiManager {
     private static lastKnownPassword: string = ''
@@ -129,7 +129,7 @@ export default class ApiManager {
         const http = this.http
 
         return Promise.resolve() //
-            .then(http.fetch(http.GET, '/user/apps/appData/' + appName, {}))
+            .then(http.fetch(http.GET, `/user/apps/appData/${appName}`, {}))
     }
 
     fetchAppLogsInHex(appName: string) {
@@ -153,7 +153,7 @@ export default class ApiManager {
             .then(
                 http.fetch(
                     http.POST,
-                    '/user/apps/appData/' + appName + '?detached=1',
+                    `/user/apps/appData/${appName}?detached=1`,
                     formData
                 )
             )
@@ -171,9 +171,9 @@ export default class ApiManager {
             .then(
                 http.fetch(
                     http.POST,
-                    '/user/apps/appData/' +
-                        appName +
-                        (detached ? '?detached=1' : ''),
+                    `/user/apps/appData/${appName}${
+                        detached ? '?detached=1' : ''
+                    }`,
                     {
                         captainDefinitionContent: JSON.stringify(
                             captainDefinition
@@ -249,8 +249,9 @@ export default class ApiManager {
             .then(
                 http.fetch(
                     http.POST,
-                    '/user/apps/appDefinitions/register' +
-                        (detached ? '?detached=1' : ''),
+                    `/user/apps/appDefinitions/register${
+                        detached ? '?detached=1' : ''
+                    }`,
                     {
                         appName,
                         hasPersistentData,

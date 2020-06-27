@@ -177,7 +177,7 @@ export default class HttpSettings extends Component<
                         </Button>
                     </Button.Group>
 
-                    <NewTabLink url={'http://' + c.publicDomain}>
+                    <NewTabLink url={`http://${c.publicDomain}`}>
                         {c.publicDomain}
                     </NewTabLink>
                 </Row>
@@ -268,26 +268,18 @@ export default class HttpSettings extends Component<
                         </Tooltip>
                     </Button.Group>
                     <NewTabLink
-                        url={
-                            'http' +
-                            (app.hasDefaultSubDomainSsl ? 's' : '') +
-                            '://' +
-                            app.appName +
-                            '.' +
-                            rootDomain
-                        }
+                        url={`http${app.hasDefaultSubDomainSsl ? 's' : ''}://${
+                            app.appName
+                        }.${rootDomain}`}
                     >
                         <span
                             style={{
                                 marginLeft: 20,
                             }}
                         >
-                            {'http' +
-                                (app.hasDefaultSubDomainSsl ? 's' : '') +
-                                '://' +
-                                app.appName +
-                                '.' +
-                                rootDomain}
+                            {`http${app.hasDefaultSubDomainSsl ? 's' : ''}://${
+                                app.appName
+                            }.${rootDomain}`}
                         </span>
                     </NewTabLink>
                 </Row>
@@ -546,7 +538,7 @@ export default class HttpSettings extends Component<
                     Your app is internally available as{' '}
                     <code>srv-captain--{app.appName}</code> to other Captain
                     apps. In case of web-app, it is accessible via{' '}
-                    <code>{'http://srv-captain--' + app.appName}</code> from
+                    <code>{`http://srv-captain--${app.appName}`}</code> from
                     other apps.
                 </p>
                 <br />

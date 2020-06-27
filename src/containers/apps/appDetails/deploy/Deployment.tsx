@@ -54,7 +54,7 @@ export default class Deployment extends ApiComponent<
 
     onUploadSuccess() {
         message.info('Build has started')
-        this.setState({ buildLogRecreationId: '' + new Date().getTime() })
+        this.setState({ buildLogRecreationId: `${new Date().getTime()}` })
         DomUtils.scrollToTopBar()
     }
 
@@ -95,7 +95,7 @@ export default class Deployment extends ApiComponent<
                     schemaVersion: 2,
                     // We should use imageName, but since imageName does not report build failure (since there is no build!)
                     // If we use that, and the image is not available, the service will not work.
-                    dockerfileLines: ['FROM ' + version.deployedImageName],
+                    dockerfileLines: [`FROM ${version.deployedImageName}`],
                 },
                 version.gitHash || '',
                 true
@@ -122,16 +122,12 @@ export default class Deployment extends ApiComponent<
               }
 
         const webhookPushUrlRelativePath = hasPushToken
-            ? '/user/apps/webhooks/triggerbuild?namespace=captain&token=' +
-              app.appPushWebhook!.pushWebhookToken
+            ? `/user/apps/webhooks/triggerbuild?namespace=captain&token=${
+                  app.appPushWebhook!.pushWebhookToken
+              }`
             : ''
 
-        const webhookPushUrlFullPath =
-            window.location.protocol +
-            '//captain.' +
-            this.props.apiData.rootDomain +
-            '/api/v2' +
-            webhookPushUrlRelativePath
+        const webhookPushUrlFullPath = `${window.location.protocol}//captain.${this.props.apiData.rootDomain}/api/v2${webhookPushUrlRelativePath}`
 
         return (
             <div>
@@ -139,7 +135,7 @@ export default class Deployment extends ApiComponent<
                     onAppBuildFinished={() => self.onAppBuildFinished()}
                     appName={app.appName!}
                     buildLogRecreationId={self.state.buildLogRecreationId}
-                    key={app.appName! + '-' + self.state.buildLogRecreationId}
+                    key={`${app.appName!}-${self.state.buildLogRecreationId}`}
                 />
                 <div style={{ height: 20 }} />
                 <hr />

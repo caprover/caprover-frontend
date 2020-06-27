@@ -133,7 +133,7 @@ export default class OneClickAppDeployManager {
                 self.onDeploymentStateChanged(
                     Utils.copyObject({
                         steps: stepsTexts,
-                        error: 'Failed: ' + error,
+                        error: `Failed: ${error}`,
                         currentStep,
                     })
                 )

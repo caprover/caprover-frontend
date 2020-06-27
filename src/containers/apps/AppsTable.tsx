@@ -103,14 +103,9 @@ class AppsTable extends Component<
 
                     return (
                         <NewTabLink
-                            url={
-                                'http' +
-                                (app.hasDefaultSubDomainSsl ? 's' : '') +
-                                '://' +
-                                app.appName +
-                                '.' +
-                                self.props.rootDomain
-                            }
+                            url={`http${
+                                app.hasDefaultSubDomainSsl ? 's' : ''
+                            }://${app.appName}.${self.props.rootDomain}`}
                         >
                             <LinkOutlined />{' '}
                         </NewTabLink>
@@ -210,17 +205,14 @@ class AppsTable extends Component<
                                                 Open in Browser:{' '}
                                                 {!!notExposeAsWebApp ? undefined : (
                                                     <NewTabLink
-                                                        url={
-                                                            'http' +
-                                                            (hasDefaultSubDomainSsl
+                                                        url={`http${
+                                                            hasDefaultSubDomainSsl
                                                                 ? 's'
-                                                                : '') +
-                                                            '://' +
-                                                            appName +
-                                                            '.' +
+                                                                : ''
+                                                        }://${appName}.${
                                                             self.props
                                                                 .rootDomain
-                                                        }
+                                                        }`}
                                                     >
                                                         <LinkOutlined />{' '}
                                                     </NewTabLink>

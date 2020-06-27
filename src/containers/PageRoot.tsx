@@ -164,7 +164,7 @@ class PageRoot extends ApiComponent<
     }
 
     onSelectMenu(param: SelectParam) {
-        this.props.history.push('/' + param.key)
+        this.props.history.push(`/${param.key}`)
     }
 
     toggleSider = () => {

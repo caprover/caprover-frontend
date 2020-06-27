@@ -30,7 +30,7 @@ export default class DefaultDockerRegistry extends Component<
         for (let index = 0; index < registries.length; index++) {
             const element = registries[index]
             if (element.id === defaultPushRegistryId) {
-                return element.registryUser + ' @ ' + element.registryDomain
+                return `${element.registryUser} @ ${element.registryDomain}`
             }
         }
 
@@ -42,7 +42,7 @@ export default class DefaultDockerRegistry extends Component<
         return registries.map(function (element) {
             return (
                 <Option value={element.id} key={element.id}>
-                    {element.registryUser + ' @ ' + element.registryDomain}
+                    {`${element.registryUser} @ ${element.registryDomain}`}
                 </Option>
             )
         })
