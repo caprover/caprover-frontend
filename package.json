@@ -3,7 +3,6 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@ant-design/compatible": "^1.0.2",
         "@types/classnames": "^2.2.10",
         "@types/deep-equal": "^1.0.1",
         "@types/jest": "^26.0.0",

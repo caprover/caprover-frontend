@@ -1,5 +1,8 @@
-import { Icon as LegacyIcon } from '@ant-design/compatible'
-import { LoadingOutlined } from '@ant-design/icons'
+import {
+    DownCircleOutlined,
+    LoadingOutlined,
+    UpCircleOutlined,
+} from '@ant-design/icons'
 import { Alert, Row, Spin } from 'antd'
 import React from 'react'
 import Toaster from '../../../../utils/Toaster'
@@ -164,13 +167,11 @@ export default class BuildLogsView extends ApiComponent<
                             }}
                         >
                             <h4 className="unselectable-span">
-                                <LegacyIcon
-                                    type={
-                                        !this.state.expandedLogs
-                                            ? 'down-circle'
-                                            : 'up-circle'
-                                    }
-                                />
+                                {this.state.expandedLogs ? (
+                                    <UpCircleOutlined />
+                                ) : (
+                                    <DownCircleOutlined />
+                                )}
                                 &nbsp;&nbsp;
                                 {!this.state.expandedLogs
                                     ? 'View'

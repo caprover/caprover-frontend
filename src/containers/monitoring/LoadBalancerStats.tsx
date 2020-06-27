@@ -1,4 +1,4 @@
-import { Icon as LegacyIcon } from '@ant-design/compatible'
+import * as Icons from '@ant-design/icons'
 import { Avatar, Card, Col, Row, Tooltip } from 'antd'
 import React, { Component } from 'react'
 import Toaster from '../../utils/Toaster'
@@ -23,7 +23,7 @@ class LoadBalancerStatsCard extends Component<any, any> {
                     <Avatar
                         style={{ backgroundColor: this.props.color }}
                         size={64}
-                        icon={<LegacyIcon type={this.props.icon} />}
+                        icon={this.props.icon}
                     />
                 </div>
                 <div style={{ textAlign: 'center' }}>
@@ -108,7 +108,7 @@ export default class LoadBalancerStats extends ApiComponent<
                                     <Tooltip title="Constantly going up as refreshing the values">
                                         <div>
                                             <LoadBalancerStatsCard
-                                                icon="global"
+                                                icon={<Icons.GlobalOutlined />}
                                                 color="#2361ae"
                                                 titleText="Total Requests"
                                                 titleNumber={`${this.state.apiData.total}`}
@@ -120,7 +120,7 @@ export default class LoadBalancerStats extends ApiComponent<
                                 </Col>
                                 <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                                     <LoadBalancerStatsCard
-                                        icon="cluster"
+                                        icon={<Icons.ClusterOutlined />}
                                         color="#23ae89"
                                         titleText="Active Connections"
                                         titleNumber={`${this.state.apiData.activeConnections}`}
@@ -130,7 +130,7 @@ export default class LoadBalancerStats extends ApiComponent<
                                 </Col>
                                 <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                                     <LoadBalancerStatsCard
-                                        icon="sync"
+                                        icon={<Icons.SyncOutlined />}
                                         color="#d3a938"
                                         titleText="Active Requests"
                                         titleNumber={`${
@@ -143,7 +143,7 @@ export default class LoadBalancerStats extends ApiComponent<
                                 </Col>
                                 <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                                     <LoadBalancerStatsCard
-                                        icon="clock-circle"
+                                        icon={<Icons.ClockCircleOutlined />}
                                         color="#ae2323"
                                         titleText="Waiting Requests"
                                         titleNumber={`${this.state.apiData.waiting}`}

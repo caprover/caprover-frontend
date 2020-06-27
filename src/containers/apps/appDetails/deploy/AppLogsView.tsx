@@ -1,5 +1,9 @@
-import { Icon as LegacyIcon } from '@ant-design/compatible'
-import { InfoCircleOutlined, MenuFoldOutlined } from '@ant-design/icons'
+import {
+    DownCircleOutlined,
+    InfoCircleOutlined,
+    MenuFoldOutlined,
+    UpCircleOutlined,
+} from '@ant-design/icons'
 import { Row, Tooltip } from 'antd'
 import React from 'react'
 import Utils from '../../../../utils/Utils'
@@ -136,13 +140,11 @@ export default class AppLogsView extends ApiComponent<
                                             }}
                                         >
                                             <h4 className="unselectable-span">
-                                                <LegacyIcon
-                                                    type={
-                                                        !this.state.expandedLogs
-                                                            ? 'down-circle'
-                                                            : 'up-circle'
-                                                    }
-                                                />
+                                                {this.state.expandedLogs ? (
+                                                    <UpCircleOutlined />
+                                                ) : (
+                                                    <DownCircleOutlined />
+                                                )}
                                                 &nbsp;&nbsp;
                                                 {!this.state.expandedLogs
                                                     ? 'View'

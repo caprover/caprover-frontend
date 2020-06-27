@@ -1,10 +1,14 @@
-import { Icon as LegacyIcon } from '@ant-design/compatible'
 import {
     BarsOutlined,
+    ClusterOutlined,
+    CodeOutlined,
+    DashboardOutlined,
     FileTextOutlined,
     GiftTwoTone,
     GithubOutlined,
+    LaptopOutlined,
     LogoutOutlined,
+    SettingOutlined,
 } from '@ant-design/icons'
 import { Button, Col, Layout, Menu, Row } from 'antd'
 import { SelectParam } from 'antd/lib/menu'
@@ -33,27 +37,27 @@ const MENU_ITEMS = [
     {
         key: 'dashboard',
         name: 'Dashboard',
-        icon: 'laptop',
+        icon: <LaptopOutlined />,
     },
     {
         key: 'apps',
         name: 'Apps',
-        icon: 'code',
+        icon: <CodeOutlined />,
     },
     {
         key: 'monitoring',
         name: 'Monitoring',
-        icon: 'dashboard',
+        icon: <DashboardOutlined />,
     },
     {
         key: 'cluster',
         name: 'Cluster',
-        icon: 'cluster',
+        icon: <ClusterOutlined />,
     },
     {
         key: 'settings',
         name: 'Settings',
-        icon: 'setting',
+        icon: <SettingOutlined />,
     },
 ]
 
@@ -282,7 +286,7 @@ class PageRoot extends ApiComponent<
                             {MENU_ITEMS.map((item) => (
                                 <Menu.Item key={item.key}>
                                     <span>
-                                        <LegacyIcon type={item.icon} />
+                                        {item.icon}
                                         <span>{item.name}</span>
                                     </span>
                                 </Menu.Item>
