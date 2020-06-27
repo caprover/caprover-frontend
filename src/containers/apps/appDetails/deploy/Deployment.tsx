@@ -301,7 +301,7 @@ export default class Deployment extends ApiComponent<
                     <Col
                         xs={{ span: 24 }}
                         lg={{ span: 6 }}
-                        style={{ width: this.props.isMobile ? '100%' : 400 }}
+                        style={{ minWidth: this.props.isMobile ? '100%' : 400 }}
                     >
                         {this.props.isMobile &&
                             'captain-definition Relative Path'}

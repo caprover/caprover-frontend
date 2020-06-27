@@ -346,7 +346,7 @@ export default class HttpSettings extends Component<
                     <Col
                         xs={{ span: 24 }}
                         lg={{ span: 6 }}
-                        style={{ width: this.props.isMobile ? '100%' : 300 }}
+                        style={{ minWidth: this.props.isMobile ? '100%' : 300 }}
                     >
                         <Tooltip title="HTTP port inside the container. Default is 80. Change only if the app is running in a different port. This is used only for HTTP apps, not databases.">
                             <Input

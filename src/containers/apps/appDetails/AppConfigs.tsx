@@ -365,7 +365,7 @@ export default class AppConfigs extends Component<
                 <Row>
                     <Col
                         span={6}
-                        style={{ width: this.props.isMobile ? '100%' : 300 }}
+                        style={{ minWidth: this.props.isMobile ? '100%' : 300 }}
                     >
                         <Tooltip title="Leave empty for automatic placement">
                             <Input
@@ -479,7 +479,7 @@ export default class AppConfigs extends Component<
                 <Row>
                     <Col
                         span={6}
-                        style={{ width: this.props.isMobile ? '100%' : 300 }}
+                        style={{ minWidth: this.props.isMobile ? '100%' : 300 }}
                     >
                         <Tooltip title="Number of running instances of this app">
                             <Input
@@ -527,38 +527,42 @@ export default class AppConfigs extends Component<
                         </div>
                     </Col>
                 </Row>
+                <div style={{ height: 50 }} />
 
                 <Row>
-                    <br />
-                    <br />
-                    <br />
-                    <h4>
-                        Pre-Deploy Script
-                        <NewTabLink url="https://caprover.com/docs/pre-deploy-script.html">
-                            <InfoCircleOutlined style={{ paddingLeft: 10 }} />
-                        </NewTabLink>
-                    </h4>
+                    <Col span={24}>
+                        <h4>
+                            Pre-Deploy Script
+                            <NewTabLink url="https://caprover.com/docs/pre-deploy-script.html">
+                                <InfoCircleOutlined
+                                    style={{ paddingLeft: 10 }}
+                                />
+                            </NewTabLink>
+                        </h4>
 
-                    <Input.TextArea
-                        spellCheck={false}
-                        autoCorrect="off"
-                        autoComplete="off"
-                        autoCapitalize="off"
-                        className="code-input"
-                        placeholder="var preDeployFunction = function (capRoverAppObj, dockerUpdateObject) ..."
-                        rows={4}
-                        value={
-                            app.preDeployFunction ? app.preDeployFunction : ''
-                        }
-                        onChange={(e) => {
-                            const newApiData = Utils.copyObject(
-                                this.props.apiData
-                            )
-                            newApiData.appDefinition.preDeployFunction =
-                                e.target.value
-                            this.props.updateApiData(newApiData)
-                        }}
-                    />
+                        <Input.TextArea
+                            spellCheck={false}
+                            autoCorrect="off"
+                            autoComplete="off"
+                            autoCapitalize="off"
+                            className="code-input"
+                            placeholder="var preDeployFunction = function (capRoverAppObj, dockerUpdateObject) ..."
+                            rows={4}
+                            value={
+                                app.preDeployFunction
+                                    ? app.preDeployFunction
+                                    : ''
+                            }
+                            onChange={(e) => {
+                                const newApiData = Utils.copyObject(
+                                    this.props.apiData
+                                )
+                                newApiData.appDefinition.preDeployFunction =
+                                    e.target.value
+                                this.props.updateApiData(newApiData)
+                            }}
+                        />
+                    </Col>
                 </Row>
             </div>
         )
