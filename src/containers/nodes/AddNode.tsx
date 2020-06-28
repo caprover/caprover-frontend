@@ -81,7 +81,16 @@ export default class AddNode extends Component<
                         </Col>
                         <Col span={24} style={{ marginTop: 10 }}>
                             <div style={{ paddingBottom: 5 }}>
-                                &nbsp;SSH Private Key for <b>root</b> user
+                                &nbsp;SSH Private Key for <b>root</b>
+                                &nbsp;
+                                <Tooltip title="Use RSA key. Other types such as Ed25519 are not supported, for those use the alternative method below.">
+                                    <InfoCircleOutlined
+                                        style={{
+                                            paddingTop: 8,
+                                            paddingLeft: 8,
+                                        }}
+                                    />
+                                </Tooltip>
                             </div>
                             <Input.TextArea
                                 style={{ marginBottom: 20 }}
