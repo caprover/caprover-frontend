@@ -1,5 +1,5 @@
 import { ClusterOutlined, InfoCircleOutlined } from '@ant-design/icons'
-import { Button, Card, Col, Input, Radio, Row, Tooltip } from 'antd'
+import { Button, Card, Col, Collapse, Input, Radio, Row, Tooltip } from 'antd'
 import React, { Component } from 'react'
 import Utils from '../../utils/Utils'
 
@@ -136,6 +136,42 @@ export default class AddNode extends Component<
                             <ClusterOutlined /> &nbsp; Join Cluster
                         </Button>
                     </Row>
+                    <div style={{ height: 50 }} />
+                    <Collapse>
+                        <Collapse.Panel header="Alternative Methods" key="1">
+                            <p>
+                                CapRover uses SSH to connect to your nodes and
+                                have them join the cluster. Sometimes, this
+                                process does not work due to non standard SSH
+                                configs such as custom ports, custom usernames,
+                                and etc.
+                            </p>
+                            <p>
+                                In these cases, it will be much simpler to run
+                                the commands manually your self from an SSH
+                                session. First, from your{' '}
+                                <b>main leader node</b>, run the following
+                                command:
+                            </p>
+                            <code>docker swarm join-token worker</code>
+
+                            <p style={{ marginTop: 20 }}>
+                                It will output something like this:
+                            </p>
+                            <code>
+                                To add a worker to this swarm, run the following
+                                command:
+                                <br />
+                                docker swarm join --token
+                                SWMTKN-secret-token-here 127.0.0.1:2377
+                            </code>
+                            <p style={{ marginTop: 20 }}>
+                                Then, copy the command from the output of above,
+                                and simply from the worker node, run that
+                                command.
+                            </p>
+                        </Collapse.Panel>
+                    </Collapse>
                 </Card>
             </div>
         )
