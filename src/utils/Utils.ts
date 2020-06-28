@@ -66,22 +66,25 @@ export default {
     },
 
     replaceAllGenRandomForOneClickApp(inputString: string) {
-        const matches = /\$\$cap_gen_random_hex\((\d+)\)/g.exec(inputString)
+        let matches
 
-        if (!matches || matches.length !== 2) {
-            return inputString
+        while (
+            (matches = /\$\$cap_gen_random_hex\((\d+)\)/g.exec(inputString)) &&
+            matches.length === 2
+        ) {
+            const hexLength = Number(matches[1])
+            if (hexLength > 256) {
+                // capping out the maximum length to avoid unintentional problems
+                inputString = inputString.replace(matches[0], '')
+            } else {
+                inputString = inputString.replace(
+                    matches[0],
+                    `${this.createRandomStringHex(hexLength)}`
+                )
+            }
         }
 
-        const hexLength = Number(matches[1])
-        if (hexLength > 256) {
-            // capping out the maximum length to avoid unintentional problems
-            return inputString.replace(matches[0], '')
-        }
-
-        return inputString.replace(
-            matches[0],
-            `${this.createRandomStringHex(hexLength)}`
-        )
+        return inputString
     },
 
     convertHexStringToUtf8(raw: string) {

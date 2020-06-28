@@ -24,6 +24,12 @@ it('generate 16 chars', () => {
     expect(/^[0-9a-f]+$/i.test(output)).toBe(true)
 })
 
+it('generate 8 chars - two instances', () => {
+    const inputStr = `__$$cap_gen_random_hex(16)___$$cap_gen_random_hex(8)____`
+    const output = Utils.replaceAllGenRandomForOneClickApp(inputStr)
+    expect(/^__[0-9a-f]{16}___[0-9a-f]{8}____$/i.test(output)).toBe(true)
+})
+
 it('generate 256 chars', () => {
     const inputStr = `start_____$$cap_gen_random_hex(256)______$$cap_gen___random_hex(23552)____`
     const output = Utils.replaceAllGenRandomForOneClickApp(inputStr)
