@@ -53,6 +53,37 @@ export default {
         })
     },
 
+    createRandomStringHex(length: number) {
+        let result = ''
+        const characters = '0123456789abcdef'
+        const charactersLength = characters.length
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(
+                Math.floor(Math.random() * charactersLength)
+            )
+        }
+        return result
+    },
+
+    replaceAllGenRandomForOneClickApp(inputString: string) {
+        const matches = /\$\$cap_gen_random_hex\((\d+)\)/g.exec(inputString)
+
+        if (!matches || matches.length !== 2) {
+            return inputString
+        }
+
+        const hexLength = Number(matches[1])
+        if (hexLength > 256) {
+            // capping out the maximum length to avoid unintentional problems
+            return inputString.replace(matches[0], '')
+        }
+
+        return inputString.replace(
+            matches[0],
+            `${this.createRandomStringHex(hexLength)}`
+        )
+    },
+
     convertHexStringToUtf8(raw: string) {
         return !raw
             ? ''

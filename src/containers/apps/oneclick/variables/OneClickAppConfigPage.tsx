@@ -83,6 +83,13 @@ export default class OneClickAppConfigPage extends ApiComponent<
 
         promiseToFetchOneClick
             .then(function (data: IOneClickTemplate) {
+                return JSON.parse(
+                    Utils.replaceAllGenRandomForOneClickApp(
+                        JSON.stringify(data)
+                    )
+                ) as IOneClickTemplate
+            })
+            .then(function (data: IOneClickTemplate) {
                 if ((data.captainVersion || '').toString() !== '2') {
                     message.error(
                         `One-click app version is ${data.captainVersion}, this version supports "v2". Make sure your CapRover is up-to-date with the latest version!!`
