@@ -1,6 +1,7 @@
 import { Alert, Col, Divider, message, Row } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux'
+import Logger from '../../utils/Logger'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
@@ -168,10 +169,19 @@ class CurrentNodes extends ApiComponent<
             return <ErrorRetry />
         }
 
+        const nodes: any[] = this.state.apiData.nodes || []
+        let leaderIp = ''
+        try {
+            leaderIp = nodes.filter((n) => n.isLeader)[0].ip
+        } catch (err) {
+            Logger.error(err)
+        }
+
         return (
             <div>
                 {this.props.defaultRegistryId ? (
                     <AddNode
+                        leaderIp={leaderIp}
                         isMobile={this.props.isMobile}
                         onAddNodeClicked={(nodeToAdd) => {
                             self.addNode(nodeToAdd)

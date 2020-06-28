@@ -12,6 +12,7 @@ export interface INodeToAdd {
 
 export default class AddNode extends Component<
     {
+        leaderIp: string
         isMobile: boolean
         onAddNodeClicked: (nodeToAdd: INodeToAdd) => void
     },
@@ -24,7 +25,7 @@ export default class AddNode extends Component<
         this.state = {
             nodeToAdd: {
                 remoteNodeIpAddress: '',
-                captainIpAddress: '',
+                captainIpAddress: props.leaderIp || '',
                 nodeType: 'worker',
                 privateKey: '',
             },
