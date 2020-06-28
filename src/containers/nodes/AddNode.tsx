@@ -8,6 +8,8 @@ export interface INodeToAdd {
     captainIpAddress: string
     nodeType: string
     privateKey: string
+    sshPort: string
+    sshUser: string
 }
 
 export default class AddNode extends Component<
@@ -25,6 +27,8 @@ export default class AddNode extends Component<
         this.state = {
             nodeToAdd: {
                 remoteNodeIpAddress: '',
+                sshPort: '22',
+                sshUser: 'root',
                 captainIpAddress: props.leaderIp || '',
                 nodeType: 'worker',
                 privateKey: '',
@@ -134,7 +138,41 @@ export default class AddNode extends Component<
                     </Row>
 
                     <Row justify="end">
+                        <Col
+                            lg={{ span: 6 }}
+                            xs={{ span: 24 }}
+                            style={{ maxWidth: 250 }}
+                        >
+                            <Input
+                                addonBefore="SSH Port"
+                                type="text"
+                                value={nodeToAdd.sshPort}
+                                onChange={(e) =>
+                                    self.changeModel('sshPort', e.target.value)
+                                }
+                            />
+                        </Col>
+                        <Col
+                            lg={{ span: 6 }}
+                            xs={{ span: 24 }}
+                            style={{ maxWidth: 250, marginLeft: 10 }}
+                        >
+                            <Tooltip title="Using non-root users with sudo access will NOT work. If you want to use a non-root account, it must be able run docker commands without sudo. Or simply use the alternative method below.">
+                                <Input
+                                    addonBefore="SSH User"
+                                    type="text"
+                                    value={nodeToAdd.sshUser}
+                                    onChange={(e) =>
+                                        self.changeModel(
+                                            'sshUser',
+                                            e.target.value
+                                        )
+                                    }
+                                />
+                            </Tooltip>
+                        </Col>
                         <Button
+                            style={{ marginLeft: 10 }}
                             type="primary"
                             block={this.props.isMobile}
                             onClick={() =>

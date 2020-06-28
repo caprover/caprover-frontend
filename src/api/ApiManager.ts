@@ -586,6 +586,8 @@ export default class ApiManager {
         nodeType: string,
         privateKey: string,
         remoteNodeIpAddress: string,
+        sshPort: string,
+        sshUser: string,
         captainIpAddress: string
     ) {
         const http = this.http
@@ -596,6 +598,8 @@ export default class ApiManager {
                     nodeType,
                     privateKey,
                     remoteNodeIpAddress,
+                    sshPort,
+                    sshUser,
                     captainIpAddress,
                 })
             )

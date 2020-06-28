@@ -48,6 +48,8 @@ class CurrentNodes extends ApiComponent<
                 nodeToAdd.nodeType,
                 nodeToAdd.privateKey,
                 nodeToAdd.remoteNodeIpAddress,
+                nodeToAdd.sshPort,
+                nodeToAdd.sshUser,
                 nodeToAdd.captainIpAddress
             )
             .then(function () {
