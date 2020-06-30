@@ -467,10 +467,7 @@ export default class Dashboard extends ApiComponent<
                                 <i>
                                     You can always update your root domain, but
                                     be careful! Your SSL certificates will get
-                                    invoked because of this domain change. Make
-                                    sure to choose a good root domain from the
-                                    beginning so you don't have to make changes
-                                    later on.
+                                    revoked because of this domain change.
                                 </i>
                             </p>
 
