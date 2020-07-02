@@ -390,7 +390,12 @@ export default class Dashboard extends ApiComponent<
                                 </span>
                             </h3>
                             <p>
-                                <b /> You have installed CapRover successfully!
+                                <b /> You have installed CapRover successfully!{' '}
+                                <b>
+                                    But you still need to assign a domain and
+                                    finish the HTTPS setup to fully set up
+                                    CapRover!
+                                </b>
                                 You can set up your CapRover instance in two
                                 ways:
                             </p>
