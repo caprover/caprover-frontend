@@ -186,7 +186,7 @@ export default class AddNode extends Component<
                     </Row>
                     <div style={{ height: 50 }} />
                     <Collapse>
-                        <Collapse.Panel header="Alternative Methods" key="1">
+                        <Collapse.Panel header="Alternative Method" key="1">
                             <p>
                                 CapRover uses SSH to connect to your nodes and
                                 have them join the cluster. Sometimes, this
@@ -217,6 +217,24 @@ export default class AddNode extends Component<
                                 Then, copy the command from the output of above,
                                 and simply from the worker node, run that
                                 command.
+                            </p>
+                            <p style={{ marginTop: 20 }}>
+                                Depending on your network configurations, you
+                                may also need to append the command with{' '}
+                                <code>
+                                    {' '}
+                                    --advertise-addr WORKER_EXTERNAL_IP:2377
+                                </code>
+                                . See{' '}
+                                <a
+                                    href="https://github.com/caprover/caprover/issues/572"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {' '}
+                                    this issue{' '}
+                                </a>{' '}
+                                for more details.
                             </p>
                         </Collapse.Panel>
                     </Collapse>
