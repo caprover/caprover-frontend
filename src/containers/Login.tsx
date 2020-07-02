@@ -104,6 +104,11 @@ class NormalLoginForm extends React.Component<
         return (
             <div>
                 <Input.Password
+                    onKeyDown={(key) => {
+                        if (key.keyCode === 13) {
+                            self.handleSubmit()
+                        }
+                    }}
                     prefix={
                         <LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />
                     }
