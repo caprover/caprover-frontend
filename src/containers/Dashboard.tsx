@@ -365,7 +365,6 @@ export default class Dashboard extends ApiComponent<
                                 </Button>
                             </Tooltip>
                         </Row>
-                        ``
                     </Card>
                 </Col>
             </Row>
