@@ -126,13 +126,17 @@ export default class CheckUpdate extends ApiComponent<
                 >
                     <div>
                         <p>
-                            Update takes around 30 to 60 seconds to complete
-                            depending on your server connection speed.
+                            Update takes about a minute to complete depending on
+                            your server connection speed.
                         </p>
                         <p>
                             Your CapRover dashboard is not functional during the
                             update. Please wait until this page is refreshed
                             automatically.
+                        </p>
+                        <p>
+                            You might see an nginx error briefly after the
+                            update. But it will fix itself in a few seconds.
                         </p>
 
                         <br />
