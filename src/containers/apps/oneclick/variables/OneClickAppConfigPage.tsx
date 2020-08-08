@@ -90,16 +90,17 @@ export default class OneClickAppConfigPage extends ApiComponent<
                 ) as IOneClickTemplate
             })
             .then(function (data: IOneClickTemplate) {
-                if ((data.captainVersion || '').toString() !== '2') {
+                if (`${data.captainVersion}` !== '3') {
                     message.error(
-                        `One-click app version is ${data.captainVersion}, this version supports "v2". Make sure your CapRover is up-to-date with the latest version!!`
+                        `One-click app version is ${data.captainVersion}, this version supports "v3". Make sure your CapRover is up-to-date with the latest version!!`
                     )
                     return
                 }
 
-                data.variables = data.variables || []
+                data.caproverOneClickApp.variables =
+                    data.caproverOneClickApp.variables || []
                 // Adding app name to all one click apps
-                data.variables.unshift({
+                data.caproverOneClickApp.variables.unshift({
                     id: ONE_CLICK_APP_NAME_VAR_NAME,
                     label: 'App Name',
                     description:
@@ -125,8 +126,8 @@ export default class OneClickAppConfigPage extends ApiComponent<
         const deploymentState = this.state.deploymentState
         const apiData = this.state.apiData
         const displayName =
-            apiData && apiData.displayName
-                ? apiData.displayName
+            apiData && apiData.caproverOneClickApp.displayName
+                ? apiData.caproverOneClickApp.displayName
                 : self.props.match.params.appName[0].toUpperCase() +
                   self.props.match.params.appName.slice(1)
 
@@ -160,11 +161,13 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                     paddingRight: 15,
                                 }}
                             >
-                                {apiData.instructions.start}
+                                {apiData.caproverOneClickApp.instructions.start}
                             </p>
                             <div style={{ height: 40 }} />
                             <OneClickVariablesSection
-                                oneClickAppVariables={apiData.variables}
+                                oneClickAppVariables={
+                                    apiData.caproverOneClickApp.variables
+                                }
                                 onNextClicked={(values) => {
                                     const template = Utils.copyObject(
                                         self.state.apiData!
@@ -173,10 +176,12 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                         values
                                     )
 
-                                    template.variables.push({
-                                        id: ONE_CLICK_ROOT_DOMAIN_VAR_NAME,
-                                        label: 'CapRover root domain',
-                                    })
+                                    template.caproverOneClickApp.variables.push(
+                                        {
+                                            id: ONE_CLICK_ROOT_DOMAIN_VAR_NAME,
+                                            label: 'CapRover root domain',
+                                        }
+                                    )
                                     valuesAugmented[
                                         ONE_CLICK_ROOT_DOMAIN_VAR_NAME
                                     ] = self.state.rootDomain

@@ -31,17 +31,14 @@ export interface IDockerComposeService {
 }
 
 export interface IOneClickTemplate {
+    services: IHashMapGeneric<IDockerComposeService>
     captainVersion: number
-    shortDesc: string
-    displayName: string
-    useDefaultLogo?: boolean
-    dockerCompose: {
-        version: string
-        services: IHashMapGeneric<IDockerComposeService>
+    caproverOneClickApp: {
+        instructions: {
+            start: string
+            end: string
+        }
+        displayName: string
+        variables: IOneClickVariable[]
     }
-    instructions: {
-        start: string
-        end: string
-    }
-    variables: IOneClickVariable[]
 }

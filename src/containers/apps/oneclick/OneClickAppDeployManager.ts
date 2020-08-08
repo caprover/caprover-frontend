@@ -44,8 +44,12 @@ export default class OneClickAppDeployManager {
         const self = this
         let stringified = JSON.stringify(template)
 
-        for (let index = 0; index < template.variables.length; index++) {
-            const element = template.variables[index]
+        for (
+            let index = 0;
+            index < template.caproverOneClickApp.variables.length;
+            index++
+        ) {
+            const element = template.caproverOneClickApp.variables[index]
             stringified = replaceWith(
                 element.id,
                 values[element.id] || '',
@@ -112,7 +116,8 @@ export default class OneClickAppDeployManager {
                             currentStep,
                             successMessage:
                                 currentStep >= stepsTexts.length
-                                    ? self.template!.instructions.end
+                                    ? self.template!.caproverOneClickApp
+                                          .instructions.end
                                     : undefined,
                         })
                     )
@@ -152,7 +157,7 @@ export default class OneClickAppDeployManager {
         }[] = []
 
         let numberOfServices = 0
-        const servicesMap = this.template!.dockerCompose.services
+        const servicesMap = this.template!.services
         Object.keys(servicesMap).forEach(function (key) {
             numberOfServices++
         })
