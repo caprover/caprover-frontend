@@ -34,7 +34,8 @@
         "redux": "^4.0.5",
         "redux-thunk": "^2.3.0",
         "tslint": "^6.1.2",
-        "typescript": "^3.9.6"
+        "typescript": "^3.9.6",
+        "yaml": "^1.10.0"
     },
     "scripts": {
         "formatter": "prettier --check './src/**/*.ts*'",

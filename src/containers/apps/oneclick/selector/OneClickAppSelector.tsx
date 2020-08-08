@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Col, Input, Row } from 'antd'
+import { Alert, Button, Card, Col, Row } from 'antd'
 import React from 'react'
 import { RouteComponentProps } from 'react-router'
 import { IOneClickAppIdentifier } from '../../../../models/IOneClickAppModels'
@@ -6,6 +6,7 @@ import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
 import CenteredSpinner from '../../../global/CenteredSpinner'
+import InputJsonifier from '../../../global/InputJsonifier'
 import NewTabLink from '../../../global/NewTabLink'
 import OneClickGrid from './OneClickGrid'
 import OneClickReposList from './OneClickReposList'
@@ -85,9 +86,9 @@ export default class OneClickAppSelector extends ApiComponent<
                     </p>
                 </div>
 
-                <Input.TextArea
-                    className="code-input"
-                    placeholder={`{
+                <InputJsonifier
+                    placeholder={`YAML or JSON
+{
   "captainVersion": "2",
   "dockerCompose": {
   "services": {
@@ -100,10 +101,9 @@ export default class OneClickAppSelector extends ApiComponent<
     }
   }
 }`}
-                    rows={10}
-                    onChange={(e) => {
+                    onChange={(stringified) => {
                         self.setState({
-                            templateOneClickAppData: e.target.value,
+                            templateOneClickAppData: stringified,
                         })
                     }}
                 />
