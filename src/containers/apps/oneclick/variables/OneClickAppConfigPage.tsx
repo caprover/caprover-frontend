@@ -90,9 +90,9 @@ export default class OneClickAppConfigPage extends ApiComponent<
                 ) as IOneClickTemplate
             })
             .then(function (data: IOneClickTemplate) {
-                if (`${data.captainVersion}` !== '3') {
+                if (`${data.captainVersion}` !== '4') {
                     message.error(
-                        `One-click app version is ${data.captainVersion}, this version supports "v3". Make sure your CapRover is up-to-date with the latest version!!`
+                        `One-click app version is ${data.captainVersion}, this version supports "v4". Make sure your CapRover is up-to-date with the latest version!!`
                     )
                     return
                 }

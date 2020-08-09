@@ -87,10 +87,10 @@ export default class OneClickAppSelector extends ApiComponent<
                 </div>
 
                 <InputJsonifier
-                    placeholder={`YAML or JSON
+                    placeholder={`YAML or JSON # use captainVersion 4
 {
-  "captainVersion": "2",
-  "dockerCompose": {
+  "captainVersion": "4",
+  "version": "3.3"
   "services": {
     "$$cap_appname": {
           "image": "adminer:$$cap_adminer_version",
