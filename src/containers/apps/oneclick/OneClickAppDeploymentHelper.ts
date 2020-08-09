@@ -83,13 +83,20 @@ export default class OneClickAppDeploymentHelper {
                         })
                     })
 
-                    if (dockerComposeService.containerHttpPort) {
-                        appDef.containerHttpPort =
-                            dockerComposeService.containerHttpPort
-                    }
+                    if (!!dockerComposeService.caproverExtra) {
+                        if (
+                            dockerComposeService.caproverExtra.containerHttpPort
+                        ) {
+                            appDef.containerHttpPort =
+                                dockerComposeService.caproverExtra.containerHttpPort
+                        }
 
-                    if (!!dockerComposeService.notExposeAsWebApp) {
-                        appDef.notExposeAsWebApp = true
+                        if (
+                            !!dockerComposeService.caproverExtra
+                                .notExposeAsWebApp
+                        ) {
+                            appDef.notExposeAsWebApp = true
+                        }
                     }
 
                     return self.apiManager.updateConfigAndSave(appName, appDef)
@@ -111,7 +118,7 @@ export default class OneClickAppDeploymentHelper {
                 captainDefinition.imageName = dockerComposeService.image
             } else {
                 captainDefinition.dockerfileLines =
-                    dockerComposeService.dockerfileLines
+                    dockerComposeService.caproverExtra?.dockerfileLines
             }
 
             return self.apiManager.uploadCaptainDefinitionContent(
