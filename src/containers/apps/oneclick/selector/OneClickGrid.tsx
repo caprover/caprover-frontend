@@ -40,7 +40,9 @@ export default class OneClickGrid extends Component<
                         </Tooltip>
                     )}
                     {!isUsingOfficialImage ? undefined : (
-                        <Tooltip title={`Uses the official docker image`}>
+                        <Tooltip
+                            title={`Uses the official image provided by the application developer, or a trusted source like Bitnami or LinuxServer`}
+                        >
                             <SafetyCertificateTwoTone />
                         </Tooltip>
                     )}
