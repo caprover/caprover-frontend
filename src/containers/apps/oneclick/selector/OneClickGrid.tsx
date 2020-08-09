@@ -1,4 +1,8 @@
-import { FlagTwoTone, InfoCircleOutlined } from '@ant-design/icons'
+import {
+    FlagTwoTone,
+    InfoCircleOutlined,
+    SafetyCertificateTwoTone,
+} from '@ant-design/icons'
 import { Card, Empty, Input, Row, Tooltip } from 'antd'
 import React, { Component, Fragment } from 'react'
 import { IHashMapGeneric } from '../../../../models/IHashMapGeneric'
@@ -24,16 +28,22 @@ export default class OneClickGrid extends Component<
     create3rdPartyTagIfNeeded(app: IOneClickAppIdentifier) {
         const MAIN_REPO = `https://oneclickapps.caprover.com`
 
-        if (app.baseUrl === MAIN_REPO) {
-            return undefined
-        }
+        const isFromMainRepository = app.baseUrl === MAIN_REPO || !app.baseUrl
+        const isUsingOfficialImage = !!app.isOfficial
 
         return (
             <div style={{ marginTop: 20 }}>
-                <Row align="middle" justify="end">
-                    <Tooltip title={`From: ${app.baseUrl}`}>
-                        <FlagTwoTone />
-                    </Tooltip>
+                <Row align="middle" justify="space-between">
+                    {isFromMainRepository ? undefined : (
+                        <Tooltip title={`From: ${app.baseUrl}`}>
+                            <FlagTwoTone />
+                        </Tooltip>
+                    )}
+                    {!isUsingOfficialImage ? undefined : (
+                        <Tooltip title={`Uses the official docker image`}>
+                            <SafetyCertificateTwoTone />
+                        </Tooltip>
+                    )}
                 </Row>
             </div>
         )

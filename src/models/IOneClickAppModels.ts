@@ -2,6 +2,7 @@ import { IHashMapGeneric } from './IHashMapGeneric'
 
 export interface IOneClickAppIdentifier {
     sortScore?: number // 0-1 and dynamically calculated based on search terms
+    isOfficial?: boolean
     name: string
     displayName: string
     description: string
