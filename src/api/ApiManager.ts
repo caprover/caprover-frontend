@@ -198,6 +198,7 @@ export default class ApiManager {
         let appPushWebhook = appDefinition.appPushWebhook
         let customNginxConfig = appDefinition.customNginxConfig
         let preDeployFunction = appDefinition.preDeployFunction
+        let serviceUpdateOverride = appDefinition.serviceUpdateOverride
         let containerHttpPort = appDefinition.containerHttpPort
         let description = appDefinition.description
         let httpAuth = appDefinition.httpAuth
@@ -218,6 +219,7 @@ export default class ApiManager {
                     appPushWebhook: appPushWebhook,
                     nodeId: nodeId,
                     preDeployFunction: preDeployFunction,
+                    serviceUpdateOverride: serviceUpdateOverride,
                     containerHttpPort: containerHttpPort,
                     description: description,
                     httpAuth: httpAuth,

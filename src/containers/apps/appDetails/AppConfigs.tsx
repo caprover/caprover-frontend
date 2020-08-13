@@ -564,6 +564,50 @@ export default class AppConfigs extends Component<
                         />
                     </Col>
                 </Row>
+                <div style={{ height: 30 }} />
+
+                <Row>
+                    <Col span={24}>
+                        <h4>
+                            Service Update Override
+                            <NewTabLink url="https://caprover.com/docs/service-update-override.html">
+                                <InfoCircleOutlined
+                                    style={{ paddingLeft: 10 }}
+                                />
+                            </NewTabLink>
+                        </h4>
+
+                        <Input.TextArea
+                            spellCheck={false}
+                            autoCorrect="off"
+                            autoComplete="off"
+                            autoCapitalize="off"
+                            className="code-input"
+                            placeholder={`## JSON / YAML
+{
+  "TaskTemplate": {
+    "ContainerSpec": {
+    "Image": "busybox",
+    "Args": [
+        "top"
+    ]....`}
+                            rows={4}
+                            value={
+                                app.serviceUpdateOverride
+                                    ? app.serviceUpdateOverride
+                                    : ''
+                            }
+                            onChange={(e) => {
+                                const newApiData = Utils.copyObject(
+                                    this.props.apiData
+                                )
+                                newApiData.appDefinition.serviceUpdateOverride =
+                                    e.target.value
+                                this.props.updateApiData(newApiData)
+                            }}
+                        />
+                    </Col>
+                </Row>
             </div>
         )
     }
