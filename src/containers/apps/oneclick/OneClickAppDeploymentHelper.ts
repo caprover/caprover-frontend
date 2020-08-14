@@ -1,6 +1,7 @@
 import ApiManager from '../../../api/ApiManager'
 import { ICaptainDefinition } from '../../../models/ICaptainDefinition'
 import { IDockerComposeService } from '../../../models/IOneClickAppModels'
+import DockerComposeToServiceOverride from '../../../utils/DockerComposeToServiceOverride'
 import Utils from '../../../utils/Utils'
 import { IAppDef } from '../AppDefinition'
 
@@ -82,6 +83,14 @@ export default class OneClickAppDeploymentHelper {
                             value: environment[envKey],
                         })
                     })
+
+                    const overrideYaml = DockerComposeToServiceOverride.convertComposeToService(
+                        dockerComposeService
+                    )
+
+                    if (!!overrideYaml) {
+                        appDef.serviceUpdateOverride = overrideYaml
+                    }
 
                     if (!!dockerComposeService.caproverExtra) {
                         if (

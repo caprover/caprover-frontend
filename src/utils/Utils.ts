@@ -97,4 +97,30 @@ export default {
                       .replace(/[0-9a-f]{2}/g, '%$&')
               )
     },
+
+    mergeObjects(object1: any, object2: any) {
+        const newObject = object1 || {}
+        object2 = object2 || {}
+
+        Object.keys(object2).forEach((k) => {
+            if (
+                !newObject[k] ||
+                Array.isArray(newObject[k]) ||
+                Array.isArray(object2[k])
+            ) {
+                newObject[k] = object2[k]
+            } else {
+                if (
+                    typeof object2[k] === 'object' &&
+                    typeof newObject[k] === 'object'
+                ) {
+                    newObject[k] = this.mergeObjects(newObject[k], object2[k])
+                } else {
+                    newObject[k] = object2[k]
+                }
+            }
+        })
+
+        return newObject
+    },
 }
