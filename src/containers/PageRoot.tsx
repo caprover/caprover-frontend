@@ -11,7 +11,6 @@ import {
     SettingOutlined,
 } from '@ant-design/icons'
 import { Button, Col, Layout, Menu, Row } from 'antd'
-import { SelectParam } from 'antd/lib/menu'
 import React, { Fragment, RefObject } from 'react'
 import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
@@ -167,8 +166,8 @@ class PageRoot extends ApiComponent<
         )
     }
 
-    onSelectMenu(param: SelectParam) {
-        this.props.history.push(`/${param.key}`)
+    onSelectMenu(key: string) {
+        this.props.history.push(`/${key}`)
     }
 
     toggleSider = () => {
@@ -275,8 +274,8 @@ class PageRoot extends ApiComponent<
                             selectedKeys={[
                                 this.props.location.pathname.substring(1),
                             ]}
-                            onSelect={(param: SelectParam) => {
-                                this.onSelectMenu(param)
+                            onSelect={(param) => {
+                                this.onSelectMenu(`${param.key}`)
                             }}
                             theme="dark"
                             mode="inline"
