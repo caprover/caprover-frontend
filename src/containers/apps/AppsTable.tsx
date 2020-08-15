@@ -1,5 +1,11 @@
-import { CheckOutlined, CodeOutlined, LinkOutlined } from '@ant-design/icons'
-import { Card, Col, Input, Row, Table } from 'antd'
+import {
+    CheckOutlined,
+    CodeOutlined,
+    DisconnectOutlined,
+    LinkOutlined,
+    LoadingOutlined,
+} from '@ant-design/icons'
+import { Card, Col, Input, Row, Table, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component } from 'react'
@@ -7,7 +13,10 @@ import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
 import ClickableLink from '../global/ClickableLink'
 import NewTabLink from '../global/NewTabLink'
+import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
+
+type TableData = IAppDef & { lastDeployTime: string }
 
 class AppsTable extends Component<
     {
@@ -28,7 +37,7 @@ class AppsTable extends Component<
         this.props.history.push(`/apps/details/${appName}`)
     }
 
-    createColumns(): ColumnProps<IAppDef>[] {
+    createColumns(): ColumnProps<TableData>[] {
         const self = this
         const ALIGN: 'center' = 'center'
         return [
@@ -43,7 +52,7 @@ class AppsTable extends Component<
                         {appName}
                     </ClickableLink>
                 ),
-                sorter: (a: IAppDef, b: IAppDef) => {
+                sorter: (a, b) => {
                     return a.appName
                         ? a.appName.localeCompare(b.appName || '')
                         : 0
@@ -69,36 +78,54 @@ class AppsTable extends Component<
                 },
             },
             {
-                title: 'Exposed Webapp',
-                dataIndex: 'notExposeAsWebApp',
-                key: 'notExposeAsWebApp',
-                align: ALIGN,
-                render: (notExposeAsWebApp: boolean) => {
-                    if (!!notExposeAsWebApp) {
-                        return <span />
-                    }
-
-                    return (
-                        <span>
-                            <CheckOutlined />
-                        </span>
-                    )
-                },
-            },
-            {
                 title: 'Instance Count',
                 dataIndex: 'instanceCount',
                 key: 'instanceCount',
                 align: ALIGN,
             },
             {
-                title: 'Open in Browser',
+                title: 'Last Deployed',
+                dataIndex: 'lastDeployTime',
+                key: 'lastDeployTime',
+                align: ALIGN,
+                sorter: (a, b) => {
+                    return (
+                        new Date(b.lastDeployTime).getTime() -
+                        new Date(a.lastDeployTime).getTime()
+                    )
+                },
+                render: (lastDeployTime: string, app) => {
+                    if (!lastDeployTime) {
+                        return <span />
+                    }
+
+                    return (
+                        <span>
+                            <Timestamp timestamp={lastDeployTime} />
+                            {!!app.isAppBuilding ? (
+                                <LoadingOutlined
+                                    style={{
+                                        fontSize: '12px',
+                                        paddingLeft: 12,
+                                    }}
+                                />
+                            ) : undefined}
+                        </span>
+                    )
+                },
+            },
+            {
+                title: 'Open',
                 dataIndex: 'notExposeAsWebApp',
                 key: 'openInBrowser',
                 align: ALIGN,
-                render: (notExposeAsWebApp: boolean, app: IAppDef) => {
+                render: (notExposeAsWebApp: boolean, app) => {
                     if (notExposeAsWebApp) {
-                        return <span />
+                        return (
+                            <Tooltip title="Not exposed as a web app">
+                                <DisconnectOutlined />
+                            </Tooltip>
+                        )
                     }
 
                     return (
@@ -118,11 +145,19 @@ class AppsTable extends Component<
     render() {
         const self = this
 
-        const appsToRender = self.props.apps.filter((app) => {
-            if (!self.state.searchTerm) return true
+        const appsToRender = self.props.apps
+            .filter((app) => {
+                if (!self.state.searchTerm) return true
 
-            return app.appName!.indexOf(self.state.searchTerm) >= 0
-        })
+                return app.appName!.indexOf(self.state.searchTerm) >= 0
+            })
+            .map((app) => {
+                const lastDeployTime =
+                    app.versions.filter(
+                        (v) => v.version === app.deployedVersion
+                    )[0].timeStamp || ''
+                return { ...app, lastDeployTime }
+            })
 
         const searchAppInput = (
             <Input
@@ -227,7 +262,7 @@ class AppsTable extends Component<
                                         width: '100%',
                                     }}
                                 >
-                                    <Table<IAppDef>
+                                    <Table<TableData>
                                         rowKey="appName"
                                         columns={self.createColumns()}
                                         dataSource={appsToRender}

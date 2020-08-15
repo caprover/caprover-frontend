@@ -9,6 +9,7 @@ import moment from 'moment'
 import React, { Component, Fragment } from 'react'
 import Utils from '../../../../utils/Utils'
 import ClickableLink from '../../../global/ClickableLink'
+import Timestamp from '../../../global/Timestamp'
 import { IAppVersion } from '../../AppDefinition'
 
 export default class AppVersionTable extends Component<{
@@ -67,11 +68,7 @@ export default class AppVersionTable extends Component<{
                 title: 'Deploy Time',
                 dataIndex: 'timeStamp' as 'timeStamp',
                 render: (timeStamp: string) => {
-                    return (
-                        <Tooltip title={moment(new Date(timeStamp)).fromNow()}>
-                            <span>{new Date(timeStamp).toLocaleString()}</span>
-                        </Tooltip>
-                    )
+                    return <Timestamp timestamp={timeStamp} />
                 },
             },
             {
