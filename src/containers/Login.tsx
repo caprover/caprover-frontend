@@ -41,7 +41,7 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
     render() {
         const self = this
 
-        if (ApiManager.isLoggedIn()) return <Redirect to="/dashboard" />
+        if (ApiManager.isLoggedIn()) return <Redirect to="/" />
 
         return (
             <div>

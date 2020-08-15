@@ -1,5 +1,8 @@
 import { Button, Card, Col, Input, Modal, Row, Tooltip } from 'antd'
+import queryString from 'query-string'
 import React from 'react'
+import { Redirect, RouteComponentProps } from 'react-router'
+import AppConstants from '../utils/AppConstants'
 import Toaster from '../utils/Toaster'
 import ApiComponent from './global/ApiComponent'
 import CenteredSpinner from './global/CenteredSpinner'
@@ -8,7 +11,7 @@ import NewTabLink from './global/NewTabLink'
 const Search = Input.Search
 
 export default class Dashboard extends ApiComponent<
-    {},
+    RouteComponentProps<any>,
     {
         isLoading: boolean
         isForceChangingDomain: boolean
@@ -258,6 +261,15 @@ export default class Dashboard extends ApiComponent<
 
         if (!self.state.apiData) {
             return <ErrorRetry />
+        }
+
+        if (
+            !!this.state.apiData.forceSsl &&
+            !!queryString.parse(self.props.location.search)[
+                AppConstants.REDIRECT_TO_APPS_IF_READY_REQ_PARAM
+            ]
+        ) {
+            return <Redirect to="/apps" />
         }
 
         return (
