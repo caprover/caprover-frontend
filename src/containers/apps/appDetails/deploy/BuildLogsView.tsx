@@ -130,6 +130,9 @@ export default class BuildLogsView extends ApiComponent<
             <div>
                 <Row>
                     <div
+                        style={{
+                            width: '100%',
+                        }}
                         className={
                             this.state.isAppBuilding ? '' : 'hide-on-demand'
                         }
