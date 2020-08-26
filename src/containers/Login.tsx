@@ -5,6 +5,7 @@ import { Redirect, RouteComponentProps } from 'react-router'
 import ApiManager from '../api/ApiManager'
 import StorageHelper from '../utils/StorageHelper'
 import Toaster from '../utils/Toaster'
+import Utils from '../utils/Utils'
 import ApiComponent from './global/ApiComponent'
 
 const NO_SESSION = 1
@@ -17,6 +18,12 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
         this.state = {
             loginOption: NO_SESSION,
         }
+    }
+
+    componentDidMount() {
+        if (super.componentDidMount) super.componentDidMount()
+
+        Utils.deleteAllCookies()
     }
 
     onLoginRequested(password: string) {
