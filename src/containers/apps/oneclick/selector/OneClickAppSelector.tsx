@@ -79,7 +79,7 @@ export default class OneClickAppSelector extends ApiComponent<
                     <p>
                         This is mainly for testing. You can copy and paste your
                         custom One-Click app template here. See{' '}
-                        <NewTabLink url="https://github.com/caprover/one-click-apps/tree/master/public/v2/apps">
+                        <NewTabLink url="https://github.com/caprover/one-click-apps/tree/master/public/v4/apps">
                             the main one click apps GitHub repository
                         </NewTabLink>{' '}
                         for samples and ideas.
