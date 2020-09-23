@@ -405,7 +405,7 @@ export default class Dashboard extends ApiComponent<
                                 <b>
                                     But you still need to assign a domain and
                                     finish the HTTPS setup to fully set up
-                                    CapRover!
+                                    CapRover!{' '}
                                 </b>
                                 You can set up your CapRover instance in two
                                 ways:
