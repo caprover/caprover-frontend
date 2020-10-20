@@ -11,6 +11,7 @@ import { History } from 'history'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
+import Logger from '../../utils/Logger'
 import ClickableLink from '../global/ClickableLink'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
@@ -152,10 +153,22 @@ class AppsTable extends Component<
                 return app.appName!.indexOf(self.state.searchTerm) >= 0
             })
             .map((app) => {
-                const lastDeployTime =
-                    app.versions.filter(
-                        (v) => v.version === app.deployedVersion
-                    )[0].timeStamp || ''
+                let versionFound = app.versions.filter(
+                    (v) => v.version === app.deployedVersion
+                )
+
+                let lastDeployTime = ''
+
+                if (versionFound.length === 0) {
+                    Logger.error(
+                        `App ${app.appName} has invalid deployVersion=${
+                            app.deployedVersion
+                        }, versions:${JSON.stringify(app.versions)}`
+                    )
+                } else {
+                    lastDeployTime = versionFound[0].timeStamp || ''
+                }
+
                 return { ...app, lastDeployTime }
             })
 
