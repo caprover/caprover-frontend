@@ -42,10 +42,10 @@ class CreateNewApp extends Component<
                 <Col xs={{ span: 23 }} lg={{ span: 10 }}>
                     <Card
                         title={
-                            <span>
+                            <h1>
                                 <PlusCircleOutlined />
-                                &nbsp;&nbsp;&nbsp;Create A New App
-                            </span>
+                                <span style={{ margin: '0 0.5em' }}>Create A New App</span>
+                            </h1>
                         }
                     >
                         <Row>

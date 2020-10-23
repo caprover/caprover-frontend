@@ -93,7 +93,7 @@ class NormalLoginForm extends React.Component<
         super(props)
         this.state = {
             loginOption: NO_SESSION,
-            passwordEntered: ``,
+            passwordEntered: '',
         }
     }
 

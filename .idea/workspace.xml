@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1892fbc2-e09e-4aa8-b86c-e8ef6f79e4ef" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.env.development" beforeDir="false" afterPath="$PROJECT_DIR$/.env.development" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/apps/CreateNewApp.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/apps/CreateNewApp.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/README.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1jHdflb2VpTuiitblqLXu8vrTX9" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1892fbc2-e09e-4aa8-b86c-e8ef6f79e4ef" name="Default Changelist" comment="" />
+      <created>1603465056334</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1603465056334</updated>
+      <workItem from="1603465057435" duration="6033000" />
+      <workItem from="1603478778847" duration="1541000" />
+      <workItem from="1603480346895" duration="1347000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="498" height="450" key="SwitcherDM" timestamp="1603481661865">
+      <screen x="1680" y="23" width="1920" height="1057" />
+    </state>
+    <state width="498" height="450" key="SwitcherDM/1680.23.1920.1057/0.23.1680.947@1680.23.1920.1057" timestamp="1603481661865" />
+    <state x="2325" y="140" width="630" height="822" key="find.popup" timestamp="1603481197791">
+      <screen x="1680" y="23" width="1920" height="1057" />
+    </state>
+    <state x="2325" y="140" width="630" height="822" key="find.popup/1680.23.1920.1057/0.23.1680.947@1680.23.1920.1057" timestamp="1603481197791" />
+    <state x="2255" y="252" width="768" height="757" key="search.everywhere.popup" timestamp="1603481037703">
+      <screen x="1680" y="23" width="1920" height="1057" />
+    </state>
+    <state x="503" y="228" width="672" height="678" key="search.everywhere.popup/0.23.1680.947@0.23.1680.947" timestamp="1603467147354" />
+    <state x="2255" y="252" width="768" height="757" key="search.everywhere.popup/1680.23.1920.1057/0.23.1680.947@1680.23.1920.1057" timestamp="1603481037703" />
+  </component>
+</project>
