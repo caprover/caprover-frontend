@@ -12,6 +12,11 @@ const NO_SESSION = 1
 const SESSION_STORAGE = 2
 const LOCAL_STORAGE = 3
 
+const SAVE_METHOD: Array< Function > = []
+SAVE_METHOD[NO_SESSION] = () => null
+SAVE_METHOD[SESSION_STORAGE] =  StorageHelper.setAuthKeyInSessionStorage
+SAVE_METHOD[LOCAL_STORAGE] =  StorageHelper.setAuthKeyInLocalStorage
+
 export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
     constructor(props: any) {
         super(props)
@@ -28,18 +33,12 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
 
     onLoginRequested(password: string) {
         const self = this
+        const methodSave = SAVE_METHOD[self.state.loginOption]
         this.apiManager
             .getAuthToken(password)
             .then(function () {
-                if (self.state.loginOption === SESSION_STORAGE) {
-                    StorageHelper.setAuthKeyInSessionStorage(
-                        ApiManager.getAuthTokenString()
-                    )
-                } else if (self.state.loginOption === LOCAL_STORAGE) {
-                    StorageHelper.setAuthKeyInLocalStorage(
-                        ApiManager.getAuthTokenString()
-                    )
-                }
+                const tokenString =  ApiManager.getAuthTokenString()
+                methodSave(tokenString)
                 self.props.history.push('/')
             })
             .catch(Toaster.createCatcher())
@@ -109,13 +108,12 @@ class NormalLoginForm extends React.Component<
     render() {
         const self = this
         return (
-            <div>
+            <form onSubmit={(event) => {
+                self.handleSubmit()
+                event.preventDefault()
+            }}>
                 <Input.Password
-                    onKeyDown={(key) => {
-                        if (key.keyCode === 13) {
-                            self.handleSubmit()
-                        }
-                    }}
+                    required={true}
                     prefix={
                         <LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />
                     }
@@ -131,9 +129,6 @@ class NormalLoginForm extends React.Component<
                             type="primary"
                             htmlType="submit"
                             className="login-form-button"
-                            onClick={() => {
-                                self.handleSubmit()
-                            }}
                         >
                             Login
                         </Button>
@@ -143,7 +138,6 @@ class NormalLoginForm extends React.Component<
                     <Collapse.Panel header="Remember Me" key="1">
                         <Radio.Group
                             onChange={(e) => {
-                                console.log(e.target.value)
                                 self.setState({
                                     loginOption: e.target.value,
                                 })
@@ -162,7 +156,7 @@ class NormalLoginForm extends React.Component<
                         </Radio.Group>
                     </Collapse.Panel>
                 </Collapse>
-            </div>
+            </form>
         )
     }
 }
