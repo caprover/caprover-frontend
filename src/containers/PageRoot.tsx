@@ -17,6 +17,7 @@ import { Route, RouteComponentProps, Switch } from 'react-router'
 import ApiManager from '../api/ApiManager'
 import { IVersionInfo } from '../models/IVersionInfo'
 import * as GlobalActions from '../redux/actions/GlobalActions'
+import StorageHelper from '../utils/StorageHelper'
 import AppDetails from './apps/appDetails/AppDetails'
 import Apps from './apps/Apps'
 import OneClickAppSelector from './apps/oneclick/selector/OneClickAppSelector'
@@ -120,6 +121,9 @@ class PageRoot extends ApiComponent<
                 .catch((err) => {
                     // ignore error
                 })
+            this.setState({
+                collapsed: StorageHelper.getSiderCollapsedStateFromLocalStorage(),
+            })
         }
     }
 
@@ -171,6 +175,9 @@ class PageRoot extends ApiComponent<
     }
 
     toggleSider = () => {
+        StorageHelper.setSiderCollapsedStateInLocalStorage(
+            !this.state.collapsed
+        )
         this.setState({ collapsed: !this.state.collapsed })
     }
 
