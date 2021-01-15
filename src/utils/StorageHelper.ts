@@ -44,7 +44,7 @@ class StorageHelper {
 
     getSiderCollapsedStateFromLocalStorage(): boolean {
         const storageValue = localStorage.getItem(SIDER_COLLAPSED_STATE)
-        return storageValue ? (JSON.parse(storageValue) as boolean) : true
+        return storageValue && JSON.parse(storageValue)
     }
 }
 
