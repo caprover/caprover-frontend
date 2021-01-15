@@ -10,6 +10,7 @@ const sessionStorage = window.sessionStorage
     : fallbackNoOps
 
 const AUTH_KEY = 'CAPROVER_AUTH_KEY'
+const SIDER_COLLAPSED_STATE = 'CAPROVER_SIDER_COLLAPSED_STATE'
 
 class StorageHelper {
     getAuthKeyFromStorage() {
@@ -32,6 +33,18 @@ class StorageHelper {
     setAuthKeyInLocalStorage(authKey: string) {
         localStorage.setItem(AUTH_KEY, authKey)
         sessionStorage.setItem(AUTH_KEY, '')
+    }
+
+    setSiderCollapsedStateInLocalStorage(siderCollapsed: boolean) {
+        localStorage.setItem(
+            SIDER_COLLAPSED_STATE,
+            JSON.stringify(siderCollapsed)
+        )
+    }
+
+    getSiderCollapsedStateFromLocalStorage(): boolean {
+        const storageValue = localStorage.getItem(SIDER_COLLAPSED_STATE)
+        return storageValue && JSON.parse(storageValue)
     }
 }
 
