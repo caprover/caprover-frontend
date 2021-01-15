@@ -203,7 +203,11 @@ class AppsTable extends Component<
                                     &nbsp;&nbsp;&nbsp;Your Apps
                                 </span>
                                 <br />
-                                {self.props.isMobile && searchAppInput}
+                                {self.props.isMobile && (
+                                    <div style={{ marginTop: 8 }}>
+                                        {searchAppInput}
+                                    </div>
+                                )}
                             </React.Fragment>
                         }
                     >
@@ -232,6 +236,10 @@ class AppsTable extends Component<
                                                     Details
                                                 </ClickableLink>
                                             }
+                                            style={{
+                                                width: '100%',
+                                                marginBottom: 8,
+                                            }}
                                         >
                                             <p>
                                                 Persistent Data:{' '}
