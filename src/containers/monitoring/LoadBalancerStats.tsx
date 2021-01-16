@@ -5,18 +5,17 @@ import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 import ErrorRetry from '../global/ErrorRetry'
+import { InnerCard } from './../global/InnerCard'
 
 class LoadBalancerStatsCard extends Component<any, any> {
     render() {
         return (
-            <div
+            <InnerCard
                 style={{
                     height: 240,
                     overflow: 'hidden',
                     borderRadius: 5,
                     marginBottom: 8,
-                    border: '1px solid #dddddd',
-                    backgroundColor: '#fbfbfb',
                 }}
             >
                 <div style={{ textAlign: 'center', margin: 16 }}>
@@ -38,7 +37,7 @@ class LoadBalancerStatsCard extends Component<any, any> {
                         {this.props.text2}
                     </p>
                 </div>
-            </div>
+            </InnerCard>
         )
     }
 }

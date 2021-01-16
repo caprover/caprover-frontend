@@ -63,6 +63,7 @@ const MENU_ITEMS = [
 
 interface RootPageInterface extends RouteComponentProps<any> {
     rootElementKey: string
+    isDarkMode: boolean
     emitSizeChanged: () => void
     isMobile: boolean
 }
@@ -184,7 +185,12 @@ class PageRoot extends ApiComponent<
     render() {
         const self = this
         return (
-            <Layout className="full-screen-bg">
+            <Layout
+                className={[
+                    'full-screen',
+                    `${self.props.isDarkMode ? 'dark-theme' : 'light-theme'}`,
+                ].join(' ')}
+            >
                 <Header
                     className="header"
                     style={{
@@ -410,6 +416,7 @@ class PageRoot extends ApiComponent<
 
 function mapStateToProps(state: any) {
     return {
+        isDarkMode: state.globalReducer.isDarkMode,
         rootElementKey: state.globalReducer.rootElementKey,
         isMobile: state.globalReducer.isMobile,
     }
