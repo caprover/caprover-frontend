@@ -25,6 +25,7 @@ import OneClickAppConfigPage from './apps/oneclick/variables/OneClickAppConfigPa
 import Dashboard from './Dashboard'
 import ApiComponent from './global/ApiComponent'
 import ClickableLink from './global/ClickableLink'
+import DarkModeSwitch from './global/DarkModeSwitch'
 import NewTabLink from './global/NewTabLink'
 import LoggedInCatchAll from './LoggedInCatchAll'
 import Monitoring from './monitoring/Monitoring'
@@ -63,7 +64,6 @@ const MENU_ITEMS = [
 
 interface RootPageInterface extends RouteComponentProps<any> {
     rootElementKey: string
-    isDarkMode: boolean
     emitSizeChanged: () => void
     isMobile: boolean
 }
@@ -185,12 +185,7 @@ class PageRoot extends ApiComponent<
     render() {
         const self = this
         return (
-            <Layout
-                className={[
-                    'full-screen',
-                    `${self.props.isDarkMode ? 'dark-theme' : 'light-theme'}`,
-                ].join(' ')}
-            >
+            <Layout className="full-screen">
                 <Header
                     className="header"
                     style={{
@@ -230,6 +225,7 @@ class PageRoot extends ApiComponent<
                             {!self.props.isMobile && (
                                 <Col span={12}>
                                     <Row justify="end">
+                                        <DarkModeSwitch />
                                         <NewTabLink url="https://github.com/caprover/caprover">
                                             <span style={{ marginRight: 20 }}>
                                                 GitHub
@@ -416,7 +412,6 @@ class PageRoot extends ApiComponent<
 
 function mapStateToProps(state: any) {
     return {
-        isDarkMode: state.globalReducer.isDarkMode,
         rootElementKey: state.globalReducer.rootElementKey,
         isMobile: state.globalReducer.isMobile,
     }

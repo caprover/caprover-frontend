@@ -1,10 +1,5 @@
-import StorageHelper from '../../utils/StorageHelper'
-import DarkModeHelper from '../../utils/ThemeModeHelper'
-
 export const ROOT_KEY_CHANGED = 'ROOT_KEY_CHANGED'
 export const SIZE_CHANGED = 'SIZE_CHANGED'
-export const DARK_MODE_CHANGED = 'DARK_MODE_CHANGED'
-
 export function emitRootKeyChanged() {
     return {
         type: ROOT_KEY_CHANGED,
@@ -16,14 +11,5 @@ export function emitSizeChanged() {
     return {
         type: SIZE_CHANGED,
         payload: {},
-    }
-}
-
-export function emitDarkModeChanged(value: boolean) {
-    StorageHelper.setDarkModeInLocalStorage(value)
-    DarkModeHelper.loadTheme(value)
-    return {
-        type: DARK_MODE_CHANGED,
-        payload: value,
     }
 }

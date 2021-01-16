@@ -6,7 +6,6 @@ import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 import ErrorRetry from '../global/ErrorRetry'
-import InnerCard from './../global/InnerCard'
 import AddNode, { INodeToAdd } from './AddNode'
 
 class CurrentNodes extends ApiComponent<
@@ -71,7 +70,8 @@ class CurrentNodes extends ApiComponent<
 
         return nodes.map((node) => {
             return (
-                <InnerCard
+                <div
+                    className="inner-card"
                     key={node.nodeId}
                     style={{
                         paddingTop: 15,
@@ -139,7 +139,7 @@ class CurrentNodes extends ApiComponent<
                             {node.dockerEngineVersion}
                         </Col>
                     </Row>
-                </InnerCard>
+                </div>
             )
         })
 

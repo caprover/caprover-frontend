@@ -5,12 +5,12 @@ import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 import ErrorRetry from '../global/ErrorRetry'
-import InnerCard from './../global/InnerCard'
 
 class LoadBalancerStatsCard extends Component<any, any> {
     render() {
         return (
-            <InnerCard
+            <div
+                className="inner-card"
                 style={{
                     height: 240,
                     overflow: 'hidden',
@@ -37,7 +37,7 @@ class LoadBalancerStatsCard extends Component<any, any> {
                         {this.props.text2}
                     </p>
                 </div>
-            </InnerCard>
+            </div>
         )
     }
 }

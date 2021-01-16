@@ -3,11 +3,12 @@ import { Provider } from 'react-redux'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import { applyMiddleware, createStore } from 'redux'
 import thunk from 'redux-thunk'
-import './App.css'
+import './App.less'
 import Login from './containers/Login'
 import PageRoot from './containers/PageRoot'
 import reducers from './redux/reducers'
 import CrashReporter from './utils/CrashReporter'
+import StorageHelper from './utils/StorageHelper'
 import DarkModeHelper from './utils/ThemeModeHelper'
 CrashReporter.getInstance().init()
 
@@ -23,7 +24,7 @@ class App extends Component<{}, AppState> {
         this.state = {
             themeLoaded: false,
         }
-        const { isDarkMode } = store.getState().globalReducer
+        const isDarkMode = StorageHelper.getDarkModeFromLocalStorage()
         DarkModeHelper.loadTheme(isDarkMode).then(() => {
             this.setState({ themeLoaded: true })
         })
@@ -31,17 +32,11 @@ class App extends Component<{}, AppState> {
 
     render() {
         const { themeLoaded } = this.state
-        const { isDarkMode } = store.getState().globalReducer
         if (!themeLoaded) return <div /> // prevent theme visible swapping
 
         return (
             <Provider store={store}>
-                <div
-                    className={[
-                        'full-screen',
-                        `${isDarkMode ? 'dark-theme' : 'light-theme'}`,
-                    ].join(' ')}
-                >
+                <div className="full-screen">
                     <HashRouter>
                         <Switch>
                             <Route path="/login/" component={Login} />
