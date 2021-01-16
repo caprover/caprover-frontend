@@ -225,7 +225,6 @@ class PageRoot extends ApiComponent<
                             {!self.props.isMobile && (
                                 <Col span={12}>
                                     <Row justify="end">
-                                        <DarkModeSwitch />
                                         <NewTabLink url="https://github.com/caprover/caprover">
                                             <span style={{ marginRight: 20 }}>
                                                 GitHub
@@ -240,6 +239,13 @@ class PageRoot extends ApiComponent<
                                             <NewTabLink url="https://caprover.com">
                                                 Docs
                                             </NewTabLink>
+                                        </span>
+                                        <span
+                                            style={{
+                                                marginRight: 70,
+                                            }}
+                                        >
+                                            <DarkModeSwitch />
                                         </span>
                                         <span>
                                             <span

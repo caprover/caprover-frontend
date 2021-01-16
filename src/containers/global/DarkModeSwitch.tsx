@@ -1,8 +1,8 @@
+import { BulbFilled, BulbOutlined } from '@ant-design/icons'
 import { Switch } from 'antd'
 import React, { Component } from 'react'
 import StorageHelper from '../../utils/StorageHelper'
 import ThemeModeHelper from './../../utils/ThemeModeHelper'
-
 export default class DarkModeSwitch extends Component<{}, any> {
     constructor(props: any) {
         super(props)
@@ -11,8 +11,8 @@ export default class DarkModeSwitch extends Component<{}, any> {
     render() {
         return (
             <Switch
-                checkedChildren="ddfsdf"
-                unCheckedChildren="sdfs"
+                checkedChildren={<BulbOutlined />}
+                unCheckedChildren={<BulbFilled />}
                 checked={this.state.isChecked}
                 onChange={(checked) => {
                     StorageHelper.setDarkModeInLocalStorage(checked)
