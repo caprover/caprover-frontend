@@ -25,6 +25,7 @@ import OneClickAppConfigPage from './apps/oneclick/variables/OneClickAppConfigPa
 import Dashboard from './Dashboard'
 import ApiComponent from './global/ApiComponent'
 import ClickableLink from './global/ClickableLink'
+import DarkModeSwitch from './global/DarkModeSwitch'
 import NewTabLink from './global/NewTabLink'
 import LoggedInCatchAll from './LoggedInCatchAll'
 import Monitoring from './monitoring/Monitoring'
@@ -184,7 +185,7 @@ class PageRoot extends ApiComponent<
     render() {
         const self = this
         return (
-            <Layout className="full-screen-bg">
+            <Layout className="full-screen">
                 <Header
                     className="header"
                     style={{
@@ -238,6 +239,13 @@ class PageRoot extends ApiComponent<
                                             <NewTabLink url="https://caprover.com">
                                                 Docs
                                             </NewTabLink>
+                                        </span>
+                                        <span
+                                            style={{
+                                                marginRight: 70,
+                                            }}
+                                        >
+                                            <DarkModeSwitch />
                                         </span>
                                         <span>
                                             <span

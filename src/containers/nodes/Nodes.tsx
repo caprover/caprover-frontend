@@ -71,6 +71,7 @@ class CurrentNodes extends ApiComponent<
         return nodes.map((node) => {
             return (
                 <div
+                    className="inner-card"
                     key={node.nodeId}
                     style={{
                         paddingTop: 15,
@@ -79,8 +80,6 @@ class CurrentNodes extends ApiComponent<
                         paddingLeft: 20,
                         marginBottom: 40,
                         borderRadius: 5,
-                        border: '1px solid #dddddd',
-                        backgroundColor: '#fcfcfc',
                     }}
                 >
                     <Row justify="center">

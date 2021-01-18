@@ -11,7 +11,7 @@ const sessionStorage = window.sessionStorage
 
 const AUTH_KEY = 'CAPROVER_AUTH_KEY'
 const SIDER_COLLAPSED_STATE = 'CAPROVER_SIDER_COLLAPSED_STATE'
-
+const DARK_MODE = 'CAPROVER_DARK_MODE'
 class StorageHelper {
     getAuthKeyFromStorage() {
         const localStorageAuth = localStorage.getItem(AUTH_KEY)
@@ -45,6 +45,19 @@ class StorageHelper {
     getSiderCollapsedStateFromLocalStorage(): boolean {
         const storageValue = localStorage.getItem(SIDER_COLLAPSED_STATE)
         return storageValue && JSON.parse(storageValue)
+    }
+
+    setDarkModeInLocalStorage(isDarkMode: boolean) {
+        localStorage.setItem(DARK_MODE, JSON.stringify(isDarkMode))
+    }
+
+    getDarkModeFromLocalStorage(): boolean {
+        const isDarkMode = localStorage.getItem(DARK_MODE)
+        // If not preference exists, return DarkMode based on users colorScheme
+        return isDarkMode
+            ? JSON.parse(isDarkMode)
+            : window.matchMedia &&
+                  window.matchMedia('(prefers-color-scheme: dark)').matches
     }
 }
 

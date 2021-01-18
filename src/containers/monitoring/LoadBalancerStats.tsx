@@ -10,13 +10,12 @@ class LoadBalancerStatsCard extends Component<any, any> {
     render() {
         return (
             <div
+                className="inner-card"
                 style={{
                     height: 240,
                     overflow: 'hidden',
                     borderRadius: 5,
                     marginBottom: 8,
-                    border: '1px solid #dddddd',
-                    backgroundColor: '#fbfbfb',
                 }}
             >
                 <div style={{ textAlign: 'center', margin: 16 }}>

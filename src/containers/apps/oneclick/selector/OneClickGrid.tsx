@@ -59,13 +59,7 @@ export default class OneClickGrid extends Component<
                     onClick={() =>
                         this.props.onAppSelectionChanged(app.name, app.baseUrl)
                     }
-                    cover={
-                        <img
-                            style={{ margin: 10 }}
-                            src={app.logoUrl}
-                            alt="App logo"
-                        />
-                    }
+                    cover={<img src={app.logoUrl} alt="App logo" />}
                     hoverable
                 >
                     <Card.Meta
