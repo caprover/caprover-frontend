@@ -10,9 +10,9 @@ import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
 import Logger from '../../utils/Logger'
-import ClickableLink from '../global/ClickableLink'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
@@ -34,8 +34,8 @@ class AppsTable extends Component<
         this.state = { searchTerm: '' }
     }
 
-    onAppClicked(appName: string) {
-        this.props.history.push(`/apps/details/${appName}`)
+    appDetailPath(appName: string) {
+        return `/apps/details/${appName}`
     }
 
     createColumns(): ColumnProps<TableData>[] {
@@ -47,11 +47,7 @@ class AppsTable extends Component<
                 dataIndex: 'appName',
                 key: 'appName',
                 render: (appName: string) => (
-                    <ClickableLink
-                        onLinkClicked={() => self.onAppClicked(appName)}
-                    >
-                        {appName}
-                    </ClickableLink>
+                    <Link to={this.appDetailPath(appName)}>{appName}</Link>
                 ),
                 sorter: (a, b) => {
                     return a.appName
@@ -226,15 +222,13 @@ class AppsTable extends Component<
                                             title={appName}
                                             key={appName}
                                             extra={
-                                                <ClickableLink
-                                                    onLinkClicked={() =>
-                                                        self.onAppClicked(
-                                                            appName
-                                                        )
-                                                    }
+                                                <Link
+                                                    to={this.appDetailPath(
+                                                        appName
+                                                    )}
                                                 >
                                                     Details
-                                                </ClickableLink>
+                                                </Link>
                                             }
                                             style={{
                                                 width: '100%',
