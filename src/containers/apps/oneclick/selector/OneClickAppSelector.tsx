@@ -149,15 +149,10 @@ export default class OneClickAppSelector extends ApiComponent<
 
         return (
             <OneClickGrid
-                onAppSelectionChanged={(appName, baseDomain) => {
+                onAppSelectionChanged={(event, appName) => {
                     if (appName === TEMPLATE_ONE_CLICK_APP) {
+                        event.preventDefault()
                         self.setState({ isCustomTemplateSelected: true })
-                    } else {
-                        self.props.history.push(
-                            `/apps/oneclick/${appName}?baseDomain=${encodeURIComponent(
-                                baseDomain
-                            )}`
-                        )
                     }
                 }}
                 oneClickAppList={self.state.oneClickAppList!}
