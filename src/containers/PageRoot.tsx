@@ -14,6 +14,7 @@ import { Button, Col, Layout, Menu, Row } from 'antd'
 import React, { Fragment, RefObject } from 'react'
 import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
+import { Link } from 'react-router-dom'
 import ApiManager from '../api/ApiManager'
 import { IVersionInfo } from '../models/IVersionInfo'
 import * as GlobalActions from '../redux/actions/GlobalActions'
@@ -171,10 +172,6 @@ class PageRoot extends ApiComponent<
         )
     }
 
-    onSelectMenu(key: string) {
-        this.props.history.push(`/${key}`)
-    }
-
     toggleSider = () => {
         StorageHelper.setSiderCollapsedStateInLocalStorage(
             !this.state.collapsed
@@ -289,9 +286,6 @@ class PageRoot extends ApiComponent<
                             selectedKeys={[
                                 this.props.location.pathname.substring(1),
                             ]}
-                            onSelect={(param) => {
-                                this.onSelectMenu(`${param.key}`)
-                            }}
                             theme="dark"
                             mode="inline"
                             defaultSelectedKeys={['dashboard']}
@@ -299,10 +293,13 @@ class PageRoot extends ApiComponent<
                         >
                             {MENU_ITEMS.map((item) => (
                                 <Menu.Item key={item.key}>
-                                    <span>
+                                    <Link
+                                        to={`/${item.key}`}
+                                        className="nav-text"
+                                    >
                                         {item.icon}
                                         <span>{item.name}</span>
-                                    </span>
+                                    </Link>
                                 </Menu.Item>
                             ))}
 

@@ -29,10 +29,6 @@ export default class Apps extends ApiComponent<
         }
     }
 
-    onCreateOneClickAppClicked() {
-        this.props.history.push(`/apps/oneclick/`)
-    }
-
     onCreateNewAppClicked(appName: string, hasPersistentData: boolean) {
         const self = this
 
@@ -75,9 +71,6 @@ export default class Apps extends ApiComponent<
                         hasPersistency: boolean
                     ) => {
                         self.onCreateNewAppClicked(appName, hasPersistency)
-                    }}
-                    onCreateOneClickAppClicked={() => {
-                        self.onCreateOneClickAppClicked()
                     }}
                 />
                 <div style={{ height: 25 }} />

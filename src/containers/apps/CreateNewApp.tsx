@@ -3,12 +3,12 @@ import { Button, Card, Checkbox, Col, Input, Row, Tooltip } from 'antd'
 import Search from 'antd/lib/input/Search'
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
 import NewTabLink from '../global/NewTabLink'
 
 interface MyProps {
     onCreateNewAppClicked: (appName: string, hasPersistency: boolean) => void
-    onCreateOneClickAppClicked: () => void
 }
 
 class CreateNewApp extends Component<
@@ -29,11 +29,6 @@ class CreateNewApp extends Component<
             this.state.hasPersistency
         )
     }
-
-    onCreateOneClickAppClicked() {
-        this.props.onCreateOneClickAppClicked()
-    }
-
     render() {
         const self = this
 
@@ -113,13 +108,9 @@ class CreateNewApp extends Component<
                         <br />
                         <div style={{ textAlign: 'center' }}>
                             <p>Or Select From</p>
-                            <Button
-                                onClick={() =>
-                                    self.onCreateOneClickAppClicked()
-                                }
-                            >
+                            <Link to="/apps/oneclick/" className="ant-btn">
                                 One-Click Apps/Databases
-                            </Button>
+                            </Link>
                         </div>
                     </Card>
                 </Col>
