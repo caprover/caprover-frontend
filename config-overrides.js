@@ -19,6 +19,7 @@ const darkVars = {
     ...getLessVars('./node_modules/antd/lib/style/themes/dark.less'),
     '@primary-color': defaultVars['@primary-color'],
     '@picker-basic-cell-active-with-range-color': 'darken(@primary-color, 20%)',
+    '@table-selected-row-bg': 'darken(@primary-color, 20%)',
 }
 const lightVars = {
     ...getLessVars('./node_modules/antd/lib/style/themes/compact.less'),
