@@ -203,6 +203,7 @@ export default class DockerRegistryTable extends Component<
         return (
             <div>
                 <Modal
+                    destroyOnClose={true}
                     title="Confirm Delete"
                     okText="Delete Registry"
                     onCancel={() => self.setState({ modalShowing: undefined })}
@@ -219,6 +220,7 @@ export default class DockerRegistryTable extends Component<
                     this registry.
                 </Modal>
                 <Modal
+                    destroyOnClose={true}
                     title="Edit Registry"
                     okText="Save and Update"
                     onCancel={() => self.setState({ modalShowing: undefined })}
