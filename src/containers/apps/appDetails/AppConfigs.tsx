@@ -410,7 +410,12 @@ export default class AppConfigs extends Component<
         const app = this.props.apiData!.appDefinition
         return (
             <div>
-                <h4>Environmental Variables:</h4>
+                <h4>
+                    Environmental Variables &nbsp;
+                    <NewTabLink url="https://caprover.com/docs/app-configuration.html#environment-variables">
+                        <InfoCircleOutlined />
+                    </NewTabLink>
+                </h4>
                 <Row align="middle" justify="end">
                     <h5>
                         Bulk Edit&nbsp;{' '}
