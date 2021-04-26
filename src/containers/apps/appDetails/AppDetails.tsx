@@ -248,9 +248,9 @@ class AppDetails extends ApiComponent<
                                             other containers. Sometimes, this is
                                             because of a temporary delay when
                                             the original container deletion was
-                                            done with a delay. Please see{' '}
-                                            <NewTabLink url="https://caprover.com/docs/app-configuration.html#removing-persistent-apps">
-                                                documentations
+                                            done with a delay. Please consult the {' '}
+                                            <NewTabLink url="https://caprover.com/docs/persistent-apps.html#removing-persistent-apps">
+                                                documentation
                                             </NewTabLink>{' '}
                                             and delete them manually if needed.
                                             Skipped volumes are:
