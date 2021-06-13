@@ -26,7 +26,7 @@ export default class OneClickAppDeployProgress extends Component<{
                                 <LoadingOutlined
                                     style={{
                                         fontSize: '16px',
-                                        paddingRight: 12,
+                                        marginRight: 12,
                                     }}
                                 />
                             ) : (
