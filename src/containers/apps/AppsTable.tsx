@@ -177,7 +177,7 @@ class AppsTable extends Component<
                 type="text"
                 onChange={(event) =>
                     self.setState({
-                        searchTerm: (event.target.value || '').trim(),
+                        searchTerm: (event.target.value || '').trim().toLowerCase(),
                     })
                 }
             />
