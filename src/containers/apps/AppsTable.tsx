@@ -103,7 +103,7 @@ class AppsTable extends Component<
                                 <LoadingOutlined
                                     style={{
                                         fontSize: '12px',
-                                        paddingLeft: 12,
+                                        marginLeft: 12,
                                     }}
                                 />
                             ) : undefined}
