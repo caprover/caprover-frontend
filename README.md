@@ -10,6 +10,7 @@ Run CapRover backend service in debug mode. Change `.env.development` to match y
 > ```
 > apk update && apk add nodejs npm
 > git clone https://github.com/caprover/caprover.git
+> cd caprover
 > npm i
 > npm run clean
 > ```
