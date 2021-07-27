@@ -475,9 +475,9 @@ class AppDetails extends ApiComponent<
                                     onUpdateConfigAndSave={() =>
                                         self.onUpdateConfigAndSave()
                                     }
-                                    updateApiData={(newData: any) =>
+                                    updateApiData={(newData: any) => {
                                         this.setState({ apiData: newData })
-                                    }
+                                    }}
                                 />
                             </TabPane>
                         </Tabs>
