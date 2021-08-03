@@ -62,11 +62,13 @@ export default class ChangePass extends ApiComponent<
                 <div style={{ height: 20 }} />
                 New Password
                 <Input.Password
+                    maxLength={30}
                     onChange={(e) => this.setState({ new1: e.target.value })}
                 />
                 <div style={{ height: 20 }} />
                 Confirm New Password
                 <Input.Password
+                    maxLength={30}
                     onChange={(e) => this.setState({ new2: e.target.value })}
                 />
                 <div style={{ height: 40 }} />
