@@ -8,7 +8,7 @@ import StorageHelper from '../utils/StorageHelper'
 import HttpClient from './HttpClient'
 
 const BASE_DOMAIN = process.env.REACT_APP_API_URL
-    ? process.env.REACT_APP_API_URL
+    ? process.env.REACT_APP_API_URL.replace(/\/$/, '')
     : ''
 const URL = BASE_DOMAIN + '/api/v2'
 Logger.dev(`API URL: ${URL}`)
@@ -202,6 +202,7 @@ export default class ApiManager {
         let containerHttpPort = appDefinition.containerHttpPort
         let description = appDefinition.description
         let httpAuth = appDefinition.httpAuth
+        let appDeployTokenConfig = appDefinition.appDeployTokenConfig
         const http = this.http
 
         return Promise.resolve() //
@@ -224,6 +225,7 @@ export default class ApiManager {
                     description: description,
                     httpAuth: httpAuth,
                     envVars: envVars,
+                    appDeployTokenConfig: appDeployTokenConfig,
                 })
             )
     }

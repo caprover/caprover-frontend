@@ -172,11 +172,80 @@ export default class Deployment extends ApiComponent<
                 <p>
                     Use CLI deploy command. This is the easiest method as it
                     only requires a simply command like{' '}
-                    <code>caprover deploy</code>. Read more about it in the{' '}
+                    <code>caprover deploy</code>. Read more about it in{' '}
                     <NewTabLink url="https://caprover.com/docs/get-started.html#step-4-deploy-the-test-app">
-                        docs
+                        the docs
                     </NewTabLink>
+                    . If you're using CI/CD to run <code>caprover deploy</code>{' '}
+                    and you do not wish to use your password, you can use{' '}
+                    <NewTabLink url="https://caprover.com/docs/ci-cd-integration.html#app-tokens">
+                        app-specific tokens
+                    </NewTabLink>
+                    .
                 </p>
+                <Row
+                    justify="start"
+                    style={{ marginTop: this.props.isMobile ? 15 : 0 }}
+                >
+                    <Col flex="0">
+                        <Button
+                            style={{
+                                margin: 5,
+                            }}
+                            block={this.props.isMobile}
+                            onClick={() => {
+                                const newApiData = Utils.copyObject(
+                                    this.props.apiData
+                                )
+                                let tokenConfig =
+                                    newApiData.appDefinition
+                                        .appDeployTokenConfig
+                                if (!tokenConfig) {
+                                    tokenConfig = {
+                                        enabled: false,
+                                    }
+                                }
+                                tokenConfig.enabled = !tokenConfig.enabled
+                                newApiData.appDefinition.appDeployTokenConfig = tokenConfig
+                                self.props.updateApiData(newApiData)
+                                // This is a hack! Find a better way!
+                                // We need this delay, otherwise the new state will not be used by onUpdateConfigAndSave
+                                setTimeout(
+                                    self.props.onUpdateConfigAndSave,
+                                    100
+                                )
+                            }}
+                        >
+                            {app.appDeployTokenConfig?.enabled
+                                ? 'Disable App Token'
+                                : 'Enable App Token'}
+                        </Button>
+                    </Col>{' '}
+                    <Col flex="auto">
+                        <Input
+                            onFocus={(e) => {
+                                if (
+                                    !!app.appDeployTokenConfig?.appDeployToken
+                                ) {
+                                    e.target.select()
+                                    document.execCommand('copy')
+                                    message.info('Copied to clipboard!')
+                                }
+                            }}
+                            style={{
+                                margin: 5,
+                            }}
+                            className="code-input"
+                            readOnly={true}
+                            disabled={!app.appDeployTokenConfig?.appDeployToken}
+                            value={
+                                app.appDeployTokenConfig?.enabled
+                                    ? app.appDeployTokenConfig?.appDeployToken
+                                    : '** Enable App Token to generate a random app token **'
+                            }
+                        />
+                    </Col>
+                </Row>
                 <div style={{ height: 20 }} />
                 <h4>
                     <RocketOutlined /> Method 2: Tarball

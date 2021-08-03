@@ -81,6 +81,12 @@ interface IAppDefinitionBase {
     envVars: IAppEnvVar[]
 
     versions: IAppVersion[]
+    appDeployTokenConfig?: AppDeployTokenConfig
+}
+
+interface AppDeployTokenConfig {
+    enabled: boolean
+    appDeployToken?: string
 }
 
 export interface IAppDef extends IAppDefinitionBase {
