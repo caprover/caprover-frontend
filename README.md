@@ -13,6 +13,7 @@ Run CapRover backend service in debug mode. Change `.env.development` to match y
 > cd caprover
 > npm i
 > npm run clean
+> echo "done"
 > ```
 > Then click on Open Port button and get the URL for port `3000`, it should be something like this (make sure to remove trailing slash): `http://ip172-18-0-76-abcdef123456-3000.direct.labs.play-with-docker.com`
 
