@@ -1,7 +1,8 @@
 import { Card, Col, message, Row } from 'antd'
 import queryString from 'query-string'
-import React from 'react'
+import ReactMarkdown from 'react-markdown'
 import { RouteComponentProps } from 'react-router'
+import gfm from 'remark-gfm'
 import { IOneClickTemplate } from '../../../../models/IOneClickAppModels'
 import DomUtils from '../../../../utils/DomUtils'
 import Toaster from '../../../../utils/Toaster'
@@ -156,12 +157,17 @@ export default class OneClickAppConfigPage extends ApiComponent<
                             <h2>{displayName}</h2>
                             <p
                                 style={{
-                                    whiteSpace: 'pre-line',
+                                    whiteSpace: 'pre-wrap',
                                     paddingLeft: 15,
                                     paddingRight: 15,
                                 }}
                             >
-                                {apiData.caproverOneClickApp.instructions.start}
+                                <ReactMarkdown remarkPlugins={[gfm]}>
+                                    {
+                                        apiData.caproverOneClickApp.instructions
+                                            .start
+                                    }
+                                </ReactMarkdown>
                             </p>
                             <div style={{ height: 40 }} />
                             <OneClickVariablesSection

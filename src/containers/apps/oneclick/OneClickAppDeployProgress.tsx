@@ -1,6 +1,7 @@
 import { LoadingOutlined } from '@ant-design/icons'
 import { Alert, Button, Card, Col, Row, Steps } from 'antd'
 import React, { Component } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { Prompt } from 'react-router-dom'
 import { IDeploymentState } from './OneClickAppDeployManager'
 
@@ -112,14 +113,15 @@ It will interrupt the deployment at the current step, leaving the applications i
                                             message={
                                                 <div
                                                     style={{
-                                                        whiteSpace: 'pre-line',
+                                                        whiteSpace: 'pre-wrap',
                                                     }}
                                                 >
-                                                    {
-                                                        self.props
+                                                    <ReactMarkdown>
+                                                        {self.props
                                                             .deploymentState
-                                                            .successMessage
-                                                    }
+                                                            .successMessage ||
+                                                            ''}
+                                                    </ReactMarkdown>
                                                 </div>
                                             }
                                         />
