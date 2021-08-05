@@ -1,5 +1,7 @@
 import { Alert, Button, Col, Input, message, Row } from 'antd'
 import React, { Component } from 'react'
+import ReactMarkdown from 'react-markdown'
+import gfm from 'remark-gfm'
 import { IHashMapGeneric } from '../../../../models/IHashMapGeneric'
 import { IOneClickVariable } from '../../../../models/IOneClickAppModels'
 import Utils from '../../../../utils/Utils'
@@ -82,7 +84,9 @@ export default class OneClickVariablesSection extends Component<
                             !!variable.description ? '' : 'hide-on-demand'
                         }
                     >
-                        {variable.description}
+                        <ReactMarkdown remarkPlugins={[gfm]}>
+                            {variable.description || ''}
+                        </ReactMarkdown>
                     </div>
 
                     <Row>
