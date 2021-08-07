@@ -499,9 +499,8 @@ export default class AppConfigs extends Component<
                                     const newApiData = Utils.copyObject(
                                         this.props.apiData
                                     )
-                                    newApiData.appDefinition.instanceCount = Number(
-                                        e.target.value
-                                    )
+                                    newApiData.appDefinition.instanceCount =
+                                        Number(e.target.value)
                                     this.props.updateApiData(newApiData)
                                 }}
                             />

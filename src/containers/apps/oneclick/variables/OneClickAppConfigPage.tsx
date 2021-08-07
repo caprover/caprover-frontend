@@ -178,9 +178,8 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                     const template = Utils.copyObject(
                                         self.state.apiData!
                                     )
-                                    const valuesAugmented = Utils.copyObject(
-                                        values
-                                    )
+                                    const valuesAugmented =
+                                        Utils.copyObject(values)
 
                                     template.caproverOneClickApp.variables.push(
                                         {

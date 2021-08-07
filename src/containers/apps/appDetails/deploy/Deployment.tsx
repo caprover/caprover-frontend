@@ -206,7 +206,8 @@ export default class Deployment extends ApiComponent<
                                     }
                                 }
                                 tokenConfig.enabled = !tokenConfig.enabled
-                                newApiData.appDefinition.appDeployTokenConfig = tokenConfig
+                                newApiData.appDefinition.appDeployTokenConfig =
+                                    tokenConfig
                                 self.props.updateApiData(newApiData)
                                 // This is a hack! Find a better way!
                                 // We need this delay, otherwise the new state will not be used by onUpdateConfigAndSave
@@ -297,9 +298,8 @@ export default class Deployment extends ApiComponent<
                     updateRepoInfo={(newRepo) => {
                         const newApiData = Utils.copyObject(this.props.apiData)
                         if (newApiData.appDefinition.appPushWebhook) {
-                            newApiData.appDefinition.appPushWebhook.repoInfo = Utils.copyObject(
-                                newRepo
-                            )
+                            newApiData.appDefinition.appPushWebhook.repoInfo =
+                                Utils.copyObject(newRepo)
                         } else {
                             newApiData.appDefinition.appPushWebhook = {
                                 repoInfo: Utils.copyObject(newRepo),
@@ -409,7 +409,8 @@ export default class Deployment extends ApiComponent<
                                     }
                                     onClick={() =>
                                         this.setState({
-                                            forceEditableCaptainDefinitionPath: true,
+                                            forceEditableCaptainDefinitionPath:
+                                                true,
                                         })
                                     }
                                 >

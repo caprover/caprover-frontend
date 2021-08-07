@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     copyObject<T>(obj: T): T {
         return JSON.parse(JSON.stringify(obj)) as T

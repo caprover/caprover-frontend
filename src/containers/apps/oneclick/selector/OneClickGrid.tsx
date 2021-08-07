@@ -148,10 +148,11 @@ export default class OneClickGrid extends Component<
                                     ) {
                                         score = 0.99
                                     } else {
-                                        score = StringSimilarity.compareTwoStrings(
-                                            searchTerm,
-                                            appNameForSearch
-                                        )
+                                        score =
+                                            StringSimilarity.compareTwoStrings(
+                                                searchTerm,
+                                                appNameForSearch
+                                            )
                                     }
 
                                     sortScores[app.name] = score || 0

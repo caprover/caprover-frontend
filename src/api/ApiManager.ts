@@ -175,9 +175,8 @@ export default class ApiManager {
                         detached ? '?detached=1' : ''
                     }`,
                     {
-                        captainDefinitionContent: JSON.stringify(
-                            captainDefinition
-                        ),
+                        captainDefinitionContent:
+                            JSON.stringify(captainDefinition),
                         gitHash,
                     }
                 )
@@ -210,7 +209,8 @@ export default class ApiManager {
                 http.fetch(http.POST, '/user/apps/appDefinitions/update', {
                     appName: appName,
                     instanceCount: instanceCount,
-                    captainDefinitionRelativeFilePath: captainDefinitionRelativeFilePath,
+                    captainDefinitionRelativeFilePath:
+                        captainDefinitionRelativeFilePath,
                     notExposeAsWebApp: notExposeAsWebApp,
                     forceSsl: forceSsl,
                     websocketSupport: websocketSupport,

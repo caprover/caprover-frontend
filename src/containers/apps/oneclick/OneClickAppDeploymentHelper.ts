@@ -84,9 +84,10 @@ export default class OneClickAppDeploymentHelper {
                         })
                     })
 
-                    const overrideYaml = DockerComposeToServiceOverride.convertComposeToService(
-                        dockerComposeService
-                    )
+                    const overrideYaml =
+                        DockerComposeToServiceOverride.convertComposeToService(
+                            dockerComposeService
+                        )
 
                     if (!!overrideYaml) {
                         appDef.serviceUpdateOverride = overrideYaml

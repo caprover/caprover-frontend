@@ -153,7 +153,8 @@ export default class DockerRegistryAdd extends Component<
                                 const newData = Utils.copyObject(
                                     self.state.remoteRegistryToAdd
                                 )
-                                newData.registryImagePrefix = e.target.value.trim()
+                                newData.registryImagePrefix =
+                                    e.target.value.trim()
                                 self.setState({ remoteRegistryToAdd: newData })
                             }}
                         />
@@ -180,7 +181,8 @@ export default class DockerRegistryAdd extends Component<
                         onClick={() =>
                             self.setState({
                                 modalShowing: ADDING_REMOTE,
-                                remoteRegistryToAdd: self.getPlainRegistryInfo(),
+                                remoteRegistryToAdd:
+                                    self.getPlainRegistryInfo(),
                             })
                         }
                     >

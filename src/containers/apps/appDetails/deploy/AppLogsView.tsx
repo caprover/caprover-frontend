@@ -92,9 +92,8 @@ export default class AppLogsView extends ApiComponent<
 
                 if (shouldScrollToBottom)
                     setTimeout(function () {
-                        let textarea = document.getElementById(
-                            'applogs-text-id'
-                        )
+                        let textarea =
+                            document.getElementById('applogs-text-id')
                         if (textarea) textarea.scrollTop = textarea.scrollHeight
                     }, 100)
             })

@@ -6,6 +6,7 @@ function scrollToFixedFromTop(fromTopPx: number, el: HTMLElement) {
     })
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     scrollToTopBar(delay?: number) {
         const el = document.getElementById('main-content-layout')

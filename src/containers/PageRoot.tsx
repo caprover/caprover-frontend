@@ -124,7 +124,8 @@ class PageRoot extends ApiComponent<
                     // ignore error
                 })
             this.setState({
-                collapsed: StorageHelper.getSiderCollapsedStateFromLocalStorage(),
+                collapsed:
+                    StorageHelper.getSiderCollapsedStateFromLocalStorage(),
             })
         }
     }

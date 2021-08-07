@@ -17,6 +17,7 @@ const getInstance = function () {
     return instance
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     getInstance: getInstance,
 }

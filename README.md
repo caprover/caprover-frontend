@@ -7,6 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 Run CapRover backend service in debug mode. Change `.env.development` to match your backend. Then run `npm start`
 
 > **Note**: To create a simple backend API in debug mode, you can use [Play with Docker](https://labs.play-with-docker.com/). Just simply run the following commands and you'll be set:
+>
 > ```
 > apk update && apk add nodejs npm
 > git clone https://github.com/caprover/caprover.git
@@ -15,6 +16,7 @@ Run CapRover backend service in debug mode. Change `.env.development` to match y
 > npm run clean
 > echo "done"
 > ```
+>
 > Then click on Open Port button and get the URL for port `3000`, it should be something like this (make sure to remove trailing slash): `http://ip172-18-0-76-abcdef123456-3000.direct.labs.play-with-docker.com`
 
 We strive to keep CapRover code base consistent. This will ensure a high level of consistency and lower maintenance load.
@@ -23,7 +25,7 @@ We strive to keep CapRover code base consistent. This will ensure a high level o
 
 In the project directory, you can run:
 
-#### `npm start`
+#### `yarn start`
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -31,7 +33,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
-### `npm run build`
+### `yarn run build`
 
 Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -58,7 +60,7 @@ To ensure your elements work with both dark and light modes, following points ne
 
 #### Dev Mode & Hot Reload
 
-It can happen that modifying the `app.less` during `npm run dev` leads to `FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory less`. To overcome this, we need to set `max-old-space-size`.
+It can happen that modifying the `app.less` during `yarn run dev` leads to `FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory less`. To overcome this, we need to set `max-old-space-size`.
 
 ```bash
 export NODE_OPTIONS="--max-old-space-size=8192"

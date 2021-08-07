@@ -192,8 +192,8 @@ class AppDetails extends ApiComponent<
                                 <Checkbox
                                     defaultChecked={!!self.volumesToDelete[v]}
                                     onChange={(e: any) => {
-                                        self.volumesToDelete[v] = !self
-                                            .volumesToDelete[v]
+                                        self.volumesToDelete[v] =
+                                            !self.volumesToDelete[v]
                                     }}
                                 >
                                     {v}
@@ -209,7 +209,8 @@ class AppDetails extends ApiComponent<
                         type="text"
                         placeholder={appDef.appName}
                         onChange={(e) => {
-                            self.confirmedAppNameToDelete = e.target.value.trim()
+                            self.confirmedAppNameToDelete =
+                                e.target.value.trim()
                         }}
                     />
                 </div>
@@ -233,7 +234,8 @@ class AppDetails extends ApiComponent<
                 self.apiManager
                     .deleteApp(appDef.appName!, volumes)
                     .then(function (data) {
-                        const volumesFailedToDelete = data.volumesFailedToDelete as string[]
+                        const volumesFailedToDelete =
+                            data.volumesFailedToDelete as string[]
                         if (
                             volumesFailedToDelete &&
                             volumesFailedToDelete.length

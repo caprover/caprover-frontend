@@ -27,7 +27,8 @@ function replaceWith(
 }
 
 export default class OneClickAppDeployManager {
-    private deploymentHelper: OneClickAppDeploymentHelper = new OneClickAppDeploymentHelper()
+    private deploymentHelper: OneClickAppDeploymentHelper =
+        new OneClickAppDeploymentHelper()
     private template: IOneClickTemplate | undefined
     constructor(
         private onDeploymentStateChanged: (
@@ -78,8 +79,7 @@ export default class OneClickAppDeployManager {
         if (!apps) {
             self.onDeploymentStateChanged({
                 steps: ['Parsing the template'],
-                error:
-                    'Cannot parse the template. Dependency tree cannot be resolved. Infinite loop!!',
+                error: 'Cannot parse the template. Dependency tree cannot be resolved. Infinite loop!!',
                 currentStep: 0,
             })
         } else if (apps.length === 0) {

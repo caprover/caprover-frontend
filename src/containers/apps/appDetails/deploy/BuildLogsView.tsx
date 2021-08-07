@@ -102,9 +102,8 @@ export default class BuildLogsView extends ApiComponent<
 
                 if (lineAdded) {
                     setTimeout(function () {
-                        let textarea = document.getElementById(
-                            'buildlog-text-id'
-                        )
+                        let textarea =
+                            document.getElementById('buildlog-text-id')
                         if (textarea) textarea.scrollTop = textarea.scrollHeight
                     }, 100)
                 }

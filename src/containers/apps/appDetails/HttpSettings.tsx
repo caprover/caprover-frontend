@@ -190,13 +190,14 @@ export default class HttpSettings extends Component<
 
     onEditDefaultNginxConfigClicked() {
         const newApiData = Utils.copyObject(this.props.apiData!)
-        newApiData.appDefinition.customNginxConfig = this.props.apiData!.defaultNginxConfig
+        newApiData.appDefinition.customNginxConfig =
+            this.props.apiData!.defaultNginxConfig
         this.props.updateApiData(newApiData)
     }
 
     createCustomNginx() {
-        const customNginxConfig = this.props.apiData!.appDefinition
-            .customNginxConfig!
+        const customNginxConfig =
+            this.props.apiData!.appDefinition.customNginxConfig!
         if (!customNginxConfig) {
             return (
                 <div>
@@ -355,9 +356,8 @@ export default class HttpSettings extends Component<
                                     const newApiData = Utils.copyObject(
                                         this.props.apiData
                                     )
-                                    newApiData.appDefinition.containerHttpPort = Number(
-                                        e.target.value
-                                    )
+                                    newApiData.appDefinition.containerHttpPort =
+                                        Number(e.target.value)
                                     this.props.updateApiData(newApiData)
                                 }}
                             />
@@ -377,8 +377,8 @@ export default class HttpSettings extends Component<
                             const newApiData = Utils.copyObject(
                                 this.props.apiData!
                             )
-                            newApiData.appDefinition.forceSsl = !!e.target
-                                .checked
+                            newApiData.appDefinition.forceSsl =
+                                !!e.target.checked
                             this.props.updateApiData(newApiData)
                         }}
                     >
@@ -400,8 +400,8 @@ export default class HttpSettings extends Component<
                             const newApiData = Utils.copyObject(
                                 this.props.apiData!
                             )
-                            newApiData.appDefinition.websocketSupport = !!e
-                                .target.checked
+                            newApiData.appDefinition.websocketSupport =
+                                !!e.target.checked
                             this.props.updateApiData(newApiData)
                         }}
                     >
@@ -549,8 +549,8 @@ export default class HttpSettings extends Component<
                     }
                     onChange={(e: any) => {
                         const newApiData = Utils.copyObject(this.props.apiData!)
-                        newApiData.appDefinition.notExposeAsWebApp = !!e.target
-                            .checked
+                        newApiData.appDefinition.notExposeAsWebApp =
+                            !!e.target.checked
                         this.props.updateApiData(newApiData)
                     }}
                 >
