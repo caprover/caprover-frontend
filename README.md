@@ -4,7 +4,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Development
 
-Run CapRover backend service in debug mode. Change `.env.development` to match your backend. Then run `npm start`
+Run CapRover backend service in debug mode. Change `.env.development` to match your backend. Then run `yarn start`
 
 > **Note**: To create a simple backend API in debug mode, you can use [Play with Docker](https://labs.play-with-docker.com/). Just simply run the following commands and you'll be set:
 >
