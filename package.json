@@ -58,5 +58,8 @@
         "not dead",
         "not ie <= 11",
         "not op_mini all"
-    ]
+    ],
+    "devDependencies": {
+        "tslint-config-prettier": "^1.18.0"
+    }
 }
