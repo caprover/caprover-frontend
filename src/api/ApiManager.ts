@@ -23,7 +23,14 @@ export default class ApiManager {
         const self = this
         this.http = new HttpClient(URL, function () {
             if (!ApiManager.lastKnownPassword) {
-                self.setAuthToken('')
+                if (!!ApiManager.authToken) {
+                    // force logging out
+                    self.setAuthToken('')
+                    setTimeout(() => {
+                        window.location.href =
+                            window.location.href.split('#')[0]
+                    }, 200)
+                }
                 return Promise.reject(
                     new Error('No saved password. Ignore if initial call.')
                 )
