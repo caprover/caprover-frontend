@@ -9,7 +9,7 @@ Run CapRover backend service in debug mode. Change `.env.development` to match y
 > **Note**: To create a simple backend API in debug mode, you can use [Play with Docker](https://labs.play-with-docker.com/). Just simply run the following commands and you'll be set:
 >
 > ```
-> apk update && apk add nodejs npm
+> apk update && apk add nodejs npm python3
 > git clone https://github.com/caprover/caprover.git
 > cd caprover
 > npm i
