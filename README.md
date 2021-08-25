@@ -8,7 +8,7 @@ Run CapRover backend service in debug mode. Change `.env.development` to match y
 
 > **Note**: To create a simple backend API in debug mode, you can use [Play with Docker](https://labs.play-with-docker.com/). Just simply run the following commands and you'll be set:
 >
-> ``` bash
+> ```bash
 > apk update && apk add nodejs npm python3
 > git clone https://github.com/caprover/caprover.git
 > cd caprover
@@ -47,20 +47,20 @@ Your app is ready to be deployed!
 
 ## Theming
 
-CaprRover's fronted supports dark and light modes. It is based on `antd` colour schemes. Therefore, all used `antd` components within the project support both modes by default. However if we implement a custom component or want to change some global colors some steps needs to be considered.
+CapRover's fronted supports dark and light modes. It is based on `antd` colour schemes. Therefore, all used `antd` components within the project support both modes by default. However if we implement a custom component or want to change some global colors some steps needs to be considered.
 
 ### Implement Dark Mode in custom component
 
 To ensure your elements work with both dark and light modes, following points needs to be considered:
 
-- **Don't use JSX inline styles for colors, use classNames instead and generate according rules within the `app.less`**
-- Use `antd` variables as `@layout-body-background, @body-background, @skeleton-color` for the colors.
-  - Use `@layout-body-background` for page backgrounds [`#f0f2f5`, `#000`]
-  - Use `@background-color-light` for log views or input areas [`#fafafa`, `rgba(255, 255, 255, 0.04)`]
-  - Use `@body-background` for elements within a card [`#fff`, `#000`]
-  - Use `@skeleton-color` for all border colors. [`#f2f2f2`, `#303030`]
-- Use the class `.inner-card` for nested cards, like the network stats.
-- If you need additional colors, that are present within an `antd` component, grab the according variable located in `~antd/lib/style/themes/default.less`
+-   **Don't use JSX inline styles for colors, use classNames instead and generate according rules within the `app.less`**
+-   Use `antd` variables as `@layout-body-background, @body-background, @skeleton-color` for the colors.
+    -   Use `@layout-body-background` for page backgrounds [`#f0f2f5`, `#000`]
+    -   Use `@background-color-light` for log views or input areas [`#fafafa`, `rgba(255, 255, 255, 0.04)`]
+    -   Use `@body-background` for elements within a card [`#fff`, `#000`]
+    -   Use `@skeleton-color` for all border colors. [`#f2f2f2`, `#303030`]
+-   Use the class `.inner-card` for nested cards, like the network stats.
+-   If you need additional colors, that are present within an `antd` component, grab the according variable located in `~antd/lib/style/themes/default.less`
 
 #### Dev Mode & Hot Reload
 
