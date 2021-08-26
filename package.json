@@ -70,11 +70,12 @@
         ]
     },
     "devDependencies": {
-        "gulp-autoprefixer": "^10.3.2",
         "gulp": "^4.0.2",
+        "gulp-autoprefixer": "^8.0.0",
         "gulp-csso": "^4.0.1",
         "gulp-debug": "^4.0.0",
         "gulp-less": "^5.0.0",
+        "gulp-watch": "^5.0.1",
         "less-plugin-npm-import": "^2.1.0",
         "tslint-config-prettier": "^1.18.0"
     }
