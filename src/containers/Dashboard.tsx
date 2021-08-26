@@ -460,9 +460,9 @@ export default class Dashboard extends ApiComponent<
                                 successfully! You can now deploy your apps!
                                 Remember, with CapRover, you can deploy
                                 applications from source code (such as Node.js,
-                                PHP, Java, Ruby, Python etc), and you can
-                                also deploy ready to go applications such as
-                                MySQL, MongoDB, WordPress, Redis, and many more!
+                                PHP, Java, Ruby, Python etc), and you can also
+                                deploy ready to go applications such as MySQL,
+                                MongoDB, WordPress, Redis, and many more!
                             </p>
 
                             <p>
