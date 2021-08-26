@@ -22,6 +22,3 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 /.project
-src/styles/dark.json
-src/styles/light.json
-src/styles/theme.json

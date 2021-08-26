@@ -49,7 +49,7 @@ CaprRover's fronted supports dark and light modes. It is based on `antd` colour 
 
 To ensure your elements work with both dark and light modes, following points needs to be considered:
 
--   **Don't use JSX inline styles for colors, use classNames instead and generate according rules within the `app.less`**
+-   **Don't use JSX inline styles for colors, use classNames instead and create rules within the `styles/style.less` or the according theme**
 -   Use `antd` variables as `@layout-body-background, @body-background, @skeleton-color` for the colors.
     -   Use `@layout-body-background` for page backgrounds [`#f0f2f5`, `#000`]
     -   Use `@background-color-light` for log views or input areas [`#fafafa`, `rgba(255, 255, 255, 0.04)`]
