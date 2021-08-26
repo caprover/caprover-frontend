@@ -8,7 +8,7 @@ Run CapRover backend service in debug mode. Change `.env.development` to match y
 
 > **Note**: To create a simple backend API in debug mode, you can use [Play with Docker](https://labs.play-with-docker.com/). Just simply run the following commands and you'll be set:
 >
-> ```
+> ```bash
 > apk update && apk add nodejs npm python3
 > git clone https://github.com/caprover/caprover.git
 > cd caprover
@@ -27,23 +27,27 @@ In the project directory, you can run:
 
 #### `yarn start`
 
-Runs the app in the development mode.<br>
+Runs the app in the development mode.
+
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br>
+The page will reload if you make edits.
+
 You will also see any lint errors in the console.
 
 ### `yarn run build`
 
-Builds the app for production to the `build` folder.<br>
+Builds the app for production to the `build` folder.
+
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
+The build is minified and the filenames include the hashes.
+
 Your app is ready to be deployed!
 
 ## Theming
 
-CaprRover's fronted supports dark and light modes. It is based on `antd` colour schemes. Therefore, all used `antd` components within the project support both modes by default. However if we implement a custom component or want to change some global colors some steps needs to be considered.
+CapRover's fronted supports dark and light modes. It is based on `antd` colour schemes. Therefore, all used `antd` components within the project support both modes by default. However if we implement a custom component or want to change some global colors some steps needs to be considered.
 
 ### Implement Dark Mode in custom component
 
@@ -80,9 +84,9 @@ Thanks for contributing to the frontend code! Since contributors list for CapRov
 
 https://github.com/caprover/caprover/blob/master/dockerfile-captain.release#L18
 
-## Learn More!
+## Learn More
 
-For more details and documentation, please visit https://CapRover.com
+For more details and documentation, please visit [https://CapRover.com](https://caprover.com/)
 
 ## Backers
 
@@ -91,7 +95,3 @@ Thank you to all our backers! 🙏
 ![Contributors](https://contrib.rocks/image?repo=caprover/caprover-frontend)
 
 [![Donate](https://opencollective.com/caprover/donate/button.png?color=blue)](https://opencollective.com/caprover#backer)
-
-```
-
-```

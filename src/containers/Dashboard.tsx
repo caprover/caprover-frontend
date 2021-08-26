@@ -459,8 +459,8 @@ export default class Dashboard extends ApiComponent<
                                 You have installed and set CapRover up
                                 successfully! You can now deploy your apps!
                                 Remember, with CapRover, you can deploy
-                                applications from source code (such as NodeJS,
-                                php, java, Ruby, python etc...), and you can
+                                applications from source code (such as Node.js,
+                                PHP, Java, Ruby, Python etc), and you can
                                 also deploy ready to go applications such as
                                 MySQL, MongoDB, WordPress, Redis, and many more!
                             </p>
@@ -475,7 +475,7 @@ export default class Dashboard extends ApiComponent<
                                     rel="noopener noreferrer"
                                 >
                                     {' '}
-                                    sample apps
+                                    sample apps.
                                 </a>
                             </p>
 
