@@ -46,6 +46,7 @@
         "tslint": "tslint -c tslint.json -p tsconfig.json",
         "tslint-fix": "tslint --fix -c tslint.json -p tsconfig.json",
         "start": "npx gulp less && craco start",
+        "less-watch": "npx gulp watch",
         "build": "npx gulp less && craco build",
         "test": "craco test",
         "eject": "react-scripts eject"
