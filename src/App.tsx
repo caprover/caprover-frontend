@@ -18,8 +18,8 @@ type AppState = {
 }
 
 const themes = {
-    dark: `http://localhost:4500/dark-theme.css`,
-    light: `http://localhost:4500/light-theme.css`,
+    dark: `dark-theme.css`,
+    light: `light-theme.css`,
 }
 
 class App extends Component<{}, AppState> {
