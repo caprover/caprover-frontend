@@ -1,0 +1,15 @@
+// dark-theme.less
+
+// Default imports
+@import '~antd/lib/style/color/colorPalette.less';
+@import '~antd/dist/antd.less';
+@import '~antd/lib/style/themes/dark.less';
+@import 'default-vars.less';
+
+// Variable overrides for dark mode specific styles
+@picker-basic-cell-active-with-range-color: darken(@primary-color, 20%);
+@table-selected-row-bg: darken(@primary-color, 20%);
+@shadow-2: '0 6px 12px -4px rgba(0, 0, 0, 0.48), 0 12px 12px 0 rgba(0, 0, 0, 0.32), 0 18px 28px 8px rgba(0, 0, 0, 0.2)';
+
+// Required import to finalize the css
+@import 'style.less';
