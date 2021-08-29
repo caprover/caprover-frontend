@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { ThemeSwitcherProvider } from 'react-css-theme-switcher'
+import {
+    ThemeSwitcherProvider,
+    useThemeSwitcher,
+} from 'react-css-theme-switcher'
 import { Provider } from 'react-redux'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import { applyMiddleware, createStore } from 'redux'
@@ -9,6 +12,7 @@ import PageRoot from './containers/PageRoot'
 import reducers from './redux/reducers'
 import CrashReporter from './utils/CrashReporter'
 import StorageHelper from './utils/StorageHelper'
+
 CrashReporter.getInstance().init()
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
@@ -20,6 +24,26 @@ type AppState = {
 const themes = {
     dark: `dark-theme.css`,
     light: `light-theme.css`,
+}
+
+const MainComponent = () => {
+    const { status } = useThemeSwitcher()
+
+    if (status === 'loading') {
+        // Just an empty div until styles load
+        return <div></div>
+    }
+
+    return (
+        <div className="full-screen">
+            <HashRouter>
+                <Switch>
+                    <Route path="/login/" component={Login} />
+                    <Route path="/" component={PageRoot} />
+                </Switch>
+            </HashRouter>
+        </div>
+    )
 }
 
 class App extends Component<{}, AppState> {
@@ -38,14 +62,7 @@ class App extends Component<{}, AppState> {
                 insertionPoint="styles-insertion-point"
             >
                 <Provider store={store}>
-                    <div className="full-screen">
-                        <HashRouter>
-                            <Switch>
-                                <Route path="/login/" component={Login} />
-                                <Route path="/" component={PageRoot} />
-                            </Switch>
-                        </HashRouter>
-                    </div>
+                    <MainComponent />
                 </Provider>
             </ThemeSwitcherProvider>
         )
