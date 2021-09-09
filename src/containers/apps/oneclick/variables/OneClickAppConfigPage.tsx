@@ -1,5 +1,4 @@
 import { Card, Col, message, Row } from 'antd'
-import queryString from 'query-string'
 import ReactMarkdown from 'react-markdown'
 import { RouteComponentProps } from 'react-router'
 import gfm from 'remark-gfm'
@@ -61,21 +60,22 @@ export default class OneClickAppConfigPage extends ApiComponent<
         const self = this
 
         const appNameFromPath = this.props.match.params.appName
-        const baseDomainFromPath =
-            queryString.parse(self.props.location.search)['baseDomain'] + ''
+        const qs = new URLSearchParams(self.props.location.search)
+        const baseDomainFromPath = qs.get('baseDomain')
         let promiseToFetchOneClick =
             appNameFromPath === TEMPLATE_ONE_CLICK_APP
                 ? new Promise<any>(function (resolve) {
                       resolve(
                           JSON.parse(
-                              queryString.parse(self.props.location.search)[
-                                  ONE_CLICK_APP_STRINGIFIED_KEY
-                              ] as string
+                              qs.get(ONE_CLICK_APP_STRINGIFIED_KEY) as string
                           )
                       )
                   })
                 : self.apiManager
-                      .getOneClickAppByName(appNameFromPath, baseDomainFromPath)
+                      .getOneClickAppByName(
+                          appNameFromPath,
+                          baseDomainFromPath as string
+                      )
                       .then(function (data) {
                           return data.appTemplate
                       })
