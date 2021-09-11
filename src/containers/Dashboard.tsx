@@ -1,5 +1,4 @@
 import { Button, Card, Col, Input, Modal, Row, Tooltip } from 'antd'
-import queryString from 'query-string'
 import React from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import AppConstants from '../utils/AppConstants'
@@ -263,11 +262,11 @@ export default class Dashboard extends ApiComponent<
             return <ErrorRetry />
         }
 
+        const qs = new URLSearchParams(self.props.location.search)
+
         if (
             !!this.state.apiData.forceSsl &&
-            !!queryString.parse(self.props.location.search)[
-                AppConstants.REDIRECT_TO_APPS_IF_READY_REQ_PARAM
-            ]
+            !!qs.get(AppConstants.REDIRECT_TO_APPS_IF_READY_REQ_PARAM)
         ) {
             return <Redirect to="/apps" />
         }
