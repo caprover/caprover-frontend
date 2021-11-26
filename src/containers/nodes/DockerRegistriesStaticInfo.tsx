@@ -15,7 +15,7 @@ export default class DockerRegistriesStaticInfo extends Component {
                     <Collapse.Panel header="More info" key="1">
                         <p>
                             Docker registry is a repository for your built
-                            images. It is similar to Github, or Bitbucker, with
+                            images. It is similar to Github, or Bitbucket, with
                             private repositories. However, instead of source
                             code, it contains the built artifacts for your
                             application. It is required for cluster mode, as
