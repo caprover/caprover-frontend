@@ -104,7 +104,7 @@ export default class DiskCleanup extends ApiComponent<
                         builds of all current apps, and creates a list of images
                         that can be deleted (by clicking on Get List button).
                         You can select which images you want to delete and click
-                        on Remove Images button. You might noticed that some
+                        on Remove Images button. You might notice that some
                         images are not deleted even though you clicked on Remove
                         Images, it means they are being directly or indirectly
                         in-use by Docker. A common example For indirect usage is
