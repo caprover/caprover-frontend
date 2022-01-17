@@ -7,6 +7,7 @@ import ChangePass from './ChangePass'
 import CheckUpdate from './CheckUpdate'
 import DiskCleanup from './DiskCleanup'
 import NginxConfig from './NginxConfig'
+import ProFeatures from './ProFeatures'
 
 class Settings extends Component<
     {
@@ -17,6 +18,16 @@ class Settings extends Component<
     render() {
         return (
             <div>
+                <Row justify="center" gutter={20}>
+                    <Col
+                        style={{ marginTop: 40, marginBottom: 80 }}
+                        lg={{ span: 10 }}
+                        xs={{ span: 23 }}
+                    >
+                        <ProFeatures isMobile={this.props.isMobile} />
+                    </Col>
+                </Row>
+
                 <Row justify="center" gutter={20}>
                     <Col
                         style={{ marginBottom: 20 }}

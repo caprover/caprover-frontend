@@ -1,5 +1,11 @@
 import { IAppDef } from '../containers/apps/AppDefinition'
 import { ICaptainDefinition } from '../models/ICaptainDefinition'
+import {
+    IProConfig,
+    IProFeatures,
+    TwoFactorAuthRequest,
+    TwoFactorAuthResponse,
+} from '../models/IProFeatures'
 import { IRegistryInfo } from '../models/IRegistryInfo'
 import { IVersionInfo } from '../models/IVersionInfo'
 import ErrorFactory from '../utils/ErrorFactory'
@@ -15,6 +21,7 @@ Logger.dev(`API URL: ${URL}`)
 
 export default class ApiManager {
     private static lastKnownPassword: string = ''
+    private static hadOtp: boolean = false
     private static authToken = StorageHelper.getAuthKeyFromStorage() || ''
 
     private http: HttpClient
@@ -22,7 +29,8 @@ export default class ApiManager {
     constructor() {
         const self = this
         this.http = new HttpClient(URL, function () {
-            if (!ApiManager.lastKnownPassword) {
+            if (!ApiManager.lastKnownPassword || ApiManager.hadOtp) {
+                // If we had OTP, we don't want to try to login again because we know it's gonna fail!
                 if (!!ApiManager.authToken) {
                     // force logging out
                     self.setAuthToken('')
@@ -62,13 +70,14 @@ export default class ApiManager {
         return !!ApiManager.authToken
     }
 
-    getAuthToken(password: string) {
+    getAuthToken(password: string, otpToken?: string) {
         const http = this.http
         ApiManager.lastKnownPassword = password
+        ApiManager.hadOtp = !!otpToken
 
         const self = this
         return Promise.resolve() //
-            .then(http.fetch(http.POST, '/login', { password }))
+            .then(http.fetch(http.POST, '/login', { password, otpToken }))
             .then(function (data) {
                 self.setAuthToken(data.token)
             })
@@ -83,10 +92,55 @@ export default class ApiManager {
                 ) {
                     self.setAuthToken('')
                     ApiManager.lastKnownPassword = ''
+                    ApiManager.hadOtp = false
                 }
 
                 return Promise.reject(error)
             })
+    }
+
+    getProFeaturesState(): Promise<{ proFeaturesState: IProFeatures }> {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/user/pro/state', {}))
+    }
+
+    setProApiKey(apiKey: string): Promise<void> {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.POST, '/user/pro/apikey', { apiKey: apiKey }))
+    }
+
+    getProConfigs(): Promise<{ proConfigs: IProConfig }> {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/user/pro/configs', {}))
+    }
+
+    setProConfigs(data: IProConfig): Promise<void> {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/pro/configs', { proConfigs: data })
+            )
+    }
+
+    getOtpStatus(): Promise<TwoFactorAuthResponse> {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/user/pro/otp', {}))
+    }
+
+    setOtpStatus(data: TwoFactorAuthRequest): Promise<TwoFactorAuthResponse> {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.POST, '/user/pro/otp', data))
     }
 
     getCaptainInfo() {

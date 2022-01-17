@@ -3,6 +3,7 @@ import { Button, Card, Collapse, Input, Radio, Row } from 'antd'
 import React, { ReactComponentElement } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import ApiManager from '../api/ApiManager'
+import ErrorFactory from '../utils/ErrorFactory'
 import StorageHelper from '../utils/StorageHelper'
 import Toaster from '../utils/Toaster'
 import Utils from '../utils/Utils'
@@ -17,6 +18,7 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
         super(props)
         this.state = {
             loginOption: NO_SESSION,
+            hasOtp: false,
         }
     }
 
@@ -27,11 +29,11 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
         Utils.deleteAllCookies()
     }
 
-    onLoginRequested(password: string): void {
+    onLoginRequested(password: string, otp: string) {
         const self = this
         this.apiManager
-            .getAuthToken(password)
-            .then(() => {
+            .getAuthToken(password, otp)
+            .then(function () {
                 if (self.state.loginOption === SESSION_STORAGE) {
                     StorageHelper.setAuthKeyInSessionStorage(
                         ApiManager.getAuthTokenString()
@@ -42,6 +44,19 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
                     )
                 }
                 self.props.history.push('/')
+            })
+            .catch((error) => {
+                if (
+                    error.captainStatus ===
+                    ErrorFactory.STATUS_ERROR_OTP_REQUIRED
+                ) {
+                    self.setState({
+                        hasOtp: true,
+                    })
+                    Toaster.toastInfo('Enter OTP Verification Code')
+                } else {
+                    throw error
+                }
             })
             .catch(Toaster.createCatcher())
     }
@@ -65,11 +80,13 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
                         <NormalLoginForm
                             onLoginRequested={(
                                 password: string,
+                                otp: string,
                                 loginOption: number
                             ) => {
                                 self.setState({ loginOption })
-                                self.onLoginRequested(password)
+                                self.onLoginRequested(password, otp)
                             }}
+                            hasOtp={self.state.hasOtp}
                         />
                     </Card>
                 </div>
@@ -89,6 +106,7 @@ class NormalLoginForm extends React.Component<
     {
         loginOption: number
         passwordEntered: string
+        otpEntered: string
     }
 > {
     constructor(props: any) {
@@ -96,14 +114,16 @@ class NormalLoginForm extends React.Component<
         this.state = {
             loginOption: NO_SESSION,
             passwordEntered: ``,
+            otpEntered: ``,
         }
     }
 
-    handleSubmit = (e: React.FormEvent): void => {
-        e.preventDefault()
+    handleSubmit = (e?: React.FormEvent): void => {
+        e?.preventDefault()
         const self = this
         self.props.onLoginRequested(
             self.state.passwordEntered,
+            self.state.otpEntered,
             self.state.loginOption
         )
     }
@@ -114,6 +134,15 @@ class NormalLoginForm extends React.Component<
             <form onSubmit={this.handleSubmit}>
                 <Input.Password
                     required
+                    onKeyDown={(key) => {
+                        if (
+                            `${key.key}`.toLocaleLowerCase() === 'enter' ||
+                            `${key.code}`.toLocaleLowerCase() === 'enter' ||
+                            key.keyCode === 13
+                        ) {
+                            self.handleSubmit()
+                        }
+                    }}
                     prefix={
                         <LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />
                     }
@@ -123,6 +152,35 @@ class NormalLoginForm extends React.Component<
                     placeholder="Password"
                     autoFocus
                 />
+                {self.props.hasOtp ? (
+                    <div style={{ marginTop: 20, marginBottom: 20 }}>
+                        <Row justify="end">
+                            <Input
+                                onKeyDown={(key) => {
+                                    if (
+                                        `${key.key}`.toLocaleLowerCase() ===
+                                            'enter' ||
+                                        `${key.code}`.toLocaleLowerCase() ===
+                                            'enter' ||
+                                        key.keyCode === 13
+                                    ) {
+                                        self.handleSubmit()
+                                    }
+                                }}
+                                addonBefore="OTP Verification Code"
+                                placeholder="123456"
+                                value={self.state.otpEntered}
+                                onChange={(e) => {
+                                    self.setState({
+                                        otpEntered: `${e.target.value}`,
+                                    })
+                                }}
+                                autoFocus
+                            />
+                        </Row>
+                    </div>
+                ) : undefined}
+
                 <div style={{ marginTop: 20, marginBottom: 20 }}>
                     <Row justify="end">
                         <Button

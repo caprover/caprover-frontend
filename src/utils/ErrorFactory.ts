@@ -20,7 +20,8 @@ class ErrorFactory {
     public readonly NOT_FOUND = 1111
     public readonly AUTHENTICATION_FAILED = 1112
     public readonly STATUS_PASSWORD_BACK_OFF = 1113
-
+    public readonly STATUS_ERROR_OTP_REQUIRED = 1114
+    static readonly STATUS_ERROR_PRO_API_KEY_INVALIDATED = 1115
     public readonly UNKNOWN_ERROR = 1999
 
     createError(status: number, message: string) {
