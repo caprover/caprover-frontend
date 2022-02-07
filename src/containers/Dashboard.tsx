@@ -246,7 +246,9 @@ export default class Dashboard extends ApiComponent<
                         </div>
                     ),
                     onOk() {
-                        window.location.replace(`http://${self.state.apiData.captainSubDomain}.${rootDomain}`)
+                        window.location.replace(
+                            `http://${self.state.apiData.captainSubDomain}.${rootDomain}`
+                        )
                     },
                 })
             })
