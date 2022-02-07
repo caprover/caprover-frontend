@@ -127,7 +127,7 @@ export default class Deployment extends ApiComponent<
               }`
             : ''
 
-        const webhookPushUrlFullPath = `${window.location.protocol}//captain.${this.props.apiData.rootDomain}/api/v2${webhookPushUrlRelativePath}`
+        const webhookPushUrlFullPath = `${window.location.protocol}//${this.props.apiData.captainSubDomain}.${this.props.apiData.rootDomain}/api/v2${webhookPushUrlRelativePath}`
 
         return (
             <div>

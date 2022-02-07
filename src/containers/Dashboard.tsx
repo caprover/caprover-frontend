@@ -84,7 +84,7 @@ export default class Dashboard extends ApiComponent<
                             onOk() {
                                 if (isUsingHttp) {
                                     window.location.replace(
-                                        `https://captain.${self.state.apiData.rootDomain}`
+                                        `https://${self.state.apiData.captainSubDomain}.${self.state.apiData.rootDomain}`
                                     )
                                 }
                             },
@@ -230,6 +230,8 @@ export default class Dashboard extends ApiComponent<
     }
 
     performUpdateRootDomain(rootDomain: string, force: boolean) {
+        const self = this
+
         this.apiManager
             .updateRootDomain(rootDomain, force)
             .then(function (data: any) {
@@ -244,7 +246,7 @@ export default class Dashboard extends ApiComponent<
                         </div>
                     ),
                     onOk() {
-                        window.location.replace(`http://captain.${rootDomain}`)
+                        window.location.replace(`http://${self.state.apiData.captainSubDomain}.${rootDomain}`)
                     },
                 })
             })

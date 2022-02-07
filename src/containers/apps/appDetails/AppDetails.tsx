@@ -47,6 +47,7 @@ const DEPLOYMENT = 'DEPLOYMENT'
 export interface SingleAppApiData {
     appDefinition: IAppDef
     rootDomain: string
+    captainSubDomain: string
     defaultNginxConfig: string
 }
 
@@ -585,6 +586,7 @@ class AppDetails extends ApiComponent<
                             apiData: {
                                 appDefinition: element,
                                 rootDomain: data.rootDomain,
+                                captainSubDomain: data.captainSubDomain,
                                 defaultNginxConfig: data.defaultNginxConfig,
                             },
                         })
