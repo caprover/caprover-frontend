@@ -5,7 +5,7 @@
     "dependencies": {
         "@craco/craco": "^6.2.0",
         "antd": "^4.16.10",
-        "axios": "^0.21.1",
+        "axios": "^0.21.2",
         "classnames": "^2.2.6",
         "deep-equal": "^2.0.5",
         "moment": "^2.29.1",
