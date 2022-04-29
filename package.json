@@ -8,7 +8,7 @@
         "axios": "^0.21.1",
         "classnames": "^2.2.6",
         "deep-equal": "^2.0.5",
-        "moment": "^2.29.1",
+        "moment": "^2.29.2",
         "prettier": "^2.2.1",
         "react": "^17.0.2",
         "react-css-theme-switcher": "^0.3.0",
