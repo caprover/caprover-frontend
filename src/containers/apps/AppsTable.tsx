@@ -41,7 +41,7 @@ class AppsTable extends Component<
     createColumns(): ColumnProps<TableData>[] {
         const self = this
         const ALIGN: 'center' = 'center'
-        return [
+        const columns = [
             {
                 title: 'App Name',
                 dataIndex: 'appName',
@@ -54,7 +54,6 @@ class AppsTable extends Component<
                         ? a.appName.localeCompare(b.appName || '')
                         : 0
                 },
-                defaultSortOrder: 'ascend',
                 sortDirections: ['descend', 'ascend'],
             },
             {
@@ -87,10 +86,11 @@ class AppsTable extends Component<
                 align: ALIGN,
                 sorter: (a, b) => {
                     return (
-                        new Date(b.lastDeployTime).getTime() -
-                        new Date(a.lastDeployTime).getTime()
+                        Date.parse(a.lastDeployTime) -
+                        Date.parse(b.lastDeployTime)
                     )
                 },
+                sortDirections: ['descend', 'ascend'],
                 render: (lastDeployTime: string, app) => {
                     if (!lastDeployTime) {
                         return <span />
@@ -137,6 +137,16 @@ class AppsTable extends Component<
                 },
             },
         ]
+        
+        // Set default sort order
+        const sortKey = window.localStorage.appsSortKey || 'appName'
+        const sortOrder = window.localStorage.appsSortOrder || 'ascend'
+        const sorted = columns.find(column => {
+            if (column.key === sortKey) return column.defaultSortOrder = sortOrder
+        })
+        if (!sorted) columns[0].defaultSortOrder = sortOrder
+        
+        return columns
     }
 
     render() {
@@ -288,6 +298,11 @@ class AppsTable extends Component<
                                         dataSource={appsToRender}
                                         pagination={false}
                                         size="middle"
+                                        onChange={(pagination, filters, sorter) => {
+                                            // Persist sorter state
+                                            window.localStorage.appsSortKey = sorter.columnKey
+                                            window.localStorage.appsSortOrder = sorter.order
+                                        }}
                                     />
                                 </div>
                             )}
