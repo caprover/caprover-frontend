@@ -38,10 +38,10 @@ class AppsTable extends Component<
         return `/apps/details/${appName}`
     }
 
-    createColumns(): ColumnProps<TableData>[] {
+    createColumns() {
         const self = this
         const ALIGN: 'center' = 'center'
-        const columns = [
+        const columns: ColumnProps<TableData>[] = [
             {
                 title: 'App Name',
                 dataIndex: 'appName',
@@ -137,15 +137,14 @@ class AppsTable extends Component<
                 },
             },
         ]
-        
+
         // Set default sort order
         const sortKey = window.localStorage.appsSortKey || 'appName'
         const sortOrder = window.localStorage.appsSortOrder || 'ascend'
-        const sorted = columns.find(column => {
-            if (column.key === sortKey) return column.defaultSortOrder = sortOrder
-        })
-        if (!sorted) columns[0].defaultSortOrder = sortOrder
-        
+        const sorted =
+            columns.find((column) => column.key === sortKey) || columns[0]
+        sorted.defaultSortOrder = sortOrder
+
         return columns
     }
 
@@ -298,10 +297,18 @@ class AppsTable extends Component<
                                         dataSource={appsToRender}
                                         pagination={false}
                                         size="middle"
-                                        onChange={(pagination, filters, sorter) => {
+                                        onChange={(
+                                            pagination,
+                                            filters,
+                                            sorter
+                                        ) => {
                                             // Persist sorter state
-                                            window.localStorage.appsSortKey = sorter.columnKey
-                                            window.localStorage.appsSortOrder = sorter.order
+                                            if (!Array.isArray(sorter)) {
+                                                window.localStorage.appsSortKey =
+                                                    sorter.columnKey
+                                                window.localStorage.appsSortOrder =
+                                                    sorter.order
+                                            }
                                         }}
                                     />
                                 </div>
