@@ -1,6 +1,9 @@
 import { Component, PropsWithChildren } from 'react'
 
-export default class NewTabLink extends Component<PropsWithChildren<{ url: string }>, {}> {
+export default class NewTabLink extends Component<
+    PropsWithChildren<{ url: string }>,
+    {}
+> {
     render() {
         // eslint-disable-next-line
         return (

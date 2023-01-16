@@ -38,4 +38,6 @@ class ErrorFactory {
     }
 }
 
-export default new ErrorFactory()
+const errorFactory = new ErrorFactory()
+
+export default errorFactory
