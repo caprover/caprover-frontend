@@ -1,7 +1,7 @@
-import React, { Component, MouseEvent } from 'react'
+import React, { MouseEvent, PropsWithChildren } from 'react'
 
-export default class ClickableLink extends Component<
-    { onLinkClicked: Function },
+export default class ClickableLink extends React.Component<
+    PropsWithChildren<{ onLinkClicked: Function }>,
     {}
 > {
     handleClick(e: MouseEvent) {
