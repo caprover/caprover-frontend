@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
     ThemeSwitcherProvider,
-    useThemeSwitcher,
+    useThemeSwitcher
 } from 'react-css-theme-switcher'
 import { Provider } from 'react-redux'
 import { HashRouter, Route, Switch } from 'react-router-dom'

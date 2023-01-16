@@ -1,10 +1,10 @@
 import { Modal } from 'antd'
-import React, { Component } from 'react'
+import { Component, PropsWithChildren } from 'react'
 
 export default class ReloadCaptainModal extends Component<
-    {
+    PropsWithChildren<{
         isRefreshTimerActivated: boolean
-    },
+    }>,
     { timeToRefresh: number }
 > {
     private hasAlreadyActivated: boolean
@@ -21,7 +21,7 @@ export default class ReloadCaptainModal extends Component<
         self.setState({ timeToRefresh: 60 })
         setInterval(function () {
             if (self.state.timeToRefresh < 2) {
-                window.location.reload(true)
+                window.location.reload()
                 return
             }
             self.setState({ timeToRefresh: self.state.timeToRefresh - 1 })
