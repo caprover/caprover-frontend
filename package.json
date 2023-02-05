@@ -32,6 +32,8 @@
         "less-watch": "npx gulp watch",
         "build": "export NODE_OPTIONS=--openssl-legacy-provider && npx gulp less && craco build",
         "test": "craco test",
+        "test:e2e--open": "cypress open",
+        "test:e2e": "cypress run",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
@@ -67,8 +69,7 @@
         "@types/react-router": "^5.1.11",
         "@types/react-router-dom": "^5.1.7",
         "@types/utf8": "^2.1.6",
-        "tslint": "^6.1.3",
-        "typescript": "^4.1.5",
+        "cypress": "^12.5.1",
         "gulp": "^4.0.2",
         "gulp-autoprefixer": "^8.0.0",
         "gulp-csso": "^4.0.1",
@@ -76,6 +77,8 @@
         "gulp-less": "^5.0.0",
         "gulp-watch": "^5.0.1",
         "less-plugin-npm-import": "^2.1.0",
-        "tslint-config-prettier": "^1.18.0"
+        "tslint": "^6.1.3",
+        "tslint-config-prettier": "^1.18.0",
+        "typescript": "^4.1.5"
     }
 }

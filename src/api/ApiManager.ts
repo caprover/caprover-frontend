@@ -58,7 +58,7 @@ export default class ApiManager {
         this.http.setAuthToken(authToken)
     }
 
-    static isLoggedIn() {
+    static isLoggedIn(): boolean {
         return !!ApiManager.authToken
     }
 
