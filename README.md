@@ -88,6 +88,12 @@ https://github.com/caprover/caprover/blob/master/dockerfile-captain.release#L18
 
 For more details and documentation, please visit [https://CapRover.com](https://caprover.com/)
 
+## Tests
+
+### e2e
+e2e testing are nocking the network callback.
+However, you need to run the project before running the e2e testing to allow the headless browser to navigate through your pages.
+To run end to end testing you just have to run `yarn start` then `yarn test:e2e` or `yarn test:e2e--open` if you want to display the result.
 ## Backers
 
 Thank you to all our backers! 🙏

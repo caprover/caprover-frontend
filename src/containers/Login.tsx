@@ -1,6 +1,6 @@
 import { LockOutlined } from '@ant-design/icons'
 import { Button, Card, Collapse, Input, Radio, Row } from 'antd'
-import React from 'react'
+import React, { ReactComponentElement } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import ApiManager from '../api/ApiManager'
 import StorageHelper from '../utils/StorageHelper'
@@ -20,17 +20,18 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
         }
     }
 
-    componentDidMount() {
-        if (super.componentDidMount) super.componentDidMount()
-
+    componentDidMount(): void {
+        if (super.componentDidMount)  {
+            super.componentDidMount()
+        }
         Utils.deleteAllCookies()
     }
 
-    onLoginRequested(password: string) {
+    onLoginRequested(password: string): void {
         const self = this
         this.apiManager
             .getAuthToken(password)
-            .then(function () {
+            .then(() => {
                 if (self.state.loginOption === SESSION_STORAGE) {
                     StorageHelper.setAuthKeyInSessionStorage(
                         ApiManager.getAuthTokenString()
@@ -45,7 +46,7 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
             .catch(Toaster.createCatcher())
     }
 
-    render() {
+    render(): ReactComponentElement<any> {
         const self = this
 
         if (ApiManager.isLoggedIn()) return <Redirect to="/" />
@@ -98,7 +99,8 @@ class NormalLoginForm extends React.Component<
         }
     }
 
-    handleSubmit = () => {
+    handleSubmit = (e: React.FormEvent): void => {
+        e.preventDefault()
         const self = this
         self.props.onLoginRequested(
             self.state.passwordEntered,
@@ -109,13 +111,9 @@ class NormalLoginForm extends React.Component<
     render() {
         const self = this
         return (
-            <div>
+            <form onSubmit={this.handleSubmit}>
                 <Input.Password
-                    onKeyDown={(key) => {
-                        if (key.keyCode === 13) {
-                            self.handleSubmit()
-                        }
-                    }}
+                    required
                     prefix={
                         <LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />
                     }
@@ -131,9 +129,6 @@ class NormalLoginForm extends React.Component<
                             type="primary"
                             htmlType="submit"
                             className="login-form-button"
-                            onClick={() => {
-                                self.handleSubmit()
-                            }}
                         >
                             Login
                         </Button>
@@ -162,7 +157,7 @@ class NormalLoginForm extends React.Component<
                         </Radio.Group>
                     </Collapse.Panel>
                 </Collapse>
-            </div>
+            </form>
         )
     }
 }
