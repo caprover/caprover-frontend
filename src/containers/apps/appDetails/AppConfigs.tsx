@@ -1,6 +1,6 @@
 import { InfoCircleOutlined } from '@ant-design/icons'
-import { Button, Col, Input, Row, Switch, Tooltip } from 'antd'
-import React, { Component } from 'react'
+import { Button, Col, Input, Row, Switch, Tag, Tooltip } from 'antd'
+import { Component } from 'react'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import Utils from '../../../utils/Utils'
 import NewTabLink from '../../global/NewTabLink'
@@ -410,6 +410,42 @@ export default class AppConfigs extends Component<
         const app = this.props.apiData!.appDefinition
         return (
             <div>
+                {' '}
+                <h4>
+                    Service Tags &nbsp;
+                    <NewTabLink url="https://caprover.com/docs/app-configuration.html#service-tags">
+                        <InfoCircleOutlined />
+                    </NewTabLink>
+                </h4>
+                <div
+                    className={
+                        app.tags && !!app.tags.length ? 'hide-on-demand' : ''
+                    }
+                >
+                    <i>Currently, this app does not have any tags.</i>
+                </div>
+                <Row align="middle" justify="start">
+                    Edit&nbsp;{' '}
+                    <Switch
+                        onChange={(val) => {
+                            self.setState({
+                                envVarBulkEdit: val,
+                                bulkVals: '',
+                            })
+                        }}
+                    />
+                </Row>
+                <div style={{ marginTop: 10 }}>
+                    {' '}
+                    <Tag>Tag is a bit too long</Tag>
+                    <Tag closable>Tag 2</Tag>
+                    <Tag>Tag 3</Tag>
+                </div>
+                <div
+                    style={{
+                        height: 36,
+                    }}
+                />
                 <h4>
                     Environmental Variables &nbsp;
                     <NewTabLink url="https://caprover.com/docs/app-configuration.html#environment-variables">
@@ -441,13 +477,12 @@ export default class AppConfigs extends Component<
                         environmental variables yet.
                     </i>
                 </div>
-
                 {this.createEnvVarSection()}
-
-                <br />
-                <br />
-                <br />
-
+                <div
+                    style={{
+                        height: 36,
+                    }}
+                />
                 <h4>
                     Port Mapping &nbsp;
                     <NewTabLink url="https://caprover.com/docs/app-configuration.html#port-mapping">
@@ -464,11 +499,8 @@ export default class AppConfigs extends Component<
                         mapping.
                     </i>
                 </div>
-
                 {this.createPortRows()}
-
                 <br />
-
                 <Button
                     block={this.props.isMobile}
                     type="default"
@@ -532,7 +564,6 @@ export default class AppConfigs extends Component<
                     </Col>
                 </Row>
                 <div style={{ height: 50 }} />
-
                 <Row>
                     <Col span={24}>
                         <h4>
@@ -569,7 +600,6 @@ export default class AppConfigs extends Component<
                     </Col>
                 </Row>
                 <div style={{ height: 30 }} />
-
                 <Row>
                     <Col span={24}>
                         <h4>

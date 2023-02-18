@@ -21,7 +21,7 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
     }
 
     componentDidMount(): void {
-        if (super.componentDidMount)  {
+        if (super.componentDidMount) {
             super.componentDidMount()
         }
         Utils.deleteAllCookies()
