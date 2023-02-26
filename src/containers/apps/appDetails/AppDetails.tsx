@@ -550,7 +550,7 @@ class AppDetails extends ApiComponent<
                                                 {self.props.isMobile ? (
                                                     <SaveOutlined />
                                                 ) : (
-                                                    'Save & Update'
+                                                    'Save & Restart'
                                                 )}
                                             </Button>
                                         </div>
