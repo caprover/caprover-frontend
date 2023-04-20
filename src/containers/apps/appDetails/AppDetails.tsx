@@ -13,15 +13,15 @@ import {
     Checkbox,
     Col,
     Input,
-    message,
     Modal,
     Popover,
     Row,
     Tabs,
     Tooltip,
+    message,
 } from 'antd'
 import classnames from 'classnames'
-import React, { RefObject } from 'react'
+import { RefObject } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import ApiManager from '../../../api/ApiManager'
@@ -36,8 +36,8 @@ import ErrorRetry from '../../global/ErrorRetry'
 import NewTabLink from '../../global/NewTabLink'
 import { IAppDef } from '../AppDefinition'
 import AppConfigs from './AppConfigs'
-import Deployment from './deploy/Deployment'
 import HttpSettings from './HttpSettings'
+import Deployment from './deploy/Deployment'
 const TabPane = Tabs.TabPane
 
 const WEB_SETTINGS = 'WEB_SETTINGS'
@@ -425,7 +425,9 @@ class AppDetails extends ApiComponent<
                                         this.setState({ isLoading: value })
                                     }
                                     reFetchData={() => this.reFetchData()}
-                                    apiData={this.state.apiData!}
+                                    apiData={Utils.copyObject(
+                                        this.state.apiData!
+                                    )}
                                     apiManager={this.apiManager}
                                     updateApiData={(newData: any) =>
                                         this.setState({ apiData: newData })
@@ -449,14 +451,18 @@ class AppDetails extends ApiComponent<
                                         this.setState({ isLoading: value })
                                     }
                                     reFetchData={() => this.reFetchData()}
-                                    apiData={this.state.apiData!}
+                                    apiData={Utils.copyObject(
+                                        this.state.apiData!
+                                    )}
                                     apiManager={this.apiManager}
                                     updateApiData={(newData: any) =>
-                                        this.setState({ apiData: newData })
+                                        this.setState({
+                                            apiData: newData,
+                                        })
                                     }
-                                    onUpdateConfigAndSave={() =>
+                                    onUpdateConfigAndSave={() => {
                                         self.onUpdateConfigAndSave()
-                                    }
+                                    }}
                                 />
                             </TabPane>
                             <TabPane
@@ -473,7 +479,9 @@ class AppDetails extends ApiComponent<
                                         this.setState({ isLoading: value })
                                     }
                                     reFetchData={() => this.reFetchData()}
-                                    apiData={this.state.apiData!}
+                                    apiData={Utils.copyObject(
+                                        this.state.apiData!
+                                    )}
                                     apiManager={this.apiManager}
                                     onUpdateConfigAndSave={() =>
                                         self.onUpdateConfigAndSave()
