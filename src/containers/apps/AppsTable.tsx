@@ -93,7 +93,20 @@ class AppsTable extends Component<
                             {app.tags && app.tags.length > 0 ? (
                                 app.tags.map((it) => (
                                     <Tag key={it.tagName} style={{ margin: 2 }}>
-                                        {it.tagName}
+                                        <a
+                                            href="/"
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                self.setState({
+                                                    searchTerm:
+                                                        'tag:' + it.tagName,
+                                                })
+                                            }}
+                                        >
+                                            <span className="unselectable-span">
+                                                {it.tagName}
+                                            </span>
+                                        </a>
                                     </Tag>
                                 ))
                             ) : (
@@ -228,6 +241,8 @@ class AppsTable extends Component<
             <Input
                 placeholder="Search by Name"
                 type="text"
+                value={self.state.searchTerm}
+                defaultValue={self.state.searchTerm}
                 onChange={(event) =>
                     self.setState({
                         searchTerm: (event.target.value || '')
