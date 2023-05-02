@@ -26,12 +26,14 @@ class AppsTable extends Component<
         rootDomain: string
         defaultNginxConfig: string
         isMobile: boolean
+        search: string | undefined
     },
     { searchTerm: string }
 > {
     constructor(props: any) {
         super(props)
-        this.state = { searchTerm: '' }
+        const urlsQuery = new URLSearchParams(props.search || '').get('q') || ''
+        this.state = { searchTerm: urlsQuery }
     }
 
     appDetailPath(appName: string) {
@@ -175,9 +177,29 @@ class AppsTable extends Component<
 
         const appsToRender = self.props.apps
             .filter((app) => {
-                if (!self.state.searchTerm) return true
+                const searchTerm = self.state.searchTerm
+                if (!searchTerm) return true
 
-                return app.appName!.indexOf(self.state.searchTerm) >= 0
+                if (searchTerm.startsWith('tag:')) {
+                    const entries = searchTerm.substring(4).split(' ')
+                    const tagToFilter = entries[0]
+                    const tagExists =
+                        (app.tags || []).filter((t) =>
+                            t.tagName.startsWith(tagToFilter)
+                        ).length > 0
+                    if (entries.length > 1) {
+                        const appNameToFilter = searchTerm
+                            .substring(4)
+                            .split(' ')[1]
+                        return (
+                            tagExists &&
+                            app.appName!.indexOf(appNameToFilter) >= 0
+                        )
+                    }
+                    return tagExists
+                }
+
+                return app.appName!.indexOf(searchTerm) >= 0
             })
             .map((app) => {
                 let versionFound = app.versions.filter(
