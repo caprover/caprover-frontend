@@ -5,10 +5,10 @@ import {
     LinkOutlined,
     LoadingOutlined,
 } from '@ant-design/icons'
-import { Card, Col, Input, Row, Table, Tooltip } from 'antd'
+import { Card, Col, Input, Row, Table, Tag, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
@@ -78,6 +78,28 @@ class AppsTable extends Component<
                 dataIndex: 'instanceCount',
                 key: 'instanceCount',
                 align: ALIGN,
+            },
+            {
+                title: 'Tags',
+                dataIndex: 'tags',
+                key: 'tags',
+                align: ALIGN,
+                width: '18%',
+                render: (_: any, app: TableData) => {
+                    return (
+                        <Fragment>
+                            {app.tags && app.tags.length > 0 ? (
+                                app.tags.map((it) => (
+                                    <Tag style={{ margin: 2 }}>
+                                        {it.tagName}
+                                    </Tag>
+                                ))
+                            ) : (
+                                <span></span>
+                            )}
+                        </Fragment>
+                    )
+                },
             },
             {
                 title: 'Last Deployed',
