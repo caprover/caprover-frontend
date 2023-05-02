@@ -1,6 +1,6 @@
 import { EditOutlined } from '@ant-design/icons'
 import { Alert, Modal, Select } from 'antd'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { IRegistryApi } from '../../models/IRegistryInfo'
 import Utils from '../../utils/Utils'
 import ClickableLink from '../global/ClickableLink'
@@ -63,7 +63,7 @@ export default class DefaultDockerRegistry extends Component<
                             self.state.newSelectedDefaultId
                         )
                     }}
-                    visible={self.state.isInEditMode}
+                    open={self.state.isInEditMode}
                 >
                     <p>
                         Default Docker Registry is the registry that will be

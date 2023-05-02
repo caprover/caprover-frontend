@@ -3,9 +3,9 @@ import {
     FormOutlined,
     InfoCircleOutlined,
 } from '@ant-design/icons'
-import { Card, Input, message, Modal, Table, Tooltip } from 'antd'
+import { Card, Input, Modal, Table, Tooltip, message } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
     IRegistryApi,
     IRegistryInfo,
@@ -213,7 +213,7 @@ export default class DockerRegistryTable extends Component<
                             self.state.registryIdToDelete!
                         )
                     }}
-                    visible={self.state.modalShowing === DELETING_MODAL}
+                    open={self.state.modalShowing === DELETING_MODAL}
                 >
                     Are you sure you want to remote this registry from your
                     list. You will no longer be able to push to or pull from
@@ -230,7 +230,7 @@ export default class DockerRegistryTable extends Component<
                             Utils.copyObject(self.state.remoteRegistryToEdit!)
                         )
                     }}
-                    visible={self.state.modalShowing === EDITING_MODAL}
+                    open={self.state.modalShowing === EDITING_MODAL}
                 >
                     {self.state.remoteRegistryToEdit ? (
                         self.createEditModalContent()

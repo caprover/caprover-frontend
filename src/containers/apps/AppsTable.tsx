@@ -92,7 +92,7 @@ class AppsTable extends Component<
                         <Fragment>
                             {app.tags && app.tags.length > 0 ? (
                                 app.tags.map((it) => (
-                                    <Tag style={{ margin: 2 }}>
+                                    <Tag key={it.tagName} style={{ margin: 2 }}>
                                         {it.tagName}
                                     </Tag>
                                 ))

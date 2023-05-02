@@ -38,7 +38,6 @@ import { IAppDef } from '../AppDefinition'
 import AppConfigs from './AppConfigs'
 import HttpSettings from './HttpSettings'
 import Deployment from './deploy/Deployment'
-const TabPane = Tabs.TabPane
 
 const WEB_SETTINGS = 'WEB_SETTINGS'
 const APP_CONFIGS = 'APP_CONFIGS'
@@ -410,88 +409,108 @@ class AppDetails extends ApiComponent<
                             className={classnames({
                                 disabled: this.state.isLoading,
                             })}
-                        >
-                            <TabPane
-                                tab={
-                                    <span className="unselectable-span">
-                                        HTTP Settings
-                                    </span>
-                                }
-                                key={WEB_SETTINGS}
-                            >
-                                <HttpSettings
-                                    isMobile={this.props.isMobile}
-                                    setLoading={(value) =>
-                                        this.setState({ isLoading: value })
-                                    }
-                                    reFetchData={() => this.reFetchData()}
-                                    apiData={Utils.copyObject(
-                                        this.state.apiData!
-                                    )}
-                                    apiManager={this.apiManager}
-                                    updateApiData={(newData: any) =>
-                                        this.setState({ apiData: newData })
-                                    }
-                                    onUpdateConfigAndSave={() =>
-                                        self.onUpdateConfigAndSave()
-                                    }
-                                />
-                            </TabPane>
-                            <TabPane
-                                tab={
-                                    <span className="unselectable-span">
-                                        App Configs
-                                    </span>
-                                }
-                                key={APP_CONFIGS}
-                            >
-                                <AppConfigs
-                                    isMobile={this.props.isMobile}
-                                    setLoading={(value) =>
-                                        this.setState({ isLoading: value })
-                                    }
-                                    reFetchData={() => this.reFetchData()}
-                                    apiData={Utils.copyObject(
-                                        this.state.apiData!
-                                    )}
-                                    apiManager={this.apiManager}
-                                    updateApiData={(newData: any) =>
-                                        this.setState({
-                                            apiData: newData,
-                                        })
-                                    }
-                                    onUpdateConfigAndSave={() => {
-                                        self.onUpdateConfigAndSave()
-                                    }}
-                                />
-                            </TabPane>
-                            <TabPane
-                                tab={
-                                    <span className="unselectable-span">
-                                        Deployment
-                                    </span>
-                                }
-                                key={DEPLOYMENT}
-                            >
-                                <Deployment
-                                    isMobile={this.props.isMobile}
-                                    setLoading={(value) =>
-                                        this.setState({ isLoading: value })
-                                    }
-                                    reFetchData={() => this.reFetchData()}
-                                    apiData={Utils.copyObject(
-                                        this.state.apiData!
-                                    )}
-                                    apiManager={this.apiManager}
-                                    onUpdateConfigAndSave={() =>
-                                        self.onUpdateConfigAndSave()
-                                    }
-                                    updateApiData={(newData: any) => {
-                                        this.setState({ apiData: newData })
-                                    }}
-                                />
-                            </TabPane>
-                        </Tabs>
+                            items={[
+                                {
+                                    key: WEB_SETTINGS,
+                                    label: (
+                                        <span className="unselectable-span">
+                                            HTTP Settings
+                                        </span>
+                                    ),
+                                    children: (
+                                        <HttpSettings
+                                            isMobile={this.props.isMobile}
+                                            setLoading={(value) =>
+                                                this.setState({
+                                                    isLoading: value,
+                                                })
+                                            }
+                                            reFetchData={() =>
+                                                this.reFetchData()
+                                            }
+                                            apiData={Utils.copyObject(
+                                                this.state.apiData!
+                                            )}
+                                            apiManager={this.apiManager}
+                                            updateApiData={(newData: any) =>
+                                                this.setState({
+                                                    apiData: newData,
+                                                })
+                                            }
+                                            onUpdateConfigAndSave={() =>
+                                                self.onUpdateConfigAndSave()
+                                            }
+                                        />
+                                    ),
+                                },
+                                {
+                                    key: APP_CONFIGS,
+                                    label: (
+                                        <span className="unselectable-span">
+                                            App Configs
+                                        </span>
+                                    ),
+                                    children: (
+                                        <AppConfigs
+                                            isMobile={this.props.isMobile}
+                                            setLoading={(value) =>
+                                                this.setState({
+                                                    isLoading: value,
+                                                })
+                                            }
+                                            reFetchData={() =>
+                                                this.reFetchData()
+                                            }
+                                            apiData={Utils.copyObject(
+                                                this.state.apiData!
+                                            )}
+                                            apiManager={this.apiManager}
+                                            updateApiData={(newData: any) =>
+                                                this.setState({
+                                                    apiData: newData,
+                                                })
+                                            }
+                                            onUpdateConfigAndSave={() => {
+                                                self.onUpdateConfigAndSave()
+                                            }}
+                                        />
+                                    ),
+                                },
+                                {
+                                    key: DEPLOYMENT,
+                                    label: (
+                                        <span className="unselectable-span">
+                                            Deployment
+                                        </span>
+                                    ),
+                                    children: (
+                                        <Deployment
+                                            isMobile={this.props.isMobile}
+                                            setLoading={(value) =>
+                                                this.setState({
+                                                    isLoading: value,
+                                                })
+                                            }
+                                            reFetchData={() =>
+                                                this.reFetchData()
+                                            }
+                                            apiData={Utils.copyObject(
+                                                this.state.apiData!
+                                            )}
+                                            apiManager={this.apiManager}
+                                            onUpdateConfigAndSave={() =>
+                                                self.onUpdateConfigAndSave()
+                                            }
+                                            updateApiData={(newData: any) => {
+                                                this.setState({
+                                                    apiData: newData,
+                                                })
+                                            }}
+                                        />
+                                    ),
+                                },
+                            ]}
+                        ></Tabs>
                         <div style={{ height: 70 }} />
 
                         <Affix

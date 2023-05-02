@@ -10,55 +10,55 @@ import {
     LogoutOutlined,
     SettingOutlined,
 } from '@ant-design/icons'
+import type { MenuProps } from 'antd'
 import { Button, Col, Layout, Menu, Row } from 'antd'
 import React, { Fragment, RefObject } from 'react'
 import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
-import { Link } from 'react-router-dom'
 import ApiManager from '../api/ApiManager'
 import { IVersionInfo } from '../models/IVersionInfo'
 import * as GlobalActions from '../redux/actions/GlobalActions'
 import StorageHelper from '../utils/StorageHelper'
-import AppDetails from './apps/appDetails/AppDetails'
+import Dashboard from './Dashboard'
+import LoggedInCatchAll from './LoggedInCatchAll'
 import Apps from './apps/Apps'
+import AppDetails from './apps/appDetails/AppDetails'
 import OneClickAppSelector from './apps/oneclick/selector/OneClickAppSelector'
 import OneClickAppConfigPage from './apps/oneclick/variables/OneClickAppConfigPage'
-import Dashboard from './Dashboard'
 import ApiComponent from './global/ApiComponent'
 import ClickableLink from './global/ClickableLink'
 import DarkModeSwitch from './global/DarkModeSwitch'
 import NewTabLink from './global/NewTabLink'
-import LoggedInCatchAll from './LoggedInCatchAll'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
 import Settings from './settings/Settings'
 
 const { Header, Content, Sider } = Layout
 
-const MENU_ITEMS = [
+const MENU_ITEMS: MenuProps['items'] = [
     {
         key: 'dashboard',
-        name: 'Dashboard',
+        label: 'Dashboard',
         icon: <LaptopOutlined />,
     },
     {
         key: 'apps',
-        name: 'Apps',
+        label: 'Apps',
         icon: <CodeOutlined />,
     },
     {
         key: 'monitoring',
-        name: 'Monitoring',
+        label: 'Monitoring',
         icon: <DashboardOutlined />,
     },
     {
         key: 'cluster',
-        name: 'Cluster',
+        label: 'Cluster',
         icon: <ClusterOutlined />,
     },
     {
         key: 'settings',
-        name: 'Settings',
+        label: 'Settings',
         icon: <SettingOutlined />,
     },
 ]
@@ -291,19 +291,11 @@ class PageRoot extends ApiComponent<
                             mode="inline"
                             defaultSelectedKeys={['dashboard']}
                             style={{ height: '100%', borderRight: 0 }}
+                            items={MENU_ITEMS}
+                            onClick={(e) => {
+                                this.props.history.push(`/${e.key}`)
+                            }}
                         >
-                            {MENU_ITEMS.map((item) => (
-                                <Menu.Item key={item.key}>
-                                    <Link
-                                        to={`/${item.key}`}
-                                        className="nav-text"
-                                    >
-                                        {item.icon}
-                                        <span>{item.name}</span>
-                                    </Link>
-                                </Menu.Item>
-                            ))}
-
                             {this.props.isMobile && (
                                 <Fragment>
                                     <div

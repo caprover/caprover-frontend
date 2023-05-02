@@ -41,7 +41,7 @@ export default class ReloadCaptainModal extends Component<
                     closable={false}
                     footer={<div />}
                     title="Update Process Started"
-                    visible={self.state.timeToRefresh > 0}
+                    open={self.state.timeToRefresh > 0}
                 >
                     <div>
                         {self.props.children}
