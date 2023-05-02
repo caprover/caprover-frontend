@@ -1,6 +1,6 @@
-import { EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import { EditFilled, EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import { Button, Col, Input, Row, Switch, Tag, Tooltip } from 'antd'
-import { Component } from 'react'
+import { Component, Fragment } from 'react'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import Utils from '../../../utils/Utils'
 import NewTabLink from '../../global/NewTabLink'
@@ -610,6 +610,8 @@ export default class AppConfigs extends Component<
                         />
                     </Col>
                 </Row>
+
+                <div style={{ height: 30 }} />
                 <h4>
                     Service Tags &nbsp;
                     <NewTabLink url="https://caprover.com/docs/app-configuration.html#service-tags">
@@ -617,24 +619,28 @@ export default class AppConfigs extends Component<
                     </NewTabLink>
                 </h4>
                 <div style={{ marginTop: 10 }}>
-                    <EditOutlined
+                    <span
                         style={{ marginRight: 20 }}
                         onClick={() => {
                             self.setState({
                                 tagsEditMode: !self.state.tagsEditMode,
                             })
                         }}
-                    />
+                    >
+                        {self.state.tagsEditMode ? (
+                            <EditFilled />
+                        ) : (
+                            <EditOutlined />
+                        )}
+                    </span>
                     <span
                         className={
                             app.tags && !!app.tags.length
                                 ? 'hide-on-demand'
                                 : ''
                         }
-                    >
-                        <i>Currently, this app does not have any tags.</i>
-                    </span>
-                    {self.createTagsValues()}
+                    ></span>
+                    <span>{self.createTagsValues()}</span>
                 </div>
                 <div
                     style={{
@@ -649,51 +655,47 @@ export default class AppConfigs extends Component<
 
         if (this.state.tagsEditMode) {
             return (
-                <Row>
-                    <Col span={24}>
-                        <Input.TextArea
-                            className="code-input"
-                            placeholder={
-                                'tag1,comma,separated,cannot-contain-space'
-                            }
-                            rows={1}
-                            defaultValue={(app.tags || [])
-                                .map((it) => it.tagName)
-                                .join(',')}
-                            onChange={(e) => {
-                                const newValueRaw = e.target.value
+                <Input.TextArea
+                    className="code-input"
+                    placeholder={'tag1,comma,separated,cannot-contain-space'}
+                    rows={1}
+                    defaultValue={(app.tags || [])
+                        .map((it) => it.tagName)
+                        .join(',')}
+                    onChange={(e) => {
+                        const newValueRaw = e.target.value
 
-                                const newApiData = Utils.copyObject(
-                                    this.props.apiData
-                                )
-                                const newTags = newValueRaw
-                                    .split(',')
-                                    .map((it) => {
-                                        return {
-                                            tagName: it
-                                                .trim()
-                                                .toLocaleLowerCase(),
-                                        }
-                                    })
-                                newApiData.appDefinition.tags = newTags
-                                this.props.updateApiData(newApiData)
-                            }}
-                        />
-                    </Col>
-                </Row>
+                        const newApiData = Utils.copyObject(this.props.apiData)
+                        const newTags = newValueRaw
+                            .split(',')
+                            .map((it) => it.trim().toLocaleLowerCase())
+                            .filter((it) => !!it)
+                            .map((it) => {
+                                return {
+                                    tagName: it,
+                                }
+                            })
+                        newApiData.appDefinition.tags = newTags
+                        this.props.updateApiData(newApiData)
+                    }}
+                />
             )
         }
 
         return (
-            <div>
-                {app.tags?.map(
-                    (
-                        it //if non-edit mode, otherwise, display a comma separated textbox
-                    ) => (
-                        <Tag>{it.tagName}</Tag>
+            <Fragment>
+                {app.tags && app.tags.length > 0 ? (
+                    app.tags.map(
+                        (
+                            it //if non-edit mode, otherwise, display a comma separated textbox
+                        ) => <Tag>{it.tagName}</Tag>
                     )
+                ) : (
+                    <span>
+                        Currently no service tag is associated with this service
+                    </span>
                 )}
-            </div>
+            </Fragment>
         )
     }
 
