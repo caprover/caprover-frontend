@@ -5,10 +5,10 @@ import {
     LinkOutlined,
     LoadingOutlined,
 } from '@ant-design/icons'
-import { Card, Col, Input, Row, Table, Tooltip } from 'antd'
+import { Card, Col, Input, Row, Table, Tag, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
@@ -26,12 +26,14 @@ class AppsTable extends Component<
         rootDomain: string
         defaultNginxConfig: string
         isMobile: boolean
+        search: string | undefined
     },
     { searchTerm: string }
 > {
     constructor(props: any) {
         super(props)
-        this.state = { searchTerm: '' }
+        const urlsQuery = new URLSearchParams(props.search || '').get('q') || ''
+        this.state = { searchTerm: urlsQuery }
     }
 
     appDetailPath(appName: string) {
@@ -78,6 +80,41 @@ class AppsTable extends Component<
                 dataIndex: 'instanceCount',
                 key: 'instanceCount',
                 align: ALIGN,
+            },
+            {
+                title: 'Tags',
+                dataIndex: 'tags',
+                key: 'tags',
+                align: ALIGN,
+                width: '18%',
+                render: (_: any, app: TableData) => {
+                    return (
+                        <Fragment>
+                            {app.tags && app.tags.length > 0 ? (
+                                app.tags.map((it) => (
+                                    <Tag key={it.tagName} style={{ margin: 2 }}>
+                                        <a
+                                            href="/"
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                self.setState({
+                                                    searchTerm:
+                                                        'tag:' + it.tagName,
+                                                })
+                                            }}
+                                        >
+                                            <span className="unselectable-span">
+                                                {it.tagName}
+                                            </span>
+                                        </a>
+                                    </Tag>
+                                ))
+                            ) : (
+                                <span></span>
+                            )}
+                        </Fragment>
+                    )
+                },
             },
             {
                 title: 'Last Deployed',
@@ -153,9 +190,29 @@ class AppsTable extends Component<
 
         const appsToRender = self.props.apps
             .filter((app) => {
-                if (!self.state.searchTerm) return true
+                const searchTerm = self.state.searchTerm
+                if (!searchTerm) return true
 
-                return app.appName!.indexOf(self.state.searchTerm) >= 0
+                if (searchTerm.startsWith('tag:')) {
+                    const entries = searchTerm.substring(4).split(' ')
+                    const tagToFilter = entries[0]
+                    const tagExists =
+                        (app.tags || []).filter((t) =>
+                            t.tagName.startsWith(tagToFilter)
+                        ).length > 0
+                    if (entries.length > 1) {
+                        const appNameToFilter = searchTerm
+                            .substring(4)
+                            .split(' ')[1]
+                        return (
+                            tagExists &&
+                            app.appName!.indexOf(appNameToFilter) >= 0
+                        )
+                    }
+                    return tagExists
+                }
+
+                return app.appName!.indexOf(searchTerm) >= 0
             })
             .map((app) => {
                 let versionFound = app.versions.filter(
@@ -184,6 +241,8 @@ class AppsTable extends Component<
             <Input
                 placeholder="Search by Name"
                 type="text"
+                value={self.state.searchTerm}
+                defaultValue={self.state.searchTerm}
                 onChange={(event) =>
                     self.setState({
                         searchTerm: (event.target.value || '')

@@ -1,6 +1,6 @@
-import { InfoCircleOutlined } from '@ant-design/icons'
-import { Button, Col, Input, Row, Switch, Tooltip } from 'antd'
-import React, { Component } from 'react'
+import { EditFilled, EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import { Button, Col, Input, Row, Switch, Tag, Tooltip } from 'antd'
+import { Component, Fragment } from 'react'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import Utils from '../../../utils/Utils'
 import NewTabLink from '../../global/NewTabLink'
@@ -11,8 +11,9 @@ export default class AppConfigs extends Component<
     AppDetailsTabProps,
     {
         dummyVar: undefined
+        tagsEditMode: boolean
         envVarBulkEdit: boolean
-        bulkVals: string
+        envVarBulkVals: string
         forceEditableNodeId: boolean
         forceEditableInstanceCount: boolean
     }
@@ -22,8 +23,9 @@ export default class AppConfigs extends Component<
         this.state = {
             dummyVar: undefined,
             forceEditableInstanceCount: false,
+            tagsEditMode: false,
             envVarBulkEdit: false,
-            bulkVals: '',
+            envVarBulkVals: '',
             forceEditableNodeId: false,
         }
     }
@@ -91,8 +93,8 @@ export default class AppConfigs extends Component<
                                 placeholder={'key1=value1\nkey2=value2'}
                                 rows={7}
                                 value={
-                                    self.state.bulkVals
-                                        ? self.state.bulkVals
+                                    self.state.envVarBulkVals
+                                        ? self.state.envVarBulkVals
                                         : self.convertEnvVarsToBulk(envVars)
                                 }
                                 onChange={(e) => {
@@ -111,7 +113,9 @@ export default class AppConfigs extends Component<
                                     })
                                     newApiData.appDefinition.envVars = envVars
                                     self.props.updateApiData(newApiData)
-                                    self.setState({ bulkVals: e.target.value })
+                                    self.setState({
+                                        envVarBulkVals: e.target.value,
+                                    })
                                 }}
                             />
                         </Col>
@@ -423,7 +427,7 @@ export default class AppConfigs extends Component<
                             onChange={(val) => {
                                 self.setState({
                                     envVarBulkEdit: val,
-                                    bulkVals: '',
+                                    envVarBulkVals: '',
                                 })
                             }}
                         />
@@ -441,13 +445,12 @@ export default class AppConfigs extends Component<
                         environmental variables yet.
                     </i>
                 </div>
-
                 {this.createEnvVarSection()}
-
-                <br />
-                <br />
-                <br />
-
+                <div
+                    style={{
+                        height: 36,
+                    }}
+                />
                 <h4>
                     Port Mapping &nbsp;
                     <NewTabLink url="https://caprover.com/docs/app-configuration.html#port-mapping">
@@ -464,11 +467,8 @@ export default class AppConfigs extends Component<
                         mapping.
                     </i>
                 </div>
-
                 {this.createPortRows()}
-
                 <br />
-
                 <Button
                     block={this.props.isMobile}
                     type="default"
@@ -532,7 +532,6 @@ export default class AppConfigs extends Component<
                     </Col>
                 </Row>
                 <div style={{ height: 50 }} />
-
                 <Row>
                     <Col span={24}>
                         <h4>
@@ -569,7 +568,6 @@ export default class AppConfigs extends Component<
                     </Col>
                 </Row>
                 <div style={{ height: 30 }} />
-
                 <Row>
                     <Col span={24}>
                         <h4>
@@ -612,7 +610,93 @@ export default class AppConfigs extends Component<
                         />
                     </Col>
                 </Row>
+
+                <div style={{ height: 30 }} />
+                <h4>
+                    Service Tags &nbsp;
+                    <NewTabLink url="https://caprover.com/docs/app-configuration.html#service-tags">
+                        <InfoCircleOutlined />
+                    </NewTabLink>
+                </h4>
+                <div style={{ marginTop: 10 }}>
+                    <span
+                        style={{ marginRight: 20 }}
+                        onClick={() => {
+                            self.setState({
+                                tagsEditMode: !self.state.tagsEditMode,
+                            })
+                        }}
+                    >
+                        {self.state.tagsEditMode ? (
+                            <EditFilled />
+                        ) : (
+                            <EditOutlined />
+                        )}
+                    </span>
+                    <span
+                        className={
+                            app.tags && !!app.tags.length
+                                ? 'hide-on-demand'
+                                : ''
+                        }
+                    ></span>
+                    <span>{self.createTagsValues()}</span>
+                </div>
+                <div
+                    style={{
+                        height: 36,
+                    }}
+                />
             </div>
+        )
+    }
+    createTagsValues() {
+        const app = this.props.apiData!.appDefinition
+
+        if (this.state.tagsEditMode) {
+            return (
+                <Input.TextArea
+                    className="code-input"
+                    placeholder={'tag1,comma,separated,cannot-contain-space'}
+                    rows={1}
+                    defaultValue={(app.tags || [])
+                        .map((it) => it.tagName)
+                        .join(',')}
+                    onChange={(e) => {
+                        const newValueRaw = e.target.value
+
+                        const newApiData = Utils.copyObject(this.props.apiData)
+                        const newTags = newValueRaw
+                            .split(',')
+                            .map((it) => it.trim().toLocaleLowerCase())
+                            .filter((it) => !!it)
+                            .map((it) => {
+                                return {
+                                    tagName: it,
+                                }
+                            })
+                        newApiData.appDefinition.tags = newTags
+                        this.props.updateApiData(newApiData)
+                    }}
+                />
+            )
+        }
+
+        return (
+            <Fragment>
+                {app.tags && app.tags.length > 0 ? (
+                    app.tags.map(
+                        (
+                            it
+                            // if non-edit mode, otherwise, display a comma separated textbox
+                        ) => <Tag key={it.tagName}>{it.tagName}</Tag>
+                    )
+                ) : (
+                    <span>
+                        Currently no service tag is associated with this service
+                    </span>
+                )}
+            </Fragment>
         )
     }
 

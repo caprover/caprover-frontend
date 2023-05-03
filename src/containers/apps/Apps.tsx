@@ -1,4 +1,3 @@
-import React from 'react'
 import { RouteComponentProps } from 'react-router'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
@@ -76,7 +75,8 @@ export default class Apps extends ApiComponent<
                 <div style={{ height: 25 }} />
                 {apiData.appDefinitions.length > 0 ? (
                     <AppsTable
-                        history={this.props.history}
+                        search={self.props.location.search}
+                        history={self.props.history}
                         defaultNginxConfig={apiData.defaultNginxConfig}
                         apps={apiData.appDefinitions}
                         rootDomain={apiData.rootDomain}
