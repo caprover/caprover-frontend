@@ -687,7 +687,8 @@ export default class AppConfigs extends Component<
                 {app.tags && app.tags.length > 0 ? (
                     app.tags.map(
                         (
-                            it //if non-edit mode, otherwise, display a comma separated textbox
+                            it
+                            // if non-edit mode, otherwise, display a comma separated textbox
                         ) => <Tag key={it.tagName}>{it.tagName}</Tag>
                     )
                 ) : (
