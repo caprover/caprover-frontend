@@ -149,7 +149,7 @@ export default class HttpSettings extends Component<
         ).map((it) => it.publicDomain)
 
         if (customDomains.length === 0) {
-            return null
+            return undefined
         } else {
             customDomains.push(`${app.appName}.${rootDomain}`)
 
