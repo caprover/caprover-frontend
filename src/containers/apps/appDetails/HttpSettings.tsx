@@ -1,4 +1,5 @@
 import { InfoCircleOutlined } from '@ant-design/icons'
+import type { SelectProps } from 'antd'
 import {
     Button,
     Checkbox,
@@ -7,12 +8,14 @@ import {
     message,
     Modal,
     Row,
+    Select,
     Tooltip,
 } from 'antd'
-import React, { Component, Fragment } from 'react'
+import { Component, Fragment } from 'react'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
 import NewTabLink from '../../global/NewTabLink'
+import { IAppDef } from '../AppDefinition'
 import { AppDetailsTabProps } from './AppDetails'
 
 const Search = Input.Search
@@ -137,6 +140,58 @@ export default class HttpSettings extends Component<
                     self.props.setLoading(false)
                 })
             )
+    }
+
+    createRedirectDropdownIfNeeded(app: IAppDef, rootDomain: string) {
+        const self = this
+        const customDomains = (
+            this.props.apiData!.appDefinition.customDomain || []
+        ).map((it) => it.publicDomain)
+
+        if (customDomains.length === 0) {
+            return null
+        } else {
+            customDomains.push(`${app.appName}.${rootDomain}`)
+
+            const options: SelectProps['options'] = []
+            options.push({
+                value: '',
+                label: 'No redirects',
+            })
+            customDomains.forEach((it) => {
+                options.push({
+                    value: it,
+                    label: it,
+                })
+            })
+
+            const widthOfSelect = self.props.isMobile ? 200 : 350
+
+            return (
+                <Fragment>
+                    <Row>
+                        <span style={{ marginRight: 10 }}>
+                            Redirect all domains to:
+                        </span>
+
+                        <Select
+                            size="small"
+                            defaultValue={app.redirectDomain || ''}
+                            onChange={(value) => {
+                                const newApiData = Utils.copyObject(
+                                    self.props.apiData!
+                                )
+                                newApiData.appDefinition.redirectDomain = value
+                                self.props.updateApiData(newApiData)
+                            }}
+                            style={{ width: widthOfSelect }}
+                            options={options}
+                        />
+                    </Row>
+                    <br />
+                </Fragment>
+            )
+        }
     }
 
     createCustomDomainRows() {
@@ -286,6 +341,7 @@ export default class HttpSettings extends Component<
                 </Row>
                 {this.createCustomDomainRows()}
                 <br />
+                {this.createRedirectDropdownIfNeeded(app, rootDomain)}
                 <Row>
                     <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                         {this.props.isMobile ? (
