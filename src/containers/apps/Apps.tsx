@@ -49,6 +49,30 @@ export default class Apps extends ApiComponent<
             })
     }
 
+    async onAppScaled(appName: string, instanceCount: number) {
+        const self = this
+
+        const def = self.state.apiData?.appDefinitions.find(
+            (x) => x.appName === appName
+        )
+        if (!def) return alert('App not found: ' + appName)
+
+        const toggled = { ...def, instanceCount }
+
+        Promise.resolve() //
+            .then(function () {
+                self.setState({ isLoading: true })
+                return self.apiManager.updateConfigAndSave(appName, toggled)
+            })
+            .then(function () {
+                return self.reFetchData()
+            })
+            .catch(Toaster.createCatcher())
+            .then(function () {
+                self.setState({ isLoading: false })
+            })
+    }
+
     render() {
         const self = this
 
@@ -80,6 +104,9 @@ export default class Apps extends ApiComponent<
                         defaultNginxConfig={apiData.defaultNginxConfig}
                         apps={apiData.appDefinitions}
                         rootDomain={apiData.rootDomain}
+                        onAppScaled={(appName: string, count: number) =>
+                            self.onAppScaled(appName, count)
+                        }
                     />
                 ) : (
                     <div />
