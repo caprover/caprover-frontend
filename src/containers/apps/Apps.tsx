@@ -63,7 +63,16 @@ export default class Apps extends ApiComponent<
         }
 
         return (
-            <div>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 25,
+                    padding: '0 20px',
+                    margin: '0 auto 300px',
+                    maxWidth: 1000,
+                }}
+            >
                 <CreateNewApp
                     onCreateNewAppClicked={(
                         appName: string,
@@ -72,7 +81,6 @@ export default class Apps extends ApiComponent<
                         self.onCreateNewAppClicked(appName, hasPersistency)
                     }}
                 />
-                <div style={{ height: 25 }} />
                 {apiData.appDefinitions.length > 0 ? (
                     <AppsTable
                         search={self.props.location.search}

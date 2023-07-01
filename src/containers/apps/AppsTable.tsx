@@ -5,7 +5,7 @@ import {
     LinkOutlined,
     LoadingOutlined,
 } from '@ant-design/icons'
-import { Card, Col, Input, Row, Table, Tag, Tooltip } from 'antd'
+import { Card, Input, Row, Table, Tag, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component, Fragment } from 'react'
@@ -254,128 +254,107 @@ class AppsTable extends Component<
         )
 
         return (
-            <Row justify="center">
-                <Col
-                    xs={{ span: 23 }}
-                    lg={{ span: 16 }}
-                    style={{ paddingBottom: 300 }}
-                >
-                    <Card
-                        extra={!self.props.isMobile && searchAppInput}
-                        title={
-                            <React.Fragment>
-                                <span>
-                                    <CodeOutlined />
-                                    &nbsp;&nbsp;&nbsp;Your Apps
-                                </span>
-                                <br />
-                                {self.props.isMobile && (
-                                    <div style={{ marginTop: 8 }}>
-                                        {searchAppInput}
-                                    </div>
-                                )}
-                            </React.Fragment>
-                        }
-                    >
-                        <Row justify="center">
-                            {self.props.isMobile ? (
-                                appsToRender.map(
-                                    ({
-                                        appName = '',
-                                        hasPersistentData,
-                                        notExposeAsWebApp,
-                                        instanceCount,
-                                        hasDefaultSubDomainSsl,
-                                    }) => (
-                                        <Card
-                                            type="inner"
-                                            title={appName}
-                                            key={appName}
-                                            extra={
-                                                <Link
-                                                    to={this.appDetailPath(
-                                                        appName
-                                                    )}
-                                                >
-                                                    Details
-                                                </Link>
-                                            }
-                                            style={{
-                                                width: '100%',
-                                                marginBottom: 8,
-                                            }}
-                                        >
-                                            <p>
-                                                Persistent Data:{' '}
-                                                {!hasPersistentData ? undefined : (
-                                                    <span>
-                                                        <CheckOutlined />
-                                                    </span>
-                                                )}
-                                            </p>
-                                            <p>
-                                                Exposed Webapp:{' '}
-                                                {!!notExposeAsWebApp ? undefined : (
-                                                    <span>
-                                                        <CheckOutlined />
-                                                    </span>
-                                                )}
-                                            </p>
-                                            <p>
-                                                Instance Count: {instanceCount}
-                                            </p>
-                                            <p>
-                                                Open in Browser:{' '}
-                                                {!!notExposeAsWebApp ? undefined : (
-                                                    <NewTabLink
-                                                        url={`http${
-                                                            hasDefaultSubDomainSsl
-                                                                ? 's'
-                                                                : ''
-                                                        }://${appName}.${
-                                                            self.props
-                                                                .rootDomain
-                                                        }`}
-                                                    >
-                                                        <LinkOutlined />{' '}
-                                                    </NewTabLink>
-                                                )}
-                                            </p>
-                                        </Card>
-                                    )
-                                )
-                            ) : (
-                                <div
+            <Card
+                extra={!self.props.isMobile && searchAppInput}
+                title={
+                    <React.Fragment>
+                        <span>
+                            <CodeOutlined />
+                            &nbsp;&nbsp;&nbsp;Your Apps
+                        </span>
+                        <br />
+                        {self.props.isMobile && (
+                            <div style={{ marginTop: 8 }}>{searchAppInput}</div>
+                        )}
+                    </React.Fragment>
+                }
+            >
+                <Row justify="center">
+                    {self.props.isMobile ? (
+                        appsToRender.map(
+                            ({
+                                appName = '',
+                                hasPersistentData,
+                                notExposeAsWebApp,
+                                instanceCount,
+                                hasDefaultSubDomainSsl,
+                            }) => (
+                                <Card
+                                    type="inner"
+                                    title={appName}
+                                    key={appName}
+                                    extra={
+                                        <Link to={this.appDetailPath(appName)}>
+                                            Details
+                                        </Link>
+                                    }
                                     style={{
                                         width: '100%',
+                                        marginBottom: 8,
                                     }}
                                 >
-                                    <Table<TableData>
-                                        rowKey="appName"
-                                        columns={self.createColumns()}
-                                        dataSource={appsToRender}
-                                        pagination={false}
-                                        size="middle"
-                                        onChange={(
-                                            pagination,
-                                            filters,
-                                            sorter
-                                        ) => {
-                                            // Persist sorter state
-                                            if (!Array.isArray(sorter)) {
-                                                window.localStorage.appsSortKey =
-                                                    sorter.columnKey
-                                                window.localStorage.appsSortOrder =
-                                                    sorter.order
-                                            }
-                                        }}
-                                    />
-                                </div>
-                            )}
-                        </Row>
-                    </Card>
-                </Col>
-            </Row>
+                                    <p>
+                                        Persistent Data:{' '}
+                                        {!hasPersistentData ? undefined : (
+                                            <span>
+                                                <CheckOutlined />
+                                            </span>
+                                        )}
+                                    </p>
+                                    <p>
+                                        Exposed Webapp:{' '}
+                                        {!!notExposeAsWebApp ? undefined : (
+                                            <span>
+                                                <CheckOutlined />
+                                            </span>
+                                        )}
+                                    </p>
+                                    <p>Instance Count: {instanceCount}</p>
+                                    <p>
+                                        Open in Browser:{' '}
+                                        {!!notExposeAsWebApp ? undefined : (
+                                            <NewTabLink
+                                                url={`http${
+                                                    hasDefaultSubDomainSsl
+                                                        ? 's'
+                                                        : ''
+                                                }://${appName}.${
+                                                    self.props.rootDomain
+                                                }`}
+                                            >
+                                                <LinkOutlined />{' '}
+                                            </NewTabLink>
+                                        )}
+                                    </p>
+                                </Card>
+                            )
+                        )
+                    ) : (
+                        <div
+                            style={{
+                                width: '100%',
+                            }}
+                        >
+                            <Table<TableData>
+                                rowKey="appName"
+                                columns={self.createColumns()}
+                                dataSource={appsToRender}
+                                pagination={false}
+                                size="middle"
+                                onChange={(pagination, filters, sorter) => {
+                                    // Persist sorter state
+                                    if (!Array.isArray(sorter)) {
+                                        window.localStorage.appsSortKey =
+                                            sorter.columnKey
+                                        window.localStorage.appsSortOrder =
+                                            sorter.order
+                                    }
+                                }}
+                            />
+                        </div>
+                    )}
+                </Row>
+            </Card>
         )
     }
 }
