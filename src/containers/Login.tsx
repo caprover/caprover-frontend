@@ -101,6 +101,8 @@ const radioStyle = {
     lineHeight: '30px',
 }
 
+let lastSubmittedTime = 0
+
 class NormalLoginForm extends React.Component<
     any,
     {
@@ -120,6 +122,9 @@ class NormalLoginForm extends React.Component<
 
     handleSubmit = (e?: React.FormEvent): void => {
         e?.preventDefault()
+        const now = new Date().getTime()
+        if (now - lastSubmittedTime < 300) return // avoid duplicate clicks
+        lastSubmittedTime = now
         const self = this
         self.props.onLoginRequested(
             self.state.passwordEntered,
