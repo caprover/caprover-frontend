@@ -1,5 +1,4 @@
 import { Alert, Button, Card, Col, Row } from 'antd'
-import React from 'react'
 import { RouteComponentProps } from 'react-router'
 import { IOneClickAppIdentifier } from '../../../../models/IOneClickAppModels'
 import Toaster from '../../../../utils/Toaster'
@@ -168,6 +167,17 @@ export default class OneClickAppSelector extends ApiComponent<
                 <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 23 }}>
                         <Card title="One Click Apps">
+                            {' '}
+                            {Utils.isSafari() ? (
+                                <div style={{ marginBottom: 50 }}>
+                                    <Alert
+                                        message="You seem to be using Safari. Deployment of one-click apps may be unstable on Safari. Using Chrome is recommended"
+                                        type="warning"
+                                    />
+                                </div>
+                            ) : (
+                                <div />
+                            )}
                             <div
                                 className={
                                     self.state.isCustomTemplateSelected
@@ -196,16 +206,6 @@ export default class OneClickAppSelector extends ApiComponent<
 
                                 <OneClickReposList />
                             </div>
-                            {Utils.isSafari() ? (
-                                <Alert
-                                    message="You seem to be using Safari. Deployment of one-click apps may be unstable on Safari. Using Chrome is recommended"
-                                    type="warning"
-                                />
-                            ) : (
-                                <div />
-                            )}
-                            <div style={{ height: 50 }} />
-
                             {self.createCustomTemplateInput()}
                         </Card>
                     </Col>
