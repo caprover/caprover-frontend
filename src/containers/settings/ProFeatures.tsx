@@ -76,7 +76,14 @@ export default class ProFeatures extends ApiComponent<
                     }}
                     title={
                         <div style={{}}>
-                            <b>CapRover PRO</b>&nbsp;&nbsp;
+                            <a
+                                href="https://pro.caprover.com"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                <b>CapRover PRO</b>
+                            </a>
+                            &nbsp;&nbsp;
                             <CrownTwoTone twoToneColor="#c27b00" />
                         </div>
                     }
