@@ -31,6 +31,7 @@ export interface IDockerComposeService {
         dockerfileLines?: string[]
         containerHttpPort: number
         notExposeAsWebApp: boolean // This is actually a string "true", make sure to double negate!
+        websocketSupport: boolean // This is actually a string "true", make sure to double negate!
     }
 }
 
