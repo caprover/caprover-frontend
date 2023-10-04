@@ -107,6 +107,12 @@ export default class OneClickAppDeploymentHelper {
                         ) {
                             appDef.notExposeAsWebApp = true
                         }
+                        if (
+                            !!dockerComposeService.caproverExtra
+                                .websocketSupport
+                        ) {
+                            appDef.websocketSupport = true
+                        }
                     }
 
                     return self.apiManager.updateConfigAndSave(appName, appDef)
