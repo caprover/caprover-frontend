@@ -5,7 +5,7 @@ import {
     LinkOutlined,
     LoadingOutlined,
 } from '@ant-design/icons'
-import { Card, Col, Input, Row, Table, Tag, Tooltip } from 'antd'
+import { Button, Card, Col, Input, Row, Table, Tag, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component, Fragment } from 'react'
@@ -26,6 +26,7 @@ class AppsTable extends Component<
         rootDomain: string
         defaultNginxConfig: string
         isMobile: boolean
+        onAppScaled: (appName: string, instanceCount: number) => void
         search: string | undefined
     },
     { searchTerm: string }
@@ -80,6 +81,26 @@ class AppsTable extends Component<
                 dataIndex: 'instanceCount',
                 key: 'instanceCount',
                 align: ALIGN,
+                render: (instanceCount: number, row, index) => {
+                    return (
+                        <Button
+                            style={{ margin: -5 }}
+                            onClick={async () => {
+                                const warning =
+                                    'Do you want to turn this app OFF?'
+                                if (instanceCount && !window.confirm(warning))
+                                    return
+                                if (!row.appName) return alert('no row.appName')
+                                this.props.onAppScaled(
+                                    row.appName,
+                                    instanceCount ? 0 : 1
+                                )
+                            }}
+                        >
+                            {instanceCount}
+                        </Button>
+                    )
+                },
             },
             {
                 title: 'Tags',
