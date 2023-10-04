@@ -33,16 +33,16 @@ class CreateNewApp extends Component<
         const self = this
 
         return (
-            <Row justify="center">
-                <Col xs={{ span: 23 }} lg={{ span: 10 }}>
-                    <Card
-                        title={
-                            <span>
-                                <PlusCircleOutlined />
-                                &nbsp;&nbsp;&nbsp;Create A New App
-                            </span>
-                        }
-                    >
+            <Card
+                title={
+                    <span>
+                        <PlusCircleOutlined />
+                        &nbsp;&nbsp;&nbsp;Create A New App
+                    </span>
+                }
+            >
+                <Row justify="center">
+                    <Col lg={{ span: 12 }}>
                         <Row>
                             {self.props.isMobile ? (
                                 <Fragment>
@@ -100,21 +100,17 @@ class CreateNewApp extends Component<
                                 </NewTabLink>
                             </Tooltip>
                         </Row>
-
-                        <br />
-
-                        <hr />
-
-                        <br />
+                    </Col>
+                    <Col lg={{ span: 12 }}>
                         <div style={{ textAlign: 'center' }}>
                             <p>Or Select From</p>
                             <Link to="/apps/oneclick/" className="ant-btn">
                                 One-Click Apps/Databases
                             </Link>
                         </div>
-                    </Card>
-                </Col>
-            </Row>
+                    </Col>
+                </Row>
+            </Card>
         )
     }
 }
