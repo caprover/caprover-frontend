@@ -121,7 +121,7 @@ export default class OneClickReposList extends ApiComponent<
                 <h4>3rd party repositories:</h4>
                 <div style={{ maxWidth: 600, marginBottom: 30 }}>
                     <Search
-                        placeholder="oneclick-apps.your-3rd-party-domain.com"
+                        placeholder="https://oneclick-apps.your-3rd-party-domain.com"
                         enterButton="Connect New Repository"
                         onSearch={(value) =>
                             self.onConnectNewRepositoryClicked(value)
