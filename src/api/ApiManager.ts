@@ -308,11 +308,17 @@ export default class ApiManager {
             )
     }
 
-    registerNewApp(
-        appName: string,
-        hasPersistentData: boolean,
-        detached: boolean
-    ) {
+    registerNewApp({
+        appName,
+        hasPersistentData,
+        isDetched,
+        tags,
+    }: {
+        appName: string
+        hasPersistentData: boolean
+        isDetched: boolean
+        tags?: string[]
+    }) {
         const http = this.http
 
         return Promise.resolve() //
@@ -320,11 +326,12 @@ export default class ApiManager {
                 http.fetch(
                     http.POST,
                     `/user/apps/appDefinitions/register${
-                        detached ? '?detached=1' : ''
+                        isDetched ? '?detached=1' : ''
                     }`,
                     {
                         appName,
                         hasPersistentData,
+                        tags,
                     }
                 )
             )

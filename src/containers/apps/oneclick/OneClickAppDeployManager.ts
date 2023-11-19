@@ -90,13 +90,15 @@ export default class OneClickAppDeployManager {
             })
         } else {
             const steps: IDeploymentStep[] = []
+            const capAppName = values['$$cap_appname'] ?? null
             for (let index = 0; index < apps.length; index++) {
                 const appToDeploy = apps[index]
                 steps.push(
-                    ...self.createDeploymentStepPromises(
-                        appToDeploy.appName,
-                        appToDeploy.service
-                    )
+                    ...self.createDeploymentStepPromises({
+                        appName: appToDeploy.appName,
+                        dockerComposeService: appToDeploy.service,
+                        oneClickAppName: capAppName,
+                    })
                 )
             }
 
@@ -205,20 +207,28 @@ export default class OneClickAppDeployManager {
         return apps
     }
 
-    private createDeploymentStepPromises(
-        appName: string,
+    private createDeploymentStepPromises({
+        appName,
+        dockerComposeService,
+        oneClickAppName,
+    }: {
+        appName: string
         dockerComposeService: IDockerComposeService
-    ): IDeploymentStep[] {
+        oneClickAppName: string
+    }): IDeploymentStep[] {
         const promises: IDeploymentStep[] = []
         const self = this
 
         promises.push({
             stepName: `Registering ${appName}`,
             stepPromise: function () {
-                return self.deploymentHelper.createRegisterPromise(
+                return self.deploymentHelper.createRegisterPromise({
                     appName,
-                    dockerComposeService
-                )
+                    hasPersistentData:
+                        !!dockerComposeService.volumes &&
+                        !!dockerComposeService.volumes.length,
+                    oneClickAppName,
+                })
             },
         })
 

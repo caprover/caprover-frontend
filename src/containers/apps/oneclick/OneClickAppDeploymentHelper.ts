@@ -8,18 +8,23 @@ import { IAppDef } from '../AppDefinition'
 export default class OneClickAppDeploymentHelper {
     private apiManager: ApiManager = new ApiManager()
 
-    createRegisterPromise(
-        appName: string,
-        dockerComposeService: IDockerComposeService
-    ) {
+    createRegisterPromise({
+        appName,
+        hasPersistentData,
+        oneClickAppName,
+    }: {
+        appName: string
+        hasPersistentData: boolean
+        oneClickAppName: string
+    }) {
         const self = this
         return Promise.resolve().then(function () {
-            return self.apiManager.registerNewApp(
+            return self.apiManager.registerNewApp({
                 appName,
-                !!dockerComposeService.volumes &&
-                    !!dockerComposeService.volumes.length,
-                false
-            )
+                hasPersistentData,
+                isDetched: false,
+                tags: [oneClickAppName],
+            })
         })
     }
 
@@ -48,6 +53,8 @@ export default class OneClickAppDeploymentHelper {
                     }
 
                     appDef.volumes = appDef.volumes || []
+
+                    console.log('Found these tags', appDef.tags)
 
                     const vols = dockerComposeService.volumes || []
                     for (let i = 0; i < vols.length; i++) {
