@@ -5,6 +5,7 @@ import {
 } from '../../../models/IOneClickAppModels'
 import Utils from '../../../utils/Utils'
 import OneClickAppDeploymentHelper from './OneClickAppDeploymentHelper'
+import { ONE_CLICK_APP_NAME_VAR_NAME } from './variables/OneClickAppConfigPage'
 
 interface IDeploymentStep {
     stepName: string
@@ -90,12 +91,14 @@ export default class OneClickAppDeployManager {
             })
         } else {
             const steps: IDeploymentStep[] = []
+            const capAppName = values[ONE_CLICK_APP_NAME_VAR_NAME]
             for (let index = 0; index < apps.length; index++) {
                 const appToDeploy = apps[index]
                 steps.push(
                     ...self.createDeploymentStepPromises(
                         appToDeploy.appName,
-                        appToDeploy.service
+                        appToDeploy.service,
+                        capAppName
                     )
                 )
             }
@@ -207,7 +210,8 @@ export default class OneClickAppDeployManager {
 
     private createDeploymentStepPromises(
         appName: string,
-        dockerComposeService: IDockerComposeService
+        dockerComposeService: IDockerComposeService,
+        capAppName: string
     ): IDeploymentStep[] {
         const promises: IDeploymentStep[] = []
         const self = this
@@ -227,7 +231,8 @@ export default class OneClickAppDeployManager {
             stepPromise: function () {
                 return self.deploymentHelper.createConfigurationPromise(
                     appName,
-                    dockerComposeService
+                    dockerComposeService,
+                    capAppName
                 )
             },
         })
