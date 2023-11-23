@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@craco/craco": "^6.4.5",
-        "antd": "^4.24.15",
+        "antd": "5.x",
         "axios": "^0.21.1",
         "classnames": "^2.2.6",
         "deep-equal": "^2.0.5",
