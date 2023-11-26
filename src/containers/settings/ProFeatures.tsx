@@ -115,7 +115,7 @@ export default class ProFeatures extends ApiComponent<
         }
 
         return (
-            (<div>
+            <div>
                 <p>
                     Upgrade to <b>CapRover PRO</b> to take advantage of premium
                     features!
@@ -211,7 +211,7 @@ export default class ProFeatures extends ApiComponent<
                         />
                     </div>
                 </Modal>
-            </div>)
+            </div>
         )
     }
 }

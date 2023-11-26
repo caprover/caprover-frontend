@@ -52,7 +52,7 @@ export default class OtpSettings extends ApiComponent<
         const isCurrentlyEnabled = self.state.apiData?.isEnabled
 
         return (
-            (<div>
+            <div>
                 <p>
                     Two Factor Authentication{' '}
                     {isCurrentlyEnabled ? (
@@ -116,7 +116,7 @@ export default class OtpSettings extends ApiComponent<
                         />
                     </div>
                 </Modal>
-            </div>)
+            </div>
         )
     }
 
