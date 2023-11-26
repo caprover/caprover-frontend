@@ -212,6 +212,6 @@ export default class ProFeatures extends ApiComponent<
                     </div>
                 </Modal>
             </div>)
-        );
+        )
     }
 }

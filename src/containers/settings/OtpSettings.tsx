@@ -117,7 +117,7 @@ export default class OtpSettings extends ApiComponent<
                     </div>
                 </Modal>
             </div>)
-        );
+        )
     }
 
     setEnableOtp(toEnable: boolean) {
