@@ -4,8 +4,7 @@ import {
     MenuFoldOutlined,
     UpCircleOutlined,
 } from '@ant-design/icons'
-import { Row, Tooltip } from 'antd'
-import React from 'react'
+import { Input, Row, Tooltip } from 'antd'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
 import ClickableLink from '../../../global/ClickableLink'
@@ -123,6 +122,7 @@ export default class AppLogsView extends ApiComponent<
 
     render() {
         const self = this
+
         return (
             <div>
                 <div style={{ height: 20 }} />
@@ -156,7 +156,6 @@ export default class AppLogsView extends ApiComponent<
                                     <span
                                         style={{
                                             marginLeft: 20,
-                                            paddingBottom: 3,
                                         }}
                                     >
                                         <Tooltip title="View full application logs (not truncated)">
@@ -185,9 +184,9 @@ export default class AppLogsView extends ApiComponent<
                                         <MenuFoldOutlined />
                                         &nbsp;&nbsp;{' '}
                                         {this.state.isWrapped
-                                            ? "Don't"
-                                            : ''}{' '}
-                                        wrap logs &nbsp;&nbsp;
+                                            ? "Don't wrap logs"
+                                            : 'Wrap logs'}
+                                        &nbsp;&nbsp;
                                     </h4>
                                 </ClickableLink>
                             </span>
@@ -200,7 +199,7 @@ export default class AppLogsView extends ApiComponent<
                         }
                         style={{ padding: 5 }}
                     >
-                        <textarea
+                        <Input.TextArea
                             id="applogs-text-id"
                             className="logs-output"
                             style={{

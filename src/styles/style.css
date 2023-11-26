@@ -1,3 +1,10 @@
+:root {
+    --shadow-2: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    --skeleton-color: #cccccc;
+    --background-color-light: #f5f5f5;
+    --body-background: #ffffff;
+}
+
 html,
 body,
 #root {
@@ -30,21 +37,16 @@ code {
 .full-screen {
     width: 100%;
     height: 100%;
-    background-color: @layout-body-background;
 }
 
 hr {
     opacity: 0.4;
 }
 
-body {
-    font-family: @font-family !important;
-}
-
-.ant-card {
-    -webkit-box-shadow: @shadow-2;
-    box-shadow: @shadow-2;
-}
+/* .ant-card {
+    -webkit-box-shadow: var(--shadow-2);
+    box-shadow: var(--shadow-2);
+} */
 
 .unselectable-span {
     -webkit-user-select: none;
@@ -70,17 +72,12 @@ body {
     font-family: Menlo, Monaco, 'SFMono-Regular', Consolas, 'Liberation Mono',
         Courier, monospace !important;
     overflow: scroll;
-    height: 250px;
-    border: 2px solid @skeleton-color;
-    background-color: @background-color-light;
+    height: 250px !important;
+    border-width: 2px;
     border-radius: 5px;
     padding: 10px;
     font-size: 90%;
     width: 100%;
-}
-
-.logs-output:focus {
-    outline: none;
 }
 
 .disabled {
@@ -112,24 +109,21 @@ body {
     opacity: 0.8;
 }
 
-.one-click-app-card > div {
-    background: @body-background;
-}
-
-.inner-card {
+/* .inner-card {
     border-width: 1px;
     border-style: solid;
-    border-color: @skeleton-color;
-    background-color: @body-background;
-}
+    border-color: var(--skeleton-color);
+} */
 
 .pre-line-content {
     white-space: pre-wrap;
 }
 
-.ant-checkbox {
-    &-inner,
-    &-checked::after {
-        border-radius: 3px;
-    }
-}
+/* .ant-checkbox {
+    border-radius: 3px;
+} */
+
+/* .ant-checkbox-inner,
+.ant-checkbox-checked::after {
+    border-radius: var(--checkbox-border-radius);
+} */

@@ -1,7 +1,6 @@
 import { PlusCircleOutlined, QuestionCircleFilled } from '@ant-design/icons'
 import { Button, Card, Checkbox, Col, Input, Row, Tooltip } from 'antd'
-import Search from 'antd/lib/input/Search'
-import React, { Component, Fragment } from 'react'
+import { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
@@ -66,7 +65,7 @@ class CreateNewApp extends Component<
                                     </Button>
                                 </Fragment>
                             ) : (
-                                <Search
+                                <Input.Search
                                     placeholder="my-amazing-app"
                                     enterButton="Create New App"
                                     onChange={(e) =>

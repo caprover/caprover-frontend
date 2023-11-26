@@ -52,7 +52,7 @@ export default class OtpSettings extends ApiComponent<
         const isCurrentlyEnabled = self.state.apiData?.isEnabled
 
         return (
-            <div>
+            (<div>
                 <p>
                     Two Factor Authentication{' '}
                     {isCurrentlyEnabled ? (
@@ -82,7 +82,7 @@ export default class OtpSettings extends ApiComponent<
                 </Row>
                 <Modal
                     title="Enable OTP verification"
-                    visible={!!self.state.otpPath}
+                    open={!!self.state.otpPath}
                     onOk={() => {
                         if (!self.state.enteredToken) {
                             Toaster.toastInfo(
@@ -116,8 +116,8 @@ export default class OtpSettings extends ApiComponent<
                         />
                     </div>
                 </Modal>
-            </div>
-        )
+            </div>)
+        );
     }
 
     setEnableOtp(toEnable: boolean) {

@@ -1,5 +1,4 @@
 import { Button, Card, Col, Input, Modal, Row, Tooltip } from 'antd'
-import React from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import AppConstants from '../utils/AppConstants'
 import Toaster from '../utils/Toaster'
@@ -493,7 +492,7 @@ export default class Dashboard extends ApiComponent<
                             <Row justify="end">
                                 <Button
                                     disabled={this.state.isForceChangingDomain}
-                                    type="ghost"
+                                    ghost
                                     onClick={() => {
                                         self.setState({
                                             isForceChangingDomain: true,
