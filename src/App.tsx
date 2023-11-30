@@ -42,6 +42,7 @@ function App() {
                 algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
                 token: {
                     colorPrimary: '#1b8ad3',
+                    colorLink: '#1b8ad3',
                     fontFamily: `QuickSand, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
                         'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
                         'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,

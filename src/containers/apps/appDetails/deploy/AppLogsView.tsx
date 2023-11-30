@@ -129,7 +129,13 @@ export default class AppLogsView extends ApiComponent<
 
                 <div>
                     <div>
-                        <Row justify="space-between" align="middle">
+                        <Row
+                            justify="space-between"
+                            align="middle"
+                            style={{
+                                marginBottom: 10,
+                            }}
+                        >
                             <span>
                                 <Row justify="start" align="middle">
                                     <span>
@@ -138,7 +144,7 @@ export default class AppLogsView extends ApiComponent<
                                                 self.onExpandLogClicked()
                                             }}
                                         >
-                                            <h4 className="unselectable-span">
+                                            <span className="unselectable-span">
                                                 {this.state.expandedLogs ? (
                                                     <UpCircleOutlined />
                                                 ) : (
@@ -149,7 +155,7 @@ export default class AppLogsView extends ApiComponent<
                                                     ? 'View'
                                                     : 'Hide'}{' '}
                                                 App Logs
-                                            </h4>
+                                            </span>
                                         </ClickableLink>
                                     </span>
 
@@ -180,14 +186,14 @@ export default class AppLogsView extends ApiComponent<
                                         })
                                     }}
                                 >
-                                    <h4 className="unselectable-span">
+                                    <span className="unselectable-span">
                                         <MenuFoldOutlined />
                                         &nbsp;&nbsp;{' '}
                                         {this.state.isWrapped
                                             ? "Don't wrap logs"
                                             : 'Wrap logs'}
                                         &nbsp;&nbsp;
-                                    </h4>
+                                    </span>
                                 </ClickableLink>
                             </span>
                         </Row>

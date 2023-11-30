@@ -167,7 +167,7 @@ export default class BuildLogsView extends ApiComponent<
                                 self.onExpandLogClicked()
                             }}
                         >
-                            <h4 className="unselectable-span">
+                            <span className="unselectable-span">
                                 {this.state.expandedLogs ? (
                                     <UpCircleOutlined />
                                 ) : (
@@ -178,7 +178,7 @@ export default class BuildLogsView extends ApiComponent<
                                     ? 'View'
                                     : 'Hide'}{' '}
                                 Build Logs
-                            </h4>
+                            </span>
                         </ClickableLink>
                     </div>
 

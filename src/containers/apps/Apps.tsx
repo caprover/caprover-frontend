@@ -81,7 +81,7 @@ export default class Apps extends ApiComponent<
                         self.onCreateNewAppClicked(appName, hasPersistency)
                     }}
                 />
-                {apiData.appDefinitions.length > 0 ? (
+                {apiData.appDefinitions.length > 0 && (
                     <AppsTable
                         search={self.props.location.search}
                         history={self.props.history}
@@ -89,8 +89,6 @@ export default class Apps extends ApiComponent<
                         apps={apiData.appDefinitions}
                         rootDomain={apiData.rootDomain}
                     />
-                ) : (
-                    <div />
                 )}
             </div>
         )

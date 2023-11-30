@@ -1,5 +1,5 @@
 import { PlusCircleOutlined, QuestionCircleFilled } from '@ant-design/icons'
-import { Button, Card, Checkbox, Col, Input, Row, Tooltip } from 'antd'
+import { Button, Card, Checkbox, Col, Divider, Input, Row, Tooltip } from 'antd'
 import { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -40,9 +40,13 @@ class CreateNewApp extends Component<
                     </span>
                 }
             >
-                <Row justify="center">
-                    <Col lg={{ span: 12 }}>
-                        <Row>
+                <Row align="middle">
+                    <Col md={{ span: 11 }} xs={{ span: 24 }}>
+                        <Row
+                            style={{
+                                marginBottom: 20,
+                            }}
+                        >
                             {self.props.isMobile ? (
                                 <Fragment>
                                     <Input
@@ -73,13 +77,12 @@ class CreateNewApp extends Component<
                                             appName: e.target.value,
                                         })
                                     }
-                                    onSearch={(value) =>
+                                    onSearch={() =>
                                         self.onCreateNewAppClicked()
                                     }
                                 />
                             )}
                         </Row>
-                        <br />
                         <Row justify={self.props.isMobile ? 'start' : 'end'}>
                             <Checkbox
                                 onChange={(e: any) =>
@@ -100,13 +103,22 @@ class CreateNewApp extends Component<
                             </Tooltip>
                         </Row>
                     </Col>
-                    <Col lg={{ span: 12 }}>
-                        <div style={{ textAlign: 'center' }}>
-                            <p>Or Select From</p>
-                            <Link to="/apps/oneclick/" className="ant-btn">
-                                One-Click Apps/Databases
-                            </Link>
-                        </div>
+                    {self.props.isMobile ? (
+                        <Divider type="horizontal" style={{ width: 100 }} />
+                    ) : (
+                        <Col md={{ span: 2 }} style={{ textAlign: 'center' }}>
+                            <Divider type="vertical" style={{ height: 100 }} />
+                        </Col>
+                    )}
+                    <Col
+                        md={{ span: 11 }}
+                        xs={{ span: 24 }}
+                        style={{ textAlign: 'center' }}
+                    >
+                        <p style={{ marginTop: 0 }}>Or Select From</p>
+                        <Link to="/apps/oneclick/">
+                            <Button>One-Click Apps/Databases</Button>
+                        </Link>
                     </Col>
                 </Row>
             </Card>
