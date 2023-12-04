@@ -414,24 +414,28 @@ export default class AppConfigs extends Component<
         const app = this.props.apiData!.appDefinition
         return (
             <div>
-                <h4>
-                    Environmental Variables &nbsp;
-                    <NewTabLink url="https://caprover.com/docs/app-configuration.html#environment-variables">
-                        <InfoCircleOutlined />
-                    </NewTabLink>
-                </h4>
-                <Row align="middle" justify="end">
-                    <h5>
-                        Bulk Edit&nbsp;{' '}
-                        <Switch
-                            onChange={(val) => {
-                                self.setState({
-                                    envVarBulkEdit: val,
-                                    envVarBulkVals: '',
-                                })
-                            }}
-                        />
-                    </h5>
+                <Row align="middle" justify="space-between">
+                    <Col>
+                        <h4>
+                            Environmental Variables &nbsp;
+                            <NewTabLink url="https://caprover.com/docs/app-configuration.html#environment-variables">
+                                <InfoCircleOutlined />
+                            </NewTabLink>
+                        </h4>
+                    </Col>
+                    <Col>
+                        <h5>
+                            Bulk Edit&nbsp;{' '}
+                            <Switch
+                                onChange={(val) => {
+                                    self.setState({
+                                        envVarBulkEdit: val,
+                                        envVarBulkVals: '',
+                                    })
+                                }}
+                            />
+                        </h5>
+                    </Col>
                 </Row>
                 <div
                     className={

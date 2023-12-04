@@ -1,7 +1,6 @@
 import { PlusCircleOutlined, QuestionCircleFilled } from '@ant-design/icons'
-import { Button, Card, Checkbox, Col, Input, Row, Tooltip } from 'antd'
-import Search from 'antd/lib/input/Search'
-import React, { Component, Fragment } from 'react'
+import { Button, Card, Checkbox, Divider, Input, Row, Tooltip } from 'antd'
+import { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
@@ -41,75 +40,70 @@ class CreateNewApp extends Component<
                     </span>
                 }
             >
-                <Row justify="center">
-                    <Col lg={{ span: 12 }}>
-                        <Row>
-                            {self.props.isMobile ? (
-                                <Fragment>
-                                    <Input
-                                        placeholder="my-amazing-app"
-                                        onChange={(e) =>
-                                            self.setState({
-                                                appName: e.target.value,
-                                            })
-                                        }
-                                    />
-                                    <Button
-                                        style={{ marginTop: 8 }}
-                                        block
-                                        onClick={() =>
-                                            self.onCreateNewAppClicked()
-                                        }
-                                        type="primary"
-                                    >
-                                        Create New App
-                                    </Button>
-                                </Fragment>
-                            ) : (
-                                <Search
-                                    placeholder="my-amazing-app"
-                                    enterButton="Create New App"
-                                    onChange={(e) =>
-                                        self.setState({
-                                            appName: e.target.value,
-                                        })
-                                    }
-                                    onSearch={(value) =>
-                                        self.onCreateNewAppClicked()
-                                    }
-                                />
-                            )}
-                        </Row>
-                        <br />
-                        <Row justify={self.props.isMobile ? 'start' : 'end'}>
-                            <Checkbox
-                                onChange={(e: any) =>
+                <Row
+                    style={{
+                        marginBottom: 20,
+                    }}
+                >
+                    {self.props.isMobile ? (
+                        <Fragment>
+                            <Input
+                                placeholder="my-amazing-app"
+                                onChange={(e) =>
                                     self.setState({
-                                        hasPersistency: !!e.target.checked,
+                                        appName: e.target.value,
                                     })
                                 }
+                            />
+                            <Button
+                                style={{ marginTop: 8 }}
+                                block
+                                onClick={() => self.onCreateNewAppClicked()}
+                                type="primary"
                             >
-                                Has Persistent Data
-                            </Checkbox>
-                            &nbsp;&nbsp;
-                            <Tooltip title="Mostly used for databases, see docs for details.">
-                                <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
-                                    <span>
-                                        <QuestionCircleFilled />
-                                    </span>
-                                </NewTabLink>
-                            </Tooltip>
-                        </Row>
-                    </Col>
-                    <Col lg={{ span: 12 }}>
-                        <div style={{ textAlign: 'center' }}>
-                            <p>Or Select From</p>
-                            <Link to="/apps/oneclick/" className="ant-btn">
-                                One-Click Apps/Databases
-                            </Link>
-                        </div>
-                    </Col>
+                                Create New App
+                            </Button>
+                        </Fragment>
+                    ) : (
+                        <Input.Search
+                            placeholder="my-amazing-app"
+                            enterButton="Create New App"
+                            onChange={(e) =>
+                                self.setState({
+                                    appName: e.target.value,
+                                })
+                            }
+                            onSearch={() => self.onCreateNewAppClicked()}
+                        />
+                    )}
                 </Row>
+                <Row justify={self.props.isMobile ? 'start' : 'end'}>
+                    <Checkbox
+                        onChange={(e: any) =>
+                            self.setState({
+                                hasPersistency: !!e.target.checked,
+                            })
+                        }
+                    >
+                        Has Persistent Data
+                    </Checkbox>
+                    &nbsp;&nbsp;
+                    <Tooltip title="Mostly used for databases, see docs for details.">
+                        <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
+                            <span>
+                                <QuestionCircleFilled />
+                            </span>
+                        </NewTabLink>
+                    </Tooltip>
+                </Row>
+                <Divider type="horizontal" style={{ width: 100 }} />
+
+                <div style={{ textAlign: 'center' }}>
+                    <p style={{ marginTop: 0 }}>Or Select From</p>
+                    <Link to="/apps/oneclick/">
+                        <Button>One-Click Apps/Databases</Button>
+                    </Link>
+                </div>
             </Card>
         )
     }

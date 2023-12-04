@@ -82,7 +82,7 @@ export default class OtpSettings extends ApiComponent<
                 </Row>
                 <Modal
                     title="Enable OTP verification"
-                    visible={!!self.state.otpPath}
+                    open={!!self.state.otpPath}
                     onOk={() => {
                         if (!self.state.enteredToken) {
                             Toaster.toastInfo(

@@ -4,8 +4,7 @@ import {
     MenuFoldOutlined,
     UpCircleOutlined,
 } from '@ant-design/icons'
-import { Row, Tooltip } from 'antd'
-import React from 'react'
+import { Input, Row, Tooltip } from 'antd'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
 import ClickableLink from '../../../global/ClickableLink'
@@ -123,13 +122,20 @@ export default class AppLogsView extends ApiComponent<
 
     render() {
         const self = this
+
         return (
             <div>
                 <div style={{ height: 20 }} />
 
                 <div>
                     <div>
-                        <Row justify="space-between" align="middle">
+                        <Row
+                            justify="space-between"
+                            align="middle"
+                            style={{
+                                marginBottom: 10,
+                            }}
+                        >
                             <span>
                                 <Row justify="start" align="middle">
                                     <span>
@@ -138,7 +144,7 @@ export default class AppLogsView extends ApiComponent<
                                                 self.onExpandLogClicked()
                                             }}
                                         >
-                                            <h4 className="unselectable-span">
+                                            <span className="unselectable-span">
                                                 {this.state.expandedLogs ? (
                                                     <UpCircleOutlined />
                                                 ) : (
@@ -149,14 +155,13 @@ export default class AppLogsView extends ApiComponent<
                                                     ? 'View'
                                                     : 'Hide'}{' '}
                                                 App Logs
-                                            </h4>
+                                            </span>
                                         </ClickableLink>
                                     </span>
 
                                     <span
                                         style={{
                                             marginLeft: 20,
-                                            paddingBottom: 3,
                                         }}
                                     >
                                         <Tooltip title="View full application logs (not truncated)">
@@ -181,14 +186,14 @@ export default class AppLogsView extends ApiComponent<
                                         })
                                     }}
                                 >
-                                    <h4 className="unselectable-span">
+                                    <span className="unselectable-span">
                                         <MenuFoldOutlined />
                                         &nbsp;&nbsp;{' '}
                                         {this.state.isWrapped
-                                            ? "Don't"
-                                            : ''}{' '}
-                                        wrap logs &nbsp;&nbsp;
-                                    </h4>
+                                            ? "Don't wrap logs"
+                                            : 'Wrap logs'}
+                                        &nbsp;&nbsp;
+                                    </span>
                                 </ClickableLink>
                             </span>
                         </Row>
@@ -200,7 +205,7 @@ export default class AppLogsView extends ApiComponent<
                         }
                         style={{ padding: 5 }}
                     >
-                        <textarea
+                        <Input.TextArea
                             id="applogs-text-id"
                             className="logs-output"
                             style={{

@@ -1,5 +1,4 @@
 import { Button, Input, message, Row } from 'antd'
-import React from 'react'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'

@@ -1,6 +1,5 @@
 import { SyncOutlined } from '@ant-design/icons'
 import { Button, Input, Row } from 'antd'
-import React from 'react'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import ApiComponent from '../global/ApiComponent'

@@ -1,5 +1,5 @@
 import { LockOutlined } from '@ant-design/icons'
-import { Button, Card, Collapse, Input, Radio, Row } from 'antd'
+import { Button, Card, Collapse, Input, Layout, Radio, Row } from 'antd'
 import React, { ReactComponentElement } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import ApiManager from '../api/ApiManager'
@@ -67,15 +67,8 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
         if (ApiManager.isLoggedIn()) return <Redirect to="/" />
 
         return (
-            <div>
-                <div
-                    style={{
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
-                        transform: 'translate(-50%,-50%)',
-                    }}
-                >
+            <Layout className="full-screen">
+                <Row justify="center" align="middle" className="full-screen">
                     <Card title="CapRover Login" style={{ width: 380 }}>
                         <NormalLoginForm
                             onLoginRequested={(
@@ -89,8 +82,8 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
                             hasOtp={self.state.hasOtp}
                         />
                     </Card>
-                </div>
-            </div>
+                </Row>
+            </Layout>
         )
     }
 }

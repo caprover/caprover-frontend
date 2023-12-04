@@ -1,5 +1,5 @@
 import { Card, Col, Row } from 'antd'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
 import BackupCreator from './BackupCreator'

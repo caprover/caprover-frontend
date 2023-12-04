@@ -1,6 +1,5 @@
 import { DeleteOutlined, SyncOutlined } from '@ant-design/icons'
-import { Button, Col, Input, message, Row, Tooltip } from 'antd'
-import React from 'react'
+import { Button, Col, Input, Row, Tooltip, message } from 'antd'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'

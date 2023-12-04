@@ -1,7 +1,5 @@
 import { DeleteOutlined } from '@ant-design/icons'
-import { Button, Modal } from 'antd'
-import Search from 'antd/lib/input/Search'
-import React from 'react'
+import { Button, Input, Modal } from 'antd'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
@@ -120,7 +118,7 @@ export default class OneClickReposList extends ApiComponent<
             <div>
                 <h4>3rd party repositories:</h4>
                 <div style={{ maxWidth: 600, marginBottom: 30 }}>
-                    <Search
+                    <Input.Search
                         placeholder="https://oneclick-apps.your-3rd-party-domain.com"
                         enterButton="Connect New Repository"
                         onSearch={(value) =>

@@ -190,86 +190,76 @@ class PageRoot extends ApiComponent<
                         padding: `0 ${this.props.isMobile ? 15 : 50}px`,
                     }}
                 >
-                    <div>
-                        <Row>
-                            {this.props.isMobile && (
-                                <Col span={4}>
-                                    <Button
-                                        ghost
-                                        icon={<BarsOutlined />}
-                                        onClick={this.toggleSider}
+                    <Row>
+                        {this.props.isMobile && (
+                            <Col span={4}>
+                                <Button
+                                    ghost
+                                    icon={<BarsOutlined />}
+                                    onClick={this.toggleSider}
+                                />
+                            </Col>
+                        )}
+                        {(this.props.isMobile &&
+                            self.createUpdateAvailableIfNeeded()) || (
+                            <Col lg={{ span: 12 }} xs={{ span: 20 }}>
+                                <Row align="middle">
+                                    <img
+                                        alt="logo"
+                                        src="/icon-512x512.png"
+                                        style={{
+                                            height: 45,
+                                            marginRight: 10,
+                                        }}
                                     />
-                                </Col>
-                            )}
-                            {(this.props.isMobile &&
-                                self.createUpdateAvailableIfNeeded()) || (
-                                <Col lg={{ span: 12 }} xs={{ span: 20 }}>
-                                    <div>
-                                        <h3 style={{ color: '#fff' }}>
-                                            <img
-                                                alt="logo"
-                                                src="/icon-512x512.png"
-                                                style={{
-                                                    height: 45,
-                                                    marginRight: 10,
-                                                }}
-                                            />
-                                            CapRover
-                                            {self.createUpdateAvailableIfNeeded()}
-                                        </h3>
-                                    </div>
-                                </Col>
-                            )}
-                            {!self.props.isMobile && (
-                                <Col span={12}>
-                                    <Row justify="end">
-                                        <NewTabLink url="https://github.com/caprover/caprover">
-                                            <span style={{ marginRight: 20 }}>
-                                                GitHub
-                                            </span>
-                                        </NewTabLink>
+                                    <h3 style={{ color: '#fff', margin: 0 }}>
+                                        CapRover
+                                    </h3>
+                                    {self.createUpdateAvailableIfNeeded()}
+                                </Row>
+                            </Col>
+                        )}
+                        {!self.props.isMobile && (
+                            <Col span={12}>
+                                <Row justify="end">
+                                    <NewTabLink url="https://github.com/caprover/caprover">
+                                        <span style={{ marginRight: 20 }}>
+                                            GitHub
+                                        </span>
+                                    </NewTabLink>
 
-                                        <span
-                                            style={{
-                                                marginRight: 70,
+                                    <span
+                                        style={{
+                                            marginRight: 70,
+                                        }}
+                                    >
+                                        <NewTabLink url="https://caprover.com">
+                                            Docs
+                                        </NewTabLink>
+                                    </span>
+                                    <span
+                                        style={{
+                                            marginRight: 70,
+                                        }}
+                                    >
+                                        <DarkModeSwitch />
+                                    </span>
+                                    <span>
+                                        <Button
+                                            type="primary"
+                                            ghost
+                                            onClick={() => {
+                                                self.apiManager.setAuthToken('')
+                                                self.goToLogin()
                                             }}
                                         >
-                                            <NewTabLink url="https://caprover.com">
-                                                Docs
-                                            </NewTabLink>
-                                        </span>
-                                        <span
-                                            style={{
-                                                marginRight: 70,
-                                            }}
-                                        >
-                                            <DarkModeSwitch />
-                                        </span>
-                                        <span>
-                                            <span
-                                                style={{
-                                                    border: '1px solid #1b8ad3',
-                                                    borderRadius: 5,
-                                                    padding: 8,
-                                                }}
-                                            >
-                                                <ClickableLink
-                                                    onLinkClicked={() => {
-                                                        self.apiManager.setAuthToken(
-                                                            ''
-                                                        )
-                                                        self.goToLogin()
-                                                    }}
-                                                >
-                                                    Logout <LogoutOutlined />
-                                                </ClickableLink>
-                                            </span>
-                                        </span>
-                                    </Row>
-                                </Col>
-                            )}
-                        </Row>
-                    </div>
+                                            Logout <LogoutOutlined />
+                                        </Button>
+                                    </span>
+                                </Row>
+                            </Col>
+                        )}
+                    </Row>
                 </Header>
 
                 <Layout>
