@@ -1,3 +1,4 @@
+import { ConfigProvider } from 'antd'
 import { Component } from 'react'
 import {
     ThemeSwitcherProvider,
@@ -11,6 +12,7 @@ import Login from './containers/Login'
 import PageRoot from './containers/PageRoot'
 import reducers from './redux/reducers'
 import CrashReporter from './utils/CrashReporter'
+import { currentLanguageOption } from './utils/Language'
 import StorageHelper from './utils/StorageHelper'
 
 CrashReporter.getInstance().init()
@@ -61,9 +63,11 @@ class App extends Component<{}, AppState> {
                 defaultTheme={this.state.isDarkMode ? 'dark' : 'light'}
                 insertionPoint="styles-insertion-point"
             >
-                <Provider store={store}>
-                    <MainComponent />
-                </Provider>
+                <ConfigProvider locale={currentLanguageOption.antdLocale}>
+                    <Provider store={store}>
+                        <MainComponent />
+                    </Provider>
+                </ConfigProvider>
             </ThemeSwitcherProvider>
         )
     }
