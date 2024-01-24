@@ -3,7 +3,6 @@
     "login_form.login": "登录",
     "login_form.no_session_persistence": "不储存会话（最安全）",
     "login_form.password": "密码",
-    "login_form.placeholder": "密码",
     "login_form.remember_me": "记住我",
     "login_form.use_local_storage": "使用 LocalStorage 存储（最持久）",
     "login_form.use_session_storage": "使用 SessionStorage 存储"

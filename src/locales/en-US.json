@@ -3,7 +3,6 @@
     "login_form.login": "Login",
     "login_form.no_session_persistence": "No session persistence (Most Secure)",
     "login_form.password": "Password",
-    "login_form.placeholder": "Password",
     "login_form.remember_me": "Remember Me",
     "login_form.use_local_storage": "Use localStorage (Most Persistent)",
     "login_form.use_session_storage": "Use sessionStorage"
