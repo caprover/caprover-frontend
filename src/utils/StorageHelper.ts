@@ -12,6 +12,8 @@ const sessionStorage = window.sessionStorage
 const AUTH_KEY = 'CAPROVER_AUTH_KEY'
 const SIDER_COLLAPSED_STATE = 'CAPROVER_SIDER_COLLAPSED_STATE'
 const DARK_MODE = 'CAPROVER_DARK_MODE'
+const LANGUAGE = 'CAPROVER_LANGUAGE'
+
 class StorageHelper {
     getAuthKeyFromStorage() {
         const localStorageAuth = localStorage.getItem(AUTH_KEY)
@@ -58,6 +60,15 @@ class StorageHelper {
             ? JSON.parse(isDarkMode)
             : window.matchMedia &&
                   window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+
+    setLanguageInLocalStorage(language: string) {
+        localStorage.setItem(LANGUAGE, language)
+    }
+
+    getLanguageFromLocalStorage(): string {
+        const language = localStorage.getItem(LANGUAGE)
+        return language ? language : navigator.language
     }
 }
 

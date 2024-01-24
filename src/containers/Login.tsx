@@ -1,9 +1,14 @@
 import { LockOutlined } from '@ant-design/icons'
-import { Button, Card, Collapse, Input, Radio, Row } from 'antd'
+import { Button, Card, Collapse, Input, Radio, Row, Select } from 'antd'
 import React, { ReactComponentElement } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import ApiManager from '../api/ApiManager'
 import ErrorFactory from '../utils/ErrorFactory'
+import {
+    currentLanguageOption,
+    languagesOptions,
+    localize,
+} from '../utils/Language'
 import StorageHelper from '../utils/StorageHelper'
 import Toaster from '../utils/Toaster'
 import Utils from '../utils/Utils'
@@ -76,7 +81,25 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
                         transform: 'translate(-50%,-50%)',
                     }}
                 >
-                    <Card title="CapRover Login" style={{ width: 380 }}>
+                    <Card
+                        title={localize(
+                            'login_form.cap_rover',
+                            'CapRover Login'
+                        )}
+                        style={{ width: 380 }}
+                        extra={
+                            <Select
+                                options={languagesOptions}
+                                value={currentLanguageOption.value}
+                                onChange={(value) => {
+                                    StorageHelper.setLanguageInLocalStorage(
+                                        value
+                                    )
+                                    window.location.reload()
+                                }}
+                            />
+                        }
+                    >
                         <NormalLoginForm
                             onLoginRequested={(
                                 password: string,
@@ -154,7 +177,7 @@ class NormalLoginForm extends React.Component<
                     onChange={(e) => {
                         self.setState({ passwordEntered: `${e.target.value}` })
                     }}
-                    placeholder="Password"
+                    placeholder={localize('login_form.password', 'Password')}
                     autoFocus
                 />
                 {self.props.hasOtp ? (
@@ -193,12 +216,18 @@ class NormalLoginForm extends React.Component<
                             htmlType="submit"
                             className="login-form-button"
                         >
-                            Login
+                            {localize('login_form.login', 'Login')}
                         </Button>
                     </Row>
                 </div>
                 <Collapse>
-                    <Collapse.Panel header="Remember Me" key="1">
+                    <Collapse.Panel
+                        header={localize(
+                            'login_form.remember_me',
+                            'Remember Me'
+                        )}
+                        key="1"
+                    >
                         <Radio.Group
                             onChange={(e) => {
                                 console.log(e.target.value)
@@ -209,13 +238,22 @@ class NormalLoginForm extends React.Component<
                             value={self.state.loginOption}
                         >
                             <Radio style={radioStyle} value={NO_SESSION}>
-                                No session persistence (Most Secure)
+                                {localize(
+                                    'login_form.no_session_persistence',
+                                    'No session persistence (Most Secure)'
+                                )}
                             </Radio>
                             <Radio style={radioStyle} value={SESSION_STORAGE}>
-                                Use sessionStorage
+                                {localize(
+                                    'login_form.use_session_storage',
+                                    'Use sessionStorage'
+                                )}
                             </Radio>
                             <Radio style={radioStyle} value={LOCAL_STORAGE}>
-                                Use localStorage (Most Persistent)
+                                {localize(
+                                    'login_form.use_local_storage',
+                                    'Use localStorage (Most Persistent)'
+                                )}
                             </Radio>
                         </Radio.Group>
                     </Collapse.Panel>
