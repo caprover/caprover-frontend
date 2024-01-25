@@ -18,6 +18,7 @@ import { Route, RouteComponentProps, Switch } from 'react-router'
 import ApiManager from '../api/ApiManager'
 import { IVersionInfo } from '../models/IVersionInfo'
 import * as GlobalActions from '../redux/actions/GlobalActions'
+import { localize } from '../utils/Language'
 import StorageHelper from '../utils/StorageHelper'
 import Dashboard from './Dashboard'
 import LoggedInCatchAll from './LoggedInCatchAll'
@@ -38,27 +39,27 @@ const { Header, Content, Sider } = Layout
 const MENU_ITEMS: MenuProps['items'] = [
     {
         key: 'dashboard',
-        label: 'Dashboard',
+        label: localize('menu_item.dashboard', 'Dashboard'),
         icon: <LaptopOutlined />,
     },
     {
         key: 'apps',
-        label: 'Apps',
+        label: localize('menu_item.app', 'App'),
         icon: <CodeOutlined />,
     },
     {
         key: 'monitoring',
-        label: 'Monitoring',
+        label: localize('menu_item.monitoring', 'Monitoring'),
         icon: <DashboardOutlined />,
     },
     {
         key: 'cluster',
-        label: 'Cluster',
+        label: localize('menu_item.cluster', 'Cluster'),
         icon: <ClusterOutlined />,
     },
     {
         key: 'settings',
-        label: 'Settings',
+        label: localize('menu_item.settings', 'Settings'),
         icon: <SettingOutlined />,
     },
 ]

@@ -1,10 +1,11 @@
 import { PlusCircleOutlined, QuestionCircleFilled } from '@ant-design/icons'
 import { Button, Card, Checkbox, Col, Input, Row, Tooltip } from 'antd'
 import Search from 'antd/lib/input/Search'
-import React, { Component, Fragment } from 'react'
+import { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
+import { localize } from '../../utils/Language'
 import NewTabLink from '../global/NewTabLink'
 
 interface MyProps {
@@ -37,7 +38,8 @@ class CreateNewApp extends Component<
                 title={
                     <span>
                         <PlusCircleOutlined />
-                        &nbsp;&nbsp;&nbsp;Create A New App
+                        &nbsp;&nbsp;&nbsp;{' '}
+                        {localize('create_new_app.title', 'Create A New App')}
                     </span>
                 }
             >
@@ -47,7 +49,10 @@ class CreateNewApp extends Component<
                             {self.props.isMobile ? (
                                 <Fragment>
                                     <Input
-                                        placeholder="my-amazing-app"
+                                        placeholder={localize(
+                                            'create_new_app.placeholder',
+                                            'my-amazing-app'
+                                        )}
                                         onChange={(e) =>
                                             self.setState({
                                                 appName: e.target.value,
@@ -62,13 +67,22 @@ class CreateNewApp extends Component<
                                         }
                                         type="primary"
                                     >
-                                        Create New App
+                                        {localize(
+                                            'create_new_app.button',
+                                            'Create New App'
+                                        )}
                                     </Button>
                                 </Fragment>
                             ) : (
                                 <Search
-                                    placeholder="my-amazing-app"
-                                    enterButton="Create New App"
+                                    placeholder={localize(
+                                        'create_new_app.placeholder',
+                                        'my-amazing-app'
+                                    )}
+                                    enterButton={localize(
+                                        'create_new_app.button',
+                                        'Create New App'
+                                    )}
                                     onChange={(e) =>
                                         self.setState({
                                             appName: e.target.value,
@@ -89,23 +103,39 @@ class CreateNewApp extends Component<
                                     })
                                 }
                             >
-                                Has Persistent Data
+                                {localize(
+                                    'create_new_app.has_persistent_data',
+                                    'Has Persistent Data'
+                                )}
                             </Checkbox>
                             &nbsp;&nbsp;
-                            <Tooltip title="Mostly used for databases, see docs for details.">
-                                <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
+                            <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
+                                <Tooltip
+                                    title={localize(
+                                        'create_new_app.has_persistent_data_tooltip',
+                                        'Mostly used for databases, see docs for details.'
+                                    )}
+                                >
                                     <span>
                                         <QuestionCircleFilled />
                                     </span>
-                                </NewTabLink>
-                            </Tooltip>
+                                </Tooltip>
+                            </NewTabLink>
                         </Row>
                     </Col>
                     <Col lg={{ span: 12 }}>
                         <div style={{ textAlign: 'center' }}>
-                            <p>Or Select From</p>
+                            <p>
+                                {localize(
+                                    'create_new_app.or_select_from',
+                                    'Or Select From'
+                                )}
+                            </p>
                             <Link to="/apps/oneclick/" className="ant-btn">
-                                One-Click Apps/Databases
+                                {localize(
+                                    'create_new_app.one_click_apps',
+                                    'One-Click Apps/Databases'
+                                )}
                             </Link>
                         </div>
                     </Col>

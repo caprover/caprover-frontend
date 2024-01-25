@@ -1,5 +1,4 @@
 import { Button, Card, Col, Input, Modal, Row, Tooltip } from 'antd'
-import React from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import AppConstants from '../utils/AppConstants'
 import Toaster from '../utils/Toaster'
