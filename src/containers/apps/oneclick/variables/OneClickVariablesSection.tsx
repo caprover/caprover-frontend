@@ -1,5 +1,5 @@
 import { Alert, Button, Col, Input, message, Row } from 'antd'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import { IHashMapGeneric } from '../../../../models/IHashMapGeneric'
