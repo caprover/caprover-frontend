@@ -46,7 +46,7 @@ export default class PasswordField extends Component<
         const self = this
         return (
             <Input
-                type="text"
+                type="password"
                 spellCheck={false}
                 autoCorrect="off"
                 autoComplete="off"
