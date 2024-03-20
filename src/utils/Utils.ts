@@ -91,18 +91,10 @@ export default {
     },
 
     createRandomStringBase64(byteLength: number) {
-        let result = ''
-        const characters =
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
         const bytes = new Uint8Array(byteLength)
         window.crypto.getRandomValues(bytes)
-        for (let i = 0; i < byteLength; i++) {
-            result += characters[bytes[i] % 64]
-        }
-        if (byteLength % 3 !== 0) {
-            result += '='.repeat(3 - (byteLength % 3))
-        }
-        return result
+        const base64 = btoa(String.fromCharCode.apply(null, bytes))
+        return base64
     },
 
     replaceAllGenRandomForOneClickApp(inputString: string) {
