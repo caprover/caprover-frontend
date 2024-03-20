@@ -79,28 +79,32 @@ export default {
 
     createRandomStringAlnum(length: number) {
         let result = ''
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+        const characters =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
         const charactersLength = characters.length
         for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength))
+            result += characters.charAt(
+                Math.floor(Math.random() * charactersLength)
+            )
         }
         return result
     },
 
     createRandomStringBase64(byteLength: number) {
         let result = ''
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+        const characters =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
         const bytes = new Uint8Array(byteLength)
         window.crypto.getRandomValues(bytes)
         for (let i = 0; i < byteLength; i++) {
             result += characters[bytes[i] % 64]
         }
         if (byteLength % 3 !== 0) {
-            result += '='.repeat(3 - byteLength % 3)
+            result += '='.repeat(3 - (byteLength % 3))
         }
         return result
     },
-    
+
     replaceAllGenRandomForOneClickApp(inputString: string) {
         const replacer = (match: string, p1: string, p2: string) => {
             const length = Number(p2)
@@ -118,12 +122,12 @@ export default {
                     return match
             }
         }
-    
+
         inputString = inputString.replace(
             /\$\$cap_gen_random_(hex|base64|alnum|alnum_mixed)\((\d+)\)/g,
             replacer
         )
-    
+
         return inputString
     },
 

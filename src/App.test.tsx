@@ -92,4 +92,3 @@ it('generate 16 chars in alnum', () => {
     expect(output.length).toBe(16)
     expect(/^[0-9a-zA-Z]+$/.test(output)).toBe(true)
 })
-
