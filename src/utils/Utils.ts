@@ -115,7 +115,7 @@ export default {
         }
 
         inputString = inputString.replace(
-            /\$\$cap_gen_random_(hex|base64|alnum|alnum_mixed)\((\d+)\)/g,
+            /\$\$cap_gen_random_(hex|base64|alnum)\((\d+)\)/g,
             replacer
         )
 
