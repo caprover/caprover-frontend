@@ -91,8 +91,10 @@ export default {
     },
 
     createRandomStringBase64(byteLength: number) {
-        const bytes = new Uint8Array(byteLength)
-        window.crypto.getRandomValues(bytes)
+        let bytes = new Uint8Array(byteLength)
+        for (let i = 0; i < byteLength; i++) {
+            bytes[i] = Math.floor(Math.random() * 256)
+        }
         return btoa(String.fromCharCode.apply(undefined, Array.from(bytes)))
     },
 
