@@ -67,13 +67,26 @@ export default {
 
     createRandomStringHex(length: number) {
         let result = ''
-        const characters = '0123456789abcdef'
-        const charactersLength = characters.length
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(
-                Math.floor(Math.random() * charactersLength)
+
+        try {
+            const randomBytes = new Uint8Array(Math.ceil(length / 2))
+            window.crypto.getRandomValues(randomBytes)
+            result = Array.from(randomBytes, (byte) =>
+                byte.toString(16).padStart(2, '0')
             )
+                .join('')
+                .slice(0, length)
+        } catch (e) {
+            // Fallback to Math.random()
+            const characters = '0123456789abcdef'
+            const charactersLength = characters.length
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(
+                    Math.floor(Math.random() * charactersLength)
+                )
+            }
         }
+
         return result
     },
 
@@ -82,11 +95,22 @@ export default {
         const characters =
             'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
         const charactersLength = characters.length
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(
-                Math.floor(Math.random() * charactersLength)
-            )
+
+        try {
+            const randomBytes = new Uint8Array(length)
+            window.crypto.getRandomValues(randomBytes)
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(randomBytes[i] % charactersLength)
+            }
+        } catch (e) {
+            // Fallback to Math.random() for tests
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(
+                    Math.floor(Math.random() * charactersLength)
+                )
+            }
         }
+
         return result
     },
 
@@ -95,6 +119,7 @@ export default {
         try {
             window.crypto.getRandomValues(bytes)
         } catch (error) {
+            // Fallback to Math.random() for tests
             for (let i = 0; i < byteLength; i++) {
                 bytes[i] = Math.floor(Math.random() * 256)
             }
