@@ -93,8 +93,7 @@ export default {
     createRandomStringBase64(byteLength: number) {
         const bytes = new Uint8Array(byteLength)
         window.crypto.getRandomValues(bytes)
-        const base64 = btoa(String.fromCharCode.apply(null, bytes))
-        return base64
+        return btoa(String.fromCharCode.apply(null, Array.from(bytes)))
     },
 
     replaceAllGenRandomForOneClickApp(inputString: string) {
