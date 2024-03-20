@@ -67,34 +67,88 @@ export default {
 
     createRandomStringHex(length: number) {
         let result = ''
-        const characters = '0123456789abcdef'
-        const charactersLength = characters.length
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(
-                Math.floor(Math.random() * charactersLength)
+
+        try {
+            const randomBytes = new Uint8Array(Math.ceil(length / 2))
+            window.crypto.getRandomValues(randomBytes)
+            result = Array.from(randomBytes, (byte) =>
+                byte.toString(16).padStart(2, '0')
             )
-        }
-        return result
-    },
-
-    replaceAllGenRandomForOneClickApp(inputString: string) {
-        let matches
-
-        while (
-            (matches = /\$\$cap_gen_random_hex\((\d+)\)/g.exec(inputString)) &&
-            matches.length === 2
-        ) {
-            const hexLength = Number(matches[1])
-            if (hexLength > 256) {
-                // capping out the maximum length to avoid unintentional problems
-                inputString = inputString.replace(matches[0], '')
-            } else {
-                inputString = inputString.replace(
-                    matches[0],
-                    `${this.createRandomStringHex(hexLength)}`
+                .join('')
+                .slice(0, length)
+        } catch (e) {
+            // Fallback to Math.random()
+            const characters = '0123456789abcdef'
+            const charactersLength = characters.length
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(
+                    Math.floor(Math.random() * charactersLength)
                 )
             }
         }
+
+        return result
+    },
+
+    createRandomStringAlnum(length: number) {
+        let result = ''
+        const characters =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+        const charactersLength = characters.length
+
+        try {
+            const randomBytes = new Uint8Array(length)
+            window.crypto.getRandomValues(randomBytes)
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(randomBytes[i] % charactersLength)
+            }
+        } catch (e) {
+            // Fallback to Math.random() for tests
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(
+                    Math.floor(Math.random() * charactersLength)
+                )
+            }
+        }
+
+        return result
+    },
+
+    createRandomStringBase64(byteLength: number) {
+        const bytes = new Uint8Array(byteLength)
+        try {
+            window.crypto.getRandomValues(bytes)
+        } catch (error) {
+            // Fallback to Math.random() for tests
+            for (let i = 0; i < byteLength; i++) {
+                bytes[i] = Math.floor(Math.random() * 256)
+            }
+        }
+        return btoa(String.fromCharCode.apply(undefined, Array.from(bytes)))
+    },
+
+    replaceAllGenRandomForOneClickApp(inputString: string) {
+        const replacer = (match: string, p1: string, p2: string) => {
+            const length = Number(p2)
+            if (length > 256) {
+                return ''
+            }
+            switch (p1) {
+                case 'hex':
+                    return this.createRandomStringHex(length)
+                case 'base64':
+                    return this.createRandomStringBase64(length)
+                case 'alnum':
+                    return this.createRandomStringAlnum(length)
+                default:
+                    return match
+            }
+        }
+
+        inputString = inputString.replace(
+            /\$\$cap_gen_random_(hex|base64|alnum)\((\d+)\)/g,
+            replacer
+        )
 
         return inputString
     },

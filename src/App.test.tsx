@@ -57,3 +57,38 @@ it('generate randomly', () => {
         .replace('______$$cap_gen___random_hex(23552)____', '')
     expect(output_1 !== output_2).toBeTruthy()
 })
+
+it('generate one byte in base64', () => {
+    const inputStr = `start_____$$cap_gen_random_base64(1)______$$cap_gen___random_hex(23552)____`
+    const output = Utils.replaceAllGenRandomForOneClickApp(inputStr)
+        .replace('start_____', '')
+        .replace('______$$cap_gen___random_hex(23552)____', '')
+    expect(output.length).toBe(4)
+    expect(/^[0-9a-zA-Z+/=]+$/.test(output)).toBe(true)
+})
+
+it('generate 16 bytes in base64', () => {
+    const inputStr = `start_____$$cap_gen_random_base64(16)______$$cap_gen___random_hex(23552)____`
+    const output = Utils.replaceAllGenRandomForOneClickApp(inputStr)
+        .replace('start_____', '')
+        .replace('______$$cap_gen___random_hex(23552)____', '')
+    expect(output.length).toBe(24)
+    expect(/^[0-9a-zA-Z+/=]+$/.test(output)).toBe(true)
+})
+
+it('does not generate more than 256 bytes in base64', () => {
+    const inputStr = `start_____$$cap_gen_random_base64(257)______$$cap_gen___random_hex(23552)____`
+    const output = Utils.replaceAllGenRandomForOneClickApp(inputStr)
+        .replace('start_____', '')
+        .replace('______$$cap_gen___random_hex(23552)____', '')
+    expect(output.length).toBe(0)
+})
+
+it('generate 16 chars in alnum', () => {
+    const inputStr = `start_____$$cap_gen_random_alnum(16)______$$cap_gen___random_hex(23552)____`
+    const output = Utils.replaceAllGenRandomForOneClickApp(inputStr)
+        .replace('start_____', '')
+        .replace('______$$cap_gen___random_hex(23552)____', '')
+    expect(output.length).toBe(16)
+    expect(/^[0-9a-zA-Z]+$/.test(output)).toBe(true)
+})
