@@ -10,6 +10,7 @@ import DarkModeContext from './contexts/DarkModeContext'
 import reducers from './redux/reducers'
 import './styles/style.css'
 import CrashReporter from './utils/CrashReporter'
+import { currentLanguageOption } from './utils/Language'
 import StorageHelper from './utils/StorageHelper'
 
 CrashReporter.getInstance().init()
@@ -48,7 +49,7 @@ function App() {
                         'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
                 },
             }}
-        >
+         locale={currentLanguageOption.antdLocale}>
             <DarkModeContext.Provider
                 value={{
                     isDarkMode,
@@ -64,6 +65,7 @@ function App() {
             </DarkModeContext.Provider>
         </ConfigProvider>
     )
+
 }
 
 export default App

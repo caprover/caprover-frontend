@@ -25,7 +25,8 @@ export default class OneClickAppDeploymentHelper {
 
     createConfigurationPromise(
         appName: string,
-        dockerComposeService: IDockerComposeService
+        dockerComposeService: IDockerComposeService,
+        capAppName: string
     ) {
         const self = this
         return Promise.resolve().then(function () {
@@ -48,6 +49,11 @@ export default class OneClickAppDeploymentHelper {
                     }
 
                     appDef.volumes = appDef.volumes || []
+                    appDef.tags = [
+                        {
+                            tagName: capAppName,
+                        },
+                    ]
 
                     const vols = dockerComposeService.volumes || []
                     for (let i = 0; i < vols.length; i++) {

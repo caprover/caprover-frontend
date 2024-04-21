@@ -12,6 +12,7 @@ import { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
+import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
@@ -45,7 +46,7 @@ class AppsTable extends Component<
         const ALIGN: 'center' = 'center'
         const columns: ColumnProps<TableData>[] = [
             {
-                title: 'App Name',
+                title: localize('apps_table.app_name', 'App Name'),
                 dataIndex: 'appName',
                 key: 'appName',
                 render: (appName: string) => (
@@ -59,7 +60,10 @@ class AppsTable extends Component<
                 sortDirections: ['descend', 'ascend'],
             },
             {
-                title: 'Persistent Data	',
+                title: localize(
+                    'apps_table.persistent_data',
+                    'Persistent Data'
+                ),
                 dataIndex: 'hasPersistentData',
                 key: 'hasPersistentData',
                 align: ALIGN,
@@ -76,13 +80,13 @@ class AppsTable extends Component<
                 },
             },
             {
-                title: 'Instance Count',
+                title: localize('apps_table.instance_count', 'Instance Count'),
                 dataIndex: 'instanceCount',
                 key: 'instanceCount',
                 align: ALIGN,
             },
             {
-                title: 'Tags',
+                title: localize('apps_table.tags', 'Tags'),
                 dataIndex: 'tags',
                 key: 'tags',
                 align: ALIGN,
@@ -117,7 +121,7 @@ class AppsTable extends Component<
                 },
             },
             {
-                title: 'Last Deployed',
+                title: localize('apps_table.last_deployed', 'Last Deployed'),
                 dataIndex: 'lastDeployTime',
                 key: 'lastDeployTime',
                 align: ALIGN,
@@ -149,14 +153,19 @@ class AppsTable extends Component<
                 },
             },
             {
-                title: 'Open',
+                title: localize('apps_table.open', 'Open'),
                 dataIndex: 'notExposeAsWebApp',
                 key: 'openInBrowser',
                 align: ALIGN,
                 render: (notExposeAsWebApp: boolean, app) => {
                     if (notExposeAsWebApp) {
                         return (
-                            <Tooltip title="Not exposed as a web app">
+                            <Tooltip
+                                title={localize(
+                                    'apps_table.not_exposed_tooltip',
+                                    'Not exposed as a web app'
+                                )}
+                            >
                                 <DisconnectOutlined />
                             </Tooltip>
                         )
@@ -239,7 +248,10 @@ class AppsTable extends Component<
 
         const searchAppInput = (
             <Input
-                placeholder="Search by Name"
+                placeholder={localize(
+                    'apps_table.search_input_placeholder',
+                    'Search by Name'
+                )}
                 type="text"
                 value={self.state.searchTerm}
                 defaultValue={self.state.searchTerm}
@@ -265,8 +277,10 @@ class AppsTable extends Component<
                     >
                         <div>
                             <CodeOutlined />
-                            &nbsp;&nbsp;&nbsp;Your Apps
+                            &nbsp;&nbsp;&nbsp;
+                            {localize('apps_table.title', 'Your Apps')}
                         </div>
+
 
                         {self.props.isMobile && (
                             <div style={{ marginTop: 8 }}>{searchAppInput}</div>

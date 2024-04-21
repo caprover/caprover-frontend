@@ -34,7 +34,8 @@
         "test": "craco test",
         "test:e2e--open": "cypress open",
         "test:e2e": "cypress run",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "generate-locales": "node scripts/generate-locales.mjs"
     },
     "eslintConfig": {
         "extends": [
