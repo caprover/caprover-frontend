@@ -8,7 +8,7 @@ import {
 import { Card, Input, Row, Table, Tag, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
-import React, { Component, Fragment } from 'react'
+import { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
@@ -269,17 +269,22 @@ class AppsTable extends Component<
             <Card
                 extra={!self.props.isMobile && searchAppInput}
                 title={
-                    <React.Fragment>
-                        <span>
+                    <div
+                        style={{
+                            paddingTop: 18,
+                            paddingBottom: 18,
+                        }}
+                    >
+                        <div>
                             <CodeOutlined />
                             &nbsp;&nbsp;&nbsp;
                             {localize('apps_table.title', 'Your Apps')}
-                        </span>
-                        <br />
+                        </div>
+
                         {self.props.isMobile && (
                             <div style={{ marginTop: 8 }}>{searchAppInput}</div>
                         )}
-                    </React.Fragment>
+                    </div>
                 }
             >
                 <Row justify="center">

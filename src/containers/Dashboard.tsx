@@ -492,7 +492,7 @@ export default class Dashboard extends ApiComponent<
                             <Row justify="end">
                                 <Button
                                     disabled={this.state.isForceChangingDomain}
-                                    type="ghost"
+                                    ghost
                                     onClick={() => {
                                         self.setState({
                                             isForceChangingDomain: true,

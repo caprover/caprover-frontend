@@ -1,3 +1,4 @@
+import { Col, Row } from 'antd'
 import { RouteComponentProps } from 'react-router'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
@@ -73,24 +74,40 @@ export default class Apps extends ApiComponent<
                     maxWidth: 1000,
                 }}
             >
-                <CreateNewApp
-                    onCreateNewAppClicked={(
-                        appName: string,
-                        hasPersistency: boolean
-                    ) => {
-                        self.onCreateNewAppClicked(appName, hasPersistency)
-                    }}
-                />
-                {apiData.appDefinitions.length > 0 ? (
-                    <AppsTable
-                        search={self.props.location.search}
-                        history={self.props.history}
-                        defaultNginxConfig={apiData.defaultNginxConfig}
-                        apps={apiData.appDefinitions}
-                        rootDomain={apiData.rootDomain}
-                    />
-                ) : (
-                    <div />
+                <Row justify="center">
+                    <Col
+                        xs={{
+                            span: 24,
+                        }}
+                        lg={{
+                            span: 13,
+                        }}
+                    >
+                        <CreateNewApp
+                            onCreateNewAppClicked={(
+                                appName: string,
+                                hasPersistency: boolean
+                            ) => {
+                                self.onCreateNewAppClicked(
+                                    appName,
+                                    hasPersistency
+                                )
+                            }}
+                        />
+                    </Col>
+                </Row>
+                {apiData.appDefinitions.length > 0 && (
+                    <Row justify="center">
+                        <Col xs={{ span: 24 }} lg={{ span: 20 }}>
+                            <AppsTable
+                                search={self.props.location.search}
+                                history={self.props.history}
+                                defaultNginxConfig={apiData.defaultNginxConfig}
+                                apps={apiData.appDefinitions}
+                                rootDomain={apiData.rootDomain}
+                            />
+                        </Col>
+                    </Row>
                 )}
             </div>
         )

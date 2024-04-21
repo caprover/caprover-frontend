@@ -3,8 +3,7 @@ import {
     LoadingOutlined,
     UpCircleOutlined,
 } from '@ant-design/icons'
-import { Alert, Row, Spin } from 'antd'
-import React from 'react'
+import { Alert, Input, Row, Spin } from 'antd'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
@@ -168,7 +167,7 @@ export default class BuildLogsView extends ApiComponent<
                                 self.onExpandLogClicked()
                             }}
                         >
-                            <h4 className="unselectable-span">
+                            <span className="unselectable-span">
                                 {this.state.expandedLogs ? (
                                     <UpCircleOutlined />
                                 ) : (
@@ -179,7 +178,7 @@ export default class BuildLogsView extends ApiComponent<
                                     ? 'View'
                                     : 'Hide'}{' '}
                                 Build Logs
-                            </h4>
+                            </span>
                         </ClickableLink>
                     </div>
 
@@ -191,7 +190,7 @@ export default class BuildLogsView extends ApiComponent<
                         }
                         style={{ padding: 5 }}
                     >
-                        <textarea
+                        <Input.TextArea
                             id="buildlog-text-id"
                             className="logs-output"
                             style={{

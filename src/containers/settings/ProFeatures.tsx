@@ -130,7 +130,6 @@ export default class ProFeatures extends ApiComponent<
                             <li>{it.trim()}</li>
                         ))}
                 </ul>
-
                 <Carousel autoplay>
                     <div>
                         <h3 style={contentStyle}>
@@ -173,10 +172,9 @@ export default class ProFeatures extends ApiComponent<
                         </NewTabLink>
                     </Row>
                 </p>
-
                 <Modal
                     title="Enter API Key"
-                    visible={self.state.apiKeyModalVisible}
+                    open={self.state.apiKeyModalVisible}
                     okText="Connect API Key"
                     onOk={() => {
                         self.setState({ apiKeyConnecting: true })

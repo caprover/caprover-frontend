@@ -1,6 +1,5 @@
 import { CloudDownloadOutlined } from '@ant-design/icons'
 import { Alert, Button, Row } from 'antd'
-import React from 'react'
 import { IVersionInfo } from '../../models/IVersionInfo'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'

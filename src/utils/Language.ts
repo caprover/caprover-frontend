@@ -1,4 +1,4 @@
-import { Locale } from 'antd/es/locale-provider'
+import { Locale } from 'antd/es/locale'
 import enUS from 'antd/es/locale/en_US'
 import zhCN from 'antd/es/locale/zh_CN'
 import enUSMessages from '../locales/en-US.json'

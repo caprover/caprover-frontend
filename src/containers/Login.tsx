@@ -1,5 +1,5 @@
 import { LockOutlined } from '@ant-design/icons'
-import { Button, Card, Collapse, Input, Radio, Row, Select } from 'antd'
+import { Button, Card, Collapse, Input, Radio, Row, Layout, Select } from 'antd'
 import React, { ReactComponentElement } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import ApiManager from '../api/ApiManager'
@@ -72,15 +72,8 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
         if (ApiManager.isLoggedIn()) return <Redirect to="/" />
 
         return (
-            <div>
-                <div
-                    style={{
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
-                        transform: 'translate(-50%,-50%)',
-                    }}
-                >
+            <Layout className="full-screen">
+                <Row justify="center" align="middle" className="full-screen">
                     <Card
                         title={localize(
                             'login_form.cap_rover',
@@ -112,8 +105,8 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
                             hasOtp={self.state.hasOtp}
                         />
                     </Card>
-                </div>
-            </div>
+                </Row>
+            </Layout>
         )
     }
 }

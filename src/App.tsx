@@ -1,16 +1,14 @@
-import { ConfigProvider } from 'antd'
-import { Component } from 'react'
-import {
-    ThemeSwitcherProvider,
-    useThemeSwitcher,
-} from 'react-css-theme-switcher'
+import { App as AntdApp, ConfigProvider, theme } from 'antd'
+import { useState } from 'react'
 import { Provider } from 'react-redux'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import { applyMiddleware, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import Login from './containers/Login'
 import PageRoot from './containers/PageRoot'
+import DarkModeContext from './contexts/DarkModeContext'
 import reducers from './redux/reducers'
+import './styles/style.css'
 import CrashReporter from './utils/CrashReporter'
 import { currentLanguageOption } from './utils/Language'
 import StorageHelper from './utils/StorageHelper'
@@ -19,58 +17,55 @@ CrashReporter.getInstance().init()
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
 const store = createStoreWithMiddleware(reducers)
-type AppState = {
-    isDarkMode: boolean
-}
-
-const themes = {
-    dark: `dark-theme.css`,
-    light: `light-theme.css`,
-}
 
 const MainComponent = () => {
-    const { status } = useThemeSwitcher()
-
-    if (status === 'loading') {
-        // Just an empty div until styles load
-        return <div></div>
-    }
-
     return (
-        <div className="full-screen">
+        <AntdApp className="full-screen">
             <HashRouter>
                 <Switch>
                     <Route path="/login/" component={Login} />
                     <Route path="/" component={PageRoot} />
                 </Switch>
             </HashRouter>
-        </div>
+        </AntdApp>
     )
 }
 
-class App extends Component<{}, AppState> {
-    constructor(props: any) {
-        super(props)
-        this.state = {
-            isDarkMode: StorageHelper.getDarkModeFromLocalStorage(),
-        }
-    }
+function App() {
+    const { defaultAlgorithm, darkAlgorithm } = theme
+    const [isDarkMode, setIsDarkMode] = useState(
+        StorageHelper.getDarkModeFromLocalStorage()
+    )
 
-    render() {
-        return (
-            <ThemeSwitcherProvider
-                themeMap={themes}
-                defaultTheme={this.state.isDarkMode ? 'dark' : 'light'}
-                insertionPoint="styles-insertion-point"
+    return (
+        <ConfigProvider
+            theme={{
+                algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
+                token: {
+                    colorPrimary: '#1b8ad3',
+                    colorLink: '#1b8ad3',
+                    fontFamily: `QuickSand, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                        'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+                        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
+                },
+            }}
+            locale={currentLanguageOption.antdLocale}
+        >
+            <DarkModeContext.Provider
+                value={{
+                    isDarkMode,
+                    setIsDarkMode: (value) => {
+                        setIsDarkMode(value)
+                        StorageHelper.setDarkModeInLocalStorage(value)
+                    },
+                }}
             >
-                <ConfigProvider locale={currentLanguageOption.antdLocale}>
-                    <Provider store={store}>
-                        <MainComponent />
-                    </Provider>
-                </ConfigProvider>
-            </ThemeSwitcherProvider>
-        )
-    }
+                <Provider store={store}>
+                    <MainComponent />
+                </Provider>
+            </DarkModeContext.Provider>
+        </ConfigProvider>
+    )
 }
 
 export default App
