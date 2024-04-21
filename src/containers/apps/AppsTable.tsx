@@ -281,7 +281,6 @@ class AppsTable extends Component<
                             {localize('apps_table.title', 'Your Apps')}
                         </div>
 
-
                         {self.props.isMobile && (
                             <div style={{ marginTop: 8 }}>{searchAppInput}</div>
                         )}

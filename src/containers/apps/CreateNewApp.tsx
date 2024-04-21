@@ -42,62 +42,57 @@ class CreateNewApp extends Component<
                     </span>
                 }
             >
-
                 <Row
                     style={{
                         marginBottom: 20,
                     }}
                 >
-                            {self.props.isMobile ? (
-                                <Fragment>
-                                    <Input
-                                        placeholder={localize(
-                                            'create_new_app.placeholder',
-                                            'my-amazing-app'
-                                        )}
-                                        onChange={(e) =>
-                                            self.setState({
-                                                appName: e.target.value,
-                                            })
-                                        }
-                                    />
-                                    <Button
-                                        style={{ marginTop: 8 }}
-                                        block
-                                        onClick={() =>
-                                            self.onCreateNewAppClicked()
-                                        }
-                                        type="primary"
-                                    >
-                                        {localize(
-                                            'create_new_app.button',
-                                            'Create New App'
-                                        )}
-                                    </Button>
-                                </Fragment>
-                            ) : (
-                                <Input.Search
-                                    placeholder={localize(
-                                        'create_new_app.placeholder',
-                                        'my-amazing-app'
-                                    )}
-                                    enterButton={localize(
-                                        'create_new_app.button',
-                                        'Create New App'
-                                    )}
-                                    onChange={(e) =>
-                                        self.setState({
-                                            appName: e.target.value,
-                                        })
-                                    }
-                                    onSearch={(value) =>
-                                        self.onCreateNewAppClicked()
-                                    }
-                                />
+                    {self.props.isMobile ? (
+                        <Fragment>
+                            <Input
+                                placeholder={localize(
+                                    'create_new_app.placeholder',
+                                    'my-amazing-app'
+                                )}
+                                onChange={(e) =>
+                                    self.setState({
+                                        appName: e.target.value,
+                                    })
+                                }
+                            />
+                            <Button
+                                style={{ marginTop: 8 }}
+                                block
+                                onClick={() => self.onCreateNewAppClicked()}
+                                type="primary"
+                            >
+                                {localize(
+                                    'create_new_app.button',
+                                    'Create New App'
+                                )}
+                            </Button>
+                        </Fragment>
+                    ) : (
+                        <Input.Search
+                            placeholder={localize(
+                                'create_new_app.placeholder',
+                                'my-amazing-app'
                             )}
-                        </Row>
+                            enterButton={localize(
+                                'create_new_app.button',
+                                'Create New App'
+                            )}
+                            onChange={(e) =>
+                                self.setState({
+                                    appName: e.target.value,
+                                })
+                            }
+                            onSearch={(value) => self.onCreateNewAppClicked()}
+                        />
+                    )}
+                </Row>
 
-                        <Row justify={self.props.isMobile ? 'start' : 'end'}>
+                <Row justify={self.props.isMobile ? 'start' : 'end'}>
                     <Checkbox
                         onChange={(e: any) =>
                             self.setState({
@@ -106,42 +101,40 @@ class CreateNewApp extends Component<
                         }
                     >
                         Has Persistent Data
-                              </Checkbox>
-                            &nbsp;&nbsp;
-                                <Tooltip
-                                    title={localize(
-                                        'create_new_app.has_persistent_data_tooltip',
-                                        'Mostly used for databases, see docs for details.'
-                                    )}
-                                >
-                          <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
+                    </Checkbox>
+                    &nbsp;&nbsp;
+                    <Tooltip
+                        title={localize(
+                            'create_new_app.has_persistent_data_tooltip',
+                            'Mostly used for databases, see docs for details.'
+                        )}
+                    >
+                        <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
                             <span>
                                 <QuestionCircleFilled />
                             </span>
                         </NewTabLink>
-                                </Tooltip>
-                        </Row>
-                            <Divider type="horizontal" style={{ width: 100 }} />
+                    </Tooltip>
+                </Row>
+                <Divider type="horizontal" style={{ width: 100 }} />
 
-                        <div style={{ textAlign: 'center' }}>
-                            <p>
-                                {localize(
-                                    'create_new_app.or_select_from',
-                                    'Or Select From'
-                                )}
-                            </p>
-                            <Link to="/apps/oneclick/" className="ant-btn">
-                                {localize(
-                                    'create_new_app.one_click_apps',
-                                    'One-Click Apps/Databases'
-                                )}
-                            </Link>
-                        </div>
+                <div style={{ textAlign: 'center' }}>
+                    <p>
+                        {localize(
+                            'create_new_app.or_select_from',
+                            'Or Select From'
+                        )}
+                    </p>
+                    <Link to="/apps/oneclick/" className="ant-btn">
+                        {localize(
+                            'create_new_app.one_click_apps',
+                            'One-Click Apps/Databases'
+                        )}
+                    </Link>
+                </div>
             </Card>
-
         )
-      
-   }
+    }
 }
 
 function mapStateToProps(state: any) {

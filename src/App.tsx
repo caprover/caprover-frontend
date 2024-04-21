@@ -49,7 +49,8 @@ function App() {
                         'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
                 },
             }}
-         locale={currentLanguageOption.antdLocale}>
+            locale={currentLanguageOption.antdLocale}
+        >
             <DarkModeContext.Provider
                 value={{
                     isDarkMode,
@@ -65,7 +66,6 @@ function App() {
             </DarkModeContext.Provider>
         </ConfigProvider>
     )
-
 }
 
 export default App
