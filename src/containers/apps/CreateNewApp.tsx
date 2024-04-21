@@ -100,7 +100,10 @@ class CreateNewApp extends Component<
                             })
                         }
                     >
-                        Has Persistent Data
+                        {localize(
+                            'create_new_app.has_persistent_data',
+                            'Has Persistent Data'
+                        )}{' '}
                     </Checkbox>
                     &nbsp;&nbsp;
                     <Tooltip

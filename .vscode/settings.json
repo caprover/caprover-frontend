@@ -8,7 +8,7 @@
     },
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-        "source.organizeImports": true
+        "source.organizeImports": "explicit"
     },
     "typescript.referencesCodeLens.enabled": true,
     "tslint.ignoreDefinitionFiles": false,

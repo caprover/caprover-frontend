@@ -46,3 +46,6 @@ export function localize(key: string, message: string) {
 }
 
 export { currentLanguageOption, languagesOptions }
+
+// Currently only enable language for dev mode, until the vast majority of the content is translated
+export const isLanguageEnabled = !!process.env.REACT_APP_IS_DEBUG

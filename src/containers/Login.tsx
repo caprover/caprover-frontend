@@ -1,11 +1,12 @@
 import { LockOutlined } from '@ant-design/icons'
-import { Button, Card, Collapse, Input, Radio, Row, Layout, Select } from 'antd'
+import { Button, Card, Collapse, Input, Layout, Radio, Row, Select } from 'antd'
 import React, { ReactComponentElement } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import ApiManager from '../api/ApiManager'
 import ErrorFactory from '../utils/ErrorFactory'
 import {
     currentLanguageOption,
+    isLanguageEnabled,
     languagesOptions,
     localize,
 } from '../utils/Language'
@@ -81,16 +82,18 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
                         )}
                         style={{ width: 380 }}
                         extra={
-                            <Select
-                                options={languagesOptions}
-                                value={currentLanguageOption.value}
-                                onChange={(value) => {
-                                    StorageHelper.setLanguageInLocalStorage(
-                                        value
-                                    )
-                                    window.location.reload()
-                                }}
-                            />
+                            isLanguageEnabled ? (
+                                <Select
+                                    options={languagesOptions}
+                                    value={currentLanguageOption.value}
+                                    onChange={(value) => {
+                                        StorageHelper.setLanguageInLocalStorage(
+                                            value
+                                        )
+                                        window.location.reload()
+                                    }}
+                                />
+                            ) : undefined
                         }
                     >
                         <NormalLoginForm
