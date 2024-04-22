@@ -1,14 +1,16 @@
 import {
     CheckOutlined,
     CodeOutlined,
+    DeleteOutlined,
     DisconnectOutlined,
     LinkOutlined,
     LoadingOutlined,
+    MenuOutlined,
 } from '@ant-design/icons'
-import { Card, Input, Row, Table, Tag, Tooltip } from 'antd'
+import { Button, Card, Input, Row, Table, Tag, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
-import { Component, Fragment } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
@@ -29,12 +31,20 @@ class AppsTable extends Component<
         isMobile: boolean
         search: string | undefined
     },
-    { searchTerm: string }
+    {
+        searchTerm: string
+        isBulkEditMode: boolean
+        selectedRowKeys: React.Key[]
+    }
 > {
     constructor(props: any) {
         super(props)
         const urlsQuery = new URLSearchParams(props.search || '').get('q') || ''
-        this.state = { searchTerm: urlsQuery }
+        this.state = {
+            searchTerm: urlsQuery,
+            isBulkEditMode: false,
+            selectedRowKeys: [],
+        }
     }
 
     appDetailPath(appName: string) {
@@ -267,7 +277,46 @@ class AppsTable extends Component<
 
         return (
             <Card
-                extra={!self.props.isMobile && searchAppInput}
+                extra={
+                    <div>
+                        <Button
+                            type="text"
+                            onClick={() => {
+                                const newState = !self.state.isBulkEditMode
+                                self.setState({
+                                    isBulkEditMode: newState,
+                                })
+                                if (!newState)
+                                    self.setState({ selectedRowKeys: [] })
+                            }}
+                        >
+                            <MenuOutlined />
+                        </Button>
+                        {self.state.isBulkEditMode && (
+                            <div>
+                                <Button
+                                    disabled={
+                                        !self.state.selectedRowKeys ||
+                                        self.state.selectedRowKeys.length === 0
+                                    }
+                                    type="text"
+                                    danger={true}
+                                    onClick={() => {
+                                        // TODO
+                                        alert(
+                                            'deleting ' +
+                                                self.state.selectedRowKeys.join(
+                                                    ', '
+                                                )
+                                        )
+                                    }}
+                                >
+                                    <DeleteOutlined />
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                }
                 title={
                     <div
                         style={{
@@ -276,9 +325,15 @@ class AppsTable extends Component<
                         }}
                     >
                         <div>
-                            <CodeOutlined />
-                            &nbsp;&nbsp;&nbsp;
-                            {localize('apps_table.title', 'Your Apps')}
+                            <div style={{ maxWidth: 250 }}>
+                                <CodeOutlined />
+                                <span
+                                    style={{ marginRight: 20, marginLeft: 5 }}
+                                >
+                                    {localize('apps_table.title', 'Your Apps')}
+                                </span>
+                                {!self.props.isMobile && searchAppInput}
+                            </div>
                         </div>
 
                         {self.props.isMobile && (
@@ -359,6 +414,26 @@ class AppsTable extends Component<
                                 dataSource={appsToRender}
                                 pagination={false}
                                 size="middle"
+                                rowSelection={
+                                    self.state.isBulkEditMode
+                                        ? {
+                                              selectedRowKeys:
+                                                  self.state.selectedRowKeys,
+                                              onChange: (
+                                                  newSelectedRowKeys: React.Key[]
+                                              ) => {
+                                                  console.log(
+                                                      'selectedRowKeys changed: ',
+                                                      newSelectedRowKeys
+                                                  )
+                                                  self.setState({
+                                                      selectedRowKeys:
+                                                          newSelectedRowKeys,
+                                                  })
+                                              },
+                                          }
+                                        : undefined
+                                }
                                 onChange={(pagination, filters, sorter) => {
                                     // Persist sorter state
                                     if (!Array.isArray(sorter)) {
