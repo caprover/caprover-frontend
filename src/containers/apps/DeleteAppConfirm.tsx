@@ -9,7 +9,6 @@ import { IAppDef } from './AppDefinition'
 export default function onDeleteAppClicked(
     appDefinitionsInput: IAppDef[],
     apiManager: ApiManager,
-    onRequestSent: () => void,
     onFinished: (success: boolean) => void
 ) {
     const volumesToDelete: IHashMapGeneric<boolean> = {}

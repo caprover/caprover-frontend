@@ -315,11 +315,8 @@ class AppsTable extends Component<
                                                     )
                                             ),
                                             self.props.apiManager,
-                                            () => {
-                                                //TODO
-                                            },
                                             (success) => {
-                                                //TODO
+                                                // with or without errors, let's refresh the page
                                                 self.props.onReloadRequested()
                                             }
                                         )
