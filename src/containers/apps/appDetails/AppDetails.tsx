@@ -232,7 +232,7 @@ class AppDetails extends ApiComponent<
 
                 self.setState({ isLoading: true })
                 self.apiManager
-                    .deleteApp(appDef.appName!, volumes)
+                    .deleteApp(appDef.appName!, volumes, undefined)
                     .then(function (data) {
                         const volumesFailedToDelete =
                             data.volumesFailedToDelete as string[]

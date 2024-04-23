@@ -100,8 +100,12 @@ export default class Apps extends ApiComponent<
                     <Row justify="center">
                         <Col xs={{ span: 24 }} lg={{ span: 20 }}>
                             <AppsTable
+                                onReloadRequested={() => {
+                                    self.reFetchData()
+                                }}
                                 search={self.props.location.search}
                                 history={self.props.history}
+                                apiManager={self.apiManager}
                                 defaultNginxConfig={apiData.defaultNginxConfig}
                                 apps={apiData.appDefinitions}
                                 rootDomain={apiData.rootDomain}

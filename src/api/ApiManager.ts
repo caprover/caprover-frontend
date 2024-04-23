@@ -330,7 +330,11 @@ export default class ApiManager {
             )
     }
 
-    deleteApp(appName: string, volumes: string[]) {
+    deleteApp(
+        appName: string | undefined,
+        volumes: string[],
+        appNames: string[] | undefined
+    ) {
         const http = this.http
 
         return Promise.resolve() //
@@ -338,6 +342,7 @@ export default class ApiManager {
                 http.fetch(http.POST, '/user/apps/appDefinitions/delete', {
                     appName,
                     volumes,
+                    appNames,
                 })
             )
     }

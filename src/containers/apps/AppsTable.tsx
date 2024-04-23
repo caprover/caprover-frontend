@@ -13,12 +13,14 @@ import { History } from 'history'
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import ApiManager from '../../api/ApiManager'
 import { IMobileComponent } from '../../models/ContainerProps'
 import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
+import onDeleteAppClicked from './DeleteAppConfirm'
 
 type TableData = IAppDef & { lastDeployTime: string }
 
@@ -26,6 +28,8 @@ class AppsTable extends Component<
     {
         history: History
         apps: IAppDef[]
+        apiManager: ApiManager
+        onReloadRequested: () => void
         rootDomain: string
         defaultNginxConfig: string
         isMobile: boolean
@@ -302,12 +306,22 @@ class AppsTable extends Component<
                                     type="text"
                                     danger={true}
                                     onClick={() => {
-                                        // TODO
-                                        alert(
-                                            'deleting ' +
-                                                self.state.selectedRowKeys.join(
-                                                    ', '
-                                                )
+                                        onDeleteAppClicked(
+                                            self.props.apps.filter(
+                                                (a) =>
+                                                    a.appName &&
+                                                    self.state.selectedRowKeys.includes(
+                                                        a.appName
+                                                    )
+                                            ),
+                                            self.props.apiManager,
+                                            () => {
+                                                //TODO
+                                            },
+                                            (success) => {
+                                                //TODO
+                                                self.props.onReloadRequested()
+                                            }
                                         )
                                     }}
                                 >
@@ -422,10 +436,6 @@ class AppsTable extends Component<
                                               onChange: (
                                                   newSelectedRowKeys: React.Key[]
                                               ) => {
-                                                  console.log(
-                                                      'selectedRowKeys changed: ',
-                                                      newSelectedRowKeys
-                                                  )
                                                   self.setState({
                                                       selectedRowKeys:
                                                           newSelectedRowKeys,
