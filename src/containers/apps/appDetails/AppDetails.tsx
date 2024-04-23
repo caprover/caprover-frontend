@@ -10,7 +10,6 @@ import {
     Alert,
     Button,
     Card,
-    Checkbox,
     Col,
     Input,
     Modal,
@@ -18,7 +17,6 @@ import {
     Row,
     Tabs,
     Tooltip,
-    message,
 } from 'antd'
 import classnames from 'classnames'
 import { RefObject } from 'react'
@@ -33,8 +31,8 @@ import ApiComponent from '../../global/ApiComponent'
 import CenteredSpinner from '../../global/CenteredSpinner'
 import ClickableLink from '../../global/ClickableLink'
 import ErrorRetry from '../../global/ErrorRetry'
-import NewTabLink from '../../global/NewTabLink'
 import { IAppDef } from '../AppDefinition'
+import onDeleteAppClicked from '../DeleteAppConfirm'
 import AppConfigs from './AppConfigs'
 import HttpSettings from './HttpSettings'
 import Deployment from './deploy/Deployment'
@@ -146,142 +144,6 @@ class AppDetails extends ApiComponent<
                 const changed = app.description !== tempVal.tempDescription
                 app.description = tempVal.tempDescription
                 if (changed) self.onUpdateConfigAndSave()
-            },
-        })
-    }
-
-    onDeleteAppClicked() {
-        const self = this
-        const appDef = Utils.copyObject(self.state.apiData!.appDefinition)
-
-        self.confirmedAppNameToDelete = ''
-
-        const allVolumes: string[] = []
-
-        self.volumesToDelete = {}
-
-        if (appDef.volumes) {
-            appDef.volumes.forEach((v) => {
-                if (v.volumeName) {
-                    allVolumes.push(v.volumeName)
-                    self.volumesToDelete[v.volumeName] = true
-                }
-            })
-        }
-
-        Modal.confirm({
-            title: 'Confirm Permanent Delete?',
-            content: (
-                <div>
-                    <p>
-                        You are about to delete <code>{appDef.appName}</code>.
-                        Enter the name of this app in the box below to confirm
-                        deletion of this app. Please note that this is
-                        <b> not reversible</b>.
-                    </p>
-                    <p className={allVolumes.length ? '' : 'hide-on-demand'}>
-                        Please select the volumes you want to delete. Note that
-                        if any of the volumes are being used by other CapRover
-                        apps, they will not be deleted even if you select them.{' '}
-                        <b>Note: </b>deleting volumes takes more than 10
-                        seconds, please be patient
-                    </p>
-                    {allVolumes.map((v) => {
-                        return (
-                            <div key={v}>
-                                <Checkbox
-                                    defaultChecked={!!self.volumesToDelete[v]}
-                                    onChange={(e: any) => {
-                                        self.volumesToDelete[v] =
-                                            !self.volumesToDelete[v]
-                                    }}
-                                >
-                                    {v}
-                                </Checkbox>
-                            </div>
-                        )
-                    })}
-                    <br />
-                    <br />
-
-                    <p>Confirm App Name:</p>
-                    <Input
-                        type="text"
-                        placeholder={appDef.appName}
-                        onChange={(e) => {
-                            self.confirmedAppNameToDelete =
-                                e.target.value.trim()
-                        }}
-                    />
-                </div>
-            ),
-            onOk() {
-                if (self.confirmedAppNameToDelete !== appDef.appName) {
-                    message.warning(
-                        'App name did not match. Operation cancelled.'
-                    )
-                    return
-                }
-
-                const volumes: string[] = []
-                Object.keys(self.volumesToDelete).forEach((v) => {
-                    if (self.volumesToDelete[v]) {
-                        volumes.push(v)
-                    }
-                })
-
-                self.setState({ isLoading: true })
-                self.apiManager
-                    .deleteApp(appDef.appName!, volumes, undefined)
-                    .then(function (data) {
-                        const volumesFailedToDelete =
-                            data.volumesFailedToDelete as string[]
-                        if (
-                            volumesFailedToDelete &&
-                            volumesFailedToDelete.length
-                        ) {
-                            Modal.info({
-                                title: "Some volumes weren't deleted!",
-                                content: (
-                                    <div>
-                                        <p>
-                                            Some volumes weren't deleted because
-                                            they were probably being used by
-                                            other containers. Sometimes, this is
-                                            because of a temporary delay when
-                                            the original container deletion was
-                                            done with a delay. Please consult
-                                            the{' '}
-                                            <NewTabLink url="https://caprover.com/docs/persistent-apps.html#removing-persistent-apps">
-                                                documentation
-                                            </NewTabLink>{' '}
-                                            and delete them manually if needed.
-                                            Skipped volumes are:
-                                        </p>
-                                        <ul>
-                                            {volumesFailedToDelete.map((v) => (
-                                                <li>
-                                                    <code>{v}</code>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                ),
-                            })
-                        }
-                        message.success('App deleted!')
-                    })
-                    .then(function () {
-                        self.goBackToApps()
-                    })
-                    .catch(
-                        Toaster.createCatcher(function () {
-                            self.setState({ isLoading: false })
-                        })
-                    )
-            },
-            onCancel() {
-                // do nothing
             },
         })
     }
@@ -548,7 +410,20 @@ class AppDetails extends ApiComponent<
                                                 danger
                                                 size="large"
                                                 onClick={() =>
-                                                    self.onDeleteAppClicked()
+                                                    onDeleteAppClicked(
+                                                        [
+                                                            Utils.copyObject(
+                                                                self.state
+                                                                    .apiData!
+                                                                    .appDefinition
+                                                            ),
+                                                        ],
+                                                        self.apiManager,
+                                                        (success) => {
+                                                            // with or without error, go back to apps
+                                                            self.goBackToApps()
+                                                        }
+                                                    )
                                                 }
                                             >
                                                 {self.props.isMobile ? (
