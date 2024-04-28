@@ -12,6 +12,7 @@ export default function onDeleteAppClicked(
     onFinished: (success: boolean) => void
 ) {
     const volumesToDelete: IHashMapGeneric<boolean> = {}
+    const allVolumesNames = new Set<string>()
 
     const appDefinitions: IAppDef[] = []
 
@@ -21,13 +22,11 @@ export default function onDeleteAppClicked(
         appDefinitions.push(Utils.copyObject(a))
     })
 
-    const allVolumes: string[] = []
-
     appDefinitions.forEach((appDef) => {
         if (appDef.volumes) {
             appDef.volumes.forEach((v) => {
                 if (v.volumeName) {
-                    allVolumes.push(v.volumeName)
+                    allVolumesNames.add(v.volumeName)
                     volumesToDelete[v.volumeName] = true
                 }
             })
@@ -55,13 +54,13 @@ export default function onDeleteAppClicked(
                     Please note that this is
                     <b> not reversible</b>.
                 </div>
-                <p className={allVolumes.length ? '' : 'hide-on-demand'}>
+                <p className={allVolumesNames.size ? '' : 'hide-on-demand'}>
                     Please select the volumes you want to delete. Note that if
                     any of the volumes are being used by other CapRover apps,
                     they will not be deleted even if you select them. Deleting
                     volumes takes <b>more than 10 seconds</b>, please be patient
                 </p>
-                {allVolumes.map((v) => {
+                {Array.from(allVolumesNames).map((v) => {
                     return (
                         <div key={v}>
                             <Checkbox
