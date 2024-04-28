@@ -1,22 +1,26 @@
 import {
     CheckOutlined,
     CodeOutlined,
+    DeleteOutlined,
     DisconnectOutlined,
     LinkOutlined,
     LoadingOutlined,
+    MenuOutlined,
 } from '@ant-design/icons'
-import { Card, Input, Row, Table, Tag, Tooltip } from 'antd'
+import { Button, Card, Input, Row, Table, Tag, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
-import { Component, Fragment } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import ApiManager from '../../api/ApiManager'
 import { IMobileComponent } from '../../models/ContainerProps'
 import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
+import onDeleteAppClicked from './DeleteAppConfirm'
 
 type TableData = IAppDef & { lastDeployTime: string }
 
@@ -24,17 +28,27 @@ class AppsTable extends Component<
     {
         history: History
         apps: IAppDef[]
+        apiManager: ApiManager
+        onReloadRequested: () => void
         rootDomain: string
         defaultNginxConfig: string
         isMobile: boolean
         search: string | undefined
     },
-    { searchTerm: string }
+    {
+        searchTerm: string
+        isBulkEditMode: boolean
+        selectedRowKeys: React.Key[]
+    }
 > {
     constructor(props: any) {
         super(props)
         const urlsQuery = new URLSearchParams(props.search || '').get('q') || ''
-        this.state = { searchTerm: urlsQuery }
+        this.state = {
+            searchTerm: urlsQuery,
+            isBulkEditMode: false,
+            selectedRowKeys: [],
+        }
     }
 
     appDetailPath(appName: string) {
@@ -267,7 +281,53 @@ class AppsTable extends Component<
 
         return (
             <Card
-                extra={!self.props.isMobile && searchAppInput}
+                extra={
+                    <div>
+                        <Button
+                            type="text"
+                            onClick={() => {
+                                const newState = !self.state.isBulkEditMode
+                                self.setState({
+                                    isBulkEditMode: newState,
+                                })
+                                if (!newState)
+                                    self.setState({ selectedRowKeys: [] })
+                            }}
+                        >
+                            <MenuOutlined />
+                        </Button>
+                        {self.state.isBulkEditMode && (
+                            <div>
+                                <Button
+                                    disabled={
+                                        !self.state.selectedRowKeys ||
+                                        self.state.selectedRowKeys.length === 0
+                                    }
+                                    type="text"
+                                    danger={true}
+                                    onClick={() => {
+                                        onDeleteAppClicked(
+                                            self.props.apps.filter(
+                                                (a) =>
+                                                    a.appName &&
+                                                    self.state.selectedRowKeys.includes(
+                                                        a.appName
+                                                    )
+                                            ),
+                                            self.props.apiManager,
+                                            (success) => {
+                                                // with or without errors, let's refresh the page
+                                                self.props.onReloadRequested()
+                                            }
+                                        )
+                                    }}
+                                >
+                                    <DeleteOutlined />
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                }
                 title={
                     <div
                         style={{
@@ -276,9 +336,15 @@ class AppsTable extends Component<
                         }}
                     >
                         <div>
-                            <CodeOutlined />
-                            &nbsp;&nbsp;&nbsp;
-                            {localize('apps_table.title', 'Your Apps')}
+                            <div style={{ maxWidth: 250 }}>
+                                <CodeOutlined />
+                                <span
+                                    style={{ marginRight: 20, marginLeft: 5 }}
+                                >
+                                    {localize('apps_table.title', 'Your Apps')}
+                                </span>
+                                {!self.props.isMobile && searchAppInput}
+                            </div>
                         </div>
 
                         {self.props.isMobile && (
@@ -359,6 +425,22 @@ class AppsTable extends Component<
                                 dataSource={appsToRender}
                                 pagination={false}
                                 size="middle"
+                                rowSelection={
+                                    self.state.isBulkEditMode
+                                        ? {
+                                              selectedRowKeys:
+                                                  self.state.selectedRowKeys,
+                                              onChange: (
+                                                  newSelectedRowKeys: React.Key[]
+                                              ) => {
+                                                  self.setState({
+                                                      selectedRowKeys:
+                                                          newSelectedRowKeys,
+                                                  })
+                                              },
+                                          }
+                                        : undefined
+                                }
                                 onChange={(pagination, filters, sorter) => {
                                     // Persist sorter state
                                     if (!Array.isArray(sorter)) {
