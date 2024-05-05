@@ -84,21 +84,6 @@ export default class DiskCleanup extends ApiComponent<
             <div>
                 <div>
                     <p>
-                        Every time you deploy a new build, Docker builds a new
-                        image for you. Typically, a large part of this image is
-                        shared between the old version and the new version, but
-                        a small chunk is added to your disk with each build. You
-                        can read more about disk cleanup in the docs, but as a
-                        simple interface, this widget gives you the ability to
-                        perform image cleanups on demand.
-                    </p>
-                    <p>
-                        You can perform this action, after each deploy. But it's
-                        typically not needed with that frequency. For typical
-                        mid-sized projects, it's recommended to perform this
-                        cleanup after every ~20 builds.
-                    </p>
-                    <p>
                         With default parameter, it keeps the last two recent
                         builds of all current apps, and creates a list of images
                         that can be deleted (by clicking on Get List button).
