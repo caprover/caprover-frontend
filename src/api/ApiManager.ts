@@ -518,6 +518,30 @@ export default class ApiManager {
             )
     }
 
+    getDiskCleanUpSettings() {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/user/system/diskcleanup', {}))
+    }
+
+    setDiskCleanUpSettings(
+        mostRecentLimit: number,
+        cronSchedule: string,
+        timezone: string
+    ) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/system/diskcleanup', {
+                    mostRecentLimit,
+                    cronSchedule,
+                    timezone,
+                })
+            )
+    }
+
     getDockerRegistries() {
         const http = this.http
 

@@ -1,7 +1,8 @@
-import { Card, Col, Row } from 'antd'
+import { Card, Col, Collapse, Row } from 'antd'
 import { Component } from 'react'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
+import AutomaticDiskCleanup from './AutomaticDiskCleanup'
 import BackupCreator from './BackupCreator'
 import ChangePass from './ChangePass'
 import CheckUpdate from './CheckUpdate'
@@ -80,7 +81,26 @@ class Settings extends Component<
                         xs={{ span: 23 }}
                     >
                         <Card style={{ height: '100%' }} title="Disk Cleanup">
-                            <DiskCleanup isMobile={this.props.isMobile} />
+                            <AutomaticDiskCleanup
+                                isMobile={this.props.isMobile}
+                            />
+
+                            <div style={{ marginBottom: 40 }} />
+
+                            <Collapse
+                                size="small"
+                                items={[
+                                    {
+                                        key: '1',
+                                        label: 'One off cleanup',
+                                        children: (
+                                            <DiskCleanup
+                                                isMobile={this.props.isMobile}
+                                            />
+                                        ),
+                                    },
+                                ]}
+                            />
                         </Card>
                     </Col>
                 </Row>
