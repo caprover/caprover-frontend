@@ -1,10 +1,12 @@
 import {
     DownCircleOutlined,
+    FilterOutlined,
     InfoCircleOutlined,
     MenuFoldOutlined,
     UpCircleOutlined,
 } from '@ant-design/icons'
-import { Input, Row, Tooltip } from 'antd'
+import { Col, Input, Row, Tooltip } from 'antd'
+import Logger from '../../../../utils/Logger'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
 import ClickableLink from '../../../global/ClickableLink'
@@ -18,6 +20,7 @@ export default class AppLogsView extends ApiComponent<
         expandedLogs: boolean
         appLogsStringified: string
         isWrapped: boolean
+        filter: string
     }
 > {
     constructor(props: any) {
@@ -26,6 +29,7 @@ export default class AppLogsView extends ApiComponent<
             isWrapped: true,
             expandedLogs: true,
             appLogsStringified: '',
+            filter: '',
         }
     }
 
@@ -120,6 +124,42 @@ export default class AppLogsView extends ApiComponent<
         this.setState({ expandedLogs: !this.state.expandedLogs })
     }
 
+    convertRegexStringToRegex(input: string) {
+        const regexPattern = /^\/(.+)\/([gimsuy]*)$/
+        const matches = input.match(regexPattern)
+
+        if (!matches) {
+            return null // Not in the form of /pattern/flags
+        }
+
+        return new RegExp(matches[1], matches[2] || 'i')
+    }
+
+    getFilteredAppLogs(logs: string, filter: string) {
+        filter = filter.trim()
+
+        if (!filter) {
+            return logs
+        }
+
+        const lines = logs.split('\n')
+        const regex = this.convertRegexStringToRegex(filter)
+        const filteredLines = lines.filter((line) => {
+            if (regex) {
+                try {
+                    return line.match(regex)
+                } catch (e) {
+                    Logger.error(e)
+                }
+                return false
+            } else {
+                return line.toLowerCase().includes(filter.toLowerCase())
+            }
+        })
+
+        return filteredLines.join('\n')
+    }
+
     render() {
         const self = this
 
@@ -203,8 +243,28 @@ export default class AppLogsView extends ApiComponent<
                         className={
                             this.state.expandedLogs ? '' : 'hide-on-demand'
                         }
-                        style={{ padding: 5 }}
+                        style={{ marginBottom: 10, marginTop: 10 }}
                     >
+                        <div
+                            className={
+                                this.state.expandedLogs ? '' : 'hide-on-demand'
+                            }
+                            style={{ marginBottom: 10, marginTop: 10 }}
+                        >
+                            <Row justify="start" align="middle">
+                                <Col xs={{ span: 23 }} lg={{ span: 8 }}>
+                                    <Input
+                                        onChange={(e) => {
+                                            self.setState({
+                                                filter: e.target.value,
+                                            })
+                                        }}
+                                        placeholder="Search logs: 200 Success or /^2\d\d$/"
+                                        prefix={<FilterOutlined />}
+                                    />
+                                </Col>
+                            </Row>
+                        </div>
                         <Input.TextArea
                             id="applogs-text-id"
                             className="logs-output"
@@ -213,7 +273,10 @@ export default class AppLogsView extends ApiComponent<
                                     ? 'pre-line'
                                     : 'pre',
                             }}
-                            value={self.state.appLogsStringified}
+                            value={self.getFilteredAppLogs(
+                                self.state.appLogsStringified,
+                                self.state.filter
+                            )}
                             readOnly
                         />
                     </div>
