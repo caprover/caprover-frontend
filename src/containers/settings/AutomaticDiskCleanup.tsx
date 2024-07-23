@@ -154,6 +154,10 @@ export default class AutomaticDiskCleanup extends ApiComponent<
                                             .toLowerCase()
                                             .includes(input.toLowerCase())
                                     }
+                                    defaultValue={
+                                        self.state.automatedCleanupConfigs
+                                            ?.timezone
+                                    }
                                     options={timeZones}
                                 />
                             </Row>
