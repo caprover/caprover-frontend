@@ -129,7 +129,7 @@ export default class AppLogsView extends ApiComponent<
         const matches = input.match(regexPattern)
 
         if (!matches) {
-            return null // Not in the form of /pattern/flags
+            return undefined // Not in the form of /pattern/flags
         }
 
         return new RegExp(matches[1], matches[2] || 'i')
