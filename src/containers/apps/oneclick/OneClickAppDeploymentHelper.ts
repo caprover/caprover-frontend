@@ -91,7 +91,7 @@ export default class OneClickAppDeploymentHelper {
                     })
 
                     const overrideYaml =
-                        DockerComposeToServiceOverride.convertComposeToService(
+                        DockerComposeToServiceOverride.convertUnconsumedComposeParametersToServiceOverride(
                             dockerComposeService
                         )
 
