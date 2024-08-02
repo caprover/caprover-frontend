@@ -25,6 +25,7 @@ export interface IDockerComposeService {
     environment?: IHashMapGeneric<string>
     depends_on?: string[]
     hostname?: string
+    cap_add?: string[]
 
     // These are CapRover property, not DockerCompose. We use this instead of image if we need to extend the image.
     caproverExtra?: {
