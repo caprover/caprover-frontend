@@ -19,6 +19,7 @@ export default class DockerComposeToServiceOverride {
     ) {
         const overrides = [] as any[]
         overrides.push(DockerComposeToServiceOverride.parseHostname(compose))
+        overrides.push(DockerComposeToServiceOverride.parseCapAdd(compose))
         // Add more overrides here if needed
 
         let mergedOverride = {} as any
@@ -39,6 +40,22 @@ export default class DockerComposeToServiceOverride {
             override.TaskTemplate = {
                 ContainerSpec: {
                     Hostname: hostname,
+                },
+            }
+        }
+
+        return override
+    }
+
+    private static parseCapAdd(compose: IDockerComposeService) {
+        const override = {} as any
+        if (!!compose.cap_add && Array.isArray(compose.cap_add)) {
+            const capabilityAdd = compose.cap_add
+                .map((cap) => cap.toUpperCase())
+                .map((cap) => (cap.startsWith(`CAP`) ? cap : `CAP_${cap}`))
+            override.TaskTemplate = {
+                ContainerSpec: {
+                    CapabilityAdd: capabilityAdd,
                 },
             }
         }
