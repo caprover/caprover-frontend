@@ -155,7 +155,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
                     <Col xs={{ span: 23 }} lg={{ span: 16 }}>
                         <Card title={`Setup your ${displayName}`}>
                             <h2>{displayName}</h2>
-                            <p
+                            <div
                                 style={{
                                     whiteSpace: 'pre-wrap',
                                     paddingLeft: 15,
@@ -168,7 +168,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                             .start
                                     }
                                 </ReactMarkdown>
-                            </p>
+                            </div>
                             <div style={{ height: 40 }} />
                             <OneClickVariablesSection
                                 oneClickAppVariables={
