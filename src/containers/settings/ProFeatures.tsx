@@ -116,10 +116,10 @@ export default class ProFeatures extends ApiComponent<
 
         return (
             <div>
-                <p>
+                <div>
                     Upgrade to <b>CapRover PRO</b> to take advantage of premium
                     features!
-                </p>
+                </div>
                 <ul>
                     {`Two-Factor Authentication for better security
                     Login email alerts
@@ -127,7 +127,7 @@ export default class ProFeatures extends ApiComponent<
                     Last not least, support active development of OpenSource Software!`
                         .split('\n')
                         .map((it) => (
-                            <li>{it.trim()}</li>
+                            <li key={it.trim()}>{it.trim()}</li>
                         ))}
                 </ul>
                 <Carousel autoplay>
@@ -145,33 +145,31 @@ export default class ProFeatures extends ApiComponent<
                     </div>
                 </Carousel>
                 <div style={{ height: 30 }} />
-                <p>
-                    <Row justify="end">
+                <Row justify="end">
+                    <Button
+                        style={{
+                            marginRight: 30,
+                        }}
+                        size="large"
+                        onClick={() => {
+                            self.setState({ apiKeyModalVisible: true })
+                        }}
+                    >
+                        Enter API Key
+                    </Button>
+                    <NewTabLink url="https://pro.caprover.com">
                         <Button
-                            style={{
-                                marginRight: 30,
-                            }}
+                            type="primary"
                             size="large"
-                            onClick={() => {
-                                self.setState({ apiKeyModalVisible: true })
+                            style={{
+                                background: '#DAA520',
+                                borderColor: '#dbae3b',
                             }}
                         >
-                            Enter API Key
+                            <b>Upgrade NOW</b>
                         </Button>
-                        <NewTabLink url="https://pro.caprover.com">
-                            <Button
-                                type="primary"
-                                size="large"
-                                style={{
-                                    background: '#DAA520',
-                                    borderColor: '#dbae3b',
-                                }}
-                            >
-                                <b>Upgrade NOW</b>
-                            </Button>
-                        </NewTabLink>
-                    </Row>
-                </p>
+                    </NewTabLink>
+                </Row>
                 <Modal
                     title="Enter API Key"
                     open={self.state.apiKeyModalVisible}
