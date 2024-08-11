@@ -5,7 +5,6 @@ import Utils from '../../utils/Utils'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 import ErrorRetry from '../global/ErrorRetry'
-import ReloadCaptainModal from './ReloadCaptainModal'
 
 export default class NginxConfig extends ApiComponent<
     {
@@ -14,7 +13,6 @@ export default class NginxConfig extends ApiComponent<
     {
         nginxConfig: any
         isLoading: boolean
-        isRefreshTimerActivated: boolean
     }
 > {
     constructor(props: any) {
@@ -22,7 +20,6 @@ export default class NginxConfig extends ApiComponent<
         this.state = {
             isLoading: true,
             nginxConfig: undefined,
-            isRefreshTimerActivated: false,
         }
     }
 
@@ -58,9 +55,6 @@ export default class NginxConfig extends ApiComponent<
                 newApiData.baseConfig.customValue,
                 newApiData.captainConfig.customValue
             )
-            .then(function () {
-                self.setState({ isRefreshTimerActivated: true })
-            })
             .catch(Toaster.createCatcher())
             .then(function () {
                 self.setState({ isLoading: false })
@@ -81,20 +75,6 @@ export default class NginxConfig extends ApiComponent<
 
         return (
             <div>
-                <ReloadCaptainModal
-                    isRefreshTimerActivated={self.state.isRefreshTimerActivated}
-                >
-                    <div>
-                        Nginx is successfully updated, CapRover will restart in
-                        30 seconds.{' '}
-                        <b>
-                            Please wait until the page is automatically
-                            refreshed.
-                        </b>
-                        <br />
-                        <br />
-                    </div>
-                </ReloadCaptainModal>{' '}
                 <p>
                     CapRover allows you to set custom configurations for your
                     nginx router. This will allow high customization level in
