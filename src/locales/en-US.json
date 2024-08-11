@@ -1,5 +1,6 @@
 {
     "apps_table.app_name": "App Name",
+    "apps_table.bulk_delete_tooltip": "Delete selected apps",
     "apps_table.instance_count": "Instance Count",
     "apps_table.last_deployed": "Last Deployed",
     "apps_table.not_exposed_tooltip": "Not exposed as a web app",

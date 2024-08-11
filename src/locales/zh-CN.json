@@ -1,5 +1,6 @@
 {
     "apps_table.app_name": "应用名称",
+    "apps_table.bulk_delete_tooltip": "删除选定的应用程序",
     "apps_table.instance_count": "实例数量",
     "apps_table.last_deployed": "上次部署时间",
     "apps_table.not_exposed_tooltip": "未公开为 Web 应用程序",

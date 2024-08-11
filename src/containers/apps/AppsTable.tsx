@@ -5,7 +5,7 @@ import {
     DisconnectOutlined,
     LinkOutlined,
     LoadingOutlined,
-    MenuOutlined,
+    UnorderedListOutlined,
 } from '@ant-design/icons'
 import { Button, Card, Input, Row, Table, Tag, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
@@ -283,21 +283,13 @@ class AppsTable extends Component<
             <Card
                 extra={
                     <div>
-                        <Button
-                            type="text"
-                            onClick={() => {
-                                const newState = !self.state.isBulkEditMode
-                                self.setState({
-                                    isBulkEditMode: newState,
-                                })
-                                if (!newState)
-                                    self.setState({ selectedRowKeys: [] })
-                            }}
-                        >
-                            <MenuOutlined />
-                        </Button>
                         {self.state.isBulkEditMode && (
-                            <div>
+                            <Tooltip
+                                title={localize(
+                                    'apps_table.bulk_delete_tooltip',
+                                    'Delete selected apps'
+                                )}
+                            >
                                 <Button
                                     disabled={
                                         !self.state.selectedRowKeys ||
@@ -324,8 +316,21 @@ class AppsTable extends Component<
                                 >
                                     <DeleteOutlined />
                                 </Button>
-                            </div>
+                            </Tooltip>
                         )}
+                        <Button
+                            type="text"
+                            onClick={() => {
+                                const newState = !self.state.isBulkEditMode
+                                self.setState({
+                                    isBulkEditMode: newState,
+                                })
+                                if (!newState)
+                                    self.setState({ selectedRowKeys: [] })
+                            }}
+                        >
+                            <UnorderedListOutlined />
+                        </Button>
                     </div>
                 }
                 title={
