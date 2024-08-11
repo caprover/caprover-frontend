@@ -203,7 +203,7 @@ class PageRoot extends ApiComponent<
                         )}
                         {(this.props.isMobile &&
                             self.createUpdateAvailableIfNeeded()) || (
-                            <Col lg={{ span: 12 }} xs={{ span: 20 }}>
+                            <Col lg={{ span: 12 }} xs={{ span: 12 }}>
                                 <Row align="middle">
                                     <img
                                         alt="logo"
@@ -231,7 +231,7 @@ class PageRoot extends ApiComponent<
 
                                     <span
                                         style={{
-                                            marginRight: 70,
+                                            marginRight: 30,
                                         }}
                                     >
                                         <NewTabLink url="https://caprover.com">
@@ -240,7 +240,7 @@ class PageRoot extends ApiComponent<
                                     </span>
                                     <span
                                         style={{
-                                            marginRight: 70,
+                                            marginRight: 50,
                                         }}
                                     >
                                         <DarkModeSwitch />

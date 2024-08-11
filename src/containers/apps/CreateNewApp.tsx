@@ -2,13 +2,13 @@ import { PlusCircleOutlined, QuestionCircleFilled } from '@ant-design/icons'
 import { Button, Card, Checkbox, Divider, Input, Row, Tooltip } from 'antd'
 import { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { IMobileComponent } from '../../models/ContainerProps'
 import { localize } from '../../utils/Language'
 import NewTabLink from '../global/NewTabLink'
 
 interface MyProps {
     onCreateNewAppClicked: (appName: string, hasPersistency: boolean) => void
+    onOneClickAppClicked: () => void
 }
 
 class CreateNewApp extends Component<
@@ -128,12 +128,18 @@ class CreateNewApp extends Component<
                             'Or Select From'
                         )}
                     </p>
-                    <Link to="/apps/oneclick/" className="ant-btn">
+
+                    <Button
+                        type="dashed"
+                        onClick={() => {
+                            self.props.onOneClickAppClicked()
+                        }}
+                    >
                         {localize(
                             'create_new_app.one_click_apps',
                             'One-Click Apps/Databases'
                         )}
-                    </Link>
+                    </Button>
                 </div>
             </Card>
         )

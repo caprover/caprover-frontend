@@ -93,6 +93,9 @@ export default class Apps extends ApiComponent<
                                     hasPersistency
                                 )
                             }}
+                            onOneClickAppClicked={() => {
+                                self.props.history.push('/apps/oneclick')
+                            }}
                         />
                     </Col>
                 </Row>
