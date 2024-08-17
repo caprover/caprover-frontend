@@ -848,7 +848,7 @@ export const Timezones = [
         offset: 3.5,
         isdst: false,
         text: '(UTC+03:30) Tehran',
-        utc: ['Asia/Tehran','Asia/Iran'],
+        utc: ['Asia/Tehran', 'Asia/Iran'],
     },
     {
         value: 'Samara Time',
