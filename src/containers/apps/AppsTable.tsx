@@ -63,6 +63,7 @@ class AppsTable extends Component<
                 title: localize('apps_table.app_name', 'App Name'),
                 dataIndex: 'appName',
                 key: 'appName',
+                width: '25%',
                 render: (appName: string) => (
                     <Link to={this.appDetailPath(appName)}>{appName}</Link>
                 ),
@@ -79,6 +80,7 @@ class AppsTable extends Component<
                     'Persistent Data'
                 ),
                 dataIndex: 'hasPersistentData',
+                width: '10%',
                 key: 'hasPersistentData',
                 align: ALIGN,
                 render: (hasPersistentData: boolean) => {
@@ -97,6 +99,7 @@ class AppsTable extends Component<
                 title: localize('apps_table.instance_count', 'Instance Count'),
                 dataIndex: 'instanceCount',
                 key: 'instanceCount',
+                width: '10%',
                 align: ALIGN,
             },
             {
@@ -104,7 +107,6 @@ class AppsTable extends Component<
                 dataIndex: 'tags',
                 key: 'tags',
                 align: ALIGN,
-                width: '18%',
                 render: (_: any, app: TableData) => {
                     return (
                         <Fragment>
@@ -138,6 +140,7 @@ class AppsTable extends Component<
                 title: localize('apps_table.last_deployed', 'Last Deployed'),
                 dataIndex: 'lastDeployTime',
                 key: 'lastDeployTime',
+                width: '20%',
                 align: ALIGN,
                 sorter: (a, b) => {
                     return (
@@ -170,6 +173,7 @@ class AppsTable extends Component<
                 title: localize('apps_table.open', 'Open'),
                 dataIndex: 'notExposeAsWebApp',
                 key: 'openInBrowser',
+                width: '60px',
                 align: ALIGN,
                 render: (notExposeAsWebApp: boolean, app) => {
                     if (notExposeAsWebApp) {

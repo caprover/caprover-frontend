@@ -1,5 +1,4 @@
 import { Alert, Col, Divider, message, Row } from 'antd'
-import React from 'react'
 import { connect } from 'react-redux'
 import Logger from '../../utils/Logger'
 import Toaster from '../../utils/Toaster'
@@ -189,15 +188,20 @@ class CurrentNodes extends ApiComponent<
                         }}
                     />
                 ) : (
-                    <div>
+                    <div
+                        style={{
+                            margin: '0 auto 0px',
+                            maxWidth: 700,
+                        }}
+                    >
                         <Alert
                             type="warning"
                             showIcon={true}
-                            message="Cannot add more nodes as no default push registry is set. To add more nodes and create a cluster, you first need to add a docker registry and set it as the default push registry."
+                            message="You cannot add more nodes as no default push registry is set. To add more nodes and create a cluster, you first need to add a docker registry and set it as the default push registry."
                         />
                     </div>
                 )}
-                <div style={{ height: 50 }} />
+                <div style={{ height: 30 }} />
 
                 <Divider type="horizontal">
                     <h4>Current Cluster Nodes</h4>

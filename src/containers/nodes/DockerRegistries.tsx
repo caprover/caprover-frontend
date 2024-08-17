@@ -1,5 +1,4 @@
 import { Alert, message } from 'antd'
-import React from 'react'
 import { connect } from 'react-redux'
 import {
     IRegistryApi,
@@ -145,7 +144,11 @@ class DockerRegistries extends ApiComponent<
 
                 <div style={{ height: 60 }} />
                 <div
-                    style={{ textAlign: 'center' }}
+                    style={{
+                        textAlign: 'center',
+                        margin: '0 auto 0px',
+                        maxWidth: 560,
+                    }}
                     className={
                         this.state.apiData.registries.length === 0
                             ? ''

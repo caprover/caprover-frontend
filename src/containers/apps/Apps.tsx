@@ -64,57 +64,72 @@ export default class Apps extends ApiComponent<
         }
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 25,
-                    padding: '0 20px',
-                    margin: '0 auto 300px',
-                    maxWidth: 1000,
-                }}
-            >
-                <Row justify="center">
-                    <Col
-                        xs={{
-                            span: 24,
-                        }}
-                        lg={{
-                            span: 13,
-                        }}
-                    >
-                        <CreateNewApp
-                            onCreateNewAppClicked={(
-                                appName: string,
-                                hasPersistency: boolean
-                            ) => {
-                                self.onCreateNewAppClicked(
-                                    appName,
-                                    hasPersistency
-                                )
-                            }}
-                            onOneClickAppClicked={() => {
-                                self.props.history.push('/apps/oneclick')
-                            }}
-                        />
-                    </Col>
-                </Row>
-                {apiData.appDefinitions.length > 0 && (
+            <div>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 25,
+                        padding: '0 20px',
+                        margin: '0 auto 50px',
+                        maxWidth: 1000,
+                    }}
+                >
                     <Row justify="center">
-                        <Col xs={{ span: 24 }} lg={{ span: 20 }}>
-                            <AppsTable
-                                onReloadRequested={() => {
-                                    self.reFetchData()
+                        <Col
+                            xs={{
+                                span: 24,
+                            }}
+                            lg={{
+                                span: 13,
+                            }}
+                        >
+                            <CreateNewApp
+                                onCreateNewAppClicked={(
+                                    appName: string,
+                                    hasPersistency: boolean
+                                ) => {
+                                    self.onCreateNewAppClicked(
+                                        appName,
+                                        hasPersistency
+                                    )
                                 }}
-                                search={self.props.location.search}
-                                history={self.props.history}
-                                apiManager={self.apiManager}
-                                defaultNginxConfig={apiData.defaultNginxConfig}
-                                apps={apiData.appDefinitions}
-                                rootDomain={apiData.rootDomain}
+                                onOneClickAppClicked={() => {
+                                    self.props.history.push('/apps/oneclick')
+                                }}
                             />
                         </Col>
                     </Row>
+                </div>
+                {apiData.appDefinitions.length > 0 && (
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 25,
+                            padding: '0 20px',
+                            margin: '0 auto 50px',
+                            maxWidth: 1200,
+                        }}
+                    >
+                        <Row justify="center">
+                            <Col xs={{ span: 24 }} lg={{ span: 20 }}>
+                                <AppsTable
+                                    onReloadRequested={() => {
+                                        self.reFetchData()
+                                    }}
+                                    search={self.props.location.search}
+                                    history={self.props.history}
+                                    apiManager={self.apiManager}
+                                    defaultNginxConfig={
+                                        apiData.defaultNginxConfig
+                                    }
+                                    apps={apiData.appDefinitions}
+                                    rootDomain={apiData.rootDomain}
+                                />
+                            </Col>
+                        </Row>
+                    </div>
                 )}
             </div>
         )

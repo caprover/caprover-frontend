@@ -44,7 +44,7 @@ const MENU_ITEMS: MenuProps['items'] = [
     },
     {
         key: 'apps',
-        label: localize('menu_item.app', 'App'),
+        label: localize('menu_item.app', 'Apps'),
         icon: <CodeOutlined />,
     },
     {

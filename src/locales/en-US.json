@@ -23,7 +23,7 @@
     "login_form.remember_me": "Remember Me",
     "login_form.use_local_storage": "Use localStorage (Most Persistent)",
     "login_form.use_session_storage": "Use sessionStorage",
-    "menu_item.app": "App",
+    "menu_item.app": "Apps",
     "menu_item.cluster": "Cluster",
     "menu_item.dashboard": "Dashboard",
     "menu_item.monitoring": "Monitoring",
