@@ -60,7 +60,7 @@ hr {
     font-family: Menlo, Monaco, 'SFMono-Regular', Consolas, 'Liberation Mono',
         Courier, monospace !important;
     overflow: scroll;
-    height: 250px !important;
+    min-height: 250px !important;
     border-width: 2px;
     border-radius: 5px;
     padding: 10px;
