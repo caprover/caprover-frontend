@@ -843,20 +843,20 @@ export const Timezones = [
         ],
     },
     {
+        value: 'Iran Standard Time',
+        abbr: 'IRST',
+        offset: 3.5,
+        isdst: false,
+        text: '(UTC+03:30) Tehran',
+        utc: ['Asia/Tehran','Asia/Iran'],
+    },
+    {
         value: 'Samara Time',
         abbr: 'SAMT',
         offset: 4,
         isdst: false,
         text: '(UTC+04:00) Samara, Ulyanovsk, Saratov',
         utc: ['Europe/Astrakhan', 'Europe/Samara', 'Europe/Ulyanovsk'],
-    },
-    {
-        value: 'Iran Standard Time',
-        abbr: 'IDT',
-        offset: 4.5,
-        isdst: true,
-        text: '(UTC+03:30) Tehran',
-        utc: ['Asia/Tehran'],
     },
     {
         value: 'Arabian Standard Time',
