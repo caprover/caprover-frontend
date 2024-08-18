@@ -16,10 +16,13 @@ function formatHourOffset(offset: number) {
 }
 
 const timeZones: any[] = []
-Timezones.filter((x) => !x.isdst).forEach((element) => {
+Timezones.forEach((element) => {
     element.utc.forEach((utc) => {
+        const isDaylightSaving = !!element.isdst
         timeZones.push({
-            label: `${utc} (UTC${formatHourOffset(element.offset)})`,
+            label:
+                `${utc} (UTC${formatHourOffset(element.offset)})` +
+                (isDaylightSaving ? ' DST' : ''),
             value: utc,
         })
     })
