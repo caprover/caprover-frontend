@@ -62,7 +62,6 @@ export default class BackupCreator extends ApiComponent<
                     See the documents for more details on how to restore your
                     server using the backup file.
                 </p>
-                <p>Note that this is, currently, an EXPERIMENTAL FEATURE.</p>
                 <br />
 
                 <Row justify="end">
