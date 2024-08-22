@@ -16,16 +16,20 @@ function formatHourOffset(offset: number) {
 }
 
 const timeZones: any[] = []
+const tempUtcSet = new Set<string>()
 Timezones.forEach((element) => {
-    element.utc.forEach((utc) => {
-        const isDaylightSaving = !!element.isdst
-        timeZones.push({
-            label:
-                `${utc} (UTC${formatHourOffset(element.offset)})` +
-                (isDaylightSaving ? ' DST' : ''),
-            value: utc,
+    element.utc
+        .map((utc) => utc.trim())
+        .forEach((utc) => {
+            if (tempUtcSet.has(utc)) {
+                return
+            }
+            tempUtcSet.add(utc)
+            timeZones.push({
+                label: `${utc} (UTC${formatHourOffset(element.offset)})`,
+                value: utc,
+            })
         })
-    })
 })
 
 export default class AutomaticDiskCleanup extends ApiComponent<
