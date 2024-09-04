@@ -132,7 +132,12 @@ export default class AppLogsView extends ApiComponent<
             return undefined // Not in the form of /pattern/flags
         }
 
-        return new RegExp(matches[1], matches[2] || 'i')
+        try {
+            return new RegExp(matches[1], matches[2] || 'i')
+        } catch (e) {
+            // ignore... just an invalid regex
+            return undefined
+        }
     }
 
     getFilteredAppLogs(logs: string, filter: string) {
