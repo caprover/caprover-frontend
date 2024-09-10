@@ -428,8 +428,9 @@ export default class Dashboard extends ApiComponent<
                                 <li>
                                     <b>Use the panel below: </b> This is a
                                     non-guided version of the Command Line
-                                    method. Use this method only for the purpose
-                                    of experimentation.
+                                    method. Don't forget to set the root
+                                    domain, then enable HTTPS and force it,
+                                    and finally change the password.
                                 </li>
                             </ul>
                         </div>
