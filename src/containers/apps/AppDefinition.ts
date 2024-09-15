@@ -57,6 +57,7 @@ interface IAppTag {
 }
 
 interface IAppDefinitionBase {
+    projectId?: string | undefined
     description?: string
     deployedVersion: number
     notExposeAsWebApp: boolean

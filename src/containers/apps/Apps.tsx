@@ -1,5 +1,6 @@
 import { Col, Row } from 'antd'
 import { RouteComponentProps } from 'react-router'
+import ProjectDefinition from '../../models/ProjectDefinition'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
@@ -14,9 +15,12 @@ export default class Apps extends ApiComponent<
         isLoading: boolean
         apiData:
             | {
-                  appDefinitions: IAppDef[]
-                  defaultNginxConfig: string
-                  rootDomain: string
+                  apps: {
+                      appDefinitions: IAppDef[]
+                      defaultNginxConfig: string
+                      rootDomain: string
+                  }
+                  projects: ProjectDefinition[]
               }
             | undefined
     }
@@ -101,7 +105,7 @@ export default class Apps extends ApiComponent<
                         </Col>
                     </Row>
                 </div>
-                {apiData.appDefinitions.length > 0 && (
+                {apiData.apps.appDefinitions.length > 0 && (
                     <div
                         style={{
                             display: 'flex',
@@ -122,10 +126,10 @@ export default class Apps extends ApiComponent<
                                     history={self.props.history}
                                     apiManager={self.apiManager}
                                     defaultNginxConfig={
-                                        apiData.defaultNginxConfig
+                                        apiData.apps.defaultNginxConfig
                                     }
-                                    apps={apiData.appDefinitions}
-                                    rootDomain={apiData.rootDomain}
+                                    apps={apiData.apps.appDefinitions}
+                                    rootDomain={apiData.apps.rootDomain}
                                 />
                             </Col>
                         </Row>
@@ -142,10 +146,14 @@ export default class Apps extends ApiComponent<
     reFetchData() {
         const self = this
         self.setState({ isLoading: true })
-        return this.apiManager
-            .getAllApps()
+        return Promise.all([
+            self.apiManager.getAllApps(),
+            self.apiManager.getAllProjects(),
+        ])
             .then(function (data: any) {
-                self.setState({ apiData: data })
+                console.log({ apps: data[0], projects: data[1] })
+
+                self.setState({ apiData: { apps: data[0], projects: data[1] } })
             })
             .catch(Toaster.createCatcher())
             .then(function () {

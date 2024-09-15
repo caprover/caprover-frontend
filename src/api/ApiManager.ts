@@ -187,6 +187,13 @@ export default class ApiManager {
             .then(http.fetch(http.GET, '/user/apps/appDefinitions', {}))
     }
 
+    getAllProjects() {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/user/projects', {}))
+    }
+
     fetchBuildLogs(appName: string) {
         const http = this.http
 
