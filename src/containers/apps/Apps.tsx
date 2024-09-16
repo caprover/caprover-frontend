@@ -105,7 +105,8 @@ export default class Apps extends ApiComponent<
                         </Col>
                     </Row>
                 </div>
-                {apiData.apps.appDefinitions.length > 0 && (
+                {(apiData.apps.appDefinitions.length > 0 ||
+                    apiData.projects.length > 0) && (
                     <div
                         style={{
                             display: 'flex',
@@ -129,6 +130,7 @@ export default class Apps extends ApiComponent<
                                         apiData.apps.defaultNginxConfig
                                     }
                                     apps={apiData.apps.appDefinitions}
+                                    projects={apiData.projects}
                                     rootDomain={apiData.apps.rootDomain}
                                 />
                             </Col>
@@ -151,9 +153,9 @@ export default class Apps extends ApiComponent<
             self.apiManager.getAllProjects(),
         ])
             .then(function (data: any) {
-                console.log({ apps: data[0], projects: data[1] })
-
-                self.setState({ apiData: { apps: data[0], projects: data[1] } })
+                self.setState({
+                    apiData: { apps: data[0], projects: data[1].projects },
+                })
             })
             .catch(Toaster.createCatcher())
             .then(function () {
