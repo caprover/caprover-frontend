@@ -15,7 +15,6 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ApiManager from '../../api/ApiManager'
 import { IMobileComponent } from '../../models/ContainerProps'
-import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
 import NewTabLink from '../global/NewTabLink'
@@ -23,25 +22,12 @@ import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
 import onDeleteAppClicked from './DeleteAppConfirm'
 
-type TableData =
-    | (IAppDef & {
-          lastDeployTime: string
-          isProject: false
-          key: React.Key
-          children: TableData[] | undefined
-      })
-    | {
-          isProject: true
-          projectDetail: ProjectDefinition
-          key: React.Key
-          children: TableData[] | undefined
-      }
+type TableData = IAppDef & { lastDeployTime: string }
 
 class AppsTable extends Component<
     {
         history: History
         apps: IAppDef[]
-        projects: ProjectDefinition[]
         apiManager: ApiManager
         onReloadRequested: () => void
         rootDomain: string
@@ -53,7 +39,6 @@ class AppsTable extends Component<
         searchTerm: string
         isBulkEditMode: boolean
         selectedRowKeys: React.Key[]
-        expandedRowKeys: React.Key[]
     }
 > {
     constructor(props: any) {
@@ -63,7 +48,6 @@ class AppsTable extends Component<
             searchTerm: urlsQuery,
             isBulkEditMode: false,
             selectedRowKeys: [],
-            expandedRowKeys: [],
         }
     }
 
@@ -80,25 +64,10 @@ class AppsTable extends Component<
                 dataIndex: 'appName',
                 key: 'appName',
                 width: '25%',
-                render: (_: any, rowData: TableData) => {
-                    if (rowData.isProject) {
-                        return (
-                            <span>
-                                <b>{rowData.projectDetail.name}</b>
-                            </span>
-                        )
-                    }
-                    return (
-                        <Link to={this.appDetailPath(rowData.appName || 'app')}>
-                            {rowData.appName || 'app'}
-                        </Link>
-                    )
-                },
+                render: (appName: string) => (
+                    <Link to={this.appDetailPath(appName)}>{appName}</Link>
+                ),
                 sorter: (a, b) => {
-                    if (a.isProject || b.isProject) {
-                        // TODO
-                        return 0
-                    }
                     return a.appName
                         ? a.appName.localeCompare(b.appName || '')
                         : 0
@@ -139,10 +108,6 @@ class AppsTable extends Component<
                 key: 'tags',
                 align: ALIGN,
                 render: (_: any, app: TableData) => {
-                    if (app.isProject) {
-                        return <span></span>
-                    }
-
                     return (
                         <Fragment>
                             {app.tags && app.tags.length > 0 ? (
@@ -178,11 +143,6 @@ class AppsTable extends Component<
                 width: '20%',
                 align: ALIGN,
                 sorter: (a, b) => {
-                    if (a.isProject || b.isProject) {
-                        // TODO
-                        return 0
-                    }
-
                     return (
                         Date.parse(a.lastDeployTime) -
                         Date.parse(b.lastDeployTime)
@@ -190,11 +150,6 @@ class AppsTable extends Component<
                 },
                 sortDirections: ['descend', 'ascend'],
                 render: (lastDeployTime: string, app) => {
-                    if (app.isProject) {
-                        // TODO
-                        return <span />
-                    }
-
                     if (!lastDeployTime) {
                         return <span />
                     }
@@ -221,11 +176,6 @@ class AppsTable extends Component<
                 width: '60px',
                 align: ALIGN,
                 render: (notExposeAsWebApp: boolean, app) => {
-                    if (app.isProject) {
-                        // TODO
-                        return <span />
-                    }
-
                     if (notExposeAsWebApp) {
                         return (
                             <Tooltip
@@ -262,84 +212,10 @@ class AppsTable extends Component<
         return columns
     }
 
-    organizeItems(items: TableData[]): TableData[] {
-        const projectsMap: { [key: string]: TableData } = {}
-        let root: TableData[] = []
-
-        // Create a map of all projects
-        items.forEach((item) => {
-            if (item.isProject) {
-                projectsMap[item.projectDetail.id] = {
-                    ...item,
-                } as TableData
-            }
-        })
-
-        // Distribute projects and apps to their respective parents or to the root
-        items.forEach((item) => {
-            if (item.isProject) {
-                const project = projectsMap[item.projectDetail.id]
-                if (
-                    item.projectDetail.parentProjectId &&
-                    projectsMap[item.projectDetail.parentProjectId]
-                ) {
-                    const children =
-                        projectsMap[item.projectDetail.parentProjectId]
-                            .children || []
-
-                    children.push(project)
-                    projectsMap[item.projectDetail.parentProjectId].children =
-                        children
-                } else {
-                    root.push(project)
-                }
-            } else {
-                const app = item
-                if (app.projectId && projectsMap[app.projectId]) {
-                    const children = projectsMap[app.projectId].children || []
-
-                    children.push(app)
-                    projectsMap[app.projectId].children = children
-                } else {
-                    root.push(app)
-                }
-            }
-        })
-
-        root.forEach((project) => {
-            if (project.children)
-                project.children =
-                    project.children.length > 0 ? project.children : undefined
-        })
-
-        function sortByName(original: TableData[]): TableData[] {
-            return original
-                .sort((a, b) => {
-                    // First, sort by isProject, descending: true values come first
-                    if (a.isProject && !b.isProject) return -1
-                    if (!a.isProject && b.isProject) return 1
-
-                    const aName = a.isProject ? a.projectDetail.name : a.appName
-                    const bName = b.isProject ? b.projectDetail.name : b.appName
-                    return (aName || '').localeCompare(bName || '')
-                })
-                .map((item) => {
-                    if (item.isProject && item.children) {
-                        return { ...item, children: sortByName(item.children) }
-                    }
-                    return item
-                })
-        }
-
-        root = sortByName(root)
-
-        return root
-    }
-
     render() {
         const self = this
 
-        const dataToRender: TableData[] = self.props.apps
+        const appsToRender = self.props.apps
             .filter((app) => {
                 const searchTerm = self.state.searchTerm
                 if (!searchTerm) return true
@@ -385,32 +261,8 @@ class AppsTable extends Component<
                     lastDeployTime = versionFound[0].timeStamp || ''
                 }
 
-                return {
-                    ...app,
-                    lastDeployTime,
-                    key: 'app-' + app.appName,
-                    isProject: false,
-                    children: undefined,
-                }
+                return { ...app, lastDeployTime }
             })
-
-        // Push all projects to dataToRender
-        self.props.projects.forEach((project) => {
-            dataToRender.push({
-                isProject: true,
-                projectDetail: project,
-                key: 'project-' + project.id,
-                children: undefined,
-            })
-        })
-
-        const expandedRowKeys = self.state.searchTerm
-            ? dataToRender
-                  .filter((app) => app.isProject)
-                  .map((project) => project.key)
-            : self.state.expandedRowKeys
-
-        const organizedData = self.organizeItems(dataToRender)
 
         const searchAppInput = (
             <Input
@@ -460,7 +312,7 @@ class AppsTable extends Component<
                                             ),
                                             self.props.apiManager,
                                             (success) => {
-                                                // with or without errors, let's refresh the page...
+                                                // with or without errors, let's refresh the page
                                                 self.props.onReloadRequested()
                                             }
                                         )
@@ -512,71 +364,64 @@ class AppsTable extends Component<
             >
                 <Row justify="center">
                     {self.props.isMobile ? (
-                        dataToRender
-                            .filter((app) => !app.isProject)
-                            .map((app: any) => ({
-                                ...app,
-                            }))
-                            .map(
-                                ({
-                                    appName = '',
-                                    hasPersistentData,
-                                    notExposeAsWebApp,
-                                    instanceCount,
-                                    hasDefaultSubDomainSsl,
-                                }) => (
-                                    <Card
-                                        type="inner"
-                                        title={appName}
-                                        key={appName}
-                                        extra={
-                                            <Link
-                                                to={this.appDetailPath(appName)}
+                        appsToRender.map(
+                            ({
+                                appName = '',
+                                hasPersistentData,
+                                notExposeAsWebApp,
+                                instanceCount,
+                                hasDefaultSubDomainSsl,
+                            }) => (
+                                <Card
+                                    type="inner"
+                                    title={appName}
+                                    key={appName}
+                                    extra={
+                                        <Link to={this.appDetailPath(appName)}>
+                                            Details
+                                        </Link>
+                                    }
+                                    style={{
+                                        width: '100%',
+                                        marginBottom: 8,
+                                    }}
+                                >
+                                    <p>
+                                        Persistent Data:{' '}
+                                        {!hasPersistentData ? undefined : (
+                                            <span>
+                                                <CheckOutlined />
+                                            </span>
+                                        )}
+                                    </p>
+                                    <p>
+                                        Exposed Webapp:{' '}
+                                        {!!notExposeAsWebApp ? undefined : (
+                                            <span>
+                                                <CheckOutlined />
+                                            </span>
+                                        )}
+                                    </p>
+                                    <p>Instance Count: {instanceCount}</p>
+                                    <p>
+                                        Open in Browser:{' '}
+                                        {!!notExposeAsWebApp ? undefined : (
+                                            <NewTabLink
+                                                url={`http${
+                                                    hasDefaultSubDomainSsl
+                                                        ? 's'
+                                                        : ''
+                                                }://${appName}.${
+                                                    self.props.rootDomain
+                                                }`}
                                             >
-                                                Details
-                                            </Link>
-                                        }
-                                        style={{
-                                            width: '100%',
-                                            marginBottom: 8,
-                                        }}
-                                    >
-                                        <p>
-                                            Persistent Data:{' '}
-                                            {!hasPersistentData ? undefined : (
-                                                <span>
-                                                    <CheckOutlined />
-                                                </span>
-                                            )}
-                                        </p>
-                                        <p>
-                                            Exposed Webapp:{' '}
-                                            {!!notExposeAsWebApp ? undefined : (
-                                                <span>
-                                                    <CheckOutlined />
-                                                </span>
-                                            )}
-                                        </p>
-                                        <p>Instance Count: {instanceCount}</p>
-                                        <p>
-                                            Open in Browser:{' '}
-                                            {!!notExposeAsWebApp ? undefined : (
-                                                <NewTabLink
-                                                    url={`http${
-                                                        hasDefaultSubDomainSsl
-                                                            ? 's'
-                                                            : ''
-                                                    }://${appName}.${
-                                                        self.props.rootDomain
-                                                    }`}
-                                                >
-                                                    <LinkOutlined />{' '}
-                                                </NewTabLink>
-                                            )}
-                                        </p>
-                                    </Card>
-                                )
+                                                <LinkOutlined />{' '}
+                                            </NewTabLink>
+                                        )}
+                                    </p>
+                                </Card>
                             )
+                        )
                     ) : (
                         <div
                             style={{
@@ -584,16 +429,9 @@ class AppsTable extends Component<
                             }}
                         >
                             <Table<TableData>
-                                expandable={{
-                                    expandedRowKeys: expandedRowKeys,
-                                    onExpandedRowsChange: (expandedRows) => {
-                                        self.setState({
-                                            expandedRowKeys: [...expandedRows],
-                                        })
-                                    },
-                                }}
+                                rowKey="appName"
                                 columns={self.createColumns()}
-                                dataSource={organizedData}
+                                dataSource={appsToRender}
                                 pagination={false}
                                 size="middle"
                                 rowSelection={
@@ -602,15 +440,13 @@ class AppsTable extends Component<
                                               selectedRowKeys:
                                                   self.state.selectedRowKeys,
                                               onChange: (
-                                                  selectedRowKeys,
-                                                  selectedRows
+                                                  newSelectedRowKeys: React.Key[]
                                               ) => {
                                                   self.setState({
                                                       selectedRowKeys:
-                                                          selectedRowKeys,
+                                                          newSelectedRowKeys,
                                                   })
                                               },
-                                              checkStrictly: false,
                                           }
                                         : undefined
                                 }
