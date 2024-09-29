@@ -216,8 +216,7 @@ class AppDetails extends ApiComponent<
             throw new Error('App not found')
         }
 
-        let currentProjectId = app.projectId //undefined as string | undefined
-        //currentProjectId = undefined as string | undefined
+        let currentProjectId = app.projectId
 
         if (!currentProjectId || !currentProjectId.trim()) {
             return <div />
