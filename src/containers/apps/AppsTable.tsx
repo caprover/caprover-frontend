@@ -3,6 +3,7 @@ import {
     CodeOutlined,
     DeleteOutlined,
     DisconnectOutlined,
+    EditOutlined,
     LinkOutlined,
     LoadingOutlined,
     UnorderedListOutlined,
@@ -554,11 +555,14 @@ class AppsTable extends Component<
         const self = this
         let projectName = ''
 
+        let editable = false
+
         if (this.state.selectedProjectId === ALL_APPS) {
             projectName = 'All'
         } else if (this.state.selectedProjectId === ROOT_APPS) {
             projectName = 'Root'
         } else {
+            editable = true
             const projectsMap: { [key: string]: ProjectDefinition } = {}
             self.props.projects.forEach((item) => {
                 projectsMap[item.id] = item
@@ -584,7 +588,54 @@ class AppsTable extends Component<
                 .join(' > ')
         }
 
-        return <h3>{projectName} apps</h3>
+        const className = 'edit-icon-' + self.state.selectedProjectId
+
+        if (!editable) {
+            return <h3>{projectName}</h3>
+        } else {
+            const editProjectClicked = function () {
+                alert('hi')
+                // TODO
+            }
+
+            return (
+                <h3
+                    style={{
+                        position: 'relative',
+                        display: 'inline-block',
+                        cursor: 'pointer',
+                        paddingRight: 20,
+                    }}
+                    onClick={editProjectClicked}
+                    onMouseEnter={(e) => {
+                        const editIcon = e.currentTarget.querySelector(
+                            '.' + className
+                        ) as HTMLElement
+                        if (editIcon) editIcon.style.opacity = '1'
+                    }}
+                    onMouseLeave={(e) => {
+                        const editIcon = e.currentTarget.querySelector(
+                            '.' + className
+                        ) as HTMLElement
+                        if (editIcon) editIcon.style.opacity = '0'
+                    }}
+                >
+                    {projectName}
+                    <span
+                        className={className}
+                        style={{
+                            marginLeft: 10,
+                            opacity: 0,
+                            transition: 'opacity 0.3s',
+                        }}
+                    >
+                        <ClickableLink onLinkClicked={editProjectClicked}>
+                            <EditOutlined />
+                        </ClickableLink>
+                    </span>
+                </h3>
+            )
+        }
     }
 
     createProjectTreeData(projects: ProjectDefinition[]): TreeDataNode[] {
