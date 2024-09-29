@@ -7,7 +7,8 @@ import {
     LoadingOutlined,
     UnorderedListOutlined,
 } from '@ant-design/icons'
-import { Button, Card, Input, Row, Table, Tag, Tooltip } from 'antd'
+import type { TreeDataNode, TreeProps } from 'antd'
+import { Button, Card, Col, Input, Row, Table, Tag, Tooltip, Tree } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component, Fragment } from 'react'
@@ -15,6 +16,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ApiManager from '../../api/ApiManager'
 import { IMobileComponent } from '../../models/ContainerProps'
+import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
 import NewTabLink from '../global/NewTabLink'
@@ -22,12 +24,16 @@ import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
 import onDeleteAppClicked from './DeleteAppConfirm'
 
+const ALL_APPS = 'ALL_APPS'
+const ROOT_APPS = 'ROOT_APPS'
+
 type TableData = IAppDef & { lastDeployTime: string }
 
 class AppsTable extends Component<
     {
         history: History
         apps: IAppDef[]
+        projects: ProjectDefinition[]
         apiManager: ApiManager
         onReloadRequested: () => void
         rootDomain: string
@@ -39,6 +45,7 @@ class AppsTable extends Component<
         searchTerm: string
         isBulkEditMode: boolean
         selectedRowKeys: React.Key[]
+        selectedProjectId: string // project ID, ROOT_APPS, or ALL_APPS
     }
 > {
     constructor(props: any) {
@@ -48,6 +55,7 @@ class AppsTable extends Component<
             searchTerm: urlsQuery,
             isBulkEditMode: false,
             selectedRowKeys: [],
+            selectedProjectId: ALL_APPS,
         }
     }
 
@@ -241,6 +249,15 @@ class AppsTable extends Component<
 
                 return app.appName!.indexOf(searchTerm) >= 0
             })
+            .filter((app) => {
+                const selectedProjectId = self.state.selectedProjectId
+
+                if (selectedProjectId === ALL_APPS) return true
+
+                if (!selectedProjectId) return !app.projectId
+
+                return app.projectId === selectedProjectId
+            })
             .map((app) => {
                 let versionFound = app.versions.filter(
                     (v) => v.version === app.deployedVersion
@@ -428,41 +445,176 @@ class AppsTable extends Component<
                                 width: '100%',
                             }}
                         >
-                            <Table<TableData>
-                                rowKey="appName"
-                                columns={self.createColumns()}
-                                dataSource={appsToRender}
-                                pagination={false}
-                                size="middle"
-                                rowSelection={
-                                    self.state.isBulkEditMode
-                                        ? {
-                                              selectedRowKeys:
-                                                  self.state.selectedRowKeys,
-                                              onChange: (
-                                                  newSelectedRowKeys: React.Key[]
-                                              ) => {
-                                                  self.setState({
+                            <Row
+                                gutter={[16, 16]}
+                                style={{ marginBottom: 16 }}
+                                justify={'center'}
+                            >
+                                <Col span={5}>
+                                    {self.createProjectTreeView()}
+                                </Col>
+                                <Col span={19} style={{ maxWidth: 1200 }}>
+                                    {' '}
+                                    <Table<TableData>
+                                        rowKey="appName"
+                                        columns={self.createColumns()}
+                                        dataSource={appsToRender}
+                                        pagination={false}
+                                        size="middle"
+                                        rowSelection={
+                                            self.state.isBulkEditMode
+                                                ? {
                                                       selectedRowKeys:
-                                                          newSelectedRowKeys,
-                                                  })
-                                              },
-                                          }
-                                        : undefined
-                                }
-                                onChange={(pagination, filters, sorter) => {
-                                    // Persist sorter state
-                                    if (!Array.isArray(sorter)) {
-                                        window.localStorage.appsSortKey =
-                                            sorter.columnKey
-                                        window.localStorage.appsSortOrder =
-                                            sorter.order
-                                    }
-                                }}
-                            />
+                                                          self.state
+                                                              .selectedRowKeys,
+                                                      onChange: (
+                                                          newSelectedRowKeys: React.Key[]
+                                                      ) => {
+                                                          self.setState({
+                                                              selectedRowKeys:
+                                                                  newSelectedRowKeys,
+                                                          })
+                                                      },
+                                                  }
+                                                : undefined
+                                        }
+                                        onChange={(
+                                            pagination,
+                                            filters,
+                                            sorter
+                                        ) => {
+                                            // Persist sorter state
+                                            if (!Array.isArray(sorter)) {
+                                                window.localStorage.appsSortKey =
+                                                    sorter.columnKey
+                                                window.localStorage.appsSortOrder =
+                                                    sorter.order
+                                            }
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
                         </div>
                     )}
                 </Row>
+            </Card>
+        )
+    }
+
+    createProjectTreeData(projects: ProjectDefinition[]): TreeDataNode[] {
+        const projectsMap: { [key: string]: TreeDataNode } = {}
+        let root: TreeDataNode[] = []
+
+        // Create a map of all projects
+        projects.forEach((item) => {
+            projectsMap[item.id] = {
+                title: item.name,
+                key: item.id,
+            }
+        })
+
+        // Distribute projects and apps to their respective parents or to the root
+        projects.forEach((item) => {
+            const project = projectsMap[item.id]
+            if (item.parentProjectId && projectsMap[item.parentProjectId]) {
+                const children =
+                    projectsMap[item.parentProjectId].children || []
+
+                children.push(project)
+                projectsMap[item.parentProjectId].children = children
+            } else {
+                root.push(project)
+            }
+        })
+
+        root.forEach((project) => {
+            if (project.children)
+                project.children =
+                    project.children.length > 0 ? project.children : undefined
+        })
+
+        root = [
+            {
+                title: 'root',
+                key: ROOT_APPS,
+                children: root,
+            },
+        ]
+        return root
+    }
+
+    createProjectTreeView(): React.ReactNode {
+        const self = this
+        const treeData: TreeDataNode[] = self.createProjectTreeData(
+            self.props.projects
+        )
+        const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
+            self.setState({
+                selectedProjectId: info.selected
+                    ? `${info.node.key}`
+                    : ALL_APPS,
+            })
+
+            // info = {
+            //     "event": "select",
+            //     "selected": true,
+            //     "node": {
+            //       "title": "atest",
+            //       "key": "ba0d06ae-d114-4094-a8d3-4bb91d9004bb",
+            //       "expanded": false,
+            //       "selected": false,
+            //       "checked": false,
+            //       "loaded": false,
+            //       "loading": false,
+            //       "halfChecked": false,
+            //       "dragOver": false,
+            //       "dragOverGapTop": false,
+            //       "dragOverGapBottom": false,
+            //       "pos": "0-2",
+            //       "active": false
+            //     },
+            //     "selectedNodes": [
+            //       {
+            //         "title": "atest",
+            //         "key": "ba0d06ae-d114-4094-a8d3-4bb91d9004bb"
+            //       }
+            //     ],
+            //     "nativeEvent": {
+            //       "isTrusted": true
+            //     }
+        }
+
+        const onCheck: TreeProps['onCheck'] = (checkedKeys, info) => {
+            // console.log('onCheck', checkedKeys, info)
+            // TODO!
+        }
+
+        return (
+            <Card style={{ height: '100%' }}>
+                <Tree
+                    showLine
+                    style={{ marginLeft: -20 }}
+                    checkable={!!self.state.isBulkEditMode}
+                    defaultExpandedKeys={[ROOT_APPS]}
+                    defaultSelectedKeys={[]}
+                    defaultCheckedKeys={[]}
+                    onSelect={onSelect}
+                    onCheck={onCheck}
+                    treeData={treeData}
+                    titleRender={(nodeData: TreeDataNode) => {
+                        const title = `${nodeData.title}`
+
+                        if (self.state.selectedProjectId === nodeData.key) {
+                            return (
+                                <span style={{ color: '#0d4f7a' }}>
+                                    <b>{title}</b>
+                                </span>
+                            )
+                        }
+
+                        return <span>{title}</span>
+                    }}
+                />
             </Card>
         )
     }

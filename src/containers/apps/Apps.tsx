@@ -109,16 +109,12 @@ export default class Apps extends ApiComponent<
                     apiData.projects.length > 0) && (
                     <div
                         style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 25,
                             padding: '0 20px',
                             margin: '0 auto 50px',
-                            maxWidth: 1200,
                         }}
                     >
                         <Row justify="center">
-                            <Col xs={{ span: 24 }} lg={{ span: 20 }}>
+                            <Col lg={{ span: 24 }}>
                                 <AppsTable
                                     onReloadRequested={() => {
                                         self.reFetchData()
