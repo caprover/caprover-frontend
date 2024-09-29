@@ -294,6 +294,7 @@ export default class ApiManager {
         let appDeployTokenConfig = appDefinition.appDeployTokenConfig
         let tags = appDefinition.tags
         let redirectDomain = appDefinition.redirectDomain
+        let projectId = appDefinition.projectId
         const http = this.http
 
         return Promise.resolve() //
@@ -320,6 +321,7 @@ export default class ApiManager {
                     appDeployTokenConfig: appDeployTokenConfig,
                     tags: tags,
                     redirectDomain: redirectDomain,
+                    projectId: projectId,
                 })
             )
     }

@@ -1,10 +1,4 @@
-import {
-    CloseOutlined,
-    DeleteOutlined,
-    EditOutlined,
-    ReadOutlined,
-    SaveOutlined,
-} from '@ant-design/icons'
+import { CloseOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons'
 import {
     Affix,
     Alert,
@@ -13,9 +7,9 @@ import {
     Col,
     Input,
     Modal,
-    Popover,
     Row,
     Tabs,
+    Tag,
     Tooltip,
 } from 'antd'
 import classnames from 'classnames'
@@ -25,6 +19,7 @@ import { RouteComponentProps } from 'react-router'
 import ApiManager from '../../../api/ApiManager'
 import { IMobileComponent } from '../../../models/ContainerProps'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
+import ProjectDefinition from '../../../models/ProjectDefinition'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
 import ApiComponent from '../../global/ApiComponent'
@@ -46,6 +41,7 @@ export interface SingleAppApiData {
     rootDomain: string
     captainSubDomain: string
     defaultNginxConfig: string
+    projects: ProjectDefinition[]
 }
 
 export interface AppDetailsTabProps {
@@ -178,6 +174,123 @@ class AppDetails extends ApiComponent<
             })
     }
 
+    //     <div>
+    //     <span>
+    //         <ClickableLink
+    //             onLinkClicked={() => self.openRenameAppDialog()}
+    //         >
+    //             <Tooltip title="Rename app" placement="bottom">
+    //                 <EditOutlined />
+    //             </Tooltip>
+    //         </ClickableLink>
+    //         &nbsp;&nbsp;
+    //         {app.appName}
+    //         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    //         <ClickableLink onLinkClicked={() => self.viewDescription()}>
+    //             <Popover
+    //                 placement="bottom"
+    //                 content={
+    //                     <div
+    //                         style={{
+    //                             maxWidth: 300,
+    //                             whiteSpace: 'pre-line',
+    //                         }}
+    //                     >
+    //                         {app.description ||
+    //                             'Click to edit app description...'}
+    //                     </div>
+    //                 }
+    //                 title="App description"
+    //             >
+    //                 <ReadOutlined />
+    //             </Popover>
+    //         </ClickableLink>
+    //     </span>
+    // </div>
+
+    createProjectBreadcrumbs() {
+        const self = this
+        const apiData = self.state.apiData
+        const app = apiData?.appDefinition
+        if (!app || !apiData) {
+            throw new Error('App not found')
+        }
+
+        let currentProjectId = app.projectId //undefined as string | undefined
+        //currentProjectId = undefined as string | undefined
+
+        if (!currentProjectId || !currentProjectId.trim()) {
+            return <div />
+        }
+
+        const projectMap = {} as IHashMapGeneric<ProjectDefinition>
+
+        apiData.projects.forEach((it) => {
+            projectMap[it.id] = it
+        })
+
+        const projectsBreadCrumbs = [] as ProjectDefinition[]
+
+        while (currentProjectId) {
+            const currentProject: ProjectDefinition | undefined =
+                projectMap[currentProjectId]
+            if (currentProject) {
+                projectsBreadCrumbs.unshift(currentProject)
+                currentProjectId = currentProject.parentProjectId
+            } else {
+                break
+            }
+        }
+
+        return (
+            <div style={{ marginBottom: 10, fontSize: 12 }}>
+                {projectsBreadCrumbs.map((project, index) => (
+                    <span key={project.id}>
+                        <span style={{ marginLeft: 5 }}> {' > '}</span>
+                        <ClickableLink
+                            onLinkClicked={() =>
+                                self.props.history.push(
+                                    `/apps/projects/${project.id}`
+                                )
+                            }
+                        >
+                            {project.name}
+                        </ClickableLink>
+                    </span>
+                ))}
+            </div>
+        )
+    }
+
+    createAppHeader() {
+        const self = this
+        const app = self.state.apiData?.appDefinition
+        if (!app) {
+            throw new Error('App not found')
+        }
+        return (
+            <div style={{ marginTop: 20, marginBottom: 10 }}>
+                <div>{self.createProjectBreadcrumbs()}</div>
+
+                <Row align="middle">
+                    <h2 style={{ marginBottom: 5, marginTop: 0 }}>
+                        {app.appName}
+                    </h2>
+                </Row>
+
+                {app.tags && app.tags.length > 0 && (
+                    <span style={{ marginLeft: 0 }}>
+                        {app.tags.map((tag, index) => (
+                            <Tag key={index} color="blue">
+                                {tag.tagName}
+                            </Tag>
+                        ))}
+                    </span>
+                )}
+            </div>
+        )
+    }
+
     render() {
         const self = this
 
@@ -197,8 +310,6 @@ class AppDetails extends ApiComponent<
             return <ErrorRetry />
         }
 
-        const app = self.state.apiData.appDefinition
-
         return (
             <Row>
                 <Col span={20} offset={2}>
@@ -212,46 +323,7 @@ class AppDetails extends ApiComponent<
                                 </Tooltip>
                             </ClickableLink>
                         }
-                        title={
-                            <span>
-                                <ClickableLink
-                                    onLinkClicked={() =>
-                                        self.openRenameAppDialog()
-                                    }
-                                >
-                                    <Tooltip
-                                        title="Rename app"
-                                        placement="bottom"
-                                    >
-                                        <EditOutlined />
-                                    </Tooltip>
-                                </ClickableLink>
-                                &nbsp;&nbsp;
-                                {app.appName}
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <ClickableLink
-                                    onLinkClicked={() => self.viewDescription()}
-                                >
-                                    <Popover
-                                        placement="bottom"
-                                        content={
-                                            <div
-                                                style={{
-                                                    maxWidth: 300,
-                                                    whiteSpace: 'pre-line',
-                                                }}
-                                            >
-                                                {app.description ||
-                                                    'Click to edit app description...'}
-                                            </div>
-                                        }
-                                        title="App description"
-                                    >
-                                        <ReadOutlined />
-                                    </Popover>
-                                </ClickableLink>
-                            </span>
-                        }
+                        title={self.createAppHeader()}
                     >
                         {this.state.isLoading && (
                             <div
@@ -473,23 +545,30 @@ class AppDetails extends ApiComponent<
     reFetchData() {
         const self = this
         self.setState({ isLoading: true })
-        return this.apiManager
-            .getAllApps()
-            .then(function (data: any) {
+        return Promise.all([
+            self.apiManager.getAllApps(),
+            self.apiManager.getAllProjects(),
+        ])
+            .then(function (dataReturns: any) {
+                const getAppsResp = dataReturns[0]
+                const projects = dataReturns[1].projects || []
+
                 for (
                     let index = 0;
-                    index < data.appDefinitions.length;
+                    index < getAppsResp.appDefinitions.length;
                     index++
                 ) {
-                    const element = data.appDefinitions[index]
+                    const element = getAppsResp.appDefinitions[index]
                     if (element.appName === self.props.match.params.appName) {
                         self.setState({
                             isLoading: false,
                             apiData: {
+                                projects: projects,
                                 appDefinition: element,
-                                rootDomain: data.rootDomain,
-                                captainSubDomain: data.captainSubDomain,
-                                defaultNginxConfig: data.defaultNginxConfig,
+                                rootDomain: getAppsResp.rootDomain,
+                                captainSubDomain: getAppsResp.captainSubDomain,
+                                defaultNginxConfig:
+                                    getAppsResp.defaultNginxConfig,
                             },
                         })
                         return
