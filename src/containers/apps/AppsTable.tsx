@@ -7,6 +7,7 @@ import {
     LoadingOutlined,
     UnorderedListOutlined,
 } from '@ant-design/icons'
+
 import type { TreeDataNode, TreeProps } from 'antd'
 import { Button, Card, Col, Input, Row, Table, Tag, Tooltip, Tree } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
@@ -19,6 +20,7 @@ import { IMobileComponent } from '../../models/ContainerProps'
 import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
+import ClickableLink from '../global/ClickableLink'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
@@ -254,7 +256,7 @@ class AppsTable extends Component<
 
                 if (selectedProjectId === ALL_APPS) return true
 
-                if (!selectedProjectId) return !app.projectId
+                if (selectedProjectId === ROOT_APPS) return !app.projectId
 
                 return app.projectId === selectedProjectId
             })
@@ -454,7 +456,7 @@ class AppsTable extends Component<
                                     {self.createProjectTreeView()}
                                 </Col>
                                 <Col span={19} style={{ maxWidth: 1200 }}>
-                                    {' '}
+                                    {self.createAppTableHeader()}
                                     <Table<TableData>
                                         rowKey="appName"
                                         columns={self.createColumns()}
@@ -492,6 +494,8 @@ class AppsTable extends Component<
                                             }
                                         }}
                                     />
+
+                                    {self.createProjectTiles()}
                                 </Col>
                             </Row>
                         </div>
@@ -499,6 +503,88 @@ class AppsTable extends Component<
                 </Row>
             </Card>
         )
+    }
+
+    createProjectTiles(): React.ReactNode {
+        const self = this
+        const selectedProjectId =
+            self.state.selectedProjectId === ROOT_APPS
+                ? ''
+                : self.state.selectedProjectId
+
+        if (selectedProjectId === ALL_APPS) return <div />
+
+        const childProjects: ProjectDefinition[] = []
+        self.props.projects.forEach((item) => {
+            if (
+                (!item.parentProjectId && !selectedProjectId) ||
+                selectedProjectId === item.parentProjectId
+            ) {
+                childProjects.push(item)
+            }
+        })
+
+        if (childProjects.length === 0) return <div />
+
+        return (
+            <div style={{ marginTop: 60 }}>
+                <h3>Projects:</h3>
+                <Row gutter={16}>
+                    {childProjects.map((p) => self.createProjectTile(p))}
+                </Row>
+            </div>
+        )
+    }
+
+    createProjectTile(p: ProjectDefinition): any {
+        return (
+            <Card style={{ marginRight: 0, marginLeft: 25 }}>
+                <ClickableLink
+                    onLinkClicked={() => {
+                        //
+                    }}
+                >
+                    <h4>{p.name}</h4>
+                </ClickableLink>
+            </Card>
+        )
+    }
+
+    createAppTableHeader(): React.ReactNode {
+        const self = this
+        let projectName = ''
+
+        if (this.state.selectedProjectId === ALL_APPS) {
+            projectName = 'All'
+        } else if (this.state.selectedProjectId === ROOT_APPS) {
+            projectName = 'Root'
+        } else {
+            const projectsMap: { [key: string]: ProjectDefinition } = {}
+            self.props.projects.forEach((item) => {
+                projectsMap[item.id] = item
+            })
+
+            const breadCrumbs: string[] = []
+
+            breadCrumbs.push(self.state.selectedProjectId)
+
+            let currentProjectId = self.state.selectedProjectId
+            while (currentProjectId && projectsMap[currentProjectId]) {
+                const currentProject = projectsMap[currentProjectId]
+                if (currentProject.parentProjectId) {
+                    breadCrumbs.unshift(currentProject.parentProjectId)
+                    currentProjectId = currentProject.parentProjectId
+                } else {
+                    break
+                }
+            }
+
+            projectName = breadCrumbs
+                .map((id) => projectsMap[id]?.name || '')
+                .join(' > ')
+        }
+
+        return <h3>{projectName} apps</h3>
     }
 
     createProjectTreeData(projects: ProjectDefinition[]): TreeDataNode[] {
@@ -591,9 +677,10 @@ class AppsTable extends Component<
 
         return (
             <Card style={{ height: '100%' }}>
-                <Tree
+                <Tree.DirectoryTree
+                    style={{ marginLeft: -22 }}
                     showLine
-                    style={{ marginLeft: -20 }}
+                    showIcon={false}
                     checkable={!!self.state.isBulkEditMode}
                     defaultExpandedKeys={[ROOT_APPS]}
                     defaultSelectedKeys={[]}
@@ -606,7 +693,7 @@ class AppsTable extends Component<
 
                         if (self.state.selectedProjectId === nodeData.key) {
                             return (
-                                <span style={{ color: '#0d4f7a' }}>
+                                <span>
                                     <b>{title}</b>
                                 </span>
                             )
