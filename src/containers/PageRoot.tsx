@@ -366,10 +366,22 @@ class PageRoot extends ApiComponent<
                                 />
 
                                 <Route
+                                    path="/apps/projects/new"
+                                    render={(props) => (
+                                        <ProjectDetailsEdit
+                                            {...props}
+                                            createNewProject={true}
+                                            mainContainer={self.mainContainer}
+                                        />
+                                    )}
+                                />
+
+                                <Route
                                     path="/apps/projects/:projectId"
                                     render={(props) => (
                                         <ProjectDetailsEdit
                                             {...props}
+                                            createNewProject={false}
                                             mainContainer={self.mainContainer}
                                         />
                                     )}

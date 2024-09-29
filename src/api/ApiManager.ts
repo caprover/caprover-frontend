@@ -229,6 +229,16 @@ export default class ApiManager {
             )
     }
 
+    registerProject(selectedProject: ProjectDefinition) {
+        const http = this.http
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/projects/register', {
+                    ...selectedProject,
+                })
+            )
+    }
+
     updateProject(project: ProjectDefinition) {
         const http = this.http
         return Promise.resolve() //

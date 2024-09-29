@@ -4,6 +4,7 @@ import {
     DeleteOutlined,
     DisconnectOutlined,
     EditOutlined,
+    FolderAddOutlined,
     LinkOutlined,
     LoadingOutlined,
     UnorderedListOutlined,
@@ -594,7 +595,7 @@ class AppsTable extends Component<
         let editable = false
 
         if (this.state.selectedProjectId === ALL_APPS) {
-            projectName = 'All'
+            projectName = 'All apps'
         } else if (this.state.selectedProjectId === ROOT_APPS) {
             projectName = 'Root'
         } else {
@@ -767,8 +768,36 @@ class AppsTable extends Component<
 
         return (
             <Card style={{ height: '100%' }}>
+                <Row
+                    justify={'space-between'}
+                    align={'middle'}
+                    style={{
+                        marginLeft: -18,
+                        marginTop: -10,
+                    }}
+                >
+                    <h4 style={{ margin: 0 }}>Projects</h4>
+                    <Tooltip title="Create new project">
+                        <Button
+                            type="default"
+                            shape="circle"
+                            onClick={() => {
+                                self.props.history.push('/apps/projects/new')
+                            }}
+                        >
+                            <FolderAddOutlined />
+                        </Button>
+                    </Tooltip>
+                </Row>
+                <hr
+                    style={{
+                        marginLeft: -18,
+                        marginBottom: 20,
+                        marginRight: 0,
+                    }}
+                />
                 <Tree.DirectoryTree
-                    style={{ marginLeft: -22 }}
+                    style={{ marginLeft: -22, position: 'absolute' }}
                     showLine
                     showIcon={false}
                     checkable={!!self.state.isBulkEditMode}

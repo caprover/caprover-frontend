@@ -13,6 +13,8 @@ import ErrorRetry from '../global/ErrorRetry'
 interface PropsInterface extends RouteComponentProps<any> {
     mainContainer: RefObject<HTMLDivElement>
     isMobile: boolean
+
+    createNewProject: boolean
 }
 
 class ProjectDetailsEdit extends ApiComponent<
@@ -65,14 +67,18 @@ class ProjectDetailsEdit extends ApiComponent<
             })
         })
 
+        const title = self.props.createNewProject
+            ? 'Create a New Project'
+            : 'Edit project: ' + selectedProject.name
+
         return (
             <Row justify={'center'} style={{ marginTop: 30 }}>
                 <Card>
                     <div>
-                        <h3>{'Edit project: ' + selectedProject.name}</h3>
+                        <h3>{title}</h3>
                         <p>
-                            You can edit the name, description and change the
-                            parent of this project.
+                            You can set the name, description and the parent of
+                            this project.
                         </p>
                         <div style={{ height: 20 }} />
                         <div>
@@ -84,7 +90,22 @@ class ProjectDetailsEdit extends ApiComponent<
                                 onChange={(e) => {
                                     const newData =
                                         Utils.copyObject(selectedProject)
-                                    newData.name = e.target.value.trim()
+
+                                    let value = e.target.value
+                                    if (
+                                        value.endsWith('- ') ||
+                                        value.endsWith('--') ||
+                                        value.startsWith(' ') ||
+                                        value.startsWith('-')
+                                    ) {
+                                        return // we don't want to allow --
+                                    }
+
+                                    if (value.endsWith(' ')) {
+                                        value = value.trim() + '-'
+                                    }
+                                    value = value.toLocaleLowerCase()
+                                    newData.name = value
                                     self.setState({
                                         selectedProject: newData,
                                     })
@@ -170,16 +191,30 @@ class ProjectDetailsEdit extends ApiComponent<
             return
         }
         self.setState({ isLoading: true })
-        return self.apiManager
-            .updateProject(selectedProject)
-            .then(function (data: any) {
-                Toaster.toastSuccess('Project saved')
-                self.goBackToApps()
-            })
-            .catch(Toaster.createCatcher())
-            .then(function () {
-                self.setState({ isLoading: false })
-            })
+
+        if (self.props.createNewProject) {
+            return self.apiManager
+                .registerProject(selectedProject)
+                .then(function (data: any) {
+                    Toaster.toastSuccess('Project created')
+                    self.goBackToApps()
+                })
+                .catch(Toaster.createCatcher())
+                .then(function () {
+                    self.setState({ isLoading: false })
+                })
+        } else {
+            return self.apiManager
+                .updateProject(selectedProject)
+                .then(function (data: any) {
+                    Toaster.toastSuccess('Project saved')
+                    self.goBackToApps()
+                })
+                .catch(Toaster.createCatcher())
+                .then(function () {
+                    self.setState({ isLoading: false })
+                })
+        }
     }
 
     componentDidMount() {
@@ -194,17 +229,31 @@ class ProjectDetailsEdit extends ApiComponent<
             .then(function (data: any) {
                 const projects = (data.projects || []) as ProjectDefinition[]
 
-                const selectedProject = projects.find(
-                    (it) => it.id === self.props.match.params.projectId
-                )
+                const isNewApp = !!self.props.createNewProject
 
-                if (!selectedProject) {
-                    self.goBackToApps()
-                } else {
+                if (isNewApp) {
                     self.setState({
-                        selectedProject: selectedProject,
+                        selectedProject: {
+                            id: '',
+                            name: '',
+                            description: '',
+                        },
                         allProjects: projects,
                     })
+                } else {
+                    const selectedProject = projects.find(
+                        (it) => it.id === self.props.match.params.projectId
+                    )
+
+                    if (!selectedProject) {
+                        self.goBackToApps()
+                        Toaster.toastError('Project not found...')
+                    } else {
+                        self.setState({
+                            selectedProject: selectedProject,
+                            allProjects: projects,
+                        })
+                    }
                 }
             })
             .catch(Toaster.createCatcher())
