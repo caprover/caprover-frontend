@@ -132,7 +132,7 @@ class ProjectDetailsEdit extends ApiComponent<
                                 onChange={(e) => {
                                     const newData =
                                         Utils.copyObject(selectedProject)
-                                    newData.description = e.target.value.trim()
+                                    newData.description = e.target.value
                                     self.setState({
                                         selectedProject: newData,
                                     })

@@ -10,18 +10,7 @@ import {
 } from '@ant-design/icons'
 
 import type { TreeDataNode, TreeProps } from 'antd'
-import {
-    Button,
-    Card,
-    Col,
-    ConfigProvider,
-    Input,
-    Row,
-    Table,
-    Tag,
-    Tooltip,
-    Tree,
-} from 'antd'
+import { Button, Card, Col, Input, Row, Table, Tag, Tooltip, Tree } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component, Fragment } from 'react'
@@ -529,31 +518,27 @@ class AppsTable extends Component<
 
         const description = selectedProject.description
         return (
-            <ConfigProvider.ConfigContext.Consumer>
-                {({ theme }) => (
-                    <Card style={{ marginTop: 24 }}>
-                        <span
-                            style={{
-                                position: 'absolute',
-                                paddingRight: 8,
-                                paddingLeft: 8,
-                                paddingBottom: 0,
-                                marginTop: -36,
-                                marginLeft: -15,
-                            }}
-                        >
-                            <h4 style={{ margin: 0 }}>Notes</h4>
-                        </span>
-                        <div
-                            style={{
-                                whiteSpace: 'pre-wrap',
-                            }}
-                        >
-                            {description}
-                        </div>
-                    </Card>
-                )}
-            </ConfigProvider.ConfigContext.Consumer>
+            <Card style={{ marginTop: 24 }}>
+                <span
+                    style={{
+                        position: 'absolute',
+                        paddingRight: 8,
+                        paddingLeft: 8,
+                        paddingBottom: 0,
+                        marginTop: -36,
+                        marginLeft: -15,
+                    }}
+                >
+                    <h4 style={{ margin: 0 }}>Notes</h4>
+                </span>
+                <div
+                    style={{
+                        whiteSpace: 'pre-wrap',
+                    }}
+                >
+                    {description}
+                </div>
+            </Card>
         )
     }
 
@@ -739,9 +724,11 @@ class AppsTable extends Component<
         )
         const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
             self.setState({
-                selectedProjectId: info.selected
-                    ? `${info.node.key}`
-                    : ALL_APPS,
+                selectedProjectId:
+                    info.selected &&
+                    self.state.selectedProjectId !== `${info.node.key}`
+                        ? `${info.node.key}`
+                        : ALL_APPS,
             })
 
             // info = {
@@ -788,6 +775,11 @@ class AppsTable extends Component<
                     defaultExpandedKeys={[ROOT_APPS]}
                     defaultSelectedKeys={[]}
                     defaultCheckedKeys={[]}
+                    selectedKeys={
+                        self.state.selectedProjectId
+                            ? [self.state.selectedProjectId]
+                            : []
+                    }
                     onSelect={onSelect}
                     onCheck={onCheck}
                     treeData={treeData}
