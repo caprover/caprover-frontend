@@ -23,6 +23,7 @@ import StorageHelper from '../utils/StorageHelper'
 import Dashboard from './Dashboard'
 import LoggedInCatchAll from './LoggedInCatchAll'
 import Apps from './apps/Apps'
+import ProjectDetailsEdit from './apps/ProjectDetailsEdit'
 import AppDetails from './apps/appDetails/AppDetails'
 import OneClickAppSelector from './apps/oneclick/selector/OneClickAppSelector'
 import OneClickAppConfigPage from './apps/oneclick/variables/OneClickAppConfigPage'
@@ -362,6 +363,16 @@ class PageRoot extends ApiComponent<
                                 <Route
                                     path="/dashboard/"
                                     component={Dashboard}
+                                />
+
+                                <Route
+                                    path="/apps/projects/:projectId"
+                                    render={(props) => (
+                                        <ProjectDetailsEdit
+                                            {...props}
+                                            mainContainer={self.mainContainer}
+                                        />
+                                    )}
                                 />
                                 <Route
                                     path="/apps/details/:appName"

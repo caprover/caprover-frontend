@@ -8,6 +8,7 @@ import {
 } from '../models/IProFeatures'
 import { IRegistryInfo } from '../models/IRegistryInfo'
 import { IVersionInfo } from '../models/IVersionInfo'
+import ProjectDefinition from '../models/ProjectDefinition'
 import ErrorFactory from '../utils/ErrorFactory'
 import Logger from '../utils/Logger'
 import StorageHelper from '../utils/StorageHelper'
@@ -225,6 +226,16 @@ export default class ApiManager {
                     `/user/apps/appData/${appName}?detached=1`,
                     formData
                 )
+            )
+    }
+
+    updateProject(project: ProjectDefinition) {
+        const http = this.http
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/projects/update', {
+                    projectDefinition: project,
+                })
             )
     }
 

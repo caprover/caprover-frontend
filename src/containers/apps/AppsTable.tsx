@@ -645,8 +645,9 @@ class AppsTable extends Component<
             return <h3>{projectName}</h3>
         } else {
             const editProjectClicked = function () {
-                alert('hi')
-                // TODO
+                self.props.history.push(
+                    '/apps/projects/' + self.state.selectedProjectId
+                )
             }
 
             return (
