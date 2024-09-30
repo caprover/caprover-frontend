@@ -26,6 +26,7 @@ import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
 import onDeleteAppClicked from './DeleteAppConfirm'
+import DescriptionPanel from './DescriptionPanel'
 import EditableSpan from './EditableProjectName'
 
 const ALL_APPS = 'ALL_APPS'
@@ -498,8 +499,6 @@ class AppsTable extends Component<
                                     />
 
                                     {self.createDescriptionPanel()}
-
-                                    {self.createProjectTiles()}
                                 </Col>
                             </Row>
                         </div>
@@ -517,70 +516,16 @@ class AppsTable extends Component<
 
         if (!selectedProject || !selectedProject.description) return <div />
 
-        const description = selectedProject.description
-        const headerText = 'Notes'
-        const boxBody = (
-            <div
-                style={{
-                    whiteSpace: 'pre-wrap',
-                }}
-            >
-                {description}
-            </div>
-        )
-
         return (
-            <Card style={{ marginTop: 24 }}>
-                <span
+            <DescriptionPanel headerText="Notes">
+                <div
                     style={{
-                        position: 'absolute',
-                        paddingBottom: 0,
-                        marginTop: -40,
-                        marginLeft: -15,
+                        whiteSpace: 'pre-wrap',
                     }}
                 >
-                    <Card
-                        styles={{ body: { padding: 5 } }}
-                        style={{
-                            border: 0,
-                        }}
-                    >
-                        <h4 style={{ margin: 0, padding: 0 }}>{headerText}</h4>
-                    </Card>
-                </span>
-                {boxBody}
-            </Card>
-        )
-    }
-
-    createProjectTiles(): React.ReactNode {
-        const self = this
-        const selectedProjectId =
-            self.state.selectedProjectId === ROOT_APPS
-                ? ''
-                : self.state.selectedProjectId
-
-        if (selectedProjectId === ALL_APPS) return <div />
-
-        const childProjects: ProjectDefinition[] = []
-        self.props.projects.forEach((item) => {
-            if (
-                (!item.parentProjectId && !selectedProjectId) ||
-                selectedProjectId === item.parentProjectId
-            ) {
-                childProjects.push(item)
-            }
-        })
-
-        if (childProjects.length === 0) return <div />
-
-        return (
-            <div style={{ marginTop: 60 }}>
-                <h3>Projects:</h3>
-                <Row gutter={16}>
-                    {childProjects.map((p) => self.createProjectTile(p))}
-                </Row>
-            </div>
+                    {selectedProject.description}
+                </div>
+            </DescriptionPanel>
         )
     }
 
@@ -635,7 +580,7 @@ class AppsTable extends Component<
         }
 
         if (!editable) {
-            return <h3>{projectName}</h3>
+            return <h4>{projectName}</h4>
         } else {
             const editProjectClicked = () => {
                 self.props.history.push(
@@ -644,12 +589,12 @@ class AppsTable extends Component<
             }
 
             return (
-                <h3>
+                <h4>
                     <EditableSpan
                         titleName={projectName}
                         onEditClick={editProjectClicked}
                     />
-                </h3>
+                </h4>
             )
         }
     }
