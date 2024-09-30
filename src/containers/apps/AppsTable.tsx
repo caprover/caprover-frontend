@@ -21,7 +21,6 @@ import { IMobileComponent } from '../../models/ContainerProps'
 import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
-import ClickableLink from '../global/ClickableLink'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
@@ -526,20 +525,6 @@ class AppsTable extends Component<
                     {selectedProject.description}
                 </div>
             </DescriptionPanel>
-        )
-    }
-
-    createProjectTile(p: ProjectDefinition): any {
-        return (
-            <Card style={{ marginRight: 0, marginLeft: 25 }}>
-                <ClickableLink
-                    onLinkClicked={() => {
-                        //
-                    }}
-                >
-                    <h4>{p.name}</h4>
-                </ClickableLink>
-            </Card>
         )
     }
 
