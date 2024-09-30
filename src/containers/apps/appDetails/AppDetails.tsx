@@ -1,7 +1,6 @@
 import { CloseOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons'
 import {
     Affix,
-    Alert,
     Button,
     Card,
     Col,
@@ -11,9 +10,10 @@ import {
     Tabs,
     Tag,
     Tooltip,
+    Typography,
 } from 'antd'
 import classnames from 'classnames'
-import { RefObject } from 'react'
+import { ReactNode, RefObject } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import ApiManager from '../../../api/ApiManager'
@@ -28,6 +28,7 @@ import ClickableLink from '../../global/ClickableLink'
 import ErrorRetry from '../../global/ErrorRetry'
 import { IAppDef } from '../AppDefinition'
 import onDeleteAppClicked from '../DeleteAppConfirm'
+import EditableSpan from '../EditableProjectName'
 import AppConfigs from './AppConfigs'
 import HttpSettings from './HttpSettings'
 import Deployment from './deploy/Deployment'
@@ -66,6 +67,9 @@ class AppDetails extends ApiComponent<
         apiData: SingleAppApiData | undefined
         activeTabKey: string
         renderCounterForAffixBug: number
+        editAppDataForModal:
+            | { appName: string; description: string; tags: string[] }
+            | undefined
     }
 > {
     private reRenderTriggered = false
@@ -80,83 +84,12 @@ class AppDetails extends ApiComponent<
             isLoading: true,
             renderCounterForAffixBug: 0,
             apiData: undefined,
+            editAppDataForModal: undefined,
         }
     }
 
     goBackToApps() {
         this.props.history.push('/apps')
-    }
-
-    openRenameAppDialog() {
-        const self = this
-        const app = self.state.apiData!.appDefinition
-        const tempVal = { newName: app.appName }
-        Modal.confirm({
-            title: 'Rename the app:',
-            content: (
-                <div>
-                    <Alert
-                        type="warning"
-                        message="If other apps use the current name to communicate with this app, make sure to update them as well to avoid problems."
-                    />
-                    <Input
-                        style={{ marginTop: 15 }}
-                        placeholder="app-name-here"
-                        defaultValue={app.appName}
-                        onChange={(e) => {
-                            tempVal.newName = (e.target.value || '').trim()
-                        }}
-                    />
-                </div>
-            ),
-            onOk() {
-                const changed = app.appName !== tempVal.newName
-                if (changed && tempVal.newName)
-                    self.renameAppTo(tempVal.newName)
-            },
-        })
-    }
-
-    viewDescription() {
-        const self = this
-        const app = self.state.apiData!.appDefinition
-        const tempVal = { tempDescription: app.description }
-        Modal.confirm({
-            title: 'App Description:',
-            content: (
-                <div>
-                    <Input.TextArea
-                        style={{ marginTop: 15 }}
-                        placeholder="Use app description to take some notes for your app"
-                        rows={12}
-                        defaultValue={app.description}
-                        onChange={(e) => {
-                            tempVal.tempDescription = e.target.value
-                        }}
-                    />
-                </div>
-            ),
-            onOk() {
-                const changed = app.description !== tempVal.tempDescription
-                app.description = tempVal.tempDescription
-                if (changed) self.onUpdateConfigAndSave()
-            },
-        })
-    }
-
-    renameAppTo(newName: string) {
-        const self = this
-        const appDef = Utils.copyObject(self.state.apiData!.appDefinition)
-        self.setState({ isLoading: true })
-        this.apiManager
-            .renameApp(appDef.appName!, newName)
-            .then(function () {
-                return self.reFetchData()
-            })
-            .catch(Toaster.createCatcher())
-            .then(function () {
-                self.setState({ isLoading: false })
-            })
     }
 
     onUpdateConfigAndSave() {
@@ -173,40 +106,6 @@ class AppDetails extends ApiComponent<
                 self.setState({ isLoading: false })
             })
     }
-
-    //     <div>
-    //     <span>
-    //         <ClickableLink
-    //             onLinkClicked={() => self.openRenameAppDialog()}
-    //         >
-    //             <Tooltip title="Rename app" placement="bottom">
-    //                 <EditOutlined />
-    //             </Tooltip>
-    //         </ClickableLink>
-    //         &nbsp;&nbsp;
-    //         {app.appName}
-    //         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    //         <ClickableLink onLinkClicked={() => self.viewDescription()}>
-    //             <Popover
-    //                 placement="bottom"
-    //                 content={
-    //                     <div
-    //                         style={{
-    //                             maxWidth: 300,
-    //                             whiteSpace: 'pre-line',
-    //                         }}
-    //                     >
-    //                         {app.description ||
-    //                             'Click to edit app description...'}
-    //                     </div>
-    //                 }
-    //                 title="App description"
-    //             >
-    //                 <ReadOutlined />
-    //             </Popover>
-    //         </ClickableLink>
-    //     </span>
-    // </div>
 
     createProjectBreadcrumbs() {
         const self = this
@@ -267,25 +166,81 @@ class AppDetails extends ApiComponent<
         if (!app) {
             throw new Error('App not found')
         }
+
+        const appName = app.appName || ''
+
         return (
-            <div style={{ marginTop: 20, marginBottom: 10 }}>
+            <div style={{ marginTop: 20, marginBottom: 10, width: '100%' }}>
+                <div
+                    style={{
+                        position: 'absolute',
+                        padding: 12,
+                        right: 12,
+                        top: 0,
+                    }}
+                >
+                    <ClickableLink onLinkClicked={() => self.goBackToApps()}>
+                        <Tooltip title="Close">
+                            <CloseOutlined />
+                        </Tooltip>
+                    </ClickableLink>
+                </div>
                 <div>{self.createProjectBreadcrumbs()}</div>
 
-                <Row align="middle">
-                    <h2 style={{ marginBottom: 5, marginTop: 0 }}>
-                        {app.appName}
-                    </h2>
-                </Row>
+                <h2 style={{ marginBottom: 5, marginTop: 0, marginLeft: 12 }}>
+                    <EditableSpan
+                        titleName={appName}
+                        onEditClick={() => {
+                            self.setState({
+                                editAppDataForModal: {
+                                    appName: appName,
+                                    description: app.description || '',
+                                    tags: (app.tags || []).map(
+                                        (it) => it.tagName
+                                    ),
+                                },
+                            })
+                        }}
+                    />
+                </h2>
 
                 {app.tags && app.tags.length > 0 && (
-                    <span style={{ marginLeft: 0 }}>
+                    <span style={{ marginLeft: 12 }}>
                         {app.tags.map((tag, index) => (
-                            <Tag key={index} color="blue">
-                                {tag.tagName}
-                            </Tag>
+                            <Tag key={index}>{tag.tagName}</Tag>
                         ))}
                     </span>
                 )}
+                {self.createDescription()}
+            </div>
+        )
+    }
+
+    createDescription(): import('react').ReactNode {
+        const self = this
+        const app = self.state.apiData?.appDefinition
+        if (!app) {
+            throw new Error('App not found')
+        }
+
+        if (!app.description) return <div />
+
+        return (
+            <div style={{ marginLeft: 16, marginTop: 28 }}>
+                <Typography.Paragraph
+                    style={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        whiteSpace: 'pre-wrap',
+                    }}
+                    ellipsis={{
+                        rows: 1,
+                        expandable: true,
+                        symbol: 'more',
+                    }}
+                >
+                    {app.description}
+                </Typography.Paragraph>
             </div>
         )
     }
@@ -311,19 +266,9 @@ class AppDetails extends ApiComponent<
 
         return (
             <Row>
+                {self.createEditAppModal()}
                 <Col span={20} offset={2}>
-                    <Card
-                        extra={
-                            <ClickableLink
-                                onLinkClicked={() => self.goBackToApps()}
-                            >
-                                <Tooltip title="Close">
-                                    <CloseOutlined />
-                                </Tooltip>
-                            </ClickableLink>
-                        }
-                        title={self.createAppHeader()}
-                    >
+                    <Card title={self.createAppHeader()}>
                         {this.state.isLoading && (
                             <div
                                 style={{
@@ -534,6 +479,145 @@ class AppDetails extends ApiComponent<
                     </Card>
                 </Col>
             </Row>
+        )
+    }
+
+    createEditAppModal(): ReactNode {
+        const self = this
+
+        const editAppDataForModal = self.state.editAppDataForModal
+
+        if (!editAppDataForModal) return <div />
+
+        return (
+            <Modal
+                title={`Edit "${self.state.apiData?.appDefinition.appName}" app`}
+                okText="Save & Update"
+                onCancel={() =>
+                    self.setState({ editAppDataForModal: undefined })
+                }
+                onOk={() => {
+                    const newData = Utils.copyObject(self.state.apiData)
+                    if (!newData) return
+
+                    const isNameChanged =
+                        newData.appDefinition.appName !==
+                        editAppDataForModal.appName
+
+                    const editAppDataForModalCopy = Utils.copyObject(
+                        self.state.editAppDataForModal
+                    )
+                    if (!editAppDataForModalCopy) return
+
+                    self.setState({
+                        isLoading: true,
+                        editAppDataForModal: undefined,
+                    })
+
+                    return Promise.resolve()
+                        .then(() => {
+                            if (isNameChanged) {
+                                Toaster.toastInfo('Renaming the app...')
+                                return self.apiManager.renameApp(
+                                    newData.appDefinition.appName!,
+                                    editAppDataForModalCopy.appName
+                                )
+                            }
+                        })
+                        .then(() => {
+                            newData.appDefinition.appName =
+                                editAppDataForModalCopy.appName
+                            newData.appDefinition.description =
+                                editAppDataForModalCopy.description
+                            newData.appDefinition.tags =
+                                editAppDataForModalCopy.tags.map((it) => {
+                                    return { tagName: it }
+                                })
+
+                            self.props.history.replace(
+                                '/apps/details/' +
+                                    editAppDataForModalCopy.appName
+                            )
+                            self.setState({
+                                apiData: newData,
+                            })
+
+                            setTimeout(() => {
+                                // posting after a delay to ensure the state is updated!!
+                                // maybe it's fine to post on the same thread, but I am not sure if React stays the same in future versions.
+                                self.onUpdateConfigAndSave()
+                            }, 200)
+                        })
+                }}
+                open={!!editAppDataForModal}
+            >
+                <p>
+                    If you rename the app that is used internally by other apps,
+                    make sure to update the address as well to avoid problems.
+                </p>
+                <div style={{ height: 20 }} />
+                <div>
+                    <Input
+                        addonBefore="App name"
+                        placeholder="my-awesome-app"
+                        value={editAppDataForModal.appName}
+                        onChange={(e) => {
+                            const newData =
+                                Utils.copyObject(editAppDataForModal)
+                            newData.appName = e.target.value.trim()
+                            self.setState({ editAppDataForModal: newData })
+                        }}
+                    />
+                    <div style={{ height: 32 }} />
+                    <Input
+                        addonBefore="Tags"
+                        placeholder="tag1,another-tag,yet-another <comma separated>"
+                        value={editAppDataForModal.tags.join(',')}
+                        onChange={(e) => {
+                            const newData =
+                                Utils.copyObject(editAppDataForModal)
+                            newData.tags = e.target.value
+                                .trim()
+                                .split(',')
+                                .map((it) => it.trim())
+                            self.setState({ editAppDataForModal: newData })
+                        }}
+                    />
+                    <div style={{ height: 32 }} />
+                    <Input
+                        addonBefore="PROJECTS <SHOULD BE SELECT>"
+                        placeholder="PARENT PROJECT"
+                        onChange={(e) => {
+                            // TODO XXXXXXXXXXXXXXXXXXXXXXXXXXx
+                        }}
+                    />
+                    <div
+                        style={{
+                            marginTop: 32,
+                            marginBottom: 5,
+                            marginLeft: 5,
+                        }}
+                    >
+                        Description
+                    </div>
+                    <Input.TextArea
+                        rows={4}
+                        placeholder={
+                            'This app is just so awesome!\nAnotherline!'
+                        }
+                        value={editAppDataForModal.description}
+                        onChange={(e) => {
+                            const newData =
+                                Utils.copyObject(editAppDataForModal)
+                            newData.description = e.target.value
+                            self.setState({
+                                editAppDataForModal: newData,
+                            })
+                        }}
+                    />
+                    <div style={{ height: 20 }} />
+                </div>
+            </Modal>
         )
     }
 

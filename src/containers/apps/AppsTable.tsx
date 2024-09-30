@@ -3,7 +3,6 @@ import {
     CodeOutlined,
     DeleteOutlined,
     DisconnectOutlined,
-    EditOutlined,
     FolderAddOutlined,
     LinkOutlined,
     LoadingOutlined,
@@ -27,6 +26,7 @@ import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
 import onDeleteAppClicked from './DeleteAppConfirm'
+import EditableSpan from './EditableProjectName'
 
 const ALL_APPS = 'ALL_APPS'
 const ROOT_APPS = 'ROOT_APPS'
@@ -591,7 +591,6 @@ class AppsTable extends Component<
     createAppTableHeader(): React.ReactNode {
         const self = this
         let projectName = ''
-
         let editable = false
 
         if (this.state.selectedProjectId === ALL_APPS) {
@@ -620,57 +619,26 @@ class AppsTable extends Component<
                 }
             }
 
-            projectName = breadCrumbs
-                .map((id) => projectsMap[id]?.name || '')
-                .join(' > ')
+            projectName =
+                '> ' +
+                breadCrumbs.map((id) => projectsMap[id]?.name || '').join(' > ')
         }
-
-        const className = 'edit-icon-' + self.state.selectedProjectId
 
         if (!editable) {
             return <h3>{projectName}</h3>
         } else {
-            const editProjectClicked = function () {
+            const editProjectClicked = () => {
                 self.props.history.push(
                     '/apps/projects/' + self.state.selectedProjectId
                 )
             }
 
             return (
-                <h3
-                    style={{
-                        position: 'relative',
-                        display: 'inline-block',
-                        cursor: 'pointer',
-                        paddingRight: 20,
-                    }}
-                    onClick={editProjectClicked}
-                    onMouseEnter={(e) => {
-                        const editIcon = e.currentTarget.querySelector(
-                            '.' + className
-                        ) as HTMLElement
-                        if (editIcon) editIcon.style.opacity = '1'
-                    }}
-                    onMouseLeave={(e) => {
-                        const editIcon = e.currentTarget.querySelector(
-                            '.' + className
-                        ) as HTMLElement
-                        if (editIcon) editIcon.style.opacity = '0'
-                    }}
-                >
-                    {projectName}
-                    <span
-                        className={className}
-                        style={{
-                            marginLeft: 10,
-                            opacity: 0,
-                            transition: 'opacity 0.3s',
-                        }}
-                    >
-                        <ClickableLink onLinkClicked={editProjectClicked}>
-                            <EditOutlined />
-                        </ClickableLink>
-                    </span>
+                <h3>
+                    <EditableSpan
+                        titleName={projectName}
+                        onEditClick={editProjectClicked}
+                    />
                 </h3>
             )
         }
