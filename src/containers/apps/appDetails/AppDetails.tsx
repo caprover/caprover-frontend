@@ -17,6 +17,7 @@ import { ReactNode, RefObject } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import ApiManager from '../../../api/ApiManager'
+import ProjectSelector from '../../../components/ProjectSelector'
 import { IMobileComponent } from '../../../models/ContainerProps'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import ProjectDefinition from '../../../models/ProjectDefinition'
@@ -68,7 +69,12 @@ class AppDetails extends ApiComponent<
         activeTabKey: string
         renderCounterForAffixBug: number
         editAppDataForModal:
-            | { appName: string; description: string; tags: string[] }
+            | {
+                  appName: string
+                  description: string
+                  parentProjectId: string
+                  tags: string[]
+              }
             | undefined
     }
 > {
@@ -193,6 +199,7 @@ class AppDetails extends ApiComponent<
                         onEditClick={() => {
                             self.setState({
                                 editAppDataForModal: {
+                                    parentProjectId: app.projectId || '',
                                     appName: appName,
                                     description: app.description || '',
                                     tags: (app.tags || []).map(
@@ -527,6 +534,8 @@ class AppDetails extends ApiComponent<
                         .then(() => {
                             newData.appDefinition.appName =
                                 editAppDataForModalCopy.appName
+                            newData.appDefinition.projectId =
+                                editAppDataForModalCopy.parentProjectId
                             newData.appDefinition.description =
                                 editAppDataForModalCopy.description
                             newData.appDefinition.tags =
@@ -583,13 +592,30 @@ class AppDetails extends ApiComponent<
                             self.setState({ editAppDataForModal: newData })
                         }}
                     />
-                    <div style={{ height: 32 }} />
-                    <Input
-                        addonBefore="PROJECTS <SHOULD BE SELECT>"
-                        placeholder="PARENT PROJECT"
-                        onChange={(e) => {
-                            // TODO XXXXXXXXXXXXXXXXXXXXXXXXXXx
+
+                    <div
+                        style={{
+                            marginTop: 32,
+                            marginBottom: 5,
+                            marginLeft: 5,
                         }}
+                    >
+                        Parent project
+                    </div>
+                    <ProjectSelector
+                        allProjects={self.state.apiData?.projects || []}
+                        selectedProjectId={
+                            editAppDataForModal.parentProjectId || ''
+                        }
+                        onChange={(value: string) => {
+                            const newData =
+                                Utils.copyObject(editAppDataForModal)
+                            newData.parentProjectId = value.trim()
+                            self.setState({
+                                editAppDataForModal: newData,
+                            })
+                        }}
+                        excludeProjectId={'NONE'}
                     />
                     <div
                         style={{

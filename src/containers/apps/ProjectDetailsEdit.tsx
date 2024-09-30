@@ -1,7 +1,8 @@
-import { Button, Card, Input, Row, Select } from 'antd'
+import { Button, Card, Input, Row } from 'antd'
 import { RefObject } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
+import ProjectSelector from '../../components/ProjectSelector'
 import { IMobileComponent } from '../../models/ContainerProps'
 import ProjectDefinition from '../../models/ProjectDefinition'
 import Toaster from '../../utils/Toaster'
@@ -51,21 +52,6 @@ class ProjectDetailsEdit extends ApiComponent<
         if (!selectedProject) {
             return <ErrorRetry />
         }
-
-        const projectOptions = [
-            {
-                value: '',
-                label: 'root <no parent>',
-            },
-        ]
-
-        self.state.allProjects.forEach((it) => {
-            if (selectedProject.id === it.id) return
-            projectOptions.push({
-                value: it.id,
-                label: it.name,
-            })
-        })
 
         const title = self.props.createNewProject
             ? 'Create a New Project'
@@ -121,12 +107,11 @@ class ProjectDetailsEdit extends ApiComponent<
                             >
                                 Parent project
                             </div>
-                            <Select
-                                showSearch
-                                style={{ width: '100%' }}
-                                placeholder="Select a parent project"
-                                optionFilterProp="label"
-                                value={selectedProject.parentProjectId || ''}
+                            <ProjectSelector
+                                allProjects={self.state.allProjects}
+                                selectedProjectId={
+                                    selectedProject.parentProjectId || ''
+                                }
                                 onChange={(value: string) => {
                                     const newData =
                                         Utils.copyObject(selectedProject)
@@ -135,7 +120,7 @@ class ProjectDetailsEdit extends ApiComponent<
                                         selectedProject: newData,
                                     })
                                 }}
-                                options={projectOptions}
+                                excludeProjectId={selectedProject.id}
                             />
                             <div
                                 style={{
