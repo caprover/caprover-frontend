@@ -151,15 +151,7 @@ class AppDetails extends ApiComponent<
                 {projectsBreadCrumbs.map((project, index) => (
                     <span key={project.id}>
                         <span style={{ marginLeft: 5 }}> {' > '}</span>
-                        <ClickableLink
-                            onLinkClicked={() =>
-                                self.props.history.push(
-                                    `/apps/projects/${project.id}`
-                                )
-                            }
-                        >
-                            {project.name}
-                        </ClickableLink>
+                        {project.name}
                     </span>
                 ))}
             </div>

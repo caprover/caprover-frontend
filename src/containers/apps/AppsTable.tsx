@@ -518,27 +518,37 @@ class AppsTable extends Component<
         if (!selectedProject || !selectedProject.description) return <div />
 
         const description = selectedProject.description
+        const headerText = 'Notes'
+        const boxBody = (
+            <div
+                style={{
+                    whiteSpace: 'pre-wrap',
+                }}
+            >
+                {description}
+            </div>
+        )
+
         return (
             <Card style={{ marginTop: 24 }}>
                 <span
                     style={{
                         position: 'absolute',
-                        paddingRight: 8,
-                        paddingLeft: 8,
                         paddingBottom: 0,
-                        marginTop: -36,
+                        marginTop: -40,
                         marginLeft: -15,
                     }}
                 >
-                    <h4 style={{ margin: 0 }}>Notes</h4>
+                    <Card
+                        styles={{ body: { padding: 5 } }}
+                        style={{
+                            border: 0,
+                        }}
+                    >
+                        <h4 style={{ margin: 0, padding: 0 }}>{headerText}</h4>
+                    </Card>
                 </span>
-                <div
-                    style={{
-                        whiteSpace: 'pre-wrap',
-                    }}
-                >
-                    {description}
-                </div>
+                {boxBody}
             </Card>
         )
     }
