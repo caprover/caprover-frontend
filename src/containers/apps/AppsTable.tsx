@@ -638,6 +638,7 @@ class AppsTable extends Component<
                 title: 'root',
                 key: ROOT_APPS,
                 children: root,
+                checkable: false,
             },
         ]
         return root
@@ -661,7 +662,7 @@ class AppsTable extends Component<
             //     "event": "select",
             //     "selected": true,
             //     "node": {
-            //       "title": "atest",
+            //       "title": "testing",
             //       "key": "ba0d06ae-d114-4094-a8d3-4bb91d9004bb",
             //       "expanded": false,
             //       "selected": false,
@@ -677,7 +678,7 @@ class AppsTable extends Component<
             //     },
             //     "selectedNodes": [
             //       {
-            //         "title": "atest",
+            //         "title": "testing",
             //         "key": "ba0d06ae-d114-4094-a8d3-4bb91d9004bb"
             //       }
             //     ],
