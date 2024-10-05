@@ -78,10 +78,6 @@ export default class ProFeatures extends ApiComponent<
                     `}
                 </style>
                 <Card
-                    style={{
-                        height: '100%',
-                        boxShadow: '1px 1px 20px #c6c6c6',
-                    }}
                     title={
                         <div style={{}}>
                             <a
