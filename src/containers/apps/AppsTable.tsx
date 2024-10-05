@@ -10,7 +10,17 @@ import {
 } from '@ant-design/icons'
 
 import type { TreeDataNode, TreeProps } from 'antd'
-import { Button, Card, Col, Input, Row, Table, Tag, Tooltip, Tree } from 'antd'
+import {
+    Button,
+    Card,
+    Input,
+    Row,
+    Splitter,
+    Table,
+    Tag,
+    Tooltip,
+    Tree,
+} from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component, Fragment } from 'react'
@@ -21,6 +31,7 @@ import { IMobileComponent } from '../../models/ContainerProps'
 import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
+import StorageHelper from '../../utils/StorageHelper'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
@@ -466,15 +477,30 @@ class AppsTable extends Component<
                                 width: '100%',
                             }}
                         >
-                            <Row
-                                gutter={[16, 16]}
-                                style={{ marginBottom: 16 }}
-                                justify={'center'}
+                            <Splitter
+                                onResizeEnd={(numbers) => {
+                                    const initialPercent =
+                                        numbers[0] / (numbers[0] + numbers[1])
+                                    StorageHelper.setAppProjectSplitRatioInLocalStorage(
+                                        initialPercent
+                                    )
+                                }}
+                                style={{
+                                    marginBottom: 16,
+                                }}
                             >
-                                <Col span={5}>
+                                <Splitter.Panel
+                                    style={{ marginRight: 10 }}
+                                    defaultSize={`${Math.floor(
+                                        StorageHelper.getAppProjectSplitRatioFromLocalStorage() *
+                                            100
+                                    )}%`}
+                                    min="10%"
+                                    max="60%"
+                                >
                                     {self.createProjectTreeView()}
-                                </Col>
-                                <Col span={19} style={{ maxWidth: 1200 }}>
+                                </Splitter.Panel>
+                                <Splitter.Panel style={{ marginLeft: 10 }}>
                                     {self.createAppTableHeader()}
                                     <Table<TableData>
                                         rowKey="appName"
@@ -515,8 +541,8 @@ class AppsTable extends Component<
                                     />
 
                                     {self.createDescriptionPanel()}
-                                </Col>
-                            </Row>
+                                </Splitter.Panel>
+                            </Splitter>
                         </div>
                     )}
                 </Row>

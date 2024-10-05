@@ -13,6 +13,7 @@ const AUTH_KEY = 'CAPROVER_AUTH_KEY'
 const SIDER_COLLAPSED_STATE = 'CAPROVER_SIDER_COLLAPSED_STATE'
 const DARK_MODE = 'CAPROVER_DARK_MODE'
 const LANGUAGE = 'CAPROVER_LANGUAGE'
+const APP_PROJECT_SPLIT_RATIO = 'APP_PROJECT_SPLIT_RATIO'
 
 class StorageHelper {
     getAuthKeyFromStorage() {
@@ -69,6 +70,15 @@ class StorageHelper {
     getLanguageFromLocalStorage(): string {
         const language = localStorage.getItem(LANGUAGE)
         return language ? language : navigator.language
+    }
+
+    setAppProjectSplitRatioInLocalStorage(ratio: number) {
+        localStorage.setItem(APP_PROJECT_SPLIT_RATIO, `${ratio || 0}`)
+    }
+
+    getAppProjectSplitRatioFromLocalStorage(): number {
+        const ratio = localStorage.getItem(APP_PROJECT_SPLIT_RATIO)
+        return ratio ? parseFloat(ratio) : 0.2 // Default to 20% if not set
     }
 }
 
