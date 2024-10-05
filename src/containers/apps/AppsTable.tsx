@@ -37,7 +37,7 @@ import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
 import onDeleteAppClicked from './DeleteAppConfirm'
 import DescriptionPanel from './DescriptionPanel'
-import EditableSpan from './EditableProjectName'
+import EditableSpan from './EditableSpan'
 
 const ALL_APPS = 'ALL_APPS'
 const ROOT_APPS = 'ROOT_APPS'
