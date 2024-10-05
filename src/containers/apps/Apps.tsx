@@ -33,7 +33,11 @@ export default class Apps extends ApiComponent<
         }
     }
 
-    onCreateNewAppClicked(appName: string, hasPersistentData: boolean) {
+    onCreateNewAppClicked(
+        appName: string,
+        projectId: string,
+        hasPersistentData: boolean
+    ) {
         const self = this
 
         Promise.resolve() //
@@ -41,6 +45,7 @@ export default class Apps extends ApiComponent<
                 self.setState({ isLoading: true })
                 return self.apiManager.registerNewApp(
                     appName,
+                    projectId,
                     hasPersistentData,
                     true
                 )
@@ -89,12 +94,15 @@ export default class Apps extends ApiComponent<
                             }}
                         >
                             <CreateNewApp
+                                projects={apiData.projects}
                                 onCreateNewAppClicked={(
                                     appName: string,
+                                    projectId: string,
                                     hasPersistency: boolean
                                 ) => {
                                     self.onCreateNewAppClicked(
                                         appName,
+                                        projectId,
                                         hasPersistency
                                     )
                                 }}

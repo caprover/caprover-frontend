@@ -340,6 +340,7 @@ export default class ApiManager {
 
     registerNewApp(
         appName: string,
+        projectId: string,
         hasPersistentData: boolean,
         detached: boolean
     ) {
@@ -354,6 +355,7 @@ export default class ApiManager {
                     }`,
                     {
                         appName,
+                        projectId,
                         hasPersistentData,
                     }
                 )

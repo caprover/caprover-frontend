@@ -2,30 +2,40 @@ import { PlusCircleOutlined, QuestionCircleFilled } from '@ant-design/icons'
 import { Button, Card, Checkbox, Divider, Input, Row, Tooltip } from 'antd'
 import { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
+import ProjectSelector from '../../components/ProjectSelector'
 import { IMobileComponent } from '../../models/ContainerProps'
+import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
 import NewTabLink from '../global/NewTabLink'
 
 interface MyProps {
-    onCreateNewAppClicked: (appName: string, hasPersistency: boolean) => void
+    onCreateNewAppClicked: (
+        appName: string,
+        projectId: string,
+        hasPersistency: boolean
+    ) => void
     onOneClickAppClicked: () => void
+
+    projects: ProjectDefinition[]
 }
 
 class CreateNewApp extends Component<
     MyProps & IMobileComponent,
-    { appName: string; hasPersistency: boolean }
+    { appName: string; selectedProjectId: string; hasPersistency: boolean }
 > {
     constructor(props: any) {
         super(props)
         this.state = {
             hasPersistency: false,
             appName: '',
+            selectedProjectId: '',
         }
     }
 
     onCreateNewAppClicked() {
         this.props.onCreateNewAppClicked(
             this.state.appName,
+            this.state.selectedProjectId,
             this.state.hasPersistency
         )
     }
@@ -92,7 +102,30 @@ class CreateNewApp extends Component<
                     )}
                 </Row>
 
-                <Row justify={self.props.isMobile ? 'start' : 'end'}>
+                <div
+                    style={{
+                        marginTop: 32,
+                        marginBottom: 5,
+                        marginLeft: 5,
+                    }}
+                >
+                    Parent project
+                </div>
+                <ProjectSelector
+                    allProjects={self.props.projects}
+                    selectedProjectId={self.state.selectedProjectId}
+                    onChange={(value: string) => {
+                        self.setState({
+                            selectedProjectId: value,
+                        })
+                    }}
+                    excludeProjectId={'NONE'}
+                />
+
+                <Row
+                    style={{ marginTop: 30 }}
+                    justify={self.props.isMobile ? 'start' : 'end'}
+                >
                     <Checkbox
                         onChange={(e: any) =>
                             self.setState({
@@ -106,18 +139,18 @@ class CreateNewApp extends Component<
                         )}{' '}
                     </Checkbox>
                     &nbsp;&nbsp;
-                    <Tooltip
-                        title={localize(
-                            'create_new_app.has_persistent_data_tooltip',
-                            'Mostly used for databases, see docs for details.'
-                        )}
-                    >
-                        <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
+                    <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
+                        <Tooltip
+                            title={localize(
+                                'create_new_app.has_persistent_data_tooltip',
+                                'Mostly used for databases, see docs for details.'
+                            )}
+                        >
                             <span>
                                 <QuestionCircleFilled />
                             </span>
-                        </NewTabLink>
-                    </Tooltip>
+                        </Tooltip>
+                    </NewTabLink>
                 </Row>
                 <Divider type="horizontal" style={{ width: 100 }} />
 
