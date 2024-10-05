@@ -8,7 +8,8 @@ export default class Timestamp extends Component<{ timestamp: string }, {}> {
         return (
             <Tooltip title={moment(new Date(timestamp)).fromNow()}>
                 <span>
-                    {moment(new Date(timestamp)).format('M/D/YY, h:mma')}
+                    {/* 'L' represents localized date format, 'LT' represents localized time format */}
+                    {moment(new Date(timestamp)).format('L, LT')}
                 </span>
             </Tooltip>
         )
