@@ -107,10 +107,17 @@ export default class ProFeatures extends ApiComponent<
         const self = this
 
         const contentStyle = {
-            height: '160px',
+            paddingLeft: '20px',
+            paddingRight: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '10px',
+            fontSize: '1.17em', // This is the default font size for h3
+            minHeight: '160px',
             color: '#fff',
-            lineHeight: '160px',
-            background: '#364d79',
+            background:
+                'radial-gradient(circle at center, #364d79 0%, #283E5B 50%, #1A2338 100%)',
             textAlign: 'center' as 'center',
         }
 
@@ -132,16 +139,18 @@ export default class ProFeatures extends ApiComponent<
                 </ul>
                 <Carousel autoplay>
                     <div>
-                        <h3 style={contentStyle}>
+                        <div style={contentStyle}>
                             Create a PRO account using an OAuth provider
                             (Google, Github, etc)
-                        </h3>
+                        </div>
                     </div>
                     <div>
-                        <h3 style={contentStyle}>Sign-up for PRO membership</h3>
+                        <div style={contentStyle}>
+                            Sign-up for PRO membership
+                        </div>
                     </div>
                     <div>
-                        <h3 style={contentStyle}>Enjoy Premium features!</h3>
+                        <div style={contentStyle}>Enjoy Premium features!</div>
                     </div>
                 </Carousel>
                 <div style={{ height: 30 }} />
