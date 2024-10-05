@@ -377,6 +377,17 @@ export default class ApiManager {
             )
     }
 
+    deleteProjects(projectIds: string[]) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/projects/delete', {
+                    projectIds,
+                })
+            )
+    }
+
     enableSslForBaseDomain(appName: string) {
         const http = this.http
 

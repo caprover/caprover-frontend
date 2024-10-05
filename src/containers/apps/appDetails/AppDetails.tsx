@@ -433,6 +433,7 @@ class AppDetails extends ApiComponent<
                                                                     .appDefinition
                                                             ),
                                                         ],
+                                                        [],
                                                         self.apiManager,
                                                         (success) => {
                                                             // with or without error, go back to apps

@@ -48,7 +48,8 @@ class AppsTable extends Component<
     {
         searchTerm: string
         isBulkEditMode: boolean
-        selectedRowKeys: React.Key[]
+        selectedAppKeys: React.Key[]
+        selectedProjectKeys: React.Key[]
         selectedProjectId: string // project ID, ROOT_APPS, or ALL_APPS
     }
 > {
@@ -58,7 +59,8 @@ class AppsTable extends Component<
         this.state = {
             searchTerm: urlsQuery,
             isBulkEditMode: false,
-            selectedRowKeys: [],
+            selectedAppKeys: [],
+            selectedProjectKeys: [],
             selectedProjectId: ALL_APPS,
         }
     }
@@ -312,13 +314,17 @@ class AppsTable extends Component<
                             <Tooltip
                                 title={localize(
                                     'apps_table.bulk_delete_tooltip',
-                                    'Delete selected apps'
+                                    'Delete selected apps and projects'
                                 )}
                             >
                                 <Button
                                     disabled={
-                                        !self.state.selectedRowKeys ||
-                                        self.state.selectedRowKeys.length === 0
+                                        (!self.state.selectedAppKeys ||
+                                            self.state.selectedAppKeys
+                                                .length === 0) &&
+                                        (!self.state.selectedProjectKeys ||
+                                            self.state.selectedProjectKeys
+                                                .length === 0)
                                     }
                                     type="text"
                                     danger={true}
@@ -327,8 +333,15 @@ class AppsTable extends Component<
                                             self.props.apps.filter(
                                                 (a) =>
                                                     a.appName &&
-                                                    self.state.selectedRowKeys.includes(
+                                                    self.state.selectedAppKeys.includes(
                                                         a.appName
+                                                    )
+                                            ),
+                                            self.props.projects.filter(
+                                                (a) =>
+                                                    a.id &&
+                                                    self.state.selectedProjectKeys.includes(
+                                                        a.id
                                                     )
                                             ),
                                             self.props.apiManager,
@@ -350,8 +363,12 @@ class AppsTable extends Component<
                                 self.setState({
                                     isBulkEditMode: newState,
                                 })
-                                if (!newState)
-                                    self.setState({ selectedRowKeys: [] })
+                                if (!newState) {
+                                    self.setState({
+                                        selectedAppKeys: [],
+                                        selectedProjectKeys: [],
+                                    })
+                                }
                             }}
                         >
                             <UnorderedListOutlined />
@@ -470,12 +487,12 @@ class AppsTable extends Component<
                                                 ? {
                                                       selectedRowKeys:
                                                           self.state
-                                                              .selectedRowKeys,
+                                                              .selectedAppKeys,
                                                       onChange: (
                                                           newSelectedRowKeys: React.Key[]
                                                       ) => {
                                                           self.setState({
-                                                              selectedRowKeys:
+                                                              selectedAppKeys:
                                                                   newSelectedRowKeys,
                                                           })
                                                       },
@@ -670,8 +687,11 @@ class AppsTable extends Component<
         }
 
         const onCheck: TreeProps['onCheck'] = (checkedKeys, info) => {
-            // console.log('onCheck', checkedKeys, info)
-            // TODO!
+            self.setState({
+                selectedProjectKeys: (checkedKeys as any).length
+                    ? checkedKeys
+                    : (checkedKeys as any).checked,
+            })
         }
 
         return (
@@ -707,6 +727,7 @@ class AppsTable extends Component<
                 <Tree.DirectoryTree
                     style={{ marginLeft: -22, position: 'absolute' }}
                     showLine
+                    checkStrictly={true}
                     showIcon={false}
                     checkable={!!self.state.isBulkEditMode}
                     defaultExpandedKeys={[ROOT_APPS]}
@@ -717,6 +738,7 @@ class AppsTable extends Component<
                             ? [self.state.selectedProjectId]
                             : []
                     }
+                    checkedKeys={self.state.selectedProjectKeys}
                     onSelect={onSelect}
                     onCheck={onCheck}
                     treeData={treeData}
