@@ -8,6 +8,7 @@ import {
 } from '../models/IProFeatures'
 import { IRegistryInfo } from '../models/IRegistryInfo'
 import { IVersionInfo } from '../models/IVersionInfo'
+import ProjectDefinition from '../models/ProjectDefinition'
 import ErrorFactory from '../utils/ErrorFactory'
 import Logger from '../utils/Logger'
 import StorageHelper from '../utils/StorageHelper'
@@ -187,6 +188,13 @@ export default class ApiManager {
             .then(http.fetch(http.GET, '/user/apps/appDefinitions', {}))
     }
 
+    getAllProjects() {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/user/projects', {}))
+    }
+
     fetchBuildLogs(appName: string) {
         const http = this.http
 
@@ -218,6 +226,26 @@ export default class ApiManager {
                     `/user/apps/appData/${appName}?detached=1`,
                     formData
                 )
+            )
+    }
+
+    registerProject(selectedProject: ProjectDefinition) {
+        const http = this.http
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/projects/register', {
+                    ...selectedProject,
+                })
+            )
+    }
+
+    updateProject(project: ProjectDefinition) {
+        const http = this.http
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/projects/update', {
+                    projectDefinition: project,
+                })
             )
     }
 
@@ -266,6 +294,7 @@ export default class ApiManager {
         let appDeployTokenConfig = appDefinition.appDeployTokenConfig
         let tags = appDefinition.tags
         let redirectDomain = appDefinition.redirectDomain
+        let projectId = appDefinition.projectId
         const http = this.http
 
         return Promise.resolve() //
@@ -292,6 +321,7 @@ export default class ApiManager {
                     appDeployTokenConfig: appDeployTokenConfig,
                     tags: tags,
                     redirectDomain: redirectDomain,
+                    projectId: projectId,
                 })
             )
     }
@@ -310,6 +340,7 @@ export default class ApiManager {
 
     registerNewApp(
         appName: string,
+        projectId: string,
         hasPersistentData: boolean,
         detached: boolean
     ) {
@@ -324,6 +355,7 @@ export default class ApiManager {
                     }`,
                     {
                         appName,
+                        projectId,
                         hasPersistentData,
                     }
                 )
@@ -343,6 +375,17 @@ export default class ApiManager {
                     appName,
                     volumes,
                     appNames,
+                })
+            )
+    }
+
+    deleteProjects(projectIds: string[]) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/projects/delete', {
+                    projectIds,
                 })
             )
     }

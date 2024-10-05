@@ -1,6 +1,7 @@
 import { Checkbox, Input, Modal, message } from 'antd'
 import ApiManager from '../../api/ApiManager'
 import { IHashMapGeneric } from '../../models/IHashMapGeneric'
+import ProjectDefinition from '../../models/ProjectDefinition'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import NewTabLink from '../global/NewTabLink'
@@ -8,6 +9,7 @@ import { IAppDef } from './AppDefinition'
 
 export default function onDeleteAppClicked(
     appDefinitionsInput: IAppDef[],
+    projects: ProjectDefinition[],
     apiManager: ApiManager,
     onFinished: (success: boolean) => void
 ) {
@@ -44,13 +46,35 @@ export default function onDeleteAppClicked(
         </ul>
     )
 
+    const projectList = (
+        <ul style={{ marginTop: 6 }}>
+            {projects.map((a) => (
+                <li key={a.id || ''}>
+                    {' '}
+                    <code>{a.name}</code>
+                </li>
+            ))}
+        </ul>
+    )
+
     Modal.confirm({
         okType: 'danger',
         title: 'Confirm Permanent Delete?',
         content: (
             <div>
                 <div>
-                    You are about to delete {appsList}
+                    <div
+                        className={
+                            appDefinitions.length ? '' : 'hide-on-demand'
+                        }
+                    >
+                        Apps:
+                        {appsList}
+                    </div>
+                    <div className={projects.length ? '' : 'hide-on-demand'}>
+                        Projects:
+                        {projectList}
+                    </div>
                     Please note that this is
                     <b> not reversible</b>.
                 </div>
@@ -101,45 +125,66 @@ export default function onDeleteAppClicked(
                 }
             })
 
-            return apiManager
-                .deleteApp(
-                    undefined,
-                    volumes,
-                    appDefinitions.map((a) => a.appName || '')
-                )
-                .then(function (data) {
-                    const volumesFailedToDelete =
-                        data.volumesFailedToDelete as string[]
-                    if (volumesFailedToDelete && volumesFailedToDelete.length) {
-                        Modal.info({
-                            title: "Some volumes weren't deleted!",
-                            content: (
-                                <div>
-                                    <p>
-                                        Some volumes weren't deleted because
-                                        they were probably being used by other
-                                        containers. Sometimes, this is because
-                                        of a temporary delay when the original
-                                        container deletion was done with a
-                                        delay. Please consult the{' '}
-                                        <NewTabLink url="https://caprover.com/docs/persistent-apps.html#removing-persistent-apps">
-                                            documentation
-                                        </NewTabLink>{' '}
-                                        and delete them manually if needed.
-                                        Skipped volumes are:
-                                    </p>
-                                    <ul>
-                                        {volumesFailedToDelete.map((v) => (
-                                            <li>
-                                                <code>{v}</code>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            ),
+            return Promise.resolve()
+                .then(function () {
+                    if (!appDefinitions || appDefinitions.length === 0) return
+                    return apiManager
+                        .deleteApp(
+                            undefined,
+                            volumes,
+                            appDefinitions.map((a) => a.appName || '')
+                        )
+                        .then(function (data) {
+                            const volumesFailedToDelete =
+                                data.volumesFailedToDelete as string[]
+                            if (
+                                volumesFailedToDelete &&
+                                volumesFailedToDelete.length
+                            ) {
+                                Modal.info({
+                                    title: "Some volumes weren't deleted!",
+                                    content: (
+                                        <div>
+                                            <p>
+                                                Some volumes weren't deleted
+                                                because they were probably being
+                                                used by other containers.
+                                                Sometimes, this is because of a
+                                                temporary delay when the
+                                                original container deletion was
+                                                done with a delay. Please
+                                                consult the{' '}
+                                                <NewTabLink url="https://caprover.com/docs/persistent-apps.html#removing-persistent-apps">
+                                                    documentation
+                                                </NewTabLink>{' '}
+                                                and delete them manually if
+                                                needed. Skipped volumes are:
+                                            </p>
+                                            <ul>
+                                                {volumesFailedToDelete.map(
+                                                    (v) => (
+                                                        <li>
+                                                            <code>{v}</code>
+                                                        </li>
+                                                    )
+                                                )}
+                                            </ul>
+                                        </div>
+                                    ),
+                                })
+                            }
+
+                            message.success('App(s) deleted!')
                         })
+                })
+                .then(function () {
+                    if (projects.length) {
+                        return apiManager
+                            .deleteProjects(projects.map((it) => it.id))
+                            .then(() => {
+                                message.success('Project(s) deleted!')
+                            })
                     }
-                    message.success('App deleted!')
                 })
                 .then(function () {
                     onFinished(true)

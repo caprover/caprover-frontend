@@ -1,30 +1,26 @@
-import {
-    CloseOutlined,
-    DeleteOutlined,
-    EditOutlined,
-    ReadOutlined,
-    SaveOutlined,
-} from '@ant-design/icons'
+import { CloseOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons'
 import {
     Affix,
-    Alert,
     Button,
     Card,
     Col,
     Input,
     Modal,
-    Popover,
     Row,
     Tabs,
+    Tag,
     Tooltip,
+    Typography,
 } from 'antd'
 import classnames from 'classnames'
-import { RefObject } from 'react'
+import { ReactNode, RefObject } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import ApiManager from '../../../api/ApiManager'
+import ProjectSelector from '../../../components/ProjectSelector'
 import { IMobileComponent } from '../../../models/ContainerProps'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
+import ProjectDefinition from '../../../models/ProjectDefinition'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
 import ApiComponent from '../../global/ApiComponent'
@@ -33,6 +29,7 @@ import ClickableLink from '../../global/ClickableLink'
 import ErrorRetry from '../../global/ErrorRetry'
 import { IAppDef } from '../AppDefinition'
 import onDeleteAppClicked from '../DeleteAppConfirm'
+import EditableSpan from '../EditableProjectName'
 import AppConfigs from './AppConfigs'
 import HttpSettings from './HttpSettings'
 import Deployment from './deploy/Deployment'
@@ -46,6 +43,7 @@ export interface SingleAppApiData {
     rootDomain: string
     captainSubDomain: string
     defaultNginxConfig: string
+    projects: ProjectDefinition[]
 }
 
 export interface AppDetailsTabProps {
@@ -70,6 +68,14 @@ class AppDetails extends ApiComponent<
         apiData: SingleAppApiData | undefined
         activeTabKey: string
         renderCounterForAffixBug: number
+        editAppDataForModal:
+            | {
+                  appName: string
+                  description: string
+                  parentProjectId: string
+                  tags: string[]
+              }
+            | undefined
     }
 > {
     private reRenderTriggered = false
@@ -84,83 +90,12 @@ class AppDetails extends ApiComponent<
             isLoading: true,
             renderCounterForAffixBug: 0,
             apiData: undefined,
+            editAppDataForModal: undefined,
         }
     }
 
     goBackToApps() {
         this.props.history.push('/apps')
-    }
-
-    openRenameAppDialog() {
-        const self = this
-        const app = self.state.apiData!.appDefinition
-        const tempVal = { newName: app.appName }
-        Modal.confirm({
-            title: 'Rename the app:',
-            content: (
-                <div>
-                    <Alert
-                        type="warning"
-                        message="If other apps use the current name to communicate with this app, make sure to update them as well to avoid problems."
-                    />
-                    <Input
-                        style={{ marginTop: 15 }}
-                        placeholder="app-name-here"
-                        defaultValue={app.appName}
-                        onChange={(e) => {
-                            tempVal.newName = (e.target.value || '').trim()
-                        }}
-                    />
-                </div>
-            ),
-            onOk() {
-                const changed = app.appName !== tempVal.newName
-                if (changed && tempVal.newName)
-                    self.renameAppTo(tempVal.newName)
-            },
-        })
-    }
-
-    viewDescription() {
-        const self = this
-        const app = self.state.apiData!.appDefinition
-        const tempVal = { tempDescription: app.description }
-        Modal.confirm({
-            title: 'App Description:',
-            content: (
-                <div>
-                    <Input.TextArea
-                        style={{ marginTop: 15 }}
-                        placeholder="Use app description to take some notes for your app"
-                        rows={12}
-                        defaultValue={app.description}
-                        onChange={(e) => {
-                            tempVal.tempDescription = e.target.value
-                        }}
-                    />
-                </div>
-            ),
-            onOk() {
-                const changed = app.description !== tempVal.tempDescription
-                app.description = tempVal.tempDescription
-                if (changed) self.onUpdateConfigAndSave()
-            },
-        })
-    }
-
-    renameAppTo(newName: string) {
-        const self = this
-        const appDef = Utils.copyObject(self.state.apiData!.appDefinition)
-        self.setState({ isLoading: true })
-        this.apiManager
-            .renameApp(appDef.appName!, newName)
-            .then(function () {
-                return self.reFetchData()
-            })
-            .catch(Toaster.createCatcher())
-            .then(function () {
-                self.setState({ isLoading: false })
-            })
     }
 
     onUpdateConfigAndSave() {
@@ -176,6 +111,137 @@ class AppDetails extends ApiComponent<
             .then(function () {
                 self.setState({ isLoading: false })
             })
+    }
+
+    createProjectBreadcrumbs() {
+        const self = this
+        const apiData = self.state.apiData
+        const app = apiData?.appDefinition
+        if (!app || !apiData) {
+            throw new Error('App not found')
+        }
+
+        let currentProjectId = app.projectId
+
+        if (!currentProjectId || !currentProjectId.trim()) {
+            return <div />
+        }
+
+        const projectMap = {} as IHashMapGeneric<ProjectDefinition>
+
+        apiData.projects.forEach((it) => {
+            projectMap[it.id] = it
+        })
+
+        const projectsBreadCrumbs = [] as ProjectDefinition[]
+
+        while (currentProjectId) {
+            const currentProject: ProjectDefinition | undefined =
+                projectMap[currentProjectId]
+            if (currentProject) {
+                projectsBreadCrumbs.unshift(currentProject)
+                currentProjectId = currentProject.parentProjectId
+            } else {
+                break
+            }
+        }
+
+        return (
+            <div style={{ marginBottom: 10, fontSize: 12 }}>
+                {projectsBreadCrumbs.map((project, index) => (
+                    <span key={project.id}>
+                        <span style={{ marginLeft: 5 }}> {' > '}</span>
+                        {project.name}
+                    </span>
+                ))}
+            </div>
+        )
+    }
+
+    createAppHeader() {
+        const self = this
+        const app = self.state.apiData?.appDefinition
+        if (!app) {
+            throw new Error('App not found')
+        }
+
+        const appName = app.appName || ''
+
+        return (
+            <div style={{ marginTop: 20, marginBottom: 10, width: '100%' }}>
+                <div
+                    style={{
+                        position: 'absolute',
+                        padding: 12,
+                        right: 12,
+                        top: 0,
+                    }}
+                >
+                    <ClickableLink onLinkClicked={() => self.goBackToApps()}>
+                        <Tooltip title="Close">
+                            <CloseOutlined />
+                        </Tooltip>
+                    </ClickableLink>
+                </div>
+                <div>{self.createProjectBreadcrumbs()}</div>
+
+                <h2 style={{ marginBottom: 5, marginTop: 0, marginLeft: 12 }}>
+                    <EditableSpan
+                        titleName={appName}
+                        onEditClick={() => {
+                            self.setState({
+                                editAppDataForModal: {
+                                    parentProjectId: app.projectId || '',
+                                    appName: appName,
+                                    description: app.description || '',
+                                    tags: (app.tags || []).map(
+                                        (it) => it.tagName
+                                    ),
+                                },
+                            })
+                        }}
+                    />
+                </h2>
+
+                {app.tags && app.tags.length > 0 && (
+                    <span style={{ marginLeft: 12 }}>
+                        {app.tags.map((tag, index) => (
+                            <Tag key={index}>{tag.tagName}</Tag>
+                        ))}
+                    </span>
+                )}
+                {self.createDescription()}
+            </div>
+        )
+    }
+
+    createDescription(): import('react').ReactNode {
+        const self = this
+        const app = self.state.apiData?.appDefinition
+        if (!app) {
+            throw new Error('App not found')
+        }
+
+        if (!app.description) return <div />
+
+        return (
+            <div style={{ marginLeft: 16, marginTop: 28 }}>
+                <Typography.Paragraph
+                    style={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        whiteSpace: 'pre-wrap',
+                    }}
+                    ellipsis={{
+                        rows: 1,
+                        expandable: true,
+                        symbol: 'more',
+                    }}
+                >
+                    {app.description}
+                </Typography.Paragraph>
+            </div>
+        )
     }
 
     render() {
@@ -197,62 +263,11 @@ class AppDetails extends ApiComponent<
             return <ErrorRetry />
         }
 
-        const app = self.state.apiData.appDefinition
-
         return (
             <Row>
+                {self.createEditAppModal()}
                 <Col span={20} offset={2}>
-                    <Card
-                        extra={
-                            <ClickableLink
-                                onLinkClicked={() => self.goBackToApps()}
-                            >
-                                <Tooltip title="Close">
-                                    <CloseOutlined />
-                                </Tooltip>
-                            </ClickableLink>
-                        }
-                        title={
-                            <span>
-                                <ClickableLink
-                                    onLinkClicked={() =>
-                                        self.openRenameAppDialog()
-                                    }
-                                >
-                                    <Tooltip
-                                        title="Rename app"
-                                        placement="bottom"
-                                    >
-                                        <EditOutlined />
-                                    </Tooltip>
-                                </ClickableLink>
-                                &nbsp;&nbsp;
-                                {app.appName}
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <ClickableLink
-                                    onLinkClicked={() => self.viewDescription()}
-                                >
-                                    <Popover
-                                        placement="bottom"
-                                        content={
-                                            <div
-                                                style={{
-                                                    maxWidth: 300,
-                                                    whiteSpace: 'pre-line',
-                                                }}
-                                            >
-                                                {app.description ||
-                                                    'Click to edit app description...'}
-                                            </div>
-                                        }
-                                        title="App description"
-                                    >
-                                        <ReadOutlined />
-                                    </Popover>
-                                </ClickableLink>
-                            </span>
-                        }
-                    >
+                    <Card title={self.createAppHeader()}>
                         {this.state.isLoading && (
                             <div
                                 style={{
@@ -418,6 +433,7 @@ class AppDetails extends ApiComponent<
                                                                     .appDefinition
                                                             ),
                                                         ],
+                                                        [],
                                                         self.apiManager,
                                                         (success) => {
                                                             // with or without error, go back to apps
@@ -466,6 +482,164 @@ class AppDetails extends ApiComponent<
         )
     }
 
+    createEditAppModal(): ReactNode {
+        const self = this
+
+        const editAppDataForModal = self.state.editAppDataForModal
+
+        if (!editAppDataForModal) return <div />
+
+        return (
+            <Modal
+                title={`Edit "${self.state.apiData?.appDefinition.appName}" app`}
+                okText="Save & Update"
+                onCancel={() =>
+                    self.setState({ editAppDataForModal: undefined })
+                }
+                onOk={() => {
+                    const newData = Utils.copyObject(self.state.apiData)
+                    if (!newData) return
+
+                    const isNameChanged =
+                        newData.appDefinition.appName !==
+                        editAppDataForModal.appName
+
+                    const editAppDataForModalCopy = Utils.copyObject(
+                        self.state.editAppDataForModal
+                    )
+                    if (!editAppDataForModalCopy) return
+
+                    self.setState({
+                        isLoading: true,
+                        editAppDataForModal: undefined,
+                    })
+
+                    return Promise.resolve()
+                        .then(() => {
+                            if (isNameChanged) {
+                                Toaster.toastInfo('Renaming the app...')
+                                return self.apiManager.renameApp(
+                                    newData.appDefinition.appName!,
+                                    editAppDataForModalCopy.appName
+                                )
+                            }
+                        })
+                        .then(() => {
+                            newData.appDefinition.appName =
+                                editAppDataForModalCopy.appName
+                            newData.appDefinition.projectId =
+                                editAppDataForModalCopy.parentProjectId
+                            newData.appDefinition.description =
+                                editAppDataForModalCopy.description
+                            newData.appDefinition.tags =
+                                editAppDataForModalCopy.tags.map((it) => {
+                                    return { tagName: it }
+                                })
+
+                            self.props.history.replace(
+                                '/apps/details/' +
+                                    editAppDataForModalCopy.appName
+                            )
+                            self.setState({
+                                apiData: newData,
+                            })
+
+                            setTimeout(() => {
+                                // posting after a delay to ensure the state is updated!!
+                                // maybe it's fine to post on the same thread, but I am not sure if React stays the same in future versions.
+                                self.onUpdateConfigAndSave()
+                            }, 200)
+                        })
+                }}
+                open={!!editAppDataForModal}
+            >
+                <p>
+                    If you rename the app that is used internally by other apps,
+                    make sure to update the address as well to avoid problems.
+                </p>
+                <div style={{ height: 20 }} />
+                <div>
+                    <Input
+                        addonBefore="App name"
+                        placeholder="my-awesome-app"
+                        value={editAppDataForModal.appName}
+                        onChange={(e) => {
+                            const newData =
+                                Utils.copyObject(editAppDataForModal)
+                            newData.appName = e.target.value.trim()
+                            self.setState({ editAppDataForModal: newData })
+                        }}
+                    />
+                    <div style={{ height: 32 }} />
+                    <Input
+                        addonBefore="Tags"
+                        placeholder="tag1,another-tag,yet-another <comma separated>"
+                        value={editAppDataForModal.tags.join(',')}
+                        onChange={(e) => {
+                            const newData =
+                                Utils.copyObject(editAppDataForModal)
+                            newData.tags = e.target.value
+                                .trim()
+                                .split(',')
+                                .map((it) => it.trim())
+                            self.setState({ editAppDataForModal: newData })
+                        }}
+                    />
+
+                    <div
+                        style={{
+                            marginTop: 32,
+                            marginBottom: 5,
+                            marginLeft: 5,
+                        }}
+                    >
+                        Parent project
+                    </div>
+                    <ProjectSelector
+                        allProjects={self.state.apiData?.projects || []}
+                        selectedProjectId={
+                            editAppDataForModal.parentProjectId || ''
+                        }
+                        onChange={(value: string) => {
+                            const newData =
+                                Utils.copyObject(editAppDataForModal)
+                            newData.parentProjectId = value.trim()
+                            self.setState({
+                                editAppDataForModal: newData,
+                            })
+                        }}
+                        excludeProjectId={'NONE'}
+                    />
+                    <div
+                        style={{
+                            marginTop: 32,
+                            marginBottom: 5,
+                            marginLeft: 5,
+                        }}
+                    >
+                        Description
+                    </div>
+                    <Input.TextArea
+                        rows={4}
+                        placeholder={
+                            'This app is just so awesome!\nAnotherline!'
+                        }
+                        value={editAppDataForModal.description}
+                        onChange={(e) => {
+                            const newData =
+                                Utils.copyObject(editAppDataForModal)
+                            newData.description = e.target.value
+                            self.setState({
+                                editAppDataForModal: newData,
+                            })
+                        }}
+                    />
+                    <div style={{ height: 20 }} />
+                </div>
+            </Modal>
+        )
+    }
+
     componentDidMount() {
         this.reFetchData()
     }
@@ -473,23 +647,30 @@ class AppDetails extends ApiComponent<
     reFetchData() {
         const self = this
         self.setState({ isLoading: true })
-        return this.apiManager
-            .getAllApps()
-            .then(function (data: any) {
+        return Promise.all([
+            self.apiManager.getAllApps(),
+            self.apiManager.getAllProjects(),
+        ])
+            .then(function (dataReturns: any) {
+                const getAppsResp = dataReturns[0]
+                const projects = dataReturns[1].projects || []
+
                 for (
                     let index = 0;
-                    index < data.appDefinitions.length;
+                    index < getAppsResp.appDefinitions.length;
                     index++
                 ) {
-                    const element = data.appDefinitions[index]
+                    const element = getAppsResp.appDefinitions[index]
                     if (element.appName === self.props.match.params.appName) {
                         self.setState({
                             isLoading: false,
                             apiData: {
+                                projects: projects,
                                 appDefinition: element,
-                                rootDomain: data.rootDomain,
-                                captainSubDomain: data.captainSubDomain,
-                                defaultNginxConfig: data.defaultNginxConfig,
+                                rootDomain: getAppsResp.rootDomain,
+                                captainSubDomain: getAppsResp.captainSubDomain,
+                                defaultNginxConfig:
+                                    getAppsResp.defaultNginxConfig,
                             },
                         })
                         return
