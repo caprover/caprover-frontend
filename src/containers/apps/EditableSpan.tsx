@@ -1,19 +1,20 @@
 import { EditOutlined } from '@ant-design/icons'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import Utils from '../../utils/Utils'
 import ClickableLink from '../global/ClickableLink'
 
-interface EditableSpanProps {
-    titleName: string
+type EditableSpanProps = PropsWithChildren<{
     onEditClick: () => void
-}
+}>
 
 class EditableSpan extends React.Component<EditableSpanProps> {
     private className: string
 
     constructor(props: EditableSpanProps) {
         super(props)
-        this.className = `edit-icon-${Utils.hashCode(props.titleName)}`
+        this.className = `edit-icon-${Utils.hashCode(
+            props.children ? props.children.toString() : 'none'
+        )}`
     }
 
     handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -31,7 +32,7 @@ class EditableSpan extends React.Component<EditableSpanProps> {
     }
 
     render() {
-        const { titleName: projectName, onEditClick } = this.props
+        const { children, onEditClick } = this.props
 
         return (
             <span
@@ -45,7 +46,7 @@ class EditableSpan extends React.Component<EditableSpanProps> {
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
             >
-                {projectName}
+                {children}
                 <span
                     className={this.className}
                     style={{

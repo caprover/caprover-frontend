@@ -187,7 +187,6 @@ class AppDetails extends ApiComponent<
 
                 <h2 style={{ marginBottom: 5, marginTop: 0, marginLeft: 12 }}>
                     <EditableSpan
-                        titleName={appName}
                         onEditClick={() => {
                             self.setState({
                                 editAppDataForModal: {
@@ -200,7 +199,9 @@ class AppDetails extends ApiComponent<
                                 },
                             })
                         }}
-                    />
+                    >
+                        {appName}
+                    </EditableSpan>
                 </h2>
 
                 {app.tags && app.tags.length > 0 && (

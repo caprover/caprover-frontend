@@ -4,6 +4,7 @@ import {
     DeleteOutlined,
     DisconnectOutlined,
     FolderAddOutlined,
+    FolderOpenOutlined,
     LinkOutlined,
     LoadingOutlined,
     UnorderedListOutlined,
@@ -602,9 +603,9 @@ class AppsTable extends Component<
                 }
             }
 
-            projectName =
-                '> ' +
-                breadCrumbs.map((id) => projectsMap[id]?.name || '').join(' > ')
+            projectName = breadCrumbs
+                .map((id) => projectsMap[id]?.name || '')
+                .join(' > ')
         }
 
         if (!editable) {
@@ -618,10 +619,10 @@ class AppsTable extends Component<
 
             return (
                 <h4>
-                    <EditableSpan
-                        titleName={projectName}
-                        onEditClick={editProjectClicked}
-                    />
+                    <EditableSpan onEditClick={editProjectClicked}>
+                        <FolderOpenOutlined style={{ marginRight: 5 }} />{' '}
+                        {projectName}
+                    </EditableSpan>
                 </h4>
             )
         }
