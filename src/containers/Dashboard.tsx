@@ -352,10 +352,10 @@ export default class Dashboard extends ApiComponent<
         const translatedBody = Utils.formatText(
             localize(
                 'dashboard.detailed_guide_setup_ip',
-                `The very first thing that CapRover needs is a root domain. For example, if you own %s1, 
-                you can use %s2 or %s3 as your root domain. First, you need to make sure that the ip 
-                address for all subdomains of the root domain resolve to the CapRover ip address. To do 
-                this, go to the DNS settings in your domain provider website, and set a wild card A 
+                `The very first thing that CapRover needs is a root domain. For example, if you own %s1,
+                you can use %s2 or %s3 as your root domain. First, you need to make sure that the ip
+                address for all subdomains of the root domain resolve to the CapRover ip address. To do
+                this, go to the DNS settings in your domain provider website, and set a wild card A
                 entry. For example: %s4 where this IP is the IP address of your CapRover machine (server).`
             ),
             ['%s1', '%s2', '%s3', '%s4'],
