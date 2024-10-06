@@ -1,4 +1,10 @@
-import { CloseOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons'
+import {
+    CaretRightOutlined,
+    CloseOutlined,
+    DeleteOutlined,
+    FolderOpenOutlined,
+    SaveOutlined,
+} from '@ant-design/icons'
 import {
     Affix,
     Button,
@@ -135,6 +141,8 @@ class AppDetails extends ApiComponent<
 
         const projectsBreadCrumbs = [] as ProjectDefinition[]
 
+        // This loop constructs the project breadcrumbs by traversing the project hierarchy
+        // starting from the current project and moving up to its parent projects.
         while (currentProjectId) {
             const currentProject: ProjectDefinition | undefined =
                 projectMap[currentProjectId]
@@ -148,11 +156,26 @@ class AppDetails extends ApiComponent<
 
         return (
             <div style={{ marginBottom: 10, fontSize: 12 }}>
+                <FolderOpenOutlined
+                    style={{
+                        marginRight: 5,
+                    }}
+                />
                 {projectsBreadCrumbs.map((project, index) => (
-                    <span key={project.id}>
-                        <span style={{ marginLeft: 5 }}> {' > '}</span>
-                        {project.name}
-                    </span>
+                    <>
+                        <span
+                            style={{
+                                marginLeft: 5,
+                                marginRight: 5,
+                            }}
+                            key={project.id}
+                        >
+                            {project.name}
+                        </span>
+                        {index < projectsBreadCrumbs.length - 1 && (
+                            <CaretRightOutlined />
+                        )}
+                    </>
                 ))}
             </div>
         )

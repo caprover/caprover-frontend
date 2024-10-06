@@ -1,4 +1,5 @@
 import {
+    CaretRightOutlined,
     CheckOutlined,
     CodeOutlined,
     DeleteOutlined,
@@ -574,13 +575,13 @@ class AppsTable extends Component<
 
     createAppTableHeader(): React.ReactNode {
         const self = this
-        let projectName = ''
+        let projectName = <span></span>
         let editable = false
 
         if (this.state.selectedProjectId === ALL_APPS) {
-            projectName = 'All apps'
+            projectName = <span>All apps from all projects</span>
         } else if (this.state.selectedProjectId === ROOT_APPS) {
-            projectName = 'Root'
+            projectName = <span>Root</span>
         } else {
             editable = true
             const projectsMap: { [key: string]: ProjectDefinition } = {}
@@ -603,9 +604,27 @@ class AppsTable extends Component<
                 }
             }
 
-            projectName = breadCrumbs
-                .map((id) => projectsMap[id]?.name || '')
-                .join(' > ')
+            projectName = (
+                <span>
+                    {breadCrumbs
+                        .map((id) => projectsMap[id]?.name || '')
+                        .map((name, index) => (
+                            <>
+                                <span
+                                    style={{
+                                        marginLeft: 5,
+                                        marginRight: 5,
+                                    }}
+                                >
+                                    {name}
+                                </span>
+                                {index < breadCrumbs.length - 1 && (
+                                    <CaretRightOutlined />
+                                )}
+                            </>
+                        ))}
+                </span>
+            )
         }
 
         if (!editable) {
@@ -620,8 +639,7 @@ class AppsTable extends Component<
             return (
                 <h4>
                     <EditableSpan onEditClick={editProjectClicked}>
-                        <FolderOpenOutlined style={{ marginRight: 5 }} />{' '}
-                        {projectName}
+                        <FolderOpenOutlined /> {projectName}
                     </EditableSpan>
                 </h4>
             )
