@@ -1,5 +1,6 @@
-import { Checkbox, Col, Input, Row } from 'antd'
-import React, { Component } from 'react'
+import { Checkbox, Col, Input, Row, Tooltip } from 'antd'
+import { Component } from 'react'
+import { localize } from '../../utils/Language'
 import Utils from '../../utils/Utils'
 import PasswordField from '../global/PasswordField'
 
@@ -26,17 +27,30 @@ export default class NetDataSettingsForm extends Component<{
         const netDataInfo = this.props.netDataInfo
         return (
             <div>
-                <h3>Notification Settings</h3>
+                <h3>
+                    {localize(
+                        'netdata_settings.notification_settings',
+                        'Notification Settings'
+                    )}
+                </h3>
 
                 <p>
-                    NetData offers multiple ways for you to receive
-                    notifications if something is going wrong with your server
-                    resource usage.
-                    <i>All notification options are completely OPTIONAL.</i>
+                    {localize(
+                        'netdata_settings.netdata_offers_multiple_ways',
+                        'NetData offers multiple ways for you to receive notifications if something is going wrong with your server resource usage.'
+                    )}
+                    <i>
+                        {localize(
+                            'netdata_settings.all_notification_options_are_completely_optional',
+                            'All notification options are completely OPTIONAL.'
+                        )}
+                    </i>
                 </p>
                 <hr />
                 <br />
-                <h4>Email (SMTP)</h4>
+                <h4>
+                    {localize('netdata_settings.email_smtp', 'Email')} (SMTP)
+                </h4>
 
                 <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 20 }}>
@@ -46,7 +60,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                Recipient Email
+                                {localize(
+                                    'netdata_settings.recipient_email',
+                                    'Recipient Email'
+                                )}
                                 <Input
                                     type="text"
                                     placeholder="alerts.receiver@example.com"
@@ -66,7 +83,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                Server Tag
+                                {localize(
+                                    'netdata_settings.server_tag',
+                                    'Server Tag'
+                                )}
                                 <Input
                                     type="text"
                                     placeholder="my-aws-server-01-anything"
@@ -86,7 +106,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                SMTP Server
+                                {localize(
+                                    'netdata_settings.smtp_server',
+                                    'SMTP Server'
+                                )}
                                 <Input
                                     type="text"
                                     placeholder="smtp.gmail.com"
@@ -106,7 +129,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 6 }}
                             >
-                                SMTP Port
+                                {localize(
+                                    'netdata_settings.smtp_port',
+                                    'SMTP Port'
+                                )}
                                 <Input
                                     type="number"
                                     placeholder="587"
@@ -123,24 +149,34 @@ export default class NetDataSettingsForm extends Component<{
 
                             <Col
                                 className="netdata-field"
+                                style={{ marginTop: 25 }}
                                 xs={{ span: 24 }}
                                 lg={{ span: 6 }}
                             >
-                                Unsecure
-                                <Checkbox
-                                    checked={
-                                        !!netDataInfo.data.smtp.allowNonTls
-                                    }
-                                    onChange={(e) =>
-                                        self.changeModel(
-                                            'smtp',
-                                            'allowNonTls',
-                                            e.target.checked
-                                        )
-                                    }
+                                <Tooltip
+                                    title={localize(
+                                        'netdata_settings.allow_non_tls',
+                                        'allow non-TLS'
+                                    )}
                                 >
-                                    allow non-TLS
-                                </Checkbox>
+                                    <Checkbox
+                                        checked={
+                                            !!netDataInfo.data.smtp.allowNonTls
+                                        }
+                                        onChange={(e) =>
+                                            self.changeModel(
+                                                'smtp',
+                                                'allowNonTls',
+                                                e.target.checked
+                                            )
+                                        }
+                                    >
+                                        {localize(
+                                            'netdata_settings.unsecure',
+                                            'Unsecure'
+                                        )}
+                                    </Checkbox>
+                                </Tooltip>
                             </Col>
 
                             <Col
@@ -148,7 +184,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                SMTP Username
+                                {localize(
+                                    'netdata_settings.smtp_username',
+                                    'SMTP Username'
+                                )}
                                 <Input
                                     type="text"
                                     placeholder="alerts.receiver@example.com"
@@ -168,7 +207,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                SMTP password
+                                {localize(
+                                    'netdata_settings.smtp_password',
+                                    'SMTP password'
+                                )}
                                 <PasswordField
                                     defaultValue={
                                         netDataInfo.data.smtp.password
@@ -186,7 +228,7 @@ export default class NetDataSettingsForm extends Component<{
                     </Col>
                 </Row>
                 <br />
-                <h4>Slack</h4>
+                <h4>{localize('netdata_settings.slack', 'Slack')}</h4>
                 <Row justify="center">
                     <Col xs={{ span: 24 }} lg={{ span: 20 }}>
                         <Row gutter={20} align="middle">
@@ -195,7 +237,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                Slack Webhook
+                                {localize(
+                                    'netdata_settings.slack_webhook',
+                                    'Slack Webhook'
+                                )}
                                 <Input
                                     type="text"
                                     placeholder="https://hooks.slack.com/services/XXXX"
@@ -214,7 +259,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                Slack Channel
+                                {localize(
+                                    'netdata_settings.slack_channel',
+                                    'Slack Channel'
+                                )}
                                 <Input
                                     type="text"
                                     placeholder="alertschannel"
@@ -232,7 +280,7 @@ export default class NetDataSettingsForm extends Component<{
                     </Col>
                 </Row>
                 <br />
-                <h4>Telegram</h4>
+                <h4>{localize('netdata_settings.telegram', 'Telegram')}</h4>
                 <Row justify="center">
                     <Col xs={{ span: 24 }} lg={{ span: 20 }}>
                         <Row gutter={20} align="middle">
@@ -241,7 +289,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                Bot Token
+                                {localize(
+                                    'netdata_settings.telegram_bot_token',
+                                    'Bot Token'
+                                )}
                                 <Input
                                     type="text"
                                     placeholder="TELEGRAM_BOT_TOKEN"
@@ -260,7 +311,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                Chat ID
+                                {localize(
+                                    'netdata_settings.telegram_chat_id',
+                                    'Chat ID'
+                                )}
                                 <Input
                                     type="text"
                                     placeholder="Telegram Chat ID"
@@ -278,7 +332,9 @@ export default class NetDataSettingsForm extends Component<{
                     </Col>
                 </Row>
                 <br />
-                <h4>Push Bullet</h4>
+                <h4>
+                    {localize('netdata_settings.push_bullet', 'Push Bullet')}
+                </h4>
                 <Row justify="center">
                     <Col xs={{ span: 24 }} lg={{ span: 20 }}>
                         <Row gutter={20} align="middle">
@@ -287,7 +343,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                Push Bullet API token
+                                {localize(
+                                    'netdata_settings.push_bullet_api_token',
+                                    'Push Bullet API token'
+                                )}
                                 <Input
                                     type="text"
                                     placeholder="PUSH_BULLET_API_TOKEN"
@@ -306,7 +365,10 @@ export default class NetDataSettingsForm extends Component<{
                                 xs={{ span: 24 }}
                                 lg={{ span: 12 }}
                             >
-                                Default Email (fallback receiver)
+                                {localize(
+                                    'netdata_settings.default_email_fallback_receiver',
+                                    'Default Email (fallback receiver)'
+                                )}
                                 <Input
                                     type="text"
                                     placeholder="alerts.receiver@example.com"

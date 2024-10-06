@@ -6,7 +6,8 @@ import {
 import { Card, Modal, Table, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import moment from 'moment'
-import React, { Component, Fragment } from 'react'
+import { Component, Fragment } from 'react'
+import { localize } from '../../../../utils/Language'
 import Utils from '../../../../utils/Utils'
 import ClickableLink from '../../../global/ClickableLink'
 import Timestamp from '../../../global/Timestamp'
@@ -21,7 +22,12 @@ export default class AppVersionTable extends Component<{
     getStateRender(version: number, versionDetails: IAppVersion) {
         if (version === this.props.deployedVersion) {
             return (
-                <Tooltip title="Current Version">
+                <Tooltip
+                    title={localize(
+                        'apps.deploy_current_version_tooltip',
+                        'Current Version'
+                    )}
+                >
                     <CheckCircleTwoTone twoToneColor="#52c41a" />
                 </Tooltip>
             )
@@ -31,7 +37,12 @@ export default class AppVersionTable extends Component<{
 
         if (!imageName) {
             return (
-                <Tooltip title="Failed deploy">
+                <Tooltip
+                    title={localize(
+                        'apps.deploy_failed_deploy_tooltip',
+                        'Failed deploy'
+                    )}
+                >
                     <ExclamationCircleOutlined />
                 </Tooltip>
             )
@@ -41,7 +52,12 @@ export default class AppVersionTable extends Component<{
             <ClickableLink
                 onLinkClicked={() => this.onRollbackClicked(versionDetails)}
             >
-                <Tooltip title="Revert to this version">
+                <Tooltip
+                    title={localize(
+                        'apps.deploy_revert_to_version_tooltip',
+                        'Revert to this version'
+                    )}
+                >
                     <span>
                         <RetweetOutlined />
                     </span>
@@ -52,7 +68,7 @@ export default class AppVersionTable extends Component<{
     getCols() {
         const columns: ColumnProps<IAppVersion>[] = [
             {
-                title: 'State',
+                title: localize('apps.deploy_state', 'State'),
                 key: 'revertColumn', // arbitrary unique name for the column
                 align: 'center',
                 dataIndex: 'version' as 'version',
@@ -60,23 +76,23 @@ export default class AppVersionTable extends Component<{
                     this.getStateRender(version, versionDetails),
             },
             {
-                title: 'Version',
+                title: localize('apps.deploy_version', 'Version'),
                 align: 'center',
                 dataIndex: 'version' as 'version',
             },
             {
-                title: 'Deploy Time',
+                title: localize('apps.deploy_time', 'Deploy Time'),
                 dataIndex: 'timeStamp' as 'timeStamp',
                 render: (timeStamp: string) => {
                     return <Timestamp timestamp={timeStamp} />
                 },
             },
             {
-                title: 'Image Name',
+                title: localize('apps.deploy_image_name', 'Image Name'),
                 dataIndex: 'deployedImageName' as 'deployedImageName',
             },
             {
-                title: 'git hash',
+                title: localize('apps.deploy_git_hash', 'git hash'),
                 dataIndex: 'gitHash' as 'gitHash',
                 render: (
                     gitHashOriginal: string,
@@ -102,30 +118,42 @@ export default class AppVersionTable extends Component<{
         const imageName = versionToRevert.deployedImageName!
         let content = (
             <span>
-                {`If you had previously deleted this image explicitly through disk cleanup,
-      this revert process will fail.`}
+                {localize(
+                    'apps.deploy_rollback_warning',
+                    'If you had previously deleted this image explicitly through disk cleanup, this revert process will fail.'
+                )}
                 <br />
                 <br />
-                {`Do you want to continue with rolling back your app to `}
+                {localize(
+                    'apps.deploy_rollback_warning_body',
+                    'Do you want to continue with rolling back your app to this image: '
+                )}
                 <code>{imageName}</code>?
             </span>
         )
         if (imageName.indexOf('/') > 0) {
             content = (
                 <span>
-                    {`${imageName} appears to be hosted on Docker Registry.
-        Make sure you have not deleted this image from the repository since it was originally deployed.
-        Deletion usually does not happen automatically, so if you have not deleted the image intentionally,
-        you don't need to worry about this.`}
+                    {Utils.formatText(
+                        localize(
+                            'apps.deploy_rollback_registry_warning',
+                            "This image (%s) appears to be hosted on Docker Registry. Make sure you have not deleted this image from the repository since it was originally deployed. Deletion usually does not happen automatically, so if you have not deleted the image intentionally, you don't need to worry about this."
+                        ),
+                        ['%s'],
+                        [<span>{imageName}</span>]
+                    )}
                     <br />
-                    <br />
-                    {`Do you want to continue with rolling back your app to `}
+                    <br />{' '}
+                    {localize(
+                        'apps.deploy_rollback_warning_body',
+                        'Do you want to continue with rolling back your app to this image: '
+                    )}
                     <code>{imageName}</code>?
                 </span>
             )
         }
         Modal.confirm({
-            title: 'Rollback?',
+            title: localize('apps.deploy_rollback_confirm', 'Rollback?'),
             content,
             onOk: () => {
                 self.props.onVersionRollbackRequested(versionToRevert)
@@ -139,7 +167,9 @@ export default class AppVersionTable extends Component<{
         const columns = this.getCols()
         return (
             <div>
-                <h3>Version History</h3>
+                <h3>
+                    {localize('apps.deploy_version_history', 'Version History')}
+                </h3>
                 <div>
                     {this.props.isMobile ? (
                         versionsReversed.map(
@@ -171,14 +201,33 @@ export default class AppVersionTable extends Component<{
                                         }
                                     >
                                         <div>
-                                            <b>Version:</b> {version.version}
+                                            <b>
+                                                {localize(
+                                                    'apps.deploy_version',
+                                                    'Version'
+                                                )}
+                                                :
+                                            </b>{' '}
+                                            {version.version}
                                         </div>
                                         <div>
-                                            <b>Git hash:</b>{' '}
+                                            <b>
+                                                {localize(
+                                                    'apps.deploy_git_hash',
+                                                    'git hash'
+                                                )}
+                                                :
+                                            </b>{' '}
                                             {version.gitHash || 'n/a'}
                                         </div>
                                         <div>
-                                            <b>State:</b>{' '}
+                                            <b>
+                                                {localize(
+                                                    'apps.deploy_state',
+                                                    'State'
+                                                )}
+                                                :
+                                            </b>{' '}
                                             {this.getStateRender(
                                                 version.version,
                                                 version

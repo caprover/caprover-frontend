@@ -1,5 +1,5 @@
 import { Button, Input, Row } from 'antd'
-import React from 'react'
+import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import ApiComponent from '../../../global/ApiComponent'
 
@@ -107,7 +107,7 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
                             )
                         }
                     >
-                        Deploy Now
+                        {localize('apps.deploy_now_button', 'Deploy Now')}
                     </Button>
                 </Row>
             </div>

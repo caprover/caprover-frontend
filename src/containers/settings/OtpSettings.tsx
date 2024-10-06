@@ -1,6 +1,7 @@
 import { CheckCircleOutlined } from '@ant-design/icons'
 import { Button, Input, Modal, Row } from 'antd'
 import { TwoFactorAuthResponse } from '../../models/IProFeatures'
+import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
@@ -54,13 +55,17 @@ export default class OtpSettings extends ApiComponent<
         return (
             <div>
                 <p>
-                    Two Factor Authentication{' '}
+                    {localize(
+                        'settings.otp_authentication',
+                        'Two Factor Authentication'
+                    )}{' '}
                     {isCurrentlyEnabled ? (
                         <b>
-                            Enabled <CheckCircleOutlined />
+                            {localize('settings.enabled', 'Enabled')}{' '}
+                            <CheckCircleOutlined />
                         </b>
                     ) : (
-                        <b>Disabled</b>
+                        <b>{localize('settings.disabled', 'Disabled')}</b>
                     )}
                 </p>
                 <Row justify="end">
@@ -69,24 +74,36 @@ export default class OtpSettings extends ApiComponent<
                             type="dashed"
                             onClick={() => self.setEnableOtp(false)}
                         >
-                            Disable Two-Factor Authentication
+                            {localize(
+                                'settings.disable_otp',
+                                'Disable Two-Factor Authentication'
+                            )}
                         </Button>
                     ) : (
                         <Button
                             type="default"
                             onClick={() => self.setEnableOtp(true)}
                         >
-                            Enable Two-Factor Authentication
+                            {localize(
+                                'settings.enable_otp',
+                                'Enable Two-Factor Authentication'
+                            )}
                         </Button>
                     )}
                 </Row>
                 <Modal
-                    title="Enable OTP verification"
+                    title={localize(
+                        'settings.enable_otp_verification',
+                        'Enable OTP verification'
+                    )}
                     open={!!self.state.otpPath}
                     onOk={() => {
                         if (!self.state.enteredToken) {
                             Toaster.toastInfo(
-                                'Enter OTP verification code first.'
+                                localize(
+                                    'settings.enter_otp_code_first',
+                                    'Enter OTP verification code first.'
+                                )
                             )
                         } else {
                             self.setEnableOtp(true)
@@ -100,11 +117,17 @@ export default class OtpSettings extends ApiComponent<
                     <div>
                         <OtpQr otpPath={self.state.otpPath} />
                         <p style={{ marginTop: 50 }}>
-                            Confirm OTP by entering the verification code
+                            {localize(
+                                'settings.confirm_otp',
+                                'Confirm OTP by entering the verification code'
+                            )}
                         </p>
                         <Input
                             style={{ marginTop: 5 }}
-                            addonBefore="OTP Verification Code"
+                            addonBefore={localize(
+                                'settings.otp_verification_code',
+                                'OTP Verification Code'
+                            )}
                             placeholder="123456"
                             value={self.state.enteredToken}
                             onChange={(e) => {
@@ -139,8 +162,14 @@ export default class OtpSettings extends ApiComponent<
                 if (toEnable === resp.isEnabled) {
                     Toaster.toastSuccess(
                         toEnable
-                            ? 'Two factor authentication is now successfully enabled'
-                            : 'Two factor authentication is disabled'
+                            ? localize(
+                                  'settings.otp_enabled_success',
+                                  'Two factor authentication is now successfully enabled'
+                              )
+                            : localize(
+                                  'settings.otp_disabled',
+                                  'Two factor authentication is disabled'
+                              )
                     )
                 }
             })

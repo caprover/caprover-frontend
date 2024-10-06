@@ -1,7 +1,9 @@
 import { Locale } from 'antd/es/locale'
 import enUS from 'antd/es/locale/en_US'
+import ptBR from 'antd/es/locale/pt_BR'
 import zhCN from 'antd/es/locale/zh_CN'
 import enUSMessages from '../locales/en-US.json'
+import ptBRMessages from '../locales/pt-BR.json'
 import zhCNMessages from '../locales/zh-CN.json'
 
 import StorageHelper from './StorageHelper'
@@ -22,6 +24,13 @@ const languagesOptions: LanguageOption[] = [
         alias: ['en'],
         antdLocale: enUS,
         messages: enUSMessages,
+    },
+    {
+        label: 'Portuguese',
+        value: 'pt-BR',
+        alias: ['pt'],
+        antdLocale: ptBR,
+        messages: ptBRMessages,
     },
     {
         label: '简体中文',

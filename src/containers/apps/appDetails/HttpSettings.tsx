@@ -12,6 +12,7 @@ import {
     Tooltip,
 } from 'antd'
 import { Component, Fragment } from 'react'
+import { localize } from '../../../utils/Language'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
 import NewTabLink from '../../global/NewTabLink'
@@ -260,7 +261,10 @@ export default class HttpSettings extends Component<
                         type="default"
                         onClick={() => this.onEditDefaultNginxConfigClicked()}
                     >
-                        Edit Default Nginx Configurations
+                        {localize(
+                            'apps.edit_nginx_config_button',
+                            'Edit Default Nginx Configurations'
+                        )}
                     </Button>
                 </div>
             )
@@ -269,10 +273,21 @@ export default class HttpSettings extends Component<
         return (
             <div>
                 <p>
-                    Templates are built using EJS template pattern. Do not
-                    change the areas between <code>&lt;%</code> and{' '}
-                    <code>%&gt;</code> , unless you really know what you're
-                    doing! To revert to default, simply remove all the content.
+                    {localize(
+                        'apps.edit_nginx_description',
+                        "Templates are built using EJS template pattern. Do not change the areas between %s , unless you really know what you're doing! To revert to default, simply remove all the content."
+                    )
+                        .split('%s')
+                        .map((it, index) => (
+                            <span>
+                                {it}{' '}
+                                {index === 0 ? (
+                                    <code>&lt;% ... %&gt;</code>
+                                ) : (
+                                    <></>
+                                )}
+                            </span>
+                        ))}
                 </p>
                 <Input.TextArea
                     style={{
@@ -301,14 +316,27 @@ export default class HttpSettings extends Component<
 
         return (
             <div>
-                <p>Your app is publicly available at:</p>
+                <p>
+                    {' '}
+                    {localize(
+                        'apps.app_public_urls',
+                        'Your app is publicly available at'
+                    )}
+                    :
+                </p>
                 <Row>
                     <Button.Group size="small">
                         <Tooltip
                             title={
                                 app.hasDefaultSubDomainSsl
-                                    ? 'Already activated'
-                                    : 'Click to activate HTTPS for this domain'
+                                    ? localize(
+                                          'apps.app_ssl_already_active',
+                                          'Already activated'
+                                      )
+                                    : localize(
+                                          'apps.app_active_ssl',
+                                          'Click to activate HTTPS for this domain'
+                                      )
                             }
                         >
                             <Button
@@ -319,7 +347,10 @@ export default class HttpSettings extends Component<
                                 }}
                                 type="primary"
                             >
-                                Enable HTTPS
+                                {localize(
+                                    'apps.app_active_ssl_button',
+                                    'Enable HTTPS'
+                                )}
                             </Button>
                         </Tooltip>
                     </Button.Group>
@@ -364,13 +395,19 @@ export default class HttpSettings extends Component<
                                     }
                                     type="primary"
                                 >
-                                    Connect New Domain
+                                    {localize(
+                                        'apps.app_add_new_domain',
+                                        'Connect New Domain'
+                                    )}
                                 </Button>
                             </Fragment>
                         ) : (
                             <Search
                                 placeholder="www.the-best-app-in-the-world.com"
-                                enterButton="Connect New Domain"
+                                enterButton={localize(
+                                    'apps.app_add_new_domain',
+                                    'Connect New Domain'
+                                )}
                                 onSearch={(value) =>
                                     this.onConnectNewDomainClicked(value)
                                 }
@@ -378,7 +415,12 @@ export default class HttpSettings extends Component<
                         )}
                     </Col>
                     &nbsp;&nbsp;&nbsp;
-                    <Tooltip title="Make sure the new domain points to this IP, otherwise verification will fail.">
+                    <Tooltip
+                        title={localize(
+                            'apps.http_warning_ip_address_hint',
+                            'Make sure the new domain points to this IP, otherwise verification will fail.'
+                        )}
+                    >
                         <span>
                             <InfoCircleOutlined style={{ marginTop: 9 }} />
                         </span>
@@ -397,11 +439,17 @@ export default class HttpSettings extends Component<
                         lg={{ span: 6 }}
                         style={{ minWidth: this.props.isMobile ? '100%' : 300 }}
                     >
-                        <Tooltip title="HTTP port inside the container. Default is 80. Change only if the app is running in a different port. This is used only for HTTP apps, not databases.">
+                        <Tooltip
+                            title={localize(
+                                'apps.hint_http_port',
+                                'HTTP port inside the container. Default is 80. Change only if the app is running in a different port. This is used only for HTTP apps, not databases.'
+                            )}
+                        >
                             <Input
-                                addonBefore={`Container ${
-                                    this.props.isMobile ? ' ' : 'HTTP '
-                                }Port`}
+                                addonBefore={localize(
+                                    'apps.container_http_port',
+                                    'Container HTTP Port'
+                                )}
                                 type="number"
                                 defaultValue={
                                     app.containerHttpPort
@@ -438,9 +486,17 @@ export default class HttpSettings extends Component<
                             this.props.updateApiData(newApiData)
                         }}
                     >
-                        Force HTTPS by redirecting all HTTP traffic to HTTPS
+                        {localize(
+                            'apps.force_http_text',
+                            'Force HTTPS by redirecting all HTTP traffic to HTTPS'
+                        )}
                     </Checkbox>
-                    <Tooltip title="Forcing HTTPS causes domains without HTTPS to malfunction. Make sure you enable HTTPS for the domain you want to use, before enabling Force HTTPS option.">
+                    <Tooltip
+                        title={localize(
+                            'apps.force_http_hint_warning',
+                            'Forcing HTTPS causes domains without HTTPS to malfunction. Make sure you enable HTTPS for the domain you want to use, before enabling Force HTTPS option.'
+                        )}
+                    >
                         <InfoCircleOutlined />
                     </Tooltip>
                 </Row>
@@ -461,9 +517,17 @@ export default class HttpSettings extends Component<
                             this.props.updateApiData(newApiData)
                         }}
                     >
-                        Websocket Support
+                        {localize(
+                            'apps.websock_support_text',
+                            'Websocket Support'
+                        )}
                     </Checkbox>
-                    <Tooltip title="Adds the upgrade proxy headers to NGINX config.">
+                    <Tooltip
+                        title={localize(
+                            'apps.websock_support_text_hint',
+                            'Adds the upgrade proxy headers to NGINX config.'
+                        )}
+                    >
                         <InfoCircleOutlined />
                     </Tooltip>
                 </Row>
@@ -475,12 +539,29 @@ export default class HttpSettings extends Component<
                         type="default"
                         onClick={() => self.onEditHttpAuthClicked()}
                     >
-                        Edit HTTP Basic Auth
+                        {localize(
+                            'apps.button_enable_auth',
+                            'Edit HTTP Basic Auth'
+                        )}
                     </Button>
                     {this.props.isMobile && <div style={{ marginTop: 10 }} />}
                     <span>
-                        Current State:{' '}
-                        <b>{!basicAuthUsername ? 'inactive' : 'active'}</b>{' '}
+                        {localize(
+                            'apps.button_enable_auth_current_state',
+                            'Current State'
+                        )}{' '}
+                        :
+                        <b>
+                            {!basicAuthUsername
+                                ? localize(
+                                      'apps.button_enable_auth_inactive',
+                                      'inactive'
+                                  )
+                                : localize(
+                                      'apps.button_enable_auth_active',
+                                      'active'
+                                  )}
+                        </b>{' '}
                         {basicAuthUsername
                             ? `[user: ${basicAuthUsername} @ password: <HIDDEN>]`
                             : ''}
@@ -502,24 +583,22 @@ export default class HttpSettings extends Component<
             dialogHttpUser: auth ? auth.user || '' : '',
         })
 
+        const dialogText = localize(
+            'apps.enable_auth_dialog_body',
+            'HTTP Basic authentication is the simplest technique for enforcing access controls to web resources. You can use this technique to restrict access to HTTP apps, specially those you create via One-Click app generator such as phpMyAdmin and etc.'
+        )
+
         Promise.resolve()
             .then(function () {
                 return new Promise(function (resolve, reject) {
                     Modal.confirm({
-                        title: 'Edit HTTP Basic Auth',
+                        title: localize(
+                            'apps.enable_auth_dialog_title',
+                            'Edit HTTP Basic Auth'
+                        ),
                         content: (
                             <div style={{ paddingTop: 30 }}>
-                                <p>
-                                    HTTP Basic authentication is the simplest
-                                    technique for enforcing access controls to
-                                    web resources.
-                                </p>
-                                <p>
-                                    You can use this technique to restrict
-                                    access to HTTP apps, specially those you
-                                    create via One-Click app generator such as
-                                    phpMyAdmin and etc.
-                                </p>
+                                <p>{dialogText}</p>
                                 <p>
                                     <Input
                                         placeholder="username"
@@ -588,14 +667,23 @@ export default class HttpSettings extends Component<
 
     createHttpSettingsContent() {
         const app = this.props.apiData!.appDefinition
+
+        const str = localize(
+            'apps.http_hint_address',
+            'Your app is internally available as %s1 to other apps. In case of web-app, it is accessible via %s2 from other apps.'
+        )
+
         return (
             <div>
                 <p>
-                    Your app is internally available as{' '}
-                    <code>srv-captain--{app.appName}</code> to other Captain
-                    apps. In case of web-app, it is accessible via{' '}
-                    <code>{`http://srv-captain--${app.appName}`}</code> from
-                    other apps.
+                    {Utils.formatText(
+                        str,
+                        ['%s1', '%s2'],
+                        [
+                            <code>srv-captain--{app.appName}</code>,
+                            <code>{`http://srv-captain--${app.appName}`}</code>,
+                        ]
+                    )}
                 </p>
                 <br />
 
@@ -610,9 +698,21 @@ export default class HttpSettings extends Component<
                         this.props.updateApiData(newApiData)
                     }}
                 >
-                    Do not expose as web-app
+                    {localize(
+                        'apps.http_expose_title',
+                        '   Do not expose as web-app externally'
+                    )}
                 </Checkbox>
-                <Tooltip title="Use this if you don't want your app be externally available.">
+                <Tooltip
+                    title={Utils.formatText(
+                        localize(
+                            'apps.http_expose_hint',
+                            "Use this if you don't want your app be externally available. Your app will continue to be available internally as %s"
+                        ),
+                        ['%s'],
+                        [<span>{`http://srv-captain--${app.appName}`}</span>]
+                    )}
+                >
                     <InfoCircleOutlined />
                 </Tooltip>
 

@@ -2,6 +2,7 @@ import { EditOutlined } from '@ant-design/icons'
 import { Alert, Modal, Select } from 'antd'
 import { Component } from 'react'
 import { IRegistryApi } from '../../models/IRegistryInfo'
+import { localize } from '../../utils/Language'
 import Utils from '../../utils/Utils'
 import ClickableLink from '../global/ClickableLink'
 
@@ -54,8 +55,14 @@ export default class DefaultDockerRegistry extends Component<
         return (
             <div>
                 <Modal
-                    title="Edit Push Registry"
-                    okText="Save and Update"
+                    title={localize(
+                        'default_docker_reg.edit_push_registry',
+                        'Edit Push Registry'
+                    )}
+                    okText={localize(
+                        'default_docker_reg.save_and_update',
+                        'Save and Update'
+                    )}
                     onCancel={() => self.setState({ isInEditMode: false })}
                     onOk={() => {
                         self.setState({ isInEditMode: false })
@@ -66,15 +73,24 @@ export default class DefaultDockerRegistry extends Component<
                     open={self.state.isInEditMode}
                 >
                     <p>
-                        Default Docker Registry is the registry that will be
-                        used to store your newly built images. You can select{' '}
-                        <code>{DISABLED_PUSH}</code> if you don't want to push
-                        your newly built images to any docker registry. Keep in
-                        mind that if you use <code>{DISABLED_PUSH}</code>,
-                        cluster nodes (if you happen to have more than one
-                        server) will not be able to run your applications.
+                        {Utils.formatText(
+                            localize(
+                                'default_docker_reg.default_registry_info',
+                                "Default Docker Registry is the registry that will be used to store your newly built images. You can select %s1 if you don't want to push your newly built images to any docker registry. Keep in mind that if you use %s2, cluster nodes (if you happen to have more than one server) will not be able to run your applications."
+                            ),
+                            ['%s1', '%s2'],
+                            [
+                                <code>{DISABLED_PUSH}</code>,
+                                <code>{DISABLED_PUSH}</code>,
+                            ]
+                        )}
                     </p>
-                    <p>Change the default Docker Registry:</p>
+                    <p>
+                        {localize(
+                            'default_docker_reg.change_default_registry',
+                            'Change the default Docker Registry:'
+                        )}
+                    </p>
                     <Select
                         defaultValue={
                             this.props.apiData.defaultPushRegistryId || NONE
@@ -103,13 +119,24 @@ export default class DefaultDockerRegistry extends Component<
                         <Alert
                             showIcon={true}
                             type="warning"
-                            message="If you have a cluster (more than one server), you need to have a default push registry. If you only have one single server, disabling default push registry is fine."
+                            message={localize(
+                                'default_docker_reg.cluster_warning',
+                                'If you have a cluster (more than one server), you need to have a default push registry. If you only have one single server, disabling default push registry is fine.'
+                            )}
                         />
                     </div>
                 </Modal>
-                <h3>Default Push Registry</h3>
+                <h3>
+                    {localize(
+                        'default_docker_reg.default_push_registry',
+                        'Default Push Registry'
+                    )}
+                </h3>
                 <p>
-                    Docker Registry for Pushing New Images:{' '}
+                    {localize(
+                        'default_docker_reg.docker_registry_for_pushing_images',
+                        'Docker Registry for Pushing New Images:'
+                    )}{' '}
                     <ClickableLink
                         onLinkClicked={() => {
                             self.setState({

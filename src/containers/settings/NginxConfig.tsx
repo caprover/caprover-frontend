@@ -1,5 +1,6 @@
 import { SyncOutlined } from '@ant-design/icons'
 import { Button, Input, Row } from 'antd'
+import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import ApiComponent from '../global/ApiComponent'
@@ -76,18 +77,26 @@ export default class NginxConfig extends ApiComponent<
         return (
             <div>
                 <p>
-                    CapRover allows you to set custom configurations for your
-                    nginx router. This will allow high customization level in
-                    terms of caching, special routing, http2 and etc.
+                    {localize(
+                        'nginx_config.customization',
+                        'CapRover allows you to set custom configurations for your nginx router. This will allow high customization level in terms of caching, special routing, http2 and etc.'
+                    )}
                 </p>
                 <p>
-                    Note that templates are built using EJS template pattern. Do
-                    not change the areas between <code>&lt;%</code> and{' '}
-                    <code>%&gt;</code> unless you really know what you're doing!
+                    {localize(
+                        'nginx_config.template_pattern',
+                        "Note that templates are built using EJS template pattern. Do not change the areas between <% .... > unless you really know what you're doing!"
+                    )}
                 </p>
                 <br />
                 <p>
-                    <b>Base Config Location in nginx container</b>:
+                    <b>
+                        {localize(
+                            'nginx_config.base_config_location',
+                            'Base Config Location in nginx container'
+                        )}
+                        :
+                    </b>{' '}
                     /etc/nginx/nginx.conf
                 </p>
                 <div
@@ -112,7 +121,13 @@ export default class NginxConfig extends ApiComponent<
                     <div style={{ height: 40 }} />
                 </div>
                 <p>
-                    <b>CapRover Config Location in nginx container</b>:
+                    <b>
+                        {localize(
+                            'nginx_config.captain_config_location',
+                            'CapRover Config Location in nginx container'
+                        )}
+                        :
+                    </b>{' '}
                     /etc/nginx/conf.d/captain-root.conf
                 </p>
                 <div
@@ -146,7 +161,10 @@ export default class NginxConfig extends ApiComponent<
                                 self.onLoadDefaultNginxConfigClicked()
                             }
                         >
-                            Load Default and Edit
+                            {localize(
+                                'nginx_config.load_default',
+                                'Load Default and Edit'
+                            )}
                         </Button>
                     </Row>
 
@@ -161,7 +179,11 @@ export default class NginxConfig extends ApiComponent<
                             <span>
                                 <SyncOutlined />
                             </span>{' '}
-                            &nbsp; Save and Update
+                            &nbsp;{' '}
+                            {localize(
+                                'nginx_config.save_update',
+                                'Save and Update'
+                            )}
                         </Button>
                     </Row>
                 </div>

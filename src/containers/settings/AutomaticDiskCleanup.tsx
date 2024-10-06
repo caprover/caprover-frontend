@@ -1,5 +1,6 @@
 import { Button, Col, Input, Row, Select, Tooltip, message } from 'antd'
 import { IAutomatedCleanupConfigs } from '../../models/AutomatedCleanupConfigs'
+import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import ApiComponent from '../global/ApiComponent'
@@ -74,37 +75,54 @@ export default class AutomaticDiskCleanup extends ApiComponent<
             <div>
                 <div>
                     <p>
-                        Every time you deploy a new build, Docker builds a new
-                        image for you. Typically, a large part of this image is
-                        shared between the old version and the new version, but
-                        a small chunk is added to your disk with each build. You
-                        can read more about disk cleanup in the docs, but as a
-                        simple interface, this widget gives you the ability to
-                        perform image cleanups on demand.
+                        {localize(
+                            'automatic_disk_cleanup.every_time_you_deploy',
+                            'Every time you deploy a new build, Docker builds a new image for you. Typically, a large part of this image is shared between the old version and the new version, but a small chunk is added to your disk with each build. You can read more about disk cleanup in the docs, but as a simple interface, this widget gives you the ability to perform image cleanups on demand.'
+                        )}
                     </p>
                     <p>
-                        By default, CapRover keeps a few most recent images for
-                        your app so that you can rollback to a previous version
-                        if needed. Also, CapRover uses a simple crontab
-                        scheduler, for example,{' '}
+                        {localize(
+                            'automatic_disk_cleanup.by_default_caprover',
+                            'By default, CapRover keeps a few most recent images for your app so that you can rollback to a previous version if needed. Also, CapRover uses a simple crontab scheduler, for example,'
+                        )}{' '}
                         <code
                             onClick={(e) => {
                                 navigator.clipboard.writeText(`0 1 * * *`)
-                                message.info('Copied to clipboard!')
+                                message.info(
+                                    localize(
+                                        'automatic_disk_cleanup.copied_to_clipboard',
+                                        'Copied to clipboard!'
+                                    )
+                                )
                             }}
                         >
                             0 1 * * *{' '}
                         </code>{' '}
-                        &nbsp; results in running cleanup every day at 1am.
+                        &nbsp;
+                        {localize(
+                            'automatic_disk_cleanup.results_in_running_cleanup',
+                            'results in running cleanup every day at 1am.'
+                        )}
                     </p>
                     <Row>
                         {' '}
                         <Col span={12}>
                             {' '}
-                            <Tooltip title="Use a simple crontab expression to schedule a cleanup ">
+                            <Tooltip
+                                title={localize(
+                                    'automatic_disk_cleanup.use_a_simple_crontab_expression',
+                                    'Use a simple crontab expression to schedule a cleanup '
+                                )}
+                            >
                                 <Input
-                                    addonBefore="Cron Schedule"
-                                    placeholder="leave empty to disable cleanup"
+                                    addonBefore={localize(
+                                        'automatic_disk_cleanup.cron_schedule',
+                                        'Cron Schedule'
+                                    )}
+                                    placeholder={localize(
+                                        'automatic_disk_cleanup.leave_empty_to_disable_cleanup',
+                                        'leave empty to disable cleanup'
+                                    )}
                                     value={
                                         (this.state.automatedCleanupConfigs
                                             ?.cronSchedule || '') + ''
@@ -131,7 +149,10 @@ export default class AutomaticDiskCleanup extends ApiComponent<
                                 <Select
                                     style={{ minWidth: 300 }}
                                     showSearch
-                                    placeholder="Timezone"
+                                    placeholder={localize(
+                                        'automatic_disk_cleanup.timezone',
+                                        'Timezone'
+                                    )}
                                     optionFilterProp="label"
                                     onChange={(value: string) => {
                                         const automatedCleanupConfigs =
@@ -173,9 +194,17 @@ export default class AutomaticDiskCleanup extends ApiComponent<
 
                     <Row style={{ marginTop: 10 }}>
                         <Col span={12}>
-                            <Tooltip title="For example, enter 2 in order to exclude 2 most recent builds during clean-up">
+                            <Tooltip
+                                title={localize(
+                                    'automatic_disk_cleanup.for_example_enter_2',
+                                    'For example, enter 2 in order to exclude 2 most recent builds during clean-up'
+                                )}
+                            >
                                 <Input
-                                    addonBefore="Keep most recent"
+                                    addonBefore={localize(
+                                        'automatic_disk_cleanup.keep_most_recent',
+                                        'Keep most recent'
+                                    )}
                                     type="number"
                                     value={
                                         this.state.automatedCleanupConfigs
@@ -205,7 +234,12 @@ export default class AutomaticDiskCleanup extends ApiComponent<
                                         if (
                                             !self.state.automatedCleanupConfigs
                                         ) {
-                                            message.error('Invalid data')
+                                            message.error(
+                                                localize(
+                                                    'automatic_disk_cleanup.invalid_data',
+                                                    'Invalid data'
+                                                )
+                                            )
                                             return
                                         }
 
@@ -225,7 +259,10 @@ export default class AutomaticDiskCleanup extends ApiComponent<
                                             )
                                             .then(function () {
                                                 message.success(
-                                                    'Settings saved successfully!'
+                                                    localize(
+                                                        'automatic_disk_cleanup.settings_saved_successfully',
+                                                        'Settings saved successfully!'
+                                                    )
                                                 )
                                             })
                                             .catch(Toaster.createCatcher())
@@ -236,7 +273,10 @@ export default class AutomaticDiskCleanup extends ApiComponent<
                                             })
                                     }}
                                 >
-                                    Save
+                                    {localize(
+                                        'automatic_disk_cleanup.save',
+                                        'Save'
+                                    )}
                                 </Button>
                             </Row>
                         </Col>

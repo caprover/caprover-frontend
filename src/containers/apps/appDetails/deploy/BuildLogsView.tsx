@@ -4,6 +4,7 @@ import {
     UpCircleOutlined,
 } from '@ant-design/icons'
 import { Alert, Input, Row, Spin } from 'antd'
+import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
@@ -175,9 +176,14 @@ export default class BuildLogsView extends ApiComponent<
                                 )}
                                 &nbsp;&nbsp;
                                 {!this.state.expandedLogs
-                                    ? 'View'
-                                    : 'Hide'}{' '}
-                                Build Logs
+                                    ? localize(
+                                          'apps.deploy_app_build_logs_view',
+                                          'View Build Logs'
+                                      )
+                                    : localize(
+                                          'apps.deploy_app_build_logs_hide',
+                                          'Hide Build Logs'
+                                      )}
                             </span>
                         </ClickableLink>
                     </div>

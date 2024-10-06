@@ -2,6 +2,7 @@ import { Card, Col, Collapse, Row } from 'antd'
 import { Component } from 'react'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
+import { localize } from '../../utils/Language'
 import AutomaticDiskCleanup from './AutomaticDiskCleanup'
 import BackupCreator from './BackupCreator'
 import ChangePass from './ChangePass'
@@ -37,7 +38,10 @@ class Settings extends Component<
                     >
                         <Card
                             style={{ height: '100%' }}
-                            title="Check for Updates"
+                            title={localize(
+                                'settings.check_for_updates',
+                                'Check for Updates'
+                            )}
                         >
                             <CheckUpdate isMobile={this.props.isMobile} />
                         </Card>
@@ -47,7 +51,10 @@ class Settings extends Component<
                         lg={{ span: 10 }}
                         xs={{ span: 23 }}
                     >
-                        <Card style={{ height: '100%' }} title="Backup">
+                        <Card
+                            style={{ height: '100%' }}
+                            title={localize('settings.backup', 'Backup')}
+                        >
                             <BackupCreator isMobile={this.props.isMobile} />
                         </Card>
                     </Col>
@@ -58,7 +65,10 @@ class Settings extends Component<
                     >
                         <Card
                             style={{ height: '100%' }}
-                            title="NGINX Configurations"
+                            title={localize(
+                                'settings.nginx_configurations',
+                                'NGINX Configurations'
+                            )}
                         >
                             <NginxConfig isMobile={this.props.isMobile} />
                         </Card>
@@ -70,7 +80,10 @@ class Settings extends Component<
                     >
                         <Card
                             style={{ height: '100%' }}
-                            title="Change Password"
+                            title={localize(
+                                'settings.change_password',
+                                'Change Password'
+                            )}
                         >
                             <ChangePass isMobile={this.props.isMobile} />
                         </Card>
@@ -80,7 +93,13 @@ class Settings extends Component<
                         lg={{ span: 14 }}
                         xs={{ span: 23 }}
                     >
-                        <Card style={{ height: '100%' }} title="Disk Cleanup">
+                        <Card
+                            style={{ height: '100%' }}
+                            title={localize(
+                                'settings.disk_cleanup',
+                                'Disk Cleanup'
+                            )}
+                        >
                             <AutomaticDiskCleanup
                                 isMobile={this.props.isMobile}
                             />
@@ -92,7 +111,10 @@ class Settings extends Component<
                                 items={[
                                     {
                                         key: '1',
-                                        label: 'One off cleanup',
+                                        label: localize(
+                                            'settings.one_off_cleanup',
+                                            'One off cleanup'
+                                        ),
                                         children: (
                                             <DiskCleanup
                                                 isMobile={this.props.isMobile}

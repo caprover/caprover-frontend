@@ -109,7 +109,7 @@ class CreateNewApp extends Component<
                         marginLeft: 5,
                     }}
                 >
-                    Parent project
+                    {localize('apps.parent_project', 'Parent project')}
                 </div>
                 <ProjectSelector
                     allProjects={self.props.projects}

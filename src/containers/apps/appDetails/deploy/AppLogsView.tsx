@@ -6,6 +6,7 @@ import {
     UpCircleOutlined,
 } from '@ant-design/icons'
 import { Col, Input, Row, Tooltip } from 'antd'
+import { localize } from '../../../../utils/Language'
 import Logger from '../../../../utils/Logger'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
@@ -197,9 +198,14 @@ export default class AppLogsView extends ApiComponent<
                                                 )}
                                                 &nbsp;&nbsp;
                                                 {!this.state.expandedLogs
-                                                    ? 'View'
-                                                    : 'Hide'}{' '}
-                                                App Logs
+                                                    ? localize(
+                                                          'apps.app_log_button_view',
+                                                          'View App Logs'
+                                                      )
+                                                    : localize(
+                                                          'apps.app_log_button_hide',
+                                                          'Hide App Logs'
+                                                      )}
                                             </span>
                                         </ClickableLink>
                                     </span>
@@ -209,11 +215,16 @@ export default class AppLogsView extends ApiComponent<
                                             marginLeft: 20,
                                         }}
                                     >
-                                        <Tooltip title="View full application logs (not truncated)">
-                                            <NewTabLink url="https://caprover.com/docs/troubleshooting.html#how-to-view-my-applications-log">
+                                        <NewTabLink url="https://caprover.com/docs/troubleshooting.html#how-to-view-my-applications-log">
+                                            <Tooltip
+                                                title={localize(
+                                                    'apps.app_log_view_full',
+                                                    'Click to learn how to view full application logs (not truncated)'
+                                                )}
+                                            >
                                                 <InfoCircleOutlined />
-                                            </NewTabLink>
-                                        </Tooltip>
+                                            </Tooltip>
+                                        </NewTabLink>
                                     </span>
                                 </Row>
                             </span>
@@ -233,10 +244,16 @@ export default class AppLogsView extends ApiComponent<
                                 >
                                     <span className="unselectable-span">
                                         <MenuFoldOutlined />
-                                        &nbsp;&nbsp;{' '}
+                                        &nbsp;&nbsp;
                                         {this.state.isWrapped
-                                            ? "Don't wrap logs"
-                                            : 'Wrap logs'}
+                                            ? localize(
+                                                  'apps.do_not_wrap_logs_button',
+                                                  "Don't wrap logs"
+                                              )
+                                            : localize(
+                                                  'apps.wrap_logs_button',
+                                                  'Wrap logs'
+                                              )}
                                         &nbsp;&nbsp;
                                     </span>
                                 </ClickableLink>

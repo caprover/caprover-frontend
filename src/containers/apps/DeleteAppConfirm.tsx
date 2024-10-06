@@ -2,6 +2,7 @@ import { Checkbox, Input, Modal, message } from 'antd'
 import ApiManager from '../../api/ApiManager'
 import { IHashMapGeneric } from '../../models/IHashMapGeneric'
 import ProjectDefinition from '../../models/ProjectDefinition'
+import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import NewTabLink from '../global/NewTabLink'
@@ -59,7 +60,7 @@ export default function onDeleteAppClicked(
 
     Modal.confirm({
         okType: 'danger',
-        title: 'Confirm Permanent Delete?',
+        title: localize('apps.delete_app_title', 'Confirm Permanent Delete?'),
         content: (
             <div>
                 <div>
@@ -68,21 +69,27 @@ export default function onDeleteAppClicked(
                             appDefinitions.length ? '' : 'hide-on-demand'
                         }
                     >
-                        Apps:
+                        {localize('apps.delete_app_apps_list', 'Apps')}:
                         {appsList}
                     </div>
                     <div className={projects.length ? '' : 'hide-on-demand'}>
-                        Projects:
+                        {localize('apps.delete_app_projects_list', 'Projects')}:
                         {projectList}
                     </div>
-                    Please note that this is
-                    <b> not reversible</b>.
+                    <b>
+                        {' '}
+                        {localize(
+                            'apps.delete_app_warning',
+                            'Please note that this is not reversible'
+                        )}
+                    </b>
+                    .
                 </div>
                 <p className={allVolumesNames.size ? '' : 'hide-on-demand'}>
-                    Please select the volumes you want to delete. Note that if
-                    any of the volumes are being used by other CapRover apps,
-                    they will not be deleted even if you select them. Deleting
-                    volumes takes <b>more than 10 seconds</b>, please be patient
+                    {localize(
+                        'apps.delete_app_volumes_to_delete',
+                        'Please select the volumes you want to delete. Note that if any of the volumes are being used by other CapRover apps, they will not be deleted even if you select them. Deleting volumes takes more than 10 seconds, please be patient'
+                    )}
                 </p>
                 {Array.from(allVolumesNames).map((v) => {
                     return (
@@ -99,8 +106,12 @@ export default function onDeleteAppClicked(
                     )
                 })}
                 <p style={{ marginTop: 25 }}>
-                    Type CONFIRM in the box below to confirm deletion of this
-                    app:
+                    {localize(
+                        'apps.delete_app_confirm',
+                        'Type %s in the box below to confirm deletion'
+                    )
+                        .split('%s')
+                        .join('CONFIRM')}
                 </p>
                 <Input
                     type="text"
@@ -114,7 +125,10 @@ export default function onDeleteAppClicked(
         onOk() {
             if (confirmation.confirmationText.toLowerCase() !== 'confirm') {
                 message.warning(
-                    'Confirm text did not match. Operation cancelled.'
+                    localize(
+                        'apps.delete_app_failed_confirm',
+                        'Confirm text did not match. Operation cancelled.'
+                    )
                 )
                 return
             }
@@ -174,7 +188,12 @@ export default function onDeleteAppClicked(
                                 })
                             }
 
-                            message.success('App(s) deleted!')
+                            message.success(
+                                localize(
+                                    'apps.delete_app_apps_deleted',
+                                    'App(s) deleted!'
+                                )
+                            )
                         })
                 })
                 .then(function () {
@@ -182,7 +201,12 @@ export default function onDeleteAppClicked(
                         return apiManager
                             .deleteProjects(projects.map((it) => it.id))
                             .then(() => {
-                                message.success('Project(s) deleted!')
+                                message.success(
+                                    localize(
+                                        'apps.delete_app_project_deleted',
+                                        'Project(s) deleted!'
+                                    )
+                                )
                             })
                     }
                 })

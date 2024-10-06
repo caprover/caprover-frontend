@@ -1,5 +1,6 @@
 import { Col, Input, Row } from 'antd'
-import React, { Component } from 'react'
+import { Component } from 'react'
+import { localize } from '../../../../utils/Language'
 import Utils from '../../../../utils/Utils'
 import PasswordField from '../../../global/PasswordField'
 import { RepoInfo } from '../../AppDefinition'
@@ -103,7 +104,10 @@ export default class GitRepoForm extends Component<{
                         </Col>
                         <Col span={24}>
                             <span>
-                                Or, instead of username/password, use SSH Key:
+                                {localize(
+                                    'apps.deploy_ssh_key_replacement_description',
+                                    'Or, instead of username/password, use SSH Key:'
+                                )}
                             </span>
                             <Input.TextArea
                                 style={{ marginBottom: 20 }}

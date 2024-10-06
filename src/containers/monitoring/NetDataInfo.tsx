@@ -1,8 +1,8 @@
 import { AreaChartOutlined, PoweroffOutlined } from '@ant-design/icons'
 import { Button, Card, Col, message, Row } from 'antd'
-import React from 'react'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
+import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import ApiComponent from '../global/ApiComponent'
@@ -57,8 +57,14 @@ class NetDataInfo extends ApiComponent<
             .then(function () {
                 message.success(
                     netDataInfo.isEnabled
-                        ? 'NetData is started and updated!'
-                        : 'NetData has stopped!'
+                        ? localize(
+                              'netdata.netdata_started_and_updated',
+                              'NetData is started and updated!'
+                          )
+                        : localize(
+                              'netdata.netdata_stopped',
+                              'NetData has stopped!'
+                          )
                 )
             })
             .catch(Toaster.createCatcher())
@@ -84,7 +90,12 @@ class NetDataInfo extends ApiComponent<
             <div>
                 <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 18 }}>
-                        <Card title="NetData Monitoring Tool">
+                        <Card
+                            title={localize(
+                                'netdata.net_data_monitoring_tool',
+                                'NetData Monitoring Tool'
+                            )}
+                        >
                             <NetDataDescription />
                             <hr />
                             <div style={{ height: 30 }} />
@@ -103,7 +114,11 @@ class NetDataInfo extends ApiComponent<
                                         type="primary"
                                     >
                                         <span>
-                                            Start NetData Engine &nbsp;
+                                            {localize(
+                                                'netdata.start_net_data_engine',
+                                                'Start NetData Engine'
+                                            )}{' '}
+                                            &nbsp;
                                             <PoweroffOutlined />
                                         </span>
                                     </Button>
@@ -134,7 +149,11 @@ class NetDataInfo extends ApiComponent<
                                         danger
                                     >
                                         <span>
-                                            Turn NetData Off &nbsp;
+                                            {localize(
+                                                'netdata.turn_net_data_off',
+                                                'Turn NetData Off'
+                                            )}{' '}
+                                            &nbsp;
                                             <PoweroffOutlined />
                                         </span>
                                     </Button>
@@ -155,7 +174,11 @@ class NetDataInfo extends ApiComponent<
                                             type="primary"
                                         >
                                             <span>
-                                                Open NetData &nbsp;
+                                                {localize(
+                                                    'netdata.open_net_data',
+                                                    'Open NetData'
+                                                )}{' '}
+                                                &nbsp;
                                                 <AreaChartOutlined />
                                             </span>
                                         </Button>
@@ -184,7 +207,10 @@ class NetDataInfo extends ApiComponent<
                                             )
                                         }
                                     >
-                                        Update NetData
+                                        {localize(
+                                            'netdata.update_net_data',
+                                            'Update NetData'
+                                        )}
                                     </Button>
                                 </Row>
                             </div>

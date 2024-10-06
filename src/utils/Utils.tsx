@@ -1,3 +1,5 @@
+import React, { ReactElement } from 'react'
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     copyObject<T>(obj: T): T {
@@ -121,6 +123,27 @@ export default {
                       .replace(/\s+/g, '')
                       .replace(/[0-9a-f]{2}/g, '%$&')
               )
+    },
+
+    formatText(
+        inputString: string,
+        delimiters: string[],
+        replacements: ReactElement[]
+    ) {
+        // This regular expression splits the string by %s1 or %s2 and keeps the delimiters
+        const delimiterRegex = new RegExp(`(${delimiters.join('|')})`, 'g')
+        const parts = inputString.split(delimiterRegex)
+        // const parts = inputString.split(/(%s1|%s2)/)
+
+        const retArray = parts.map((part, index) => {
+            let indexFound = delimiters.indexOf(part)
+
+            if (indexFound === -1) return <span key={index}>{part}</span>
+
+            return React.cloneElement(replacements[indexFound], { key: index })
+        })
+
+        return <span>{retArray}</span>
     },
 
     mergeObjects(object1: any, object2: any) {
