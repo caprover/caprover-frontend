@@ -1,6 +1,7 @@
 import { ClusterOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import { Button, Card, Col, Collapse, Input, Radio, Row, Tooltip } from 'antd'
-import React, { Component } from 'react'
+import { Component } from 'react'
+import { localize } from '../../utils/Language'
 import Utils from '../../utils/Utils'
 
 export interface INodeToAdd {
@@ -51,13 +52,19 @@ export default class AddNode extends Component<
                 <Card
                     style={{ marginTop: 16 }}
                     type="inner"
-                    title="Attach New Node"
+                    title={localize(
+                        'add_node.attach_new_node',
+                        'Attach New Node'
+                    )}
                 >
                     <Row justify="space-between">
                         <Col lg={{ span: 11 }} xs={{ span: 24 }}>
                             <Input
                                 style={{ marginBottom: 10 }}
-                                addonBefore="New node IP Address"
+                                addonBefore={localize(
+                                    'add_node.new_node_ip_address',
+                                    'New node IP Address'
+                                )}
                                 placeholder="123.123.123.123"
                                 type="text"
                                 value={nodeToAdd.remoteNodeIpAddress}
@@ -72,7 +79,10 @@ export default class AddNode extends Component<
                         <Col lg={{ span: 11 }} xs={{ span: 24 }}>
                             <Input
                                 style={{ marginBottom: 10 }}
-                                addonBefore="CapRover IP Address"
+                                addonBefore={localize(
+                                    'add_node.caprover_ip_address',
+                                    'CapRover IP Address'
+                                )}
                                 placeholder="123.123.123.123"
                                 type="text"
                                 value={nodeToAdd.captainIpAddress}
@@ -86,9 +96,19 @@ export default class AddNode extends Component<
                         </Col>
                         <Col span={24} style={{ marginTop: 10 }}>
                             <div style={{ paddingBottom: 5 }}>
-                                &nbsp;SSH Private Key for <b>root</b>
                                 &nbsp;
-                                <Tooltip title="Use RSA key. Other types such as Ed25519 are not supported, for those use the alternative method below.">
+                                {localize(
+                                    'add_node.ssh_private_key_for',
+                                    'SSH Private Key for'
+                                )}{' '}
+                                <b>root</b>
+                                &nbsp;
+                                <Tooltip
+                                    title={localize(
+                                        'add_node.use_rsa_key',
+                                        'Use RSA key. Other types such as Ed25519 are not supported, for those use the alternative method below.'
+                                    )}
+                                >
                                     <InfoCircleOutlined
                                         style={{
                                             paddingTop: 8,
@@ -123,14 +143,25 @@ export default class AddNode extends Component<
                             }
                         >
                             <Radio.Button value="worker">
-                                Join as worker node
+                                {localize(
+                                    'add_node.join_as_worker_node',
+                                    'Join as worker node'
+                                )}
                             </Radio.Button>
                             <Radio.Button value="manager">
-                                Join as manager node
+                                {localize(
+                                    'add_node.join_as_manager_node',
+                                    'Join as manager node'
+                                )}
                             </Radio.Button>
                         </Radio.Group>
                         &nbsp;
-                        <Tooltip title="Tip: For every 5 workers, add 2 manager nodes, keeping manager node count as an odd number. Therefore, use worker node for the first 4 nodes you add to your cluster.">
+                        <Tooltip
+                            title={localize(
+                                'add_node.tip_for_node_count',
+                                'Tip: For every 5 workers, add 2 manager nodes, keeping manager node count as an odd number. Therefore, use worker node for the first 4 nodes you add to your cluster.'
+                            )}
+                        >
                             <InfoCircleOutlined
                                 style={{ paddingTop: 8, paddingLeft: 8 }}
                             />
@@ -144,7 +175,10 @@ export default class AddNode extends Component<
                             style={{ maxWidth: 250 }}
                         >
                             <Input
-                                addonBefore="SSH Port"
+                                addonBefore={localize(
+                                    'add_node.ssh_port',
+                                    'SSH Port'
+                                )}
                                 type="text"
                                 value={nodeToAdd.sshPort}
                                 onChange={(e) =>
@@ -157,9 +191,17 @@ export default class AddNode extends Component<
                             xs={{ span: 24 }}
                             style={{ maxWidth: 250, marginLeft: 10 }}
                         >
-                            <Tooltip title="Using non-root users with sudo access will NOT work. If you want to use a non-root account, it must be able run docker commands without sudo. Or simply use the alternative method below.">
+                            <Tooltip
+                                title={localize(
+                                    'add_node.using_non_root_users',
+                                    'Using non-root users with sudo access will NOT work. If you want to use a non-root account, it must be able run docker commands without sudo. Or simply use the alternative method below.'
+                                )}
+                            >
                                 <Input
-                                    addonBefore="SSH User"
+                                    addonBefore={localize(
+                                        'add_node.ssh_user',
+                                        'SSH User'
+                                    )}
                                     type="text"
                                     value={nodeToAdd.sshUser}
                                     onChange={(e) =>
@@ -181,30 +223,49 @@ export default class AddNode extends Component<
                                 )
                             }
                         >
-                            <ClusterOutlined /> &nbsp; Join Cluster
+                            <ClusterOutlined /> &nbsp;{' '}
+                            {localize('add_node.join_cluster', 'Join Cluster')}
                         </Button>
                     </Row>
                     <div style={{ height: 50 }} />
                     <Collapse>
-                        <Collapse.Panel header="Alternative Method" key="1">
+                        <Collapse.Panel
+                            header={localize(
+                                'add_node.alternative_method',
+                                'Alternative Method'
+                            )}
+                            key="1"
+                        >
                             <p>
-                                CapRover uses SSH to connect to your nodes and
-                                have them join the cluster. Sometimes, this
-                                process does not work due to non standard SSH
-                                configs such as custom ports, custom usernames,
-                                and etc.
+                                {localize(
+                                    'add_node.caprover_uses_ssh',
+                                    'CapRover uses SSH to connect to your nodes and have them join the cluster. Sometimes, this process does not work due to non standard SSH configs such as custom ports, custom usernames, and etc.'
+                                )}
                             </p>
                             <p>
-                                In these cases, it will be much simpler to run
-                                the commands manually your self from an SSH
-                                session. First, from your{' '}
-                                <b>main leader node</b>, run the following
-                                command:
+                                {localize(
+                                    'add_node.in_these_cases',
+                                    'In these cases, it will be much simpler to run the commands manually your self from an SSH session. First, from your'
+                                )}{' '}
+                                <b>
+                                    {localize(
+                                        'add_node.main_leader_node',
+                                        'main leader node'
+                                    )}
+                                </b>
+                                ,{' '}
+                                {localize(
+                                    'add_node.run_the_following_command',
+                                    'run the following command:'
+                                )}
                             </p>
                             <code>docker swarm join-token worker</code>
 
                             <p style={{ marginTop: 20 }}>
-                                It will output something like this:
+                                {localize(
+                                    'add_node.it_will_output_something_like_this',
+                                    'It will output something like this:'
+                                )}
                             </p>
                             <code>
                                 To add a worker to this swarm, run the following
@@ -214,27 +275,31 @@ export default class AddNode extends Component<
                                 SWMTKN-secret-token-here 127.0.0.1:2377
                             </code>
                             <p style={{ marginTop: 20 }}>
-                                Then, copy the command from the output of above,
-                                and simply from the worker node, run that
-                                command.
+                                {localize(
+                                    'add_node.then_copy_the_command',
+                                    'Then, copy the command from the output of above, and simply from the worker node, run that command.'
+                                )}
                             </p>
                             <p style={{ marginTop: 20 }}>
-                                Depending on your network configurations, you
-                                may also need to append the command with{' '}
+                                {localize(
+                                    'add_node.depending_on_your_network_configurations',
+                                    'Depending on your network configurations, you may also need to append the command with'
+                                )}{' '}
                                 <code>
                                     {' '}
                                     --advertise-addr WORKER_EXTERNAL_IP:2377
                                 </code>
-                                . See{' '}
+                                .{' '}
                                 <a
                                     href="https://github.com/caprover/caprover/issues/572"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    {' '}
-                                    this issue{' '}
+                                    {localize(
+                                        'add_node.see_details_link',
+                                        'See this issue for more details.'
+                                    )}
                                 </a>{' '}
-                                for more details.
                             </p>
                         </Collapse.Panel>
                     </Collapse>

@@ -1,5 +1,6 @@
 import { CloudDownloadOutlined } from '@ant-design/icons'
 import { Button, message, Row } from 'antd'
+import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
@@ -34,7 +35,12 @@ export default class BackupCreator extends ApiComponent<
                 )
                 link.click()
 
-                message.success('Downloading backup started...')
+                message.success(
+                    localize(
+                        'backup.download_started',
+                        'Downloading backup started...'
+                    )
+                )
             })
             .catch(Toaster.createCatcher())
             .then(function () {
@@ -52,15 +58,16 @@ export default class BackupCreator extends ApiComponent<
         return (
             <div>
                 <p>
-                    Create a backup of CapRover configs in order to be able to
-                    spin up a clone of this server. Note that your application
-                    data (volumes, and images) are not part of this backup. This
-                    backup only includes the server configuration details, such
-                    as root domains, app names, SSL certs and etc.
+                    {localize(
+                        'backup.create_backup_info',
+                        'Create a backup of CapRover configs in order to be able to spin up a clone of this server. Note that your application data (volumes, and images) are not part of this backup. This backup only includes the server configuration details, such as root domains, app names, SSL certs and etc.'
+                    )}
                 </p>
                 <p>
-                    See the documents for more details on how to restore your
-                    server using the backup file.
+                    {localize(
+                        'backup.see_documents',
+                        'See the documents for more details on how to restore your server using the backup file.'
+                    )}
                 </p>
                 <br />
 
@@ -73,7 +80,8 @@ export default class BackupCreator extends ApiComponent<
                         <span>
                             <CloudDownloadOutlined />
                         </span>{' '}
-                        &nbsp; Create Backup
+                        &nbsp;{' '}
+                        {localize('backup.create_backup', 'Create Backup')}
                     </Button>
                 </Row>
             </div>

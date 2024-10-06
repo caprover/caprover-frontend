@@ -1,7 +1,7 @@
 import { InboxOutlined } from '@ant-design/icons'
 import { Button, Col, message, Row, Upload } from 'antd'
 import { UploadChangeParam, UploadFile } from 'antd/lib/upload/interface'
-import React from 'react'
+import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import ApiComponent from '../../../global/ApiComponent'
 
@@ -97,11 +97,17 @@ export default class TarUploader extends ApiComponent<
                                 <InboxOutlined />
                             </p>
                             <p className="ant-upload-text">
-                                Click or drag TAR file to this area to upload
+                                {localize(
+                                    'apps.deploy_upload_instructions',
+                                    'Click or drag TAR file to this area to upload'
+                                )}
                             </p>
                             <p className="ant-upload-hint">
-                                Must contain <code>captain-definition</code>{' '}
-                                file.
+                                {localize(
+                                    'apps.deploy_upload_instructions_must_contain',
+                                    'Must contain this file:'
+                                )}{' '}
+                                <code>captain-definition</code>
                             </p>
                         </Upload.Dragger>
                     </Col>
@@ -115,7 +121,10 @@ export default class TarUploader extends ApiComponent<
                         type="primary"
                         size="large"
                     >
-                        Upload &amp; Deploy
+                        {localize(
+                            'apps.deploy_upload_app_button',
+                            'Upload & Deploy'
+                        )}
                     </Button>
                 </Row>
             </div>

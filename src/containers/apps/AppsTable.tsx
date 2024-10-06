@@ -579,9 +579,23 @@ class AppsTable extends Component<
         let editable = false
 
         if (this.state.selectedProjectId === ALL_APPS) {
-            projectName = <span>All apps from all projects</span>
+            projectName = (
+                <span>
+                    {localize(
+                        'apps_table.header_all_apps_projects',
+                        'All apps from all projects'
+                    )}
+                </span>
+            )
         } else if (this.state.selectedProjectId === ROOT_APPS) {
-            projectName = <span>Root</span>
+            projectName = (
+                <span>
+                    {localize(
+                        'apps_table.header_root',
+                        'Root (apps with no assigned projects)'
+                    )}
+                </span>
+            )
         } else {
             editable = true
             const projectsMap: { [key: string]: ProjectDefinition } = {}
@@ -751,7 +765,12 @@ class AppsTable extends Component<
                     }}
                 >
                     <h4 style={{ margin: 0 }}>Projects</h4>
-                    <Tooltip title="Create new project">
+                    <Tooltip
+                        title={localize(
+                            'projects.new_project',
+                            'Create a New Project'
+                        )}
+                    >
                         <Button
                             type="default"
                             shape="circle"

@@ -11,6 +11,7 @@ import {
     IRegistryInfo,
     IRegistryTypes,
 } from '../../models/IRegistryInfo'
+import { localize } from '../../utils/Language'
 import Utils from '../../utils/Utils'
 import ClickableLink from '../global/ClickableLink'
 import PasswordField from '../global/PasswordField'
@@ -43,14 +44,16 @@ export default class DockerRegistryTable extends Component<
     deleteRegistry(id: string) {
         if (id === this.props.apiData.defaultPushRegistryId) {
             Modal.warn({
-                title: 'Cannot Delete Default Push',
+                title: localize(
+                    'docker_registry_table.cannot_delete_default_push',
+                    'Cannot Delete Default Push'
+                ),
                 content: (
                     <div>
-                        This registry is set to be the default push. You cannot
-                        delete the default push registry. To remove, first you
-                        need to change the default push registry to another
-                        registry, or completely disable the default push
-                        registry. Then, come back and delete this.
+                        {localize(
+                            'docker_registry_table.cannot_delete_default_push_content',
+                            'This registry is set to be the default push. You cannot delete the default push registry. To remove, first you need to change the default push registry to another registry, or completely disable the default push registry. Then, come back and delete this.'
+                        )}
                     </div>
                 ),
             })
@@ -66,7 +69,10 @@ export default class DockerRegistryTable extends Component<
     editRegistry(dockerRegistry: IRegistryInfo) {
         if (dockerRegistry.registryType === IRegistryTypes.LOCAL_REG) {
             message.warning(
-                'You cannot edit the self hosted registry. It is managed by CapRover.'
+                localize(
+                    'docker_registry_table.cannot_edit_self_hosted_registry',
+                    'You cannot edit the self hosted registry. It is managed by CapRover.'
+                )
             )
             return
         }
@@ -81,26 +87,36 @@ export default class DockerRegistryTable extends Component<
         const self = this
         const columns = [
             {
-                title: 'User',
+                title: localize('docker_registry_table.user', 'User'),
                 dataIndex: 'registryUser' as 'registryUser',
             },
             {
-                title: 'Password',
+                title: localize('docker_registry_table.password', 'Password'),
                 dataIndex: 'registryPassword' as 'registryPassword',
                 render: (registryPassword: string) => {
-                    return <span>Edit to see.</span>
+                    return (
+                        <span>
+                            {localize(
+                                'docker_registry_table.edit_to_see',
+                                'Edit to see.'
+                            )}
+                        </span>
+                    )
                 },
             },
             {
-                title: 'Domain',
+                title: localize('docker_registry_table.domain', 'Domain'),
                 dataIndex: 'registryDomain' as 'registryDomain',
             },
             {
-                title: 'Image Prefix',
+                title: localize(
+                    'docker_registry_table.image_prefix',
+                    'Image Prefix'
+                ),
                 dataIndex: 'registryImagePrefix' as 'registryImagePrefix',
             },
             {
-                title: 'Actions',
+                title: localize('docker_registry_table.actions', 'Actions'),
                 dataIndex: 'id' as 'id',
                 render: (id: string, reg: IRegistryInfo) => {
                     return (
@@ -180,7 +196,12 @@ export default class DockerRegistryTable extends Component<
                     addonBefore="Image Prefix"
                     placeholder="username"
                     addonAfter={
-                        <Tooltip title="Your images will be tagged as RegistryDomain/ImagePrefix/ImageName. For most providers, Image Prefix is exactly your username, unless the field DOMAIN is specific to you, in that case, this prefix is empty.">
+                        <Tooltip
+                            title={localize(
+                                'docker_registry_table.image_prefix_tooltip',
+                                'Your images will be tagged as RegistryDomain/ImagePrefix/ImageName. For most providers, Image Prefix is exactly your username, unless the field DOMAIN is specific to you, in that case, this prefix is empty.'
+                            )}
+                        >
                             <InfoCircleOutlined />
                         </Tooltip>
                     }
@@ -204,8 +225,14 @@ export default class DockerRegistryTable extends Component<
             <div>
                 <Modal
                     destroyOnClose={true}
-                    title="Confirm Delete"
-                    okText="Delete Registry"
+                    title={localize(
+                        'docker_registry_table.confirm_delete',
+                        'Confirm Delete'
+                    )}
+                    okText={localize(
+                        'docker_registry_table.delete_registry',
+                        'Delete Registry'
+                    )}
                     onCancel={() => self.setState({ modalShowing: undefined })}
                     onOk={() => {
                         self.setState({ modalShowing: undefined })
@@ -215,14 +242,21 @@ export default class DockerRegistryTable extends Component<
                     }}
                     open={self.state.modalShowing === DELETING_MODAL}
                 >
-                    Are you sure you want to remote this registry from your
-                    list. You will no longer be able to push to or pull from
-                    this registry.
+                    {localize(
+                        'docker_registry_table.delete_registry_content',
+                        'Are you sure you want to remote this registry from your list. You will no longer be able to push to or pull from this registry.'
+                    )}
                 </Modal>
                 <Modal
                     destroyOnClose={true}
-                    title="Edit Registry"
-                    okText="Save and Update"
+                    title={localize(
+                        'docker_registry_table.edit_registry',
+                        'Edit Registry'
+                    )}
+                    okText={localize(
+                        'docker_registry_table.save_and_update',
+                        'Save and Update'
+                    )}
                     onCancel={() => self.setState({ modalShowing: undefined })}
                     onOk={() => {
                         self.setState({ modalShowing: undefined })
@@ -238,7 +272,12 @@ export default class DockerRegistryTable extends Component<
                         <div />
                     )}
                 </Modal>
-                <h3>Docker Registries</h3>
+                <h3>
+                    {localize(
+                        'docker_registry_table.docker_registries',
+                        'Docker Registries'
+                    )}
+                </h3>
                 <div>
                     {this.props.isMobile ? (
                         this.props.apiData.registries.map((registry) => (
@@ -252,19 +291,56 @@ export default class DockerRegistryTable extends Component<
                                 title={registry.registryDomain}
                             >
                                 <div>
-                                    <b>User:</b> {registry.registryImagePrefix}
+                                    <b>
+                                        {localize(
+                                            'docker_registry_table.user',
+                                            'User'
+                                        )}
+                                        :
+                                    </b>{' '}
+                                    {registry.registryImagePrefix}
                                 </div>
                                 <div>
-                                    <b>Password:</b> Edit to see.
+                                    <b>
+                                        {localize(
+                                            'docker_registry_table.password',
+                                            'Password'
+                                        )}
+                                        :
+                                    </b>{' '}
+                                    {localize(
+                                        'docker_registry_table.edit_to_see',
+                                        'Edit to see.'
+                                    )}
                                 </div>
                                 <div>
-                                    <b>Domain:</b> {registry.registryDomain}
+                                    <b>
+                                        {localize(
+                                            'docker_registry_table.domain',
+                                            'Domain'
+                                        )}
+                                        :
+                                    </b>{' '}
+                                    {registry.registryDomain}
                                 </div>
                                 <div>
-                                    <b>Image Prefix:</b> {registry.registryUser}
+                                    <b>
+                                        {localize(
+                                            'docker_registry_table.image_prefix',
+                                            'Image Prefix'
+                                        )}
+                                        :
+                                    </b>{' '}
+                                    {registry.registryUser}
                                 </div>
                                 <div>
-                                    <b>Actions:</b>
+                                    <b>
+                                        {localize(
+                                            'docker_registry_table.actions',
+                                            'Actions'
+                                        )}
+                                        :
+                                    </b>
                                     <span>
                                         <ClickableLink
                                             onLinkClicked={() => {

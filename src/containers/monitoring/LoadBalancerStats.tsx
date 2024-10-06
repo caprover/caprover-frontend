@@ -1,6 +1,7 @@
 import * as Icons from '@ant-design/icons'
 import { Avatar, Card, Col, Row, Tooltip } from 'antd'
-import React, { Component } from 'react'
+import { Component } from 'react'
+import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
@@ -101,15 +102,28 @@ export default class LoadBalancerStats extends ApiComponent<
             <div>
                 <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 22 }}>
-                        <Card title="Load Balancer Stats">
+                        <Card
+                            title={localize(
+                                'load_balancer_stats.title',
+                                'Load Balancer Stats'
+                            )}
+                        >
                             <Row gutter={10} justify="center">
                                 <Col xs={{ span: 24 }} lg={{ span: 6 }}>
-                                    <Tooltip title="Constantly going up as refreshing the values">
+                                    <Tooltip
+                                        title={localize(
+                                            'load_balancer_stats.total_requests_tooltip',
+                                            'Constantly going up as refreshing the values'
+                                        )}
+                                    >
                                         <div>
                                             <LoadBalancerStatsCard
                                                 icon={<Icons.GlobalOutlined />}
                                                 color="#2361ae"
-                                                titleText="Total Requests"
+                                                titleText={localize(
+                                                    'load_balancer_stats.total_requests',
+                                                    'Total Requests'
+                                                )}
                                                 titleNumber={`${this.state.apiData.total}`}
                                                 text1={``}
                                                 text2={``}
@@ -121,7 +135,10 @@ export default class LoadBalancerStats extends ApiComponent<
                                     <LoadBalancerStatsCard
                                         icon={<Icons.ClusterOutlined />}
                                         color="#23ae89"
-                                        titleText="Active Connections"
+                                        titleText={localize(
+                                            'load_balancer_stats.active_connections',
+                                            'Active Connections'
+                                        )}
                                         titleNumber={`${this.state.apiData.activeConnections}`}
                                         text1={`${this.state.apiData.handled} handled`}
                                         text2={`${this.state.apiData.accepted} accepted`}
@@ -131,20 +148,38 @@ export default class LoadBalancerStats extends ApiComponent<
                                     <LoadBalancerStatsCard
                                         icon={<Icons.SyncOutlined />}
                                         color="#d3a938"
-                                        titleText="Active Requests"
+                                        titleText={localize(
+                                            'load_balancer_stats.active_requests',
+                                            'Active Requests'
+                                        )}
                                         titleNumber={`${
                                             this.state.apiData.reading +
                                             this.state.apiData.writing
                                         }`}
-                                        text1={`${this.state.apiData.reading} reading`}
-                                        text2={`${this.state.apiData.writing} writing`}
+                                        text1={
+                                            `${this.state.apiData.reading} ` +
+                                            localize(
+                                                'load_balancer_stats.reading_requests',
+                                                'reading'
+                                            )
+                                        }
+                                        text2={
+                                            `${this.state.apiData.writing} ` +
+                                            localize(
+                                                'load_balancer_stats.writing_requests',
+                                                'writing'
+                                            )
+                                        }
                                     />
                                 </Col>
                                 <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                                     <LoadBalancerStatsCard
                                         icon={<Icons.ClockCircleOutlined />}
                                         color="#ae2323"
-                                        titleText="Waiting Requests"
+                                        titleText={localize(
+                                            'load_balancer_stats.waiting_requests',
+                                            'Waiting Requests'
+                                        )}
                                         titleNumber={`${this.state.apiData.waiting}`}
                                         text1={`  `}
                                         text2={`  `}

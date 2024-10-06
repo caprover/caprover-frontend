@@ -1,8 +1,8 @@
 import { RocketOutlined } from '@ant-design/icons'
 import { Button, Col, Input, message, Row, Tooltip } from 'antd'
 import deepEqual from 'deep-equal'
-import React from 'react'
 import DomUtils from '../../../../utils/DomUtils'
+import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
@@ -53,7 +53,7 @@ export default class Deployment extends ApiComponent<
     }
 
     onUploadSuccess() {
-        message.info('Build has started')
+        message.info(localize('apps.deploy_build_started', 'Build has started'))
         this.setState({ buildLogRecreationId: `${new Date().getTime()}` })
         DomUtils.scrollToTopBar()
     }
@@ -73,7 +73,9 @@ export default class Deployment extends ApiComponent<
                         return Utils.copyObject(element)
                     }
                 }
-                throw new Error('App not found!')
+                throw new Error(
+                    localize('apps.deploy_app_not_found', 'App not found!')
+                )
             })
             .then(function (app) {
                 self.setState({
@@ -129,6 +131,31 @@ export default class Deployment extends ApiComponent<
 
         const webhookPushUrlFullPath = `${window.location.protocol}//${this.props.apiData.captainSubDomain}.${this.props.apiData.rootDomain}/api/v2${webhookPushUrlRelativePath}`
 
+        const cliDescription = (
+            <div>
+                {Utils.formatText(
+                    localize(
+                        'apps.deploy_cli_description_part1',
+                        'Use CLI deploy command. This is the easiest method as it only requires a simple command like %s. Read more about it in the docs'
+                    ),
+                    ['%s'],
+                    [<code>caprover deploy</code>]
+                )}{' '}
+                <NewTabLink url="https://caprover.com/docs/get-started.html#step-4-deploy-the-test-app">
+                    {localize('apps.link_see_here', '(here)')}
+                </NewTabLink>
+                .{' '}
+                {localize(
+                    'apps.deploy_cli_description_part2',
+                    "If you're using CI/CD to run <code>caprover deploy</code> and you do not wish to use your password, you can use app-specific tokens"
+                )}{' '}
+                <NewTabLink url="https://caprover.com/docs/ci-cd-integration.html#app-tokens">
+                    {localize('apps.link_see_here', '(here)')}
+                </NewTabLink>
+                .
+            </div>
+        )
+
         return (
             <div>
                 <BuildLogsView
@@ -167,22 +194,13 @@ export default class Deployment extends ApiComponent<
                 <hr />
                 <div style={{ height: 40 }} />
                 <h4>
-                    <RocketOutlined /> Method 1: Official CLI
+                    <RocketOutlined />
+                    {localize(
+                        'apps.deploy_method_cli',
+                        'Method 1: Official CLI'
+                    )}
                 </h4>
-                <p>
-                    Use CLI deploy command. This is the easiest method as it
-                    only requires a simply command like{' '}
-                    <code>caprover deploy</code>. Read more about it in{' '}
-                    <NewTabLink url="https://caprover.com/docs/get-started.html#step-4-deploy-the-test-app">
-                        the docs
-                    </NewTabLink>
-                    . If you're using CI/CD to run <code>caprover deploy</code>{' '}
-                    and you do not wish to use your password, you can use{' '}
-                    <NewTabLink url="https://caprover.com/docs/ci-cd-integration.html#app-tokens">
-                        app-specific tokens
-                    </NewTabLink>
-                    .
-                </p>
+                <p>{cliDescription}</p>
                 <Row
                     justify="start"
                     style={{ marginTop: this.props.isMobile ? 15 : 0 }}
@@ -218,8 +236,14 @@ export default class Deployment extends ApiComponent<
                             }}
                         >
                             {app.appDeployTokenConfig?.enabled
-                                ? 'Disable App Token'
-                                : 'Enable App Token'}
+                                ? localize(
+                                      'apps.deploy_button_disable_app_token',
+                                      'Disable App Token'
+                                  )
+                                : localize(
+                                      'apps.deploy_button_enable_app_token',
+                                      'Enable App Token'
+                                  )}
                         </Button>
                     </Col>{' '}
                     <Col flex="auto">
@@ -230,7 +254,12 @@ export default class Deployment extends ApiComponent<
                                 ) {
                                     e.target.select()
                                     document.execCommand('copy')
-                                    message.info('Copied to clipboard!')
+                                    message.info(
+                                        localize(
+                                            'apps.deploy_copied_to_clipboard',
+                                            'Copied to clipboard!'
+                                        )
+                                    )
                                 }
                             }}
                             style={{
@@ -242,18 +271,37 @@ export default class Deployment extends ApiComponent<
                             value={
                                 app.appDeployTokenConfig?.enabled
                                     ? app.appDeployTokenConfig?.appDeployToken
-                                    : '** Enable App Token to generate a random app token **'
+                                    : '** ' +
+                                      localize(
+                                          'apps.deploy_app_token_description',
+                                          'Enable App Token to generate a random app token'
+                                      ) +
+                                      ' **'
                             }
                         />
                     </Col>
                 </Row>
                 <div style={{ height: 20 }} />
                 <h4>
-                    <RocketOutlined /> Method 2: Tarball
+                    <RocketOutlined />
+                    {localize(
+                        'apps.deploy_method_tarball',
+                        'Method 2: Tarball'
+                    )}
                 </h4>
                 <p>
-                    You can simply create a tarball (<code>.tar</code>) of your
-                    project and upload it here via upload button.
+                    {Utils.formatText(
+                        localize(
+                            'apps.deploy_tarball_description',
+                            'You can simply create a tarball (%s) of your project and upload it here via upload button.'
+                        ),
+                        ['%s'],
+                        [
+                            <span>
+                                <code>.tar file</code>
+                            </span>,
+                        ]
+                    )}
                 </p>
 
                 <TarUploader
@@ -263,14 +311,17 @@ export default class Deployment extends ApiComponent<
 
                 <div style={{ height: 40 }} />
                 <h4>
-                    <RocketOutlined /> Method 3: Deploy from
-                    Github/Bitbucket/Gitlab
+                    <RocketOutlined />
+                    {localize(
+                        'apps.deploy_method_github',
+                        'Method 3: Deploy from Github/Bitbucket/Gitlab'
+                    )}
                 </h4>
                 <p>
-                    Enter your repository information in the form and save. Then
-                    copy the URL in the box as a webhook on Github, Bitbucket,
-                    Gitlab and etc. Once you push a commit, CapRover starts a
-                    new build.
+                    {localize(
+                        'apps.deploy_method_github_description',
+                        'Enter your repository information in the form and save. Then copy the URL in the box as a webhook on Github, Bitbucket, Gitlab and etc. Once you push a commit, CapRover starts a new build.'
+                    )}
                     <br />
                 </p>
                 <Row>
@@ -279,7 +330,12 @@ export default class Deployment extends ApiComponent<
                             if (hasPushToken) {
                                 e.target.select()
                                 document.execCommand('copy')
-                                message.info('Copied to clipboard!')
+                                message.info(
+                                    localize(
+                                        'apps.deploy_copied_to_clipboard',
+                                        'Copied to clipboard!'
+                                    )
+                                )
                             }
                         }}
                         className="code-input"
@@ -288,7 +344,12 @@ export default class Deployment extends ApiComponent<
                         value={
                             hasPushToken
                                 ? webhookPushUrlFullPath
-                                : '** Add repo info and save for this webhook to appear **'
+                                : '** ' +
+                                  localize(
+                                      'apps.deploy_method_github_url_hiint',
+                                      'Add repo info and save for this webhook to appear'
+                                  ) +
+                                  ' **'
                         }
                     />
                 </Row>
@@ -325,7 +386,10 @@ export default class Deployment extends ApiComponent<
                                 .catch(Toaster.createCatcher())
                         }}
                     >
-                        Force Build
+                        {localize(
+                            'apps.deploy_force_build_button',
+                            'Force build'
+                        )}
                     </Button>
                     <Button
                         disabled={deepEqual(repoInfo, self.initRepoInfo)}
@@ -334,12 +398,16 @@ export default class Deployment extends ApiComponent<
                         block={this.props.isMobile}
                         onClick={() => self.props.onUpdateConfigAndSave()}
                     >
-                        Save &amp; Update
+                        {localize('apps.edit_app_config', 'Save & Restart')}
                     </Button>
                 </Row>
                 <div style={{ height: 20 }} />
                 <h4>
-                    <RocketOutlined /> Method 4: Deploy plain Dockerfile
+                    <RocketOutlined />
+                    {localize(
+                        'apps.deploy_method_dockerfile',
+                        'Method 4: Deploy plain Dockerfile'
+                    )}
                 </h4>
                 <UploaderPlainTextDockerfile
                     appName={app.appName!}
@@ -347,7 +415,11 @@ export default class Deployment extends ApiComponent<
                 />
                 <div style={{ height: 20 }} />
                 <h4>
-                    <RocketOutlined /> Method 5: Deploy captain-definition file
+                    <RocketOutlined />
+                    {localize(
+                        'apps.deploy_method_captain_definition',
+                        'Method 5: Deploy captain-definition file'
+                    )}
                 </h4>
                 <UploaderPlainTextCaptainDefinition
                     appName={app.appName!}
@@ -355,7 +427,11 @@ export default class Deployment extends ApiComponent<
                 />
                 <div style={{ height: 20 }} />
                 <h4>
-                    <RocketOutlined /> Method 6: Deploy via ImageName
+                    <RocketOutlined />
+                    {localize(
+                        'apps.deploy_method_image_name',
+                        'Method 6: Deploy via ImageName'
+                    )}
                 </h4>
                 <UploaderPlainTextImageName
                     appName={app.appName!}
@@ -369,28 +445,43 @@ export default class Deployment extends ApiComponent<
                         style={{ minWidth: this.props.isMobile ? '100%' : 400 }}
                     >
                         {this.props.isMobile &&
-                            'captain-definition Relative Path'}
-                        <Input
-                            addonBefore={
-                                !this.props.isMobile &&
-                                'captain-definition Relative Path'
-                            }
-                            type="text"
-                            defaultValue={
-                                app.captainDefinitionRelativeFilePath + ''
-                            }
-                            disabled={
-                                !this.state.forceEditableCaptainDefinitionPath
-                            }
-                            onChange={(e) => {
-                                const newApiData = Utils.copyObject(
-                                    this.props.apiData
-                                )
-                                newApiData.appDefinition.captainDefinitionRelativeFilePath =
-                                    e.target.value
-                                this.props.updateApiData(newApiData)
-                            }}
-                        />
+                            localize(
+                                'apps.deploy_captain_definition_relative_path_hint',
+                                'captain-definition path'
+                            )}
+
+                        <Tooltip
+                            title={localize(
+                                'apps.deploy_captain_definition_relative_path_hint_tooltip',
+                                'Edit only if you have placed your captain-definition file in a subdirectory of your project'
+                            )}
+                        >
+                            <Input
+                                addonBefore={
+                                    !this.props.isMobile &&
+                                    localize(
+                                        'apps.deploy_captain_definition_relative_path_hint',
+                                        'captain-definition path'
+                                    )
+                                }
+                                type="text"
+                                defaultValue={
+                                    app.captainDefinitionRelativeFilePath + ''
+                                }
+                                disabled={
+                                    !this.state
+                                        .forceEditableCaptainDefinitionPath
+                                }
+                                onChange={(e) => {
+                                    const newApiData = Utils.copyObject(
+                                        this.props.apiData
+                                    )
+                                    newApiData.appDefinition.captainDefinitionRelativeFilePath =
+                                        e.target.value
+                                    this.props.updateApiData(newApiData)
+                                }}
+                            />
+                        </Tooltip>
                     </Col>
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                         <div
@@ -399,7 +490,12 @@ export default class Deployment extends ApiComponent<
                                 marginTop: this.props.isMobile ? 8 : 0,
                             }}
                         >
-                            <Tooltip title="You shouldn't need to change this path unless you have a repository with multiple captain-definition files (mono repos). Read docs for captain definition before editing this">
+                            <Tooltip
+                                title={localize(
+                                    'apps.deploy_captain_definition_path_hint',
+                                    "You shouldn't need to change this path unless you have a repository with multiple captain-definition files (mono repos). Read docs for captain definition before editing this"
+                                )}
+                            >
                                 <Button
                                     type="default"
                                     block={this.props.isMobile}
@@ -414,7 +510,10 @@ export default class Deployment extends ApiComponent<
                                         })
                                     }
                                 >
-                                    Edit
+                                    {localize(
+                                        'apps.generic_edit_button',
+                                        'Edit'
+                                    )}
                                 </Button>
                             </Tooltip>
                             <Button
@@ -432,7 +531,10 @@ export default class Deployment extends ApiComponent<
                                     self.props.onUpdateConfigAndSave()
                                 }
                             >
-                                Save &amp; Update
+                                {localize(
+                                    'apps.edit_app_config',
+                                    'Save & Restart'
+                                )}
                             </Button>
                         </div>
                     </Col>

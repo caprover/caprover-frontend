@@ -5,6 +5,7 @@ import { RouteComponentProps } from 'react-router'
 import ProjectSelector from '../../components/ProjectSelector'
 import { IMobileComponent } from '../../models/ContainerProps'
 import ProjectDefinition from '../../models/ProjectDefinition'
+import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import ApiComponent from '../global/ApiComponent'
@@ -54,8 +55,9 @@ class ProjectDetailsEdit extends ApiComponent<
         }
 
         const title = self.props.createNewProject
-            ? 'Create a New Project'
-            : 'Edit project: ' + selectedProject.name
+            ? localize('projects.new_project', 'Create a New Project')
+            : localize('projects.edit_project', 'Edit project: ') +
+              selectedProject.name
 
         return (
             <Row justify={'center'} style={{ marginTop: 30 }}>
@@ -63,13 +65,18 @@ class ProjectDetailsEdit extends ApiComponent<
                     <div>
                         <h3>{title}</h3>
                         <p>
-                            You can set the name, description and the parent of
-                            this project.
+                            {localize(
+                                'projects.edit_project_hint',
+                                'You can set the name, description and the parent of this project.'
+                            )}
                         </p>
                         <div style={{ height: 20 }} />
                         <div>
                             <Input
-                                addonBefore="Project Name"
+                                addonBefore={localize(
+                                    'projects.project_name',
+                                    'Project Name'
+                                )}
                                 placeholder="my-awesome-project"
                                 type="text"
                                 value={selectedProject.name}
@@ -105,7 +112,10 @@ class ProjectDetailsEdit extends ApiComponent<
                                     marginLeft: 5,
                                 }}
                             >
-                                Parent project
+                                {localize(
+                                    'apps.parent_project',
+                                    'Parent project'
+                                )}
                             </div>
                             <ProjectSelector
                                 allProjects={self.state.allProjects}
@@ -129,11 +139,17 @@ class ProjectDetailsEdit extends ApiComponent<
                                     marginLeft: 5,
                                 }}
                             >
-                                Description
+                                {localize(
+                                    'projects.edit_project_description',
+                                    'Description'
+                                )}
                             </div>
                             <Input.TextArea
                                 rows={4}
-                                placeholder="This project is just so awesome!"
+                                placeholder={localize(
+                                    'projects.edit_project_description_placeholder',
+                                    'This project is just so awesome!'
+                                )}
                                 value={selectedProject.description}
                                 onChange={(e) => {
                                     const newData =
@@ -149,7 +165,10 @@ class ProjectDetailsEdit extends ApiComponent<
                                     style={{ marginRight: 20 }}
                                     onClick={() => self.goBackToApps()}
                                 >
-                                    Cancel
+                                    {localize(
+                                        'projects.edit_project_cancel',
+                                        'Cancel'
+                                    )}
                                 </Button>
                                 <Button
                                     onClick={() => {
@@ -157,8 +176,10 @@ class ProjectDetailsEdit extends ApiComponent<
                                     }}
                                     type="primary"
                                 >
-                                    {' '}
-                                    Save
+                                    {localize(
+                                        'projects.edit_project_save',
+                                        'Save'
+                                    )}
                                 </Button>
                             </Row>
                         </div>

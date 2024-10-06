@@ -1,5 +1,6 @@
 import { Alert, Col, Divider, message, Row } from 'antd'
 import { connect } from 'react-redux'
+import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
@@ -38,7 +39,6 @@ class CurrentNodes extends ApiComponent<
                 self.setState({ isLoading: false })
             })
     }
-
     addNode(nodeToAdd: INodeToAdd) {
         const self = this
         self.setState({ apiData: undefined, isLoading: true })
@@ -52,7 +52,12 @@ class CurrentNodes extends ApiComponent<
                 nodeToAdd.captainIpAddress
             )
             .then(function () {
-                message.success('Node added successfully!')
+                message.success(
+                    localize(
+                        'nodes.node_added_successfully',
+                        'Node added successfully!'
+                    )
+                )
             })
             .catch(Toaster.createCatcher())
             .then(function () {
@@ -82,59 +87,74 @@ class CurrentNodes extends ApiComponent<
                     }}
                 >
                     <Row justify="center">
-                        <b>Node ID:&nbsp;&nbsp;</b> {node.nodeId}
+                        <b>
+                            {localize('nodes.node_id', 'Node ID:')}&nbsp;&nbsp;{' '}
+                        </b>{' '}
+                        {node.nodeId}
                     </Row>
                     <hr />
                     <div style={{ height: 10 }} />
                     <Row>
                         <Col lg={{ span: 12 }} xs={{ span: 24 }}>
-                            <b>Type: </b>
-                            {node.isLeader ? 'Leader (Main Node)' : node.type}
+                            <b>{localize('nodes.type', 'Type: ')} </b>
+                            {node.isLeader
+                                ? localize('nodes.leader', 'Leader (Main Node)')
+                                : node.type}
                         </Col>
                         <Col lg={{ span: 12 }} xs={{ span: 24 }}>
-                            <b>IP: </b>
+                            <b>{localize('nodes.ip_address', 'IP: ')} </b>
                             {node.ip}
                         </Col>
                     </Row>
                     <Row>
                         <Col lg={{ span: 12 }} xs={{ span: 24 }}>
-                            <b>State: </b>
+                            <b>{localize('nodes.state', 'State: ')} </b>
                             {node.state}
                         </Col>
                         <Col lg={{ span: 12 }} xs={{ span: 24 }}>
-                            <b>Status: </b>
+                            <b>{localize('nodes.status', 'Status: ')} </b>
                             {node.status}
                         </Col>
                     </Row>
                     <br />
                     <Row>
                         <Col lg={{ span: 12 }} xs={{ span: 24 }}>
-                            <b>RAM: </b>
+                            <b>{localize('nodes.ram', 'RAM: ')} </b>
                             {(node.memoryBytes / 1073741824).toFixed(2)} GB
                         </Col>
                         <Col lg={{ span: 12 }} xs={{ span: 24 }}>
-                            <b>OS: </b>
+                            <b>{localize('nodes.operating_system', 'OS: ')} </b>
                             {node.operatingSystem}
                         </Col>
                     </Row>
                     <Row>
                         <Col lg={{ span: 12 }} xs={{ span: 24 }}>
-                            <b>CPU: </b>
+                            <b>{localize('nodes.cpu', 'CPU: ')} </b>
                             {(node.nanoCpu / 1000000000).toFixed(0)} cores
                         </Col>
                         <Col lg={{ span: 12 }} xs={{ span: 24 }}>
-                            <b>Architecture: </b>
+                            <b>
+                                {localize(
+                                    'nodes.architecture',
+                                    'Architecture: '
+                                )}{' '}
+                            </b>
                             {node.architecture}
                         </Col>
                     </Row>
                     <br />
                     <Row>
                         <Col lg={{ span: 12 }} xs={{ span: 24 }}>
-                            <b>Hostname: </b>
+                            <b>{localize('nodes.hostname', 'Hostname: ')} </b>
                             {node.hostname}
                         </Col>
                         <Col lg={{ span: 12 }} xs={{ span: 24 }}>
-                            <b>Docker Version: </b>
+                            <b>
+                                {localize(
+                                    'nodes.docker_version',
+                                    'Docker Version: '
+                                )}{' '}
+                            </b>
                             {node.dockerEngineVersion}
                         </Col>
                     </Row>
@@ -197,14 +217,22 @@ class CurrentNodes extends ApiComponent<
                         <Alert
                             type="warning"
                             showIcon={true}
-                            message="You cannot add more nodes as no default push registry is set. To add more nodes and create a cluster, you first need to add a docker registry and set it as the default push registry."
+                            message={localize(
+                                'nodes.no_default_push_registry',
+                                'You cannot add more nodes as no default push registry is set. To add more nodes and create a cluster, you first need to add a docker registry and set it as the default push registry.'
+                            )}
                         />
                     </div>
                 )}
                 <div style={{ height: 30 }} />
 
                 <Divider type="horizontal">
-                    <h4>Current Cluster Nodes</h4>
+                    <h4>
+                        {localize(
+                            'nodes.current_cluster_nodes',
+                            'Current Cluster Nodes'
+                        )}
+                    </h4>
                 </Divider>
                 <div style={{ height: 30 }} />
 

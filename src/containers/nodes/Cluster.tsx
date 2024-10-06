@@ -1,5 +1,6 @@
 import { Card, Col, Row } from 'antd'
-import React, { Component } from 'react'
+import { Component } from 'react'
+import { localize } from '../../utils/Language'
 import DockerRegistries from './DockerRegistries'
 import Nodes from './Nodes'
 
@@ -9,7 +10,12 @@ export default class Cluster extends Component {
             <div>
                 <Row justify="center">
                     <Col lg={{ span: 20 }} xs={{ span: 23 }}>
-                        <Card title="Docker Registry Configuration">
+                        <Card
+                            title={localize(
+                                'cluster.docker_registry_title',
+                                'Docker Registry Configuration'
+                            )}
+                        >
                             <DockerRegistries />
                         </Card>
                     </Col>
@@ -17,7 +23,12 @@ export default class Cluster extends Component {
                 <div style={{ height: 35 }} />
                 <Row justify="center">
                     <Col lg={{ span: 20 }} xs={{ span: 23 }}>
-                        <Card title="Nodes">
+                        <Card
+                            title={localize(
+                                'cluster.nodes_section_title',
+                                'Nodes'
+                            )}
+                        >
                             <Nodes />
                         </Card>
                     </Col>

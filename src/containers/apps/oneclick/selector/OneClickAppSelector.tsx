@@ -1,6 +1,7 @@
 import { Alert, Button, Card, Col, Row } from 'antd'
 import { RouteComponentProps } from 'react-router'
 import { IOneClickAppIdentifier } from '../../../../models/IOneClickAppModels'
+import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
@@ -43,8 +44,10 @@ export default class OneClickAppSelector extends ApiComponent<
                 const apps = data.oneClickApps as IOneClickAppIdentifier[]
                 apps.push({
                     name: TEMPLATE_ONE_CLICK_APP,
-                    description:
-                        'A template for creating one-click apps. Mainly for development!',
+                    description: localize(
+                        'oneclick_app_selector.template_description',
+                        'A template for creating one-click apps. Mainly for development!'
+                    ),
                     logoUrl: '/icon-512x512.png',
                     baseUrl: '',
                     displayName: '>> TEMPLATE <<',
@@ -76,12 +79,16 @@ export default class OneClickAppSelector extends ApiComponent<
             >
                 <div>
                     <p>
-                        This is mainly for testing. You can copy and paste your
-                        custom One-Click app template here. See{' '}
+                        {localize(
+                            'oneclick_app_selector.custom_template_info',
+                            'This is mainly for testing. You can copy and paste your custom One-Click app template here. For examples and ideas, see '
+                        )}
                         <NewTabLink url="https://github.com/caprover/one-click-apps/tree/master/public/v4/apps">
-                            the main one click apps GitHub repository
+                            {localize(
+                                'oneclick_app_selector.one_click_apps_github_repository_main_repo',
+                                'the main one click apps GitHub repository'
+                            )}
                         </NewTabLink>{' '}
-                        for samples and ideas.
                     </p>
                 </div>
 
@@ -109,7 +116,10 @@ export default class OneClickAppSelector extends ApiComponent<
                 <div style={{ height: 10 }} />
                 {!isOneClickJsonValid ? (
                     <Alert
-                        message="One Click data that you've entered is not a valid JSON."
+                        message={localize(
+                            'oneclick_app_selector.invalid_json_alert',
+                            "One Click data that you've entered is not a valid JSON."
+                        )}
                         type="error"
                     />
                 ) : (
@@ -134,7 +144,7 @@ export default class OneClickAppSelector extends ApiComponent<
                         style={{ minWidth: 150 }}
                         type="primary"
                     >
-                        Next
+                        {localize('oneclick_app_selector.next_button', 'Next')}
                     </Button>
                 </Row>
             </div>
@@ -166,12 +176,20 @@ export default class OneClickAppSelector extends ApiComponent<
             <div>
                 <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 23 }}>
-                        <Card title="One Click Apps">
+                        <Card
+                            title={localize(
+                                'oneclick_app_selector.card_title',
+                                'One Click Apps'
+                            )}
+                        >
                             {' '}
                             {Utils.isSafari() ? (
                                 <div style={{ marginBottom: 50 }}>
                                     <Alert
-                                        message="You seem to be using Safari. Deployment of one-click apps may be unstable on Safari. Using Chrome is recommended"
+                                        message={localize(
+                                            'oneclick_app_selector.safari_warning',
+                                            'You seem to be using Safari. Deployment of one-click apps may be unstable on Safari. Using Chrome is recommended'
+                                        )}
                                         type="warning"
                                     />
                                 </div>
@@ -186,18 +204,26 @@ export default class OneClickAppSelector extends ApiComponent<
                                 }
                             >
                                 <p>
-                                    Choose an app, a database or a bundle
-                                    (app+database) from the list below. The rest
-                                    is magic, well... Wizard!
+                                    {localize(
+                                        'oneclick_app_selector.app_selection_info',
+                                        'Choose an app, a database or a bundle (app+database) from the list below. The rest is magic, well... Wizard!'
+                                    )}
                                 </p>
                                 <p>
-                                    One click apps are retrieved from the
-                                    official{' '}
+                                    {localize(
+                                        'oneclick_app_selector.one_click_apps_source',
+                                        'One click apps are retrieved from the official '
+                                    )}
                                     <NewTabLink url="https://github.com/caprover/one-click-apps">
-                                        CapRover One Click Apps Repository{' '}
-                                    </NewTabLink>
-                                    by default. You can add other public/private
-                                    repositories if you want to.
+                                        {localize(
+                                            'oneclick_app_selector.one_click_apps_github_repository',
+                                            'CapRover One Click Apps Repository'
+                                        )}
+                                    </NewTabLink>{' '}
+                                    {localize(
+                                        'oneclick_app_selector.one_click_apps_source_end',
+                                        'by default. You can add other public/private repositories if you want to.'
+                                    )}
                                 </p>
 
                                 {self.createOneClickAppListGrid()}

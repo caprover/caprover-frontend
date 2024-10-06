@@ -1,7 +1,9 @@
 import { Button, Card, Col, Input, Modal, Row, Tooltip } from 'antd'
 import { Redirect, RouteComponentProps } from 'react-router'
 import AppConstants from '../utils/AppConstants'
+import { localize } from '../utils/Language'
 import Toaster from '../utils/Toaster'
+import Utils from '../utils/Utils'
 import ApiComponent from './global/ApiComponent'
 import CenteredSpinner from './global/CenteredSpinner'
 import ErrorRetry from './global/ErrorRetry'
@@ -51,15 +53,23 @@ export default class Dashboard extends ApiComponent<
         const isUsingHttp = window.location.href.startsWith('http://')
 
         Modal.confirm({
-            title: 'Force HTTPS',
+            title: localize('dashboard.force_https', 'Force HTTPS'),
             content: (
                 <p>
-                    Once Force HTTPS is activated, all HTTP traffic is
-                    redirected to HTTPS.
+                    {localize(
+                        'dashboard.force_https_info',
+                        'Once Force HTTPS is activated, all HTTP traffic is redirected to HTTPS.'
+                    )}
                     {isUsingHttp
-                        ? 'Since this is a one-way action, and there is no revert, it is highly recommended that you test the HTTPS website first.'
+                        ? localize(
+                              'dashboard.force_https_warning',
+                              'Since this is a one-way action, and there is no revert, it is highly recommended that you test the HTTPS website first.'
+                          )
                         : ''}{' '}
-                    Do you still want to proceed?
+                    {localize(
+                        'dashboard.force_https_proceed',
+                        'Do you still want to proceed?'
+                    )}
                 </p>
             ),
             onOk() {
@@ -68,14 +78,22 @@ export default class Dashboard extends ApiComponent<
                     .forceSsl(true)
                     .then(function () {
                         Modal.success({
-                            title: 'Force HTTPS activated!',
+                            title: localize(
+                                'dashboard.force_https_activated',
+                                'Force HTTPS activated!'
+                            ),
                             content: (
                                 <div>
                                     <p>
-                                        All HTTP traffic is now redirected to
-                                        HTTPS.{' '}
+                                        {localize(
+                                            'dashboard.force_https_redirect',
+                                            'All HTTP traffic is now redirected to HTTPS.'
+                                        )}
                                         {isUsingHttp
-                                            ? 'You will have to login again as you will now be redirected to HTTPS website.'
+                                            ? localize(
+                                                  'dashboard.force_https_login_again',
+                                                  'You will have to login again as you will now be redirected to HTTPS website.'
+                                              )
                                             : ''}
                                     </p>
                                 </div>
@@ -111,35 +129,43 @@ export default class Dashboard extends ApiComponent<
         const self = this
         const IGNORE = 'IGNORE'
 
+        const translated = localize(
+            'dashboard.enable_ssl_dialog_body',
+            `IMPORTANT: Once you enable HTTPS, you cannot edit the root domain ever again. Make sure you use a good root domain. A good practice is to go one level deeper and setup your root domain. For example, if you own %s1, use %s2 as your root domain. This will allow you to better manage your subdomains, do not use %s3 as your root domain.`
+        )
+
         Promise.resolve()
             .then(function () {
                 return new Promise(function (resolve, reject) {
                     Modal.success({
-                        title: 'Enable HTTPS',
+                        title: localize(
+                            'dashboard.enable_https',
+                            'Enable HTTPS'
+                        ),
                         content: (
                             <div>
                                 <p>
-                                    CapRover uses{' '}
-                                    <NewTabLink url="https://letsencrypt.org/">
-                                        Let&#39;s Encrypt
-                                    </NewTabLink>{' '}
-                                    to provide free SSL Certificates (HTTPS).
-                                    This email address is very important as
-                                    Let&#39;s Encrypt uses it for validation
-                                    purposes. Please provide a valid email here.
+                                    {localize(
+                                        'dashboard.enable_https_info',
+                                        "CapRover uses Let's Encrypt to provide free SSL Certificates (HTTPS)."
+                                    )}
+                                    {localize(
+                                        'dashboard.enable_https_email_importance',
+                                        "This email address is very important as Let's Encrypt uses it for validation purposes. Please provide a valid email here."
+                                    )}
                                 </p>
                                 <p>
-                                    IMPORTANT: Once you enable HTTPS, you cannot
-                                    edit the root domain ever again. Make sure
-                                    you use a good root domain. A good practice
-                                    is to go one level deeper and setup your
-                                    root domain. For example, if you own{' '}
-                                    <code>example.com</code>, use{' '}
-                                    <code>*.caprover-root.example.com</code> as
-                                    your root domain. This will allow you to
-                                    better manage your subdomains, do not use{' '}
-                                    <code>*.example.com</code> as your root
-                                    domain.
+                                    {Utils.formatText(
+                                        translated,
+                                        ['%s1', '%s2', '%s3'],
+                                        [
+                                            <code>example.com</code>,
+                                            <code>
+                                                *.caprover-root.example.com
+                                            </code>,
+                                            <code>*.example.com</code>,
+                                        ]
+                                    )}
                                 </p>
                                 <Input
                                     placeholder="your@email.com"
@@ -173,16 +199,24 @@ export default class Dashboard extends ApiComponent<
                 if (data === IGNORE) return
 
                 Modal.success({
-                    title: 'Root Domain HTTPS activated!',
+                    title: localize(
+                        'dashboard.root_domain_https_activated',
+                        'Root Domain HTTPS activated!'
+                    ),
                     content: (
                         <div>
                             <p>
-                                You can now use{' '}
+                                {localize(
+                                    'dashboard.root_domain_https_info',
+                                    'You can now use this link:'
+                                )}
                                 <code>
                                     {`https://${self.state.apiData.rootDomain}`}
                                 </code>
-                                . Next step is to Force HTTPS to disallow plain
-                                HTTP traffic.
+                                {localize(
+                                    'dashboard.root_domain_https_next_step',
+                                    '. Next step is to Force HTTPS to disallow plain HTTP traffic.'
+                                )}
                             </p>
                         </div>
                     ),
@@ -204,18 +238,23 @@ export default class Dashboard extends ApiComponent<
         }
 
         Modal.confirm({
-            title: 'Force Change Root Domain',
+            title: localize(
+                'dashboard.force_change_root_domain',
+                'Force Change Root Domain'
+            ),
             content: (
                 <div>
                     <p>
-                        You have already enabled SSL for your root domain.
-                        Changing the root domain URL will invalidate HTTPS on
-                        root domain and all default subdomains for apps if you
-                        have any apps.
+                        {localize(
+                            'dashboard.force_change_root_domain_info',
+                            'You have already enabled SSL for your root domain. Changing the root domain URL will invalidate HTTPS on root domain and all default subdomains for apps if you have any apps.'
+                        )}
                     </p>
                     <p>
-                        You can still re-enable HTTPS after changing the root
-                        domain.
+                        {localize(
+                            'dashboard.force_change_root_domain_reenable',
+                            'You can still re-enable HTTPS after changing the root domain.'
+                        )}
                     </p>
                 </div>
             ),
@@ -235,12 +274,17 @@ export default class Dashboard extends ApiComponent<
             .updateRootDomain(rootDomain, force)
             .then(function (data: any) {
                 Modal.success({
-                    title: 'Root Domain Updated',
+                    title: localize(
+                        'dashboard.root_domain_updated',
+                        'Root Domain Updated'
+                    ),
                     content: (
                         <div>
                             <p>
-                                Click Ok to get redirected to your new root
-                                domain. You need to log in again.
+                                {localize(
+                                    'dashboard.root_domain_updated_info',
+                                    'Click Ok to get redirected to your new root domain. You need to log in again.'
+                                )}
                             </p>
                         </div>
                     ),
@@ -292,37 +336,68 @@ export default class Dashboard extends ApiComponent<
             return undefined
         }
 
+        const replacements = [
+            <span>
+                <i>myawesomecompany.com</i>
+            </span>,
+
+            <i>captain.myawesomecompany.com</i>,
+            <i>foo.bar.myawesomecompany.com</i>,
+            <p>
+                <b> Type:</b> <u>A</u>, <b>Name (or host):</b>{' '}
+                <u>*.caprover-root</u>, <b> IP (or Points to):</b>{' '}
+                <u>110.120.130.140</u>
+            </p>,
+        ]
+        const translatedBody = Utils.formatText(
+            localize(
+                'dashboard.detailed_guide_setup_ip',
+                `The very first thing that CapRover needs is a root domain. For example, if you own %s1, 
+                you can use %s2 or %s3 as your root domain. First, you need to make sure that the ip 
+                address for all subdomains of the root domain resolve to the CapRover ip address. To do 
+                this, go to the DNS settings in your domain provider website, and set a wild card A 
+                entry. For example: %s4 where this IP is the IP address of your CapRover machine (server).`
+            ),
+            ['%s1', '%s2', '%s3', '%s4'],
+            replacements
+        )
+
+        const translatedHint = Utils.formatText(
+            localize(
+                'dashboard.ip_example_hint_specific',
+                'For example, if you set %s1 to the IP address of your server, just enter %s2 in the box below:'
+            ),
+            ['%s1', '%s2'],
+            [
+                <code>*.my-root.example.com</code>,
+                <code>my-root.example.com</code>,
+            ]
+        )
+
         return (
             <Row justify="center">
                 <Col xs={{ span: 23 }} lg={{ span: 16 }}>
-                    <Card title="CapRover Root Domain Configurations">
+                    <Card
+                        title={localize(
+                            'dashboard.root_domain_configurations',
+                            'CapRover Root Domain Configurations'
+                        )}
+                    >
                         <div>
-                            <p>
-                                The very first thing that CapRover needs is a
-                                root domain. For example, if you own{' '}
-                                <i>myawesomecompany.com</i>, you can use{' '}
-                                <i>captain.myawesomecompany.com</i> or{' '}
-                                <i>foo.bar.myawesomecompany.com</i> as your root
-                                domain. First, you need to make sure that the ip
-                                address for all subdomains of the root domain
-                                resolve to the CapRover ip address. To do this,
-                                go to the DNS settings in your domain provider
-                                website, and set a wild card A entry.
-                                <br /> For example: <b> Type:</b> <u>A</u>,{' '}
-                                <b>Name (or host):</b> <u>*.caprover-root</u>,
-                                <b> IP (or Points to):</b>{' '}
-                                <u>110.120.130.140</u> where this is the IP
-                                address of your CapRover machine.
-                            </p>
+                            <p>{translatedBody}</p>
                             <p>
                                 <i>
-                                    NOTE: DNS settings might take several hours
-                                    to take into effect. See{' '}
+                                    {localize(
+                                        'dashboard.dns_settings_effect_time',
+                                        'NOTE: DNS settings might take several hours to take into effect.'
+                                    )}
                                     <NewTabLink url="https://ca.godaddy.com/help/what-factors-affect-dns-propagation-time-1746">
                                         {' '}
-                                        here
+                                        {localize(
+                                            'dashboard.dns_settings_effect_time_link',
+                                            'See this link for more details'
+                                        )}
                                     </NewTabLink>{' '}
-                                    for more details.
                                 </i>
                             </p>
                         </div>
@@ -330,13 +405,7 @@ export default class Dashboard extends ApiComponent<
                         <br />
                         <Row>
                             <div>
-                                <p>
-                                    For example, if you set{' '}
-                                    <code>*.my-root.example.com</code> to the IP
-                                    address of your server, just enter{' '}
-                                    <code>my-root.example.com</code> in the box
-                                    below:
-                                </p>
+                                <p>{translatedHint}</p>
                                 <br />
                                 <div>
                                     <Search
@@ -345,7 +414,10 @@ export default class Dashboard extends ApiComponent<
                                         defaultValue={
                                             self.state.apiData.rootDomain + ''
                                         }
-                                        enterButton="Update Domain"
+                                        enterButton={localize(
+                                            'dashboard.update_domain_button',
+                                            'Update Domain'
+                                        )}
                                         onSearch={(value) =>
                                             self.updateRootDomainClicked(value)
                                         }
@@ -355,7 +427,12 @@ export default class Dashboard extends ApiComponent<
                         </Row>
                         <div style={{ height: 20 }} />
                         <Row justify="end">
-                            <Tooltip title="Using Let's Encrypt Free Service">
+                            <Tooltip
+                                title={localize(
+                                    'dashboard.enable_https_button_hint',
+                                    "Using Let's Encrypt Free Service"
+                                )}
+                            >
                                 <Button
                                     disabled={
                                         self.state.apiData.hasRootSsl ||
@@ -363,11 +440,19 @@ export default class Dashboard extends ApiComponent<
                                     }
                                     onClick={() => self.onEnableSslClicked()}
                                 >
-                                    Enable HTTPS
+                                    {localize(
+                                        'dashboard.enable_https_button',
+                                        'Enable HTTPS'
+                                    )}
                                 </Button>
                             </Tooltip>
                             &nbsp;&nbsp;
-                            <Tooltip title="Redirect all HTTP to HTTPS">
+                            <Tooltip
+                                title={localize(
+                                    'dashboard.force_https_button_hint',
+                                    'Redirect all HTTP to HTTPS'
+                                )}
+                            >
                                 <Button
                                     disabled={
                                         !self.state.apiData.hasRootSsl ||
@@ -375,7 +460,10 @@ export default class Dashboard extends ApiComponent<
                                     }
                                     onClick={() => self.onForceSslClicked()}
                                 >
-                                    Force HTTPS
+                                    {localize(
+                                        'dashboard.force_https_button',
+                                        'Force HTTPS'
+                                    )}
                                 </Button>
                             </Tooltip>
                         </Row>
@@ -394,43 +482,74 @@ export default class Dashboard extends ApiComponent<
         return (
             <Row justify="center">
                 <Col xs={{ span: 23 }} lg={{ span: 16 }}>
-                    <Card title="CapRover Initial Setup">
+                    <Card
+                        title={localize(
+                            'dashboard.setup_panel_title',
+                            'CapRover Initial Setup'
+                        )}
+                    >
                         <div>
                             <h3>
-                                Congratulations!{' '}
+                                {localize(
+                                    'dashboard.congratulations',
+                                    'Congratulations!'
+                                )}{' '}
                                 <span aria-label="Congrats" role="img">
                                     🎉🎉
                                 </span>
                             </h3>
                             <p>
-                                <b /> You have installed CapRover successfully!{' '}
+                                <b />{' '}
+                                {localize(
+                                    'dashboard.successful_installation',
+                                    'You have installed CapRover successfully!'
+                                )}{' '}
                                 <b>
-                                    But you still need to assign a domain and
-                                    finish the HTTPS setup to fully set up
-                                    CapRover!{' '}
+                                    {localize(
+                                        'dashboard.https_setup_needed',
+                                        'But you still need to assign a domain and finish the HTTPS setup to fully set up CapRover!'
+                                    )}
                                 </b>
-                                You can set up your CapRover instance in two
-                                ways:
+                                {localize(
+                                    'dashboard.setup_options',
+                                    'You can set up your CapRover instance in two ways:'
+                                )}
                             </p>
 
                             <ul>
                                 <li>
-                                    <b>Command Line Tool (RECOMMENDED): </b> On
-                                    your local machine, simply run
+                                    <b>
+                                        {localize(
+                                            'dashboard.command_line_tool',
+                                            'Command Line Tool (RECOMMENDED):'
+                                        )}{' '}
+                                    </b>{' '}
+                                    {localize(
+                                        'dashboard.run_on_local_machine',
+                                        'On your local machine, simply run the following commands'
+                                    )}
                                     <br />
                                     <code>npm i -g caprover</code>
                                     <br />
-                                    followed by
-                                    <br />
-                                    <code>caprover serversetup</code>. Then
-                                    follow the guide.
+                                    <code>
+                                        {localize(
+                                            'dashboard.caprover_serversetup',
+                                            'caprover serversetup'
+                                        )}
+                                    </code>
+                                    .{' '}
                                 </li>
                                 <li>
-                                    <b>Use the panel below: </b> This is a
-                                    non-guided version of the Command Line
-                                    method. Don't forget to set the root domain,
-                                    then enable HTTPS and force it, and finally
-                                    change the password.
+                                    <b>
+                                        {localize(
+                                            'dashboard.use_panel_below',
+                                            'Use the panel below:'
+                                        )}{' '}
+                                    </b>{' '}
+                                    {localize(
+                                        'dashboard.non_guided_version',
+                                        "This is a non-guided version of the Command Line method. Don't forget to set the root domain, then enable HTTPS and force it, and finally change the password."
+                                    )}
                                 </li>
                             </ul>
                         </div>
@@ -453,40 +572,45 @@ export default class Dashboard extends ApiComponent<
                     <Card title="CapRover">
                         <div>
                             <h3>
-                                Congratulations!{' '}
+                                {localize(
+                                    'dashboard.congratulations',
+                                    'Congratulations!'
+                                )}{' '}
                                 <span aria-label="Congrats" role="img">
                                     🎉🎉
                                 </span>
                             </h3>
                             <p>
-                                You have installed and set CapRover up
-                                successfully! You can now deploy your apps!
-                                Remember, with CapRover, you can deploy
-                                applications from source code (such as Node.js,
-                                PHP, Java, Ruby, Python etc), and you can also
-                                deploy ready to go applications such as MySQL,
-                                MongoDB, WordPress, Redis, and many more!
+                                {localize(
+                                    'dashboard.caprover_setup_success',
+                                    'You have installed and set CapRover up successfully! You can now deploy your apps! Remember, with CapRover, you can deploy applications from source code (such as Node.js, PHP, Java, Ruby, Python etc), and you can also deploy ready to go applications such as MySQL, MongoDB, WordPress, Redis, and many more!'
+                                )}
                             </p>
 
                             <p>
-                                For more information on how to deploy
-                                applications from source code, make sure to have
-                                a look at our
+                                {localize(
+                                    'dashboard.deploy_source_code_info',
+                                    'For more information on how to deploy applications from source code, make sure to have a look at this: '
+                                )}
                                 <a
                                     href="https://caprover.com/docs/sample-apps.html"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
                                     {' '}
-                                    sample apps.
+                                    {localize(
+                                        'dashboard.sample_apps',
+                                        'sample apps.'
+                                    )}
                                 </a>
                             </p>
 
                             <p>
                                 <i>
-                                    You can always update your root domain, but
-                                    be careful! Your SSL certificates will get
-                                    revoked because of this domain change.
+                                    {localize(
+                                        'dashboard.update_root_domain_caution',
+                                        'You can always update your root domain, but be careful! Your SSL certificates will get revoked because of this domain change.'
+                                    )}
                                 </i>
                             </p>
 
@@ -500,7 +624,10 @@ export default class Dashboard extends ApiComponent<
                                         })
                                     }}
                                 >
-                                    Change Root Domain Anyways
+                                    {localize(
+                                        'dashboard.change_root_domain_anyways',
+                                        'Change Root Domain Anyways'
+                                    )}
                                 </Button>
                             </Row>
                         </div>

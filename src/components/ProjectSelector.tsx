@@ -1,6 +1,7 @@
 import { Select } from 'antd'
 import React from 'react'
 import ProjectDefinition from '../models/ProjectDefinition'
+import { localize } from '../utils/Language'
 
 interface ProjectSelectorProps {
     allProjects: ProjectDefinition[]
@@ -17,7 +18,10 @@ class ProjectSelector extends React.Component<ProjectSelectorProps> {
         const projectOptions = [
             {
                 value: '',
-                label: 'root <no parent>',
+                label: localize(
+                    'projects.parent_project_selector_default',
+                    'root <no parent>!'
+                ),
             },
             ...allProjects
                 .filter((project) => project.id !== excludeProjectId)
@@ -31,7 +35,10 @@ class ProjectSelector extends React.Component<ProjectSelectorProps> {
             <Select
                 showSearch
                 style={{ width: '100%' }}
-                placeholder="Select a parent project"
+                placeholder={localize(
+                    'apps.select_parent_project',
+                    'Select a parent project'
+                )}
                 optionFilterProp="label"
                 value={selectedProjectId || ''}
                 onChange={onChange}

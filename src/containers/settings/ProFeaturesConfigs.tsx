@@ -6,6 +6,7 @@ import {
     ProAlertActionType,
     ProAlertConfig,
 } from '../../models/IProFeatures'
+import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import ApiComponent from '../global/ApiComponent'
@@ -64,16 +65,34 @@ export default class ProFeaturesConfigs extends ApiComponent<
             description: string
         }> = {
             UserLoggedIn: {
-                text: 'Login email alerts',
-                description: 'Get notified when someone logs in',
+                text: localize(
+                    'pro_features.login_email_alerts',
+                    'Login email alerts'
+                ),
+                description: localize(
+                    'pro_features.get_notified_login',
+                    'Get notified when someone logs in'
+                ),
             },
             AppBuildSuccessful: {
-                text: 'Build success email alerts',
-                description: 'Get notified when build succeeds',
+                text: localize(
+                    'pro_features.build_success_email_alerts',
+                    'Build success email alerts'
+                ),
+                description: localize(
+                    'pro_features.get_notified_build_success',
+                    'Get notified when build succeeds'
+                ),
             },
             AppBuildFailed: {
-                text: 'Build failures email alerts',
-                description: 'Get notified when build fails',
+                text: localize(
+                    'pro_features.build_failures_email_alerts',
+                    'Build failures email alerts'
+                ),
+                description: localize(
+                    'pro_features.get_notified_build_fail',
+                    'Get notified when build fails'
+                ),
             },
         }
 
@@ -102,7 +121,7 @@ export default class ProFeaturesConfigs extends ApiComponent<
                         type="primary"
                         onClick={() => self.updateConfig(proConfigs)}
                     >
-                        Save
+                        {localize('pro_features.save', 'Save')}
                     </Button>
                 </Row>
                 <hr style={{ margin: 30 }} />
@@ -181,7 +200,7 @@ export default class ProFeaturesConfigs extends ApiComponent<
                                     self.setState({ proConfigs: newConfigs })
                                 }}
                             >
-                                Email
+                                {localize('pro_features.email', 'Email')}
                             </Checkbox>
                         </div>
                     </Col>

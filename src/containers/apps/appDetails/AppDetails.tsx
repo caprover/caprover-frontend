@@ -27,6 +27,7 @@ import ProjectSelector from '../../../components/ProjectSelector'
 import { IMobileComponent } from '../../../models/ContainerProps'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import ProjectDefinition from '../../../models/ProjectDefinition'
+import { localize } from '../../../utils/Language'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
 import ApiComponent from '../../global/ApiComponent'
@@ -201,7 +202,9 @@ class AppDetails extends ApiComponent<
                     }}
                 >
                     <ClickableLink onLinkClicked={() => self.goBackToApps()}>
-                        <Tooltip title="Close">
+                        <Tooltip
+                            title={localize('apps.close_tooltip', 'Close')}
+                        >
                             <CloseOutlined />
                         </Tooltip>
                     </ClickableLink>
@@ -315,7 +318,10 @@ class AppDetails extends ApiComponent<
                                     key: WEB_SETTINGS,
                                     label: (
                                         <span className="unselectable-span">
-                                            HTTP Settings
+                                            {localize(
+                                                'apps.http_settings_tab',
+                                                'HTTP Settings'
+                                            )}
                                         </span>
                                     ),
                                     children: (
@@ -348,7 +354,10 @@ class AppDetails extends ApiComponent<
                                     key: APP_CONFIGS,
                                     label: (
                                         <span className="unselectable-span">
-                                            App Configs
+                                            {localize(
+                                                'apps.app_configs_tab',
+                                                'App Configs'
+                                            )}
                                         </span>
                                     ),
                                     children: (
@@ -381,7 +390,10 @@ class AppDetails extends ApiComponent<
                                     key: DEPLOYMENT,
                                     label: (
                                         <span className="unselectable-span">
-                                            Deployment
+                                            {localize(
+                                                'apps.app_deployment_tab',
+                                                'Deployment'
+                                            )}
                                         </span>
                                     ),
                                     children: (
@@ -469,7 +481,10 @@ class AppDetails extends ApiComponent<
                                                 {self.props.isMobile ? (
                                                     <DeleteOutlined />
                                                 ) : (
-                                                    'Delete App'
+                                                    localize(
+                                                        'apps.delete_app_button',
+                                                        'Delete app'
+                                                    )
                                                 )}
                                             </Button>
                                         </div>
@@ -492,7 +507,10 @@ class AppDetails extends ApiComponent<
                                                 {self.props.isMobile ? (
                                                     <SaveOutlined />
                                                 ) : (
-                                                    'Save & Restart'
+                                                    localize(
+                                                        'apps.edit_app_config',
+                                                        'Save & Restart'
+                                                    )
                                                 )}
                                             </Button>
                                         </div>
@@ -515,8 +533,11 @@ class AppDetails extends ApiComponent<
 
         return (
             <Modal
-                title={`Edit "${self.state.apiData?.appDefinition.appName}" app`}
-                okText="Save & Update"
+                title={
+                    localize('apps.edit_app_title', 'Edit app: ') +
+                    ` "${self.state.apiData?.appDefinition.appName}"`
+                }
+                okText={localize('apps.edit_app_config', 'Save & Restart')}
                 onCancel={() =>
                     self.setState({ editAppDataForModal: undefined })
                 }
@@ -578,13 +599,15 @@ class AppDetails extends ApiComponent<
                 open={!!editAppDataForModal}
             >
                 <p>
-                    If you rename the app that is used internally by other apps,
-                    make sure to update the address as well to avoid problems.
+                    {localize(
+                        'apps.rename_warning',
+                        'If you rename the app that is used internally by other apps, make sure to update the address as well to avoid problems.'
+                    )}
                 </p>
                 <div style={{ height: 20 }} />
                 <div>
                     <Input
-                        addonBefore="App name"
+                        addonBefore={localize('apps.app_edit_name', 'App name')}
                         placeholder="my-awesome-app"
                         value={editAppDataForModal.appName}
                         onChange={(e) => {
@@ -596,7 +619,7 @@ class AppDetails extends ApiComponent<
                     />
                     <div style={{ height: 32 }} />
                     <Input
-                        addonBefore="Tags"
+                        addonBefore={localize('apps.app_edit_tags', 'Tags')}
                         placeholder="tag1,another-tag,yet-another <comma separated>"
                         value={editAppDataForModal.tags.join(',')}
                         onChange={(e) => {
@@ -617,7 +640,7 @@ class AppDetails extends ApiComponent<
                             marginLeft: 5,
                         }}
                     >
-                        Parent project
+                        {localize('apps.parent_project', 'Parent project')}
                     </div>
                     <ProjectSelector
                         allProjects={self.state.apiData?.projects || []}
@@ -641,13 +664,14 @@ class AppDetails extends ApiComponent<
                             marginLeft: 5,
                         }}
                     >
-                        Description
+                        {localize('apps.app_edit_description', 'Description')}
                     </div>
                     <Input.TextArea
                         rows={4}
-                        placeholder={
-                            'This app is just so awesome!\nAnotherline!'
-                        }
+                        placeholder={localize(
+                            'apps.description_placeholder',
+                            'This app is just so awesome!\nAnother line!'
+                        )}
                         value={editAppDataForModal.description}
                         onChange={(e) => {
                             const newData =

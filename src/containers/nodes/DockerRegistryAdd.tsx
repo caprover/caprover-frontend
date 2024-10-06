@@ -6,6 +6,7 @@ import {
     IRegistryInfo,
     IRegistryTypes,
 } from '../../models/IRegistryInfo'
+import { localize } from '../../utils/Language'
 import Utils from '../../utils/Utils'
 import PasswordField from '../global/PasswordField'
 
@@ -41,7 +42,6 @@ export default class DockerRegistryAdd extends Component<
             registryType: IRegistryTypes.REMOTE_REG,
         }
     }
-
     render() {
         const self = this
 
@@ -53,8 +53,14 @@ export default class DockerRegistryAdd extends Component<
         return (
             <div>
                 <Modal
-                    title="Self-Hosted Registry"
-                    okText="Enable Self-Hosted Registry"
+                    title={localize(
+                        'docker_registry_add.self_hosted_registry',
+                        'Self-Hosted Registry'
+                    )}
+                    okText={localize(
+                        'docker_registry_add.enable_self_hosted_registry',
+                        'Enable Self-Hosted Registry'
+                    )}
                     onCancel={() => self.setState({ modalShowing: undefined })}
                     onOk={() => {
                         self.setState({ modalShowing: undefined })
@@ -65,16 +71,22 @@ export default class DockerRegistryAdd extends Component<
                     open={self.state.modalShowing === ADDING_LOCAL}
                 >
                     <p>
-                        You can read more about this type of registry on the
-                        page behind this modal, specifically under "More Info"
-                        section. Do you want to proceed and enable self-hosted
-                        Docker Registry?
+                        {localize(
+                            'docker_registry_add.self_hosted_registry_info',
+                            'You can read more about this type of registry on the page behind this modal, specifically under "More Info" section. Do you want to proceed and enable self-hosted Docker Registry?'
+                        )}
                     </p>
                 </Modal>
 
                 <Modal
-                    title="Remote Registry"
-                    okText="Add Remote Registry"
+                    title={localize(
+                        'docker_registry_add.remote_registry',
+                        'Remote Registry'
+                    )}
+                    okText={localize(
+                        'docker_registry_add.add_remote_registry',
+                        'Add Remote Registry'
+                    )}
                     onCancel={() => self.setState({ modalShowing: undefined })}
                     onOk={() => {
                         self.setState({ modalShowing: undefined })
@@ -85,9 +97,10 @@ export default class DockerRegistryAdd extends Component<
                     open={self.state.modalShowing === ADDING_REMOTE}
                 >
                     <p>
-                        You can read more about this type of registry on the
-                        page behind this modal, specifically under "More Info"
-                        section.
+                        {localize(
+                            'docker_registry_add.remote_registry_info',
+                            'You can read more about this type of registry on the page behind this modal, specifically under "More Info" section.'
+                        )}
                     </p>
                     <div style={{ height: 20 }} />
                     <div style={{ maxWidth: 360 }}>
@@ -140,7 +153,12 @@ export default class DockerRegistryAdd extends Component<
                             addonBefore="Image Prefix"
                             placeholder="username"
                             addonAfter={
-                                <Tooltip title="Your images will be tagged as RegistryDomain/ImagePrefix/ImageName. For most providers, Image Prefix is exactly your username, unless the field DOMAIN is specific to you, in that case, this prefix is empty.">
+                                <Tooltip
+                                    title={localize(
+                                        'docker_registry_add.image_prefix_tooltip',
+                                        'Your images will be tagged as RegistryDomain/ImagePrefix/ImageName. For most providers, Image Prefix is exactly your username, unless the field DOMAIN is specific to you, in that case, this prefix is empty.'
+                                    )}
+                                >
                                     <InfoCircleOutlined />
                                 </Tooltip>
                             }
@@ -169,7 +187,10 @@ export default class DockerRegistryAdd extends Component<
                                 self.setState({ modalShowing: ADDING_LOCAL })
                             }
                         >
-                            Add Self-Hosted Registry
+                            {localize(
+                                'docker_registry_add.add_self_hosted_registry',
+                                'Add Self-Hosted Registry'
+                            )}
                         </Button>
                     </Row>
                 </div>
@@ -186,7 +207,10 @@ export default class DockerRegistryAdd extends Component<
                             })
                         }
                     >
-                        Add Remote Registry
+                        {localize(
+                            'docker_registry_add.add_remote_registry',
+                            'Add Remote Registry'
+                        )}
                     </Button>
                 </Row>
             </div>

@@ -2,6 +2,7 @@ import { EditFilled, EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import { Button, Col, Input, Row, Switch, Tag, Tooltip } from 'antd'
 import { Component, Fragment } from 'react'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
+import { localize } from '../../../utils/Language'
 import Utils from '../../../utils/Utils'
 import NewTabLink from '../../global/NewTabLink'
 import { IAppEnvVar } from '../AppDefinition'
@@ -174,7 +175,10 @@ export default class AppConfigs extends Component<
                     type="default"
                     onClick={() => self.addEnvVarClicked()}
                 >
-                    Add Key/Value Pair
+                    {localize(
+                        'apps.app_config_add_key_value_env_vars',
+                        'Add Key/Value Pair'
+                    )}
                 </Button>
             </div>
         )
@@ -187,7 +191,12 @@ export default class AppConfigs extends Component<
             return (
                 <Row style={{ paddingBottom: 12 }} key={`${index}`}>
                     <Col span={12}>
-                        <Tooltip title="Make sure the port is not already used!">
+                        <Tooltip
+                            title={localize(
+                                'apps.app_config_port_tooltip',
+                                'Make sure the port is not already used!'
+                            )}
+                        >
                             <Input
                                 addonBefore="Server Port"
                                 placeholder="5050"
@@ -242,7 +251,10 @@ export default class AppConfigs extends Component<
                 <Row style={{ paddingBottom: 12 }} key={`${index}`}>
                     <Col span={8}>
                         <Input
-                            addonBefore="Path in App"
+                            addonBefore={localize(
+                                'apps.app_config_vol_path',
+                                'Path in App'
+                            )}
                             className="code-input"
                             placeholder="/var/www/html"
                             value={value.containerPath}
@@ -264,7 +276,10 @@ export default class AppConfigs extends Component<
                         className={value.hostPath ? 'hide-on-demand' : ''}
                     >
                         <Input
-                            addonBefore="Label"
+                            addonBefore={localize(
+                                'apps.app_config_vol_label',
+                                'Label'
+                            )}
                             className="code-input"
                             placeholder="some-name"
                             value={value.volumeName}
@@ -285,9 +300,17 @@ export default class AppConfigs extends Component<
                         span={8}
                         className={!value.hostPath ? 'hide-on-demand' : ''}
                     >
-                        <Tooltip title="IMPORTANT: Ensure Host Path exists before assigning it here">
+                        <Tooltip
+                            title={localize(
+                                'apps.app_config_vol_host_path_hint',
+                                'IMPORTANT: Ensure Host Path exists before assigning it here'
+                            )}
+                        >
                             <Input
-                                addonBefore="Path on Host"
+                                addonBefore={localize(
+                                    'apps.app_config_vol_host_path',
+                                    'Path on Host'
+                                )}
                                 className="code-input"
                                 placeholder="/host/path/exists"
                                 value={value.hostPath}
@@ -321,8 +344,14 @@ export default class AppConfigs extends Component<
                             }}
                         >
                             {value.hostPath
-                                ? 'Let CapRover manage path'
-                                : 'Set specific host path'}
+                                ? localize(
+                                      'apps.app_config_vol_manage_path',
+                                      'Let CapRover manage path'
+                                  )
+                                : localize(
+                                      'apps.app_config_vol_set_path',
+                                      'Set specific host path'
+                                  )}
                         </Button>
                     </Col>
                 </Row>
@@ -339,7 +368,11 @@ export default class AppConfigs extends Component<
         return (
             <div>
                 <h4>
-                    Persistent Directories &nbsp;
+                    {localize(
+                        'apps.app_config_vol_directories',
+                        'Persistent Directories'
+                    )}{' '}
+                    &nbsp;
                     <NewTabLink url="https://caprover.com/docs/app-configuration.html#persistent-or-not">
                         <InfoCircleOutlined />
                     </NewTabLink>
@@ -352,15 +385,20 @@ export default class AppConfigs extends Component<
                     }
                 >
                     <i>
-                        Currently, this app does not have any persistent
-                        directories.
+                        {localize(
+                            'apps.app_config_vol_no_directories',
+                            'Currently, this app does not have any persistent directories.'
+                        )}
                     </i>
                 </div>
 
                 {this.createVolRows()}
                 <br />
                 <Button type="default" onClick={() => this.addVolumeClicked()}>
-                    Add Persistent Directory
+                    {localize(
+                        'apps.app_config_vol_add',
+                        'Add Persistent Directory'
+                    )}
                 </Button>
                 <br />
                 <br />
@@ -371,9 +409,17 @@ export default class AppConfigs extends Component<
                         span={6}
                         style={{ minWidth: this.props.isMobile ? '100%' : 300 }}
                     >
-                        <Tooltip title="Leave empty for automatic placement">
+                        <Tooltip
+                            title={localize(
+                                'apps.app_config_vol_node_id_hint',
+                                'Leave empty for automatic placement'
+                            )}
+                        >
                             <Input
-                                addonBefore="Node ID"
+                                addonBefore={localize(
+                                    'apps.app_config_vol_node_id',
+                                    'Node ID'
+                                )}
                                 className="code-input"
                                 value={app.nodeId ? app.nodeId : ''}
                                 disabled={!this.state.forceEditableNodeId}
@@ -389,7 +435,12 @@ export default class AppConfigs extends Component<
                         </Tooltip>
                     </Col>
                     <Col span={12} style={{ paddingLeft: 24 }}>
-                        <Tooltip title="WARNING: Changing Node ID causes the content of your persistent directories to be deleted!">
+                        <Tooltip
+                            title={localize(
+                                'apps.app_config_vol_node_id_warning',
+                                'WARNING: Changing Node ID causes the content of your persistent directories to be deleted!'
+                            )}
+                        >
                             <Button
                                 type="default"
                                 disabled={this.state.forceEditableNodeId}
@@ -397,7 +448,10 @@ export default class AppConfigs extends Component<
                                     this.setState({ forceEditableNodeId: true })
                                 }
                             >
-                                Edit
+                                {localize(
+                                    'apps.app_config_vol_node_id_edit',
+                                    'Edit'
+                                )}
                             </Button>
                         </Tooltip>
                     </Col>
@@ -417,7 +471,11 @@ export default class AppConfigs extends Component<
                 <Row align="middle" justify="space-between">
                     <Col>
                         <h4>
-                            Environmental Variables &nbsp;
+                            {localize(
+                                'apps.env_vars_title',
+                                'Environment Variables'
+                            )}{' '}
+                            &nbsp;
                             <NewTabLink url="https://caprover.com/docs/app-configuration.html#environment-variables">
                                 <InfoCircleOutlined />
                             </NewTabLink>
@@ -425,7 +483,11 @@ export default class AppConfigs extends Component<
                     </Col>
                     <Col>
                         <h5>
-                            Bulk Edit&nbsp;{' '}
+                            {localize(
+                                'apps.app_config_bulk_edit_button',
+                                'Bulk Edit'
+                            )}
+                            &nbsp;{' '}
                             <Switch
                                 onChange={(val) => {
                                     self.setState({
@@ -445,8 +507,10 @@ export default class AppConfigs extends Component<
                     }
                 >
                     <i>
-                        Currently, this app does not have any custom
-                        environmental variables yet.
+                        {localize(
+                            'apps.app_config_no_env_vars',
+                            'Currently, this app does not have any custom environmental variables yet.'
+                        )}
                     </i>
                 </div>
                 {this.createEnvVarSection()}
@@ -456,7 +520,8 @@ export default class AppConfigs extends Component<
                     }}
                 />
                 <h4>
-                    Port Mapping &nbsp;
+                    {localize('apps.app_config_port_mapping', 'Port Mapping')}
+                    &nbsp;
                     <NewTabLink url="https://caprover.com/docs/app-configuration.html#port-mapping">
                         <InfoCircleOutlined />
                     </NewTabLink>
@@ -467,8 +532,10 @@ export default class AppConfigs extends Component<
                     }
                 >
                     <i>
-                        Currently, this app does not have any custom port
-                        mapping.
+                        {localize(
+                            'apps.app_config_no_port_mapping',
+                            'Currently, this app does not have any custom port mapping.'
+                        )}
                     </i>
                 </div>
                 {this.createPortRows()}
@@ -478,7 +545,10 @@ export default class AppConfigs extends Component<
                     type="default"
                     onClick={() => this.addPortMappingClicked()}
                 >
-                    Add Port Mapping
+                    {localize(
+                        'apps.app_config_add_port_mapping',
+                        'Add Port Mapping'
+                    )}
                 </Button>
                 <br />
                 <br />
@@ -490,9 +560,17 @@ export default class AppConfigs extends Component<
                         span={6}
                         style={{ minWidth: this.props.isMobile ? '100%' : 300 }}
                     >
-                        <Tooltip title="Number of running instances of this app">
+                        <Tooltip
+                            title={localize(
+                                'apps.app_config_instances_running_title',
+                                'Number of running instances of this app'
+                            )}
+                        >
                             <Input
-                                addonBefore="Instance Count"
+                                addonBefore={localize(
+                                    'apps.app_config_instances_running_title_short',
+                                    'Instance Count'
+                                )}
                                 type="number"
                                 defaultValue={app.instanceCount + ''}
                                 disabled={
@@ -517,7 +595,12 @@ export default class AppConfigs extends Component<
                                 !app.hasPersistentData ? 'hide-on-demand' : ''
                             }
                         >
-                            <Tooltip title="Multiple instances of apps with persistent data can be very dangerous and bug prone as they can be accessing the same file on the disk resulting in data corruption. Edit the instance count only if you understand the risk.">
+                            <Tooltip
+                                title={localize(
+                                    'apps.app_config_instances_warning_hint',
+                                    'Multiple instances of apps with persistent data can be very dangerous and bug prone as they can be accessing the same file on the disk resulting in data corruption. Edit the instance count only if you understand the risk.'
+                                )}
+                            >
                                 <Button
                                     type="default"
                                     disabled={
@@ -529,7 +612,10 @@ export default class AppConfigs extends Component<
                                         })
                                     }
                                 >
-                                    Edit
+                                    {localize(
+                                        'apps.app_config_instances_force_edit_button',
+                                        'Edit'
+                                    )}
                                 </Button>
                             </Tooltip>
                         </div>
@@ -617,7 +703,8 @@ export default class AppConfigs extends Component<
 
                 <div style={{ height: 30 }} />
                 <h4>
-                    Service Tags &nbsp;
+                    {localize('apps.app_config_tags', 'Service Tags')}
+                    &nbsp;
                     <NewTabLink url="https://caprover.com/docs/app-configuration.html#service-tags">
                         <InfoCircleOutlined />
                     </NewTabLink>
@@ -697,7 +784,10 @@ export default class AppConfigs extends Component<
                     )
                 ) : (
                     <span>
-                        Currently no service tag is associated with this service
+                        {localize(
+                            'apps.app_config_no_tags_message',
+                            'Currently no service tag is associated with this service'
+                        )}
                     </span>
                 )}
             </Fragment>

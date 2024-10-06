@@ -226,7 +226,10 @@ class PageRoot extends ApiComponent<
                                 <Row justify="end">
                                     <NewTabLink url="https://github.com/caprover/caprover">
                                         <span style={{ marginRight: 20 }}>
-                                            GitHub
+                                            {localize(
+                                                'page_root.github_link',
+                                                'Github'
+                                            )}
                                         </span>
                                     </NewTabLink>
 
@@ -236,7 +239,10 @@ class PageRoot extends ApiComponent<
                                         }}
                                     >
                                         <NewTabLink url="https://caprover.com">
-                                            Docs
+                                            {localize(
+                                                'page_root.docs_link',
+                                                'Docs'
+                                            )}
                                         </NewTabLink>
                                     </span>
                                     <span
@@ -255,7 +261,11 @@ class PageRoot extends ApiComponent<
                                                 self.goToLogin()
                                             }}
                                         >
-                                            Logout <LogoutOutlined />
+                                            {localize(
+                                                'page_root.logout',
+                                                'Logout'
+                                            )}
+                                            <LogoutOutlined />
                                         </Button>
                                     </span>
                                 </Row>
@@ -306,7 +316,10 @@ class PageRoot extends ApiComponent<
                                     >
                                         <NewTabLink url="https://github.com/caprover/caprover">
                                             <GithubOutlined />
-                                            GitHub
+                                            {localize(
+                                                'page_root.github_link',
+                                                'Github'
+                                            )}
                                         </NewTabLink>
                                     </div>
 
@@ -317,7 +330,10 @@ class PageRoot extends ApiComponent<
                                     >
                                         <NewTabLink url="https://caprover.com">
                                             <FileTextOutlined />
-                                            Docs
+                                            {localize(
+                                                'page_root.docs_link',
+                                                'Docs'
+                                            )}
                                         </NewTabLink>
                                     </div>
 
@@ -334,7 +350,10 @@ class PageRoot extends ApiComponent<
                                         >
                                             {' '}
                                             <LogoutOutlined />
-                                            Logout
+                                            {localize(
+                                                'page_root.logout',
+                                                'Logout'
+                                            )}
                                         </ClickableLink>
                                     </div>
                                 </Fragment>

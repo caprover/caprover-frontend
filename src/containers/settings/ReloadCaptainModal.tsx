@@ -1,5 +1,6 @@
 import { Modal } from 'antd'
 import { Component, PropsWithChildren } from 'react'
+import { localize } from '../../utils/Language'
 
 export default class ReloadCaptainModal extends Component<
     PropsWithChildren<{
@@ -40,13 +41,21 @@ export default class ReloadCaptainModal extends Component<
                 <Modal
                     closable={false}
                     footer={<div />}
-                    title="Update Process Started"
+                    title={localize(
+                        'settings.update_process_started',
+                        'Update Process Started'
+                    )}
                     open={self.state.timeToRefresh > 0}
                 >
                     <div>
                         {self.props.children}
                         <p>
-                            <b>Time to Refresh: </b>
+                            <b>
+                                {localize(
+                                    'settings.time_to_refresh',
+                                    'Time to Refresh: '
+                                )}{' '}
+                            </b>
                             {this.state.timeToRefresh}
                         </p>
                     </div>

@@ -6,6 +6,7 @@ import {
     IRegistryTypes,
 } from '../../models/IRegistryInfo'
 import { emitDefaultRegistryChanged } from '../../redux/actions/DefaultRegistryActions'
+import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
@@ -46,7 +47,6 @@ class DockerRegistries extends ApiComponent<
                 self.setState({ isLoading: false })
             })
     }
-
     changeDefault(id: string) {
         const self = this
         this.setState({ apiData: undefined, isLoading: true })
@@ -54,7 +54,12 @@ class DockerRegistries extends ApiComponent<
         this.apiManager
             .setDefaultPushDockerRegistry(id)
             .then(function () {
-                message.success('Default push registry successfully changed.')
+                message.success(
+                    localize(
+                        'docker_registries.default_push_registry_changed',
+                        'Default push registry successfully changed.'
+                    )
+                )
             })
             .catch(Toaster.createCatcher())
             .then(function () {
@@ -82,7 +87,12 @@ class DockerRegistries extends ApiComponent<
 
         promiseToStart
             .then(function () {
-                message.success('Registry deleted.')
+                message.success(
+                    localize(
+                        'docker_registries.registry_deleted',
+                        'Registry deleted.'
+                    )
+                )
             })
             .catch(Toaster.createCatcher())
             .then(function () {
@@ -97,7 +107,12 @@ class DockerRegistries extends ApiComponent<
         this.apiManager
             .updateDockerRegistry(dockerRegistry)
             .then(function () {
-                message.success('Registry updated.')
+                message.success(
+                    localize(
+                        'docker_registries.registry_updated',
+                        'Registry updated.'
+                    )
+                )
             })
             .catch(Toaster.createCatcher())
             .then(function () {
@@ -116,7 +131,12 @@ class DockerRegistries extends ApiComponent<
 
         promiseToStart
             .then(function () {
-                message.success('Docker registry successfully added!')
+                message.success(
+                    localize(
+                        'docker_registries.docker_registry_added',
+                        'Docker registry successfully added!'
+                    )
+                )
             })
             .catch(Toaster.createCatcher())
             .then(function () {
@@ -157,7 +177,10 @@ class DockerRegistries extends ApiComponent<
                 >
                     <Alert
                         type="info"
-                        message="No registries have been added yet. Go ahead and add your first registry!"
+                        message={localize(
+                            'docker_registries.no_registries_added',
+                            'No registries have been added yet. Go ahead and add your first registry!'
+                        )}
                     />
                 </div>
 
