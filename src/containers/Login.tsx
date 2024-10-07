@@ -80,10 +80,11 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
                             'login_form.cap_rover',
                             'CapRover Login'
                         )}
-                        style={{ width: 380 }}
+                        style={{ width: 450 }}
                         extra={
                             isLanguageEnabled ? (
                                 <Select
+                                    style={{ width: 150 }}
                                     options={languagesOptions}
                                     value={currentLanguageOption.value}
                                     onChange={(value) => {
