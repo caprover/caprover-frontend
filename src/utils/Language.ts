@@ -1,8 +1,12 @@
 import { Locale } from 'antd/es/locale'
+import deDE from 'antd/es/locale/de_DE'
 import enUS from 'antd/es/locale/en_US'
+import esES from 'antd/es/locale/es_ES'
 import ptBR from 'antd/es/locale/pt_BR'
 import zhCN from 'antd/es/locale/zh_CN'
+import deDEMessages from '../locales/de-DE.json'
 import enUSMessages from '../locales/en-US.json'
+import esESMessages from '../locales/es-ES.json'
 import ptBRMessages from '../locales/pt-BR.json'
 import zhCNMessages from '../locales/zh-CN.json'
 
@@ -38,6 +42,20 @@ const languagesOptions: LanguageOption[] = [
         alias: ['zh'],
         antdLocale: zhCN,
         messages: zhCNMessages,
+    },
+    {
+        label: 'Spanish',
+        value: 'es-ES',
+        alias: ['es'],
+        antdLocale: esES,
+        messages: esESMessages,
+    },
+    {
+        label: 'German',
+        value: 'de-DE',
+        alias: ['de'],
+        antdLocale: deDE,
+        messages: deDEMessages,
     },
 ]
 
