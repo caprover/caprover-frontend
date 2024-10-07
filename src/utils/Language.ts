@@ -2,11 +2,13 @@ import { Locale } from 'antd/es/locale'
 import deDE from 'antd/es/locale/de_DE'
 import enUS from 'antd/es/locale/en_US'
 import esES from 'antd/es/locale/es_ES'
+import idID from 'antd/es/locale/id_ID'
 import ptBR from 'antd/es/locale/pt_BR'
 import zhCN from 'antd/es/locale/zh_CN'
 import deDEMessages from '../locales/de-DE.json'
 import enUSMessages from '../locales/en-US.json'
 import esESMessages from '../locales/es-ES.json'
+import idIDMessages from '../locales/id-ID.json'
 import ptBRMessages from '../locales/pt-BR.json'
 import zhCNMessages from '../locales/zh-CN.json'
 
@@ -56,6 +58,13 @@ const languagesOptions: LanguageOption[] = [
         alias: ['de'],
         antdLocale: deDE,
         messages: deDEMessages,
+    },
+    {
+        label: 'Indonesian',
+        value: 'id-ID',
+        alias: ['id'],
+        antdLocale: idID,
+        messages: idIDMessages,
     },
 ]
 
