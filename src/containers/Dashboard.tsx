@@ -338,15 +338,14 @@ export default class Dashboard extends ApiComponent<
 
         const replacements = [
             <span>
-                <i>myawesomecompany.com</i>
+                <i> myawesomecompany.com </i>
             </span>,
-
-            <i>captain.myawesomecompany.com</i>,
-            <i>foo.bar.myawesomecompany.com</i>,
+            <i> captain.myawesomecompany.com </i>,
+            <i> foo.bar.myawesomecompany.com </i>,
             <p>
                 <b> Type:</b> <u>A</u>, <b>Name (or host):</b>{' '}
-                <u>*.caprover-root</u>, <b> IP (or Points to):</b>{' '}
-                <u>110.120.130.140</u>
+                <u> *.caprover-root</u>, <b> IP (or Points to):</b>{' '}
+                <u> 110.120.130.140 </u>
             </p>,
         ]
         const translatedBody = Utils.formatText(
