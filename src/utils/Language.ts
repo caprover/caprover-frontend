@@ -1,4 +1,5 @@
 import { Locale } from 'antd/es/locale'
+import arEG from 'antd/es/locale/ar_EG'
 import deDE from 'antd/es/locale/de_DE'
 import enUS from 'antd/es/locale/en_US'
 import esES from 'antd/es/locale/es_ES'
@@ -8,6 +9,7 @@ import idID from 'antd/es/locale/id_ID'
 import ptBR from 'antd/es/locale/pt_BR'
 import svSE from 'antd/es/locale/sv_SE'
 import zhCN from 'antd/es/locale/zh_CN'
+import arEGMessages from '../locales/ar-EG.json'
 import deDEMessages from '../locales/de-DE.json'
 import enUSMessages from '../locales/en-US.json'
 import esESMessages from '../locales/es-ES.json'
@@ -94,6 +96,14 @@ const languagesOptions: LanguageOption[] = [
         antdLocale: faIR,
         rtl: true,
         messages: faIRMessages,
+    },
+    {
+        label: 'العربية',
+        value: 'ar-EG',
+        alias: ['ar'],
+        antdLocale: arEG,
+        rtl: true,
+        messages: arEGMessages,
     },
 ]
 
