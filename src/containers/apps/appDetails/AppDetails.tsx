@@ -19,7 +19,7 @@ import {
     Typography,
 } from 'antd'
 import classnames from 'classnames'
-import { ReactNode, RefObject } from 'react'
+import { RefObject } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import ApiManager from '../../../api/ApiManager'
@@ -196,18 +196,29 @@ class AppDetails extends ApiComponent<
                 <div
                     style={{
                         position: 'absolute',
-                        padding: 12,
-                        right: 12,
+                        margin: 18,
+                        left: 0,
+                        right: 0,
                         top: 0,
                     }}
                 >
-                    <ClickableLink onLinkClicked={() => self.goBackToApps()}>
-                        <Tooltip
-                            title={localize('apps.close_tooltip', 'Close')}
-                        >
-                            <CloseOutlined />
-                        </Tooltip>
-                    </ClickableLink>
+                    <Row justify={'end'}>
+                        <Col>
+                            {' '}
+                            <ClickableLink
+                                onLinkClicked={() => self.goBackToApps()}
+                            >
+                                <Tooltip
+                                    title={localize(
+                                        'apps.close_tooltip',
+                                        'Close'
+                                    )}
+                                >
+                                    <CloseOutlined />
+                                </Tooltip>
+                            </ClickableLink>
+                        </Col>
+                    </Row>
                 </div>
                 <div>{self.createProjectBreadcrumbs()}</div>
 
@@ -529,7 +540,7 @@ class AppDetails extends ApiComponent<
         )
     }
 
-    createEditAppModal(): ReactNode {
+    createEditAppModal() {
         const self = this
 
         const editAppDataForModal = self.state.editAppDataForModal
