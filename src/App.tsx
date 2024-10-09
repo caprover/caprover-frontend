@@ -39,6 +39,7 @@ function App() {
 
     return (
         <ConfigProvider
+            direction={currentLanguageOption.rtl ? 'rtl' : 'ltr'}
             theme={{
                 algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
                 token: {

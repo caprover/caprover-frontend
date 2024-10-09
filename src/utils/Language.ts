@@ -2,6 +2,7 @@ import { Locale } from 'antd/es/locale'
 import deDE from 'antd/es/locale/de_DE'
 import enUS from 'antd/es/locale/en_US'
 import esES from 'antd/es/locale/es_ES'
+import faIR from 'antd/es/locale/fa_IR'
 import frFR from 'antd/es/locale/fr_FR'
 import idID from 'antd/es/locale/id_ID'
 import ptBR from 'antd/es/locale/pt_BR'
@@ -10,6 +11,7 @@ import zhCN from 'antd/es/locale/zh_CN'
 import deDEMessages from '../locales/de-DE.json'
 import enUSMessages from '../locales/en-US.json'
 import esESMessages from '../locales/es-ES.json'
+import faIRMessages from '../locales/fa-IR.json'
 import frFRMessages from '../locales/fr-FR.json'
 import idIDMessages from '../locales/id-ID.json'
 import ptBRMessages from '../locales/pt-BR.json'
@@ -24,6 +26,7 @@ export interface LanguageOption {
     alias?: string[]
     antdLocale: Locale
     messages: Record<string, string>
+    rtl?: boolean
 }
 
 const languagesOptions: LanguageOption[] = [
@@ -83,6 +86,14 @@ const languagesOptions: LanguageOption[] = [
         alias: ['sv'],
         antdLocale: svSE,
         messages: svSEMessages,
+    },
+    {
+        label: 'فارسی',
+        value: 'fa-IR',
+        alias: ['fa'],
+        antdLocale: faIR,
+        rtl: true,
+        messages: faIRMessages,
     },
 ]
 
