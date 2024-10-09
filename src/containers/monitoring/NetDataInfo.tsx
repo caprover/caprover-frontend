@@ -135,7 +135,7 @@ class NetDataInfo extends ApiComponent<
                                 <Row justify="end" gutter={20}>
                                     <Button
                                         style={{
-                                            marginRight: self.props.isMobile
+                                            marginInlineEnd: self.props.isMobile
                                                 ? 0
                                                 : 40,
                                             marginBottom: self.props.isMobile

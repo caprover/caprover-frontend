@@ -375,7 +375,9 @@ export default class Deployment extends ApiComponent<
                 >
                     <Button
                         disabled={!hasPushToken}
-                        style={{ marginRight: this.props.isMobile ? 0 : 10 }}
+                        style={{
+                            marginInlineEnd: this.props.isMobile ? 0 : 10,
+                        }}
                         block={this.props.isMobile}
                         onClick={() => {
                             self.apiManager
@@ -486,7 +488,7 @@ export default class Deployment extends ApiComponent<
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                         <div
                             style={{
-                                paddingLeft: this.props.isMobile ? 0 : 24,
+                                marginInlineStart: this.props.isMobile ? 0 : 24,
                                 marginTop: this.props.isMobile ? 8 : 0,
                             }}
                         >
@@ -518,7 +520,9 @@ export default class Deployment extends ApiComponent<
                             </Tooltip>
                             <Button
                                 style={{
-                                    marginLeft: this.props.isMobile ? 0 : 20,
+                                    marginInlineStart: this.props.isMobile
+                                        ? 0
+                                        : 20,
                                     marginTop: this.props.isMobile ? 8 : 0,
                                 }}
                                 block={this.props.isMobile}

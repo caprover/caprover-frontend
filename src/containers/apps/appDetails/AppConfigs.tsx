@@ -711,7 +711,7 @@ export default class AppConfigs extends Component<
                 </h4>
                 <div style={{ marginTop: 10 }}>
                     <span
-                        style={{ marginRight: 20 }}
+                        style={{ marginInlineEnd: 10 }}
                         onClick={() => {
                             self.setState({
                                 tagsEditMode: !self.state.tagsEditMode,

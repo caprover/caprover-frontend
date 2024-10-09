@@ -189,7 +189,7 @@ export default class AddNode extends Component<
                         <Col
                             lg={{ span: 6 }}
                             xs={{ span: 24 }}
-                            style={{ maxWidth: 250, marginLeft: 10 }}
+                            style={{ maxWidth: 250, marginInlineStart: 10 }}
                         >
                             <Tooltip
                                 title={localize(
@@ -214,7 +214,7 @@ export default class AddNode extends Component<
                             </Tooltip>
                         </Col>
                         <Button
-                            style={{ marginLeft: 10 }}
+                            style={{ marginInlineStart: 10 }}
                             type="primary"
                             block={this.props.isMobile}
                             onClick={() =>

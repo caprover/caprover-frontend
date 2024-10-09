@@ -171,7 +171,7 @@ export default class HttpSettings extends Component<
             return (
                 <Fragment>
                     <Row>
-                        <span style={{ marginRight: 10 }}>
+                        <span style={{ marginInlineEnd: 10 }}>
                             Redirect all domains to:
                         </span>
 
@@ -224,7 +224,7 @@ export default class HttpSettings extends Component<
                             </Button>
                         </Tooltip>
                         <Button
-                            style={{ marginRight: 20 }}
+                            style={{ marginInlineEnd: 20 }}
                             onClick={() => {
                                 this.onRemoveCustomDomainClicked(c.publicDomain)
                             }}
@@ -361,7 +361,7 @@ export default class HttpSettings extends Component<
                     >
                         <span
                             style={{
-                                marginLeft: 20,
+                                marginInlineStart: 20,
                             }}
                         >
                             {`http${app.hasDefaultSubDomainSsl ? 's' : ''}://${
@@ -535,7 +535,7 @@ export default class HttpSettings extends Component<
                 <br />
                 <Row>
                     <Button
-                        style={{ marginRight: 20 }}
+                        style={{ marginInlineEnd: 20 }}
                         type="default"
                         onClick={() => self.onEditHttpAuthClicked()}
                     >

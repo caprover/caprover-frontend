@@ -106,7 +106,6 @@ class CreateNewApp extends Component<
                     style={{
                         marginTop: 32,
                         marginBottom: 5,
-                        marginLeft: 5,
                     }}
                 >
                     {localize('apps.parent_project', 'Parent project')}

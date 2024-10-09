@@ -185,7 +185,7 @@ export default class ProFeatures extends ApiComponent<
                 <Row justify="end">
                     <Button
                         style={{
-                            marginRight: 30,
+                            marginInlineEnd: 30,
                         }}
                         size="large"
                         onClick={() => {

@@ -188,7 +188,7 @@ class AppsTable extends Component<
                                 <LoadingOutlined
                                     style={{
                                         fontSize: '12px',
-                                        marginLeft: 12,
+                                        marginInlineStart: 12,
                                     }}
                                 />
                             ) : undefined}
@@ -399,7 +399,10 @@ class AppsTable extends Component<
                             <div style={{ maxWidth: 250 }}>
                                 <CodeOutlined />
                                 <span
-                                    style={{ marginRight: 20, marginLeft: 5 }}
+                                    style={{
+                                        marginInlineEnd: 20,
+                                        marginInlineStart: 5,
+                                    }}
                                 >
                                     {localize('apps_table.title', 'Your Apps')}
                                 </span>
@@ -492,7 +495,7 @@ class AppsTable extends Component<
                                 }}
                             >
                                 <Splitter.Panel
-                                    style={{ marginRight: 10 }}
+                                    style={{ marginInlineEnd: 10 }}
                                     defaultSize={`${Math.floor(
                                         StorageHelper.getAppProjectSplitRatioFromLocalStorage() *
                                             100
@@ -502,7 +505,9 @@ class AppsTable extends Component<
                                 >
                                     {self.createProjectTreeView()}
                                 </Splitter.Panel>
-                                <Splitter.Panel style={{ marginLeft: 10 }}>
+                                <Splitter.Panel
+                                    style={{ marginInlineStart: 10 }}
+                                >
                                     {self.createAppTableHeader()}
                                     <Table<TableData>
                                         rowKey="appName"
@@ -561,7 +566,12 @@ class AppsTable extends Component<
         if (!selectedProject || !selectedProject.description) return <div />
 
         return (
-            <DescriptionPanel headerText="Notes">
+            <DescriptionPanel
+                headerText={localize(
+                    'projects.edit_project_description',
+                    'Description'
+                )}
+            >
                 <div
                     style={{
                         whiteSpace: 'pre-wrap',
@@ -626,8 +636,8 @@ class AppsTable extends Component<
                             <>
                                 <span
                                     style={{
-                                        marginLeft: 5,
-                                        marginRight: 5,
+                                        marginInlineStart: 5,
+                                        marginInlineEnd: 5,
                                     }}
                                 >
                                     {name}
@@ -760,11 +770,13 @@ class AppsTable extends Component<
                     justify={'space-between'}
                     align={'middle'}
                     style={{
-                        marginLeft: -18,
+                        marginInlineStart: -18,
                         marginTop: -10,
                     }}
                 >
-                    <h4 style={{ margin: 0 }}>Projects</h4>
+                    <h4 style={{ margin: 0 }}>
+                        {localize('apps.delete_app_projects_list', 'Projects')}
+                    </h4>
                     <Tooltip
                         title={localize(
                             'projects.new_project',
@@ -784,13 +796,13 @@ class AppsTable extends Component<
                 </Row>
                 <hr
                     style={{
-                        marginLeft: -18,
+                        marginInlineStart: -18,
                         marginBottom: 20,
-                        marginRight: 0,
+                        marginInlineEnd: 0,
                     }}
                 />
                 <Tree.DirectoryTree
-                    style={{ marginLeft: -22, position: 'absolute' }}
+                    style={{ marginInlineStart: -22, position: 'absolute' }}
                     showLine
                     checkStrictly={true}
                     showIcon={false}

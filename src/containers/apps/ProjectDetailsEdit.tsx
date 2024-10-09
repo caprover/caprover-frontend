@@ -109,7 +109,6 @@ class ProjectDetailsEdit extends ApiComponent<
                                 style={{
                                     marginTop: 32,
                                     marginBottom: 5,
-                                    marginLeft: 5,
                                 }}
                             >
                                 {localize(
@@ -136,7 +135,6 @@ class ProjectDetailsEdit extends ApiComponent<
                                 style={{
                                     marginTop: 32,
                                     marginBottom: 5,
-                                    marginLeft: 5,
                                 }}
                             >
                                 {localize(
@@ -162,7 +160,7 @@ class ProjectDetailsEdit extends ApiComponent<
                             />
                             <Row style={{ marginTop: 48 }} justify="end">
                                 <Button
-                                    style={{ marginRight: 20 }}
+                                    style={{ marginInlineEnd: 20 }}
                                     onClick={() => self.goBackToApps()}
                                 >
                                     {localize(

@@ -80,7 +80,7 @@ export default class OneClickReposList extends ApiComponent<
         return (
             <div key={url} style={{ margin: 10 }}>
                 <Button
-                    style={{ marginRight: 10 }}
+                    style={{ marginInlineEnd: 10 }}
                     onClick={() => {
                         self.onDeleteUrlClicked(url)
                     }}

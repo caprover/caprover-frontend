@@ -17,7 +17,7 @@ class DescriptionPanel extends Component<DescriptionPanelProps> {
                         position: 'absolute',
                         paddingBottom: 0,
                         marginTop: -40,
-                        marginLeft: -15,
+                        marginInlineStart: -15,
                     }}
                 >
                     <Card

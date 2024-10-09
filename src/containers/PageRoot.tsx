@@ -150,24 +150,24 @@ class PageRoot extends ApiComponent<
                 >
                     <GiftTwoTone
                         style={{
-                            marginLeft: 50,
+                            marginInlineStart: 50,
                         }}
                     />
                     <GiftTwoTone
                         style={{
-                            marginRight: 10,
-                            marginLeft: 3,
+                            marginInlineEnd: 10,
+                            marginInlineStart: 3,
                         }}
                     />
                     Update Available!
                     <GiftTwoTone
                         style={{
-                            marginLeft: 10,
+                            marginInlineStart: 10,
                         }}
                     />
                     <GiftTwoTone
                         style={{
-                            marginLeft: 3,
+                            marginInlineStart: 3,
                         }}
                     />
                 </ClickableLink>
@@ -211,7 +211,7 @@ class PageRoot extends ApiComponent<
                                         src="/icon-512x512.png"
                                         style={{
                                             height: 45,
-                                            marginRight: 10,
+                                            marginInlineEnd: 10,
                                         }}
                                     />
                                     <h3 style={{ color: '#fff', margin: 0 }}>
@@ -225,7 +225,7 @@ class PageRoot extends ApiComponent<
                             <Col span={12}>
                                 <Row justify="end">
                                     <NewTabLink url="https://github.com/caprover/caprover">
-                                        <span style={{ marginRight: 20 }}>
+                                        <span style={{ marginInlineEnd: 20 }}>
                                             {localize(
                                                 'page_root.github_link',
                                                 'Github'
@@ -235,7 +235,7 @@ class PageRoot extends ApiComponent<
 
                                     <span
                                         style={{
-                                            marginRight: 30,
+                                            marginInlineEnd: 30,
                                         }}
                                     >
                                         <NewTabLink url="https://caprover.com">
@@ -247,7 +247,7 @@ class PageRoot extends ApiComponent<
                                     </span>
                                     <span
                                         style={{
-                                            marginRight: 50,
+                                            marginInlineEnd: 50,
                                         }}
                                     >
                                         <DarkModeSwitch />
@@ -369,7 +369,7 @@ class PageRoot extends ApiComponent<
                                 paddingBottom: 36,
                                 height: '100%',
                                 overflowY: 'scroll',
-                                marginRight: self.state.collapsed
+                                marginInlineEnd: self.state.collapsed
                                     ? 0
                                     : self.props.isMobile
                                     ? -200

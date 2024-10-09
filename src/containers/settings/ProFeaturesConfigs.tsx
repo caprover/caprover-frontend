@@ -220,7 +220,7 @@ export default class ProFeaturesConfigs extends ApiComponent<
                 }}
             >
                 <Switch
-                    style={{ marginRight: 10, marginBottom: 3 }}
+                    style={{ marginInlineEnd: 10, marginBottom: 3 }}
                     size="small"
                     checkedChildren={<CheckOutlined />}
                     unCheckedChildren={<CloseOutlined />}

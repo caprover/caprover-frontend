@@ -40,7 +40,7 @@ class EditableSpan extends React.Component<EditableSpanProps> {
                     position: 'relative',
                     display: 'inline-block',
                     cursor: 'pointer',
-                    paddingRight: 20,
+                    paddingInlineEnd: 20,
                 }}
                 onClick={onEditClick}
                 onMouseEnter={this.handleMouseEnter}
@@ -50,7 +50,7 @@ class EditableSpan extends React.Component<EditableSpanProps> {
                 <span
                     className={this.className}
                     style={{
-                        marginLeft: 10,
+                        marginInlineStart: 5,
                         opacity: 0,
                         transition: 'opacity 0.3s',
                     }}

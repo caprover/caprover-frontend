@@ -159,15 +159,15 @@ class AppDetails extends ApiComponent<
             <div style={{ marginBottom: 10, fontSize: 12 }}>
                 <FolderOpenOutlined
                     style={{
-                        marginRight: 5,
+                        marginInlineEnd: 5,
                     }}
                 />
                 {projectsBreadCrumbs.map((project, index) => (
                     <>
                         <span
                             style={{
-                                marginLeft: 5,
-                                marginRight: 5,
+                                marginInlineStart: 5,
+                                marginInlineEnd: 5,
                             }}
                             key={project.id}
                         >
@@ -211,7 +211,12 @@ class AppDetails extends ApiComponent<
                 </div>
                 <div>{self.createProjectBreadcrumbs()}</div>
 
-                <h2 style={{ marginBottom: 5, marginTop: 0, marginLeft: 12 }}>
+                <h2
+                    style={{
+                        marginBottom: 5,
+                        marginTop: 0,
+                    }}
+                >
                     <EditableSpan
                         onEditClick={() => {
                             self.setState({
@@ -231,7 +236,7 @@ class AppDetails extends ApiComponent<
                 </h2>
 
                 {app.tags && app.tags.length > 0 && (
-                    <span style={{ marginLeft: 12 }}>
+                    <span>
                         {app.tags.map((tag, index) => (
                             <Tag key={index}>{tag.tagName}</Tag>
                         ))}
@@ -252,7 +257,7 @@ class AppDetails extends ApiComponent<
         if (!app.description) return <div />
 
         return (
-            <div style={{ marginLeft: 16, marginTop: 28 }}>
+            <div style={{ marginTop: 28 }}>
                 <Typography.Paragraph
                     style={{
                         fontSize: 14,
@@ -637,7 +642,6 @@ class AppDetails extends ApiComponent<
                         style={{
                             marginTop: 32,
                             marginBottom: 5,
-                            marginLeft: 5,
                         }}
                     >
                         {localize('apps.parent_project', 'Parent project')}
@@ -661,7 +665,6 @@ class AppDetails extends ApiComponent<
                         style={{
                             marginTop: 32,
                             marginBottom: 5,
-                            marginLeft: 5,
                         }}
                     >
                         {localize('apps.app_edit_description', 'Description')}

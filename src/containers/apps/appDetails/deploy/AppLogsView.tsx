@@ -212,7 +212,7 @@ export default class AppLogsView extends ApiComponent<
 
                                     <span
                                         style={{
-                                            marginLeft: 20,
+                                            marginInlineStart: 10,
                                         }}
                                     >
                                         <NewTabLink url="https://caprover.com/docs/troubleshooting.html#how-to-view-my-applications-log">
