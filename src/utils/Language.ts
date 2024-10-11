@@ -109,18 +109,34 @@ const languagesOptions: LanguageOption[] = [
 
 const defaultLanguageOptions = languagesOptions[0]
 
-const currentLanguage = StorageHelper.getLanguageFromLocalStorage()
+const savedLanguageInBrowser = StorageHelper.getLanguageFromLocalStorage()
 
-const currentLanguageOption: LanguageOption =
-    languagesOptions.find((o) => {
-        return o.value === currentLanguage || o.alias?.includes(currentLanguage)
-    }) || defaultLanguageOptions
+function findLanguageOption(language: string): LanguageOption {
+    return (
+        languagesOptions.find((o) => {
+            return o.value === language || o.alias?.includes(language)
+        }) || defaultLanguageOptions
+    )
+}
+
+let currentLanguageOption = findLanguageOption(savedLanguageInBrowser)
 
 export function localize(key: string, message: string) {
     return currentLanguageOption.messages[key] || message
 }
 
-export { currentLanguageOption, languagesOptions }
+export function getCurrentLanguageOption() {
+    return currentLanguageOption
+}
+
+export function setCurrentLanguageOption(languageAcronym: string) {
+    currentLanguageOption = findLanguageOption(languageAcronym)
+    StorageHelper.setLanguageInLocalStorage(currentLanguageOption.value)
+}
+
+setCurrentLanguageOption(savedLanguageInBrowser)
+
+export { languagesOptions }
 
 // Currently only enable language for dev mode or demo, until the vast majority of the content is translated
 export const isLanguageEnabled = true

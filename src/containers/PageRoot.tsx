@@ -30,40 +30,13 @@ import OneClickAppConfigPage from './apps/oneclick/variables/OneClickAppConfigPa
 import ApiComponent from './global/ApiComponent'
 import ClickableLink from './global/ClickableLink'
 import DarkModeSwitch from './global/DarkModeSwitch'
+import LanguageSelector from './global/LanguageSelector'
 import NewTabLink from './global/NewTabLink'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
 import Settings from './settings/Settings'
 
 const { Header, Content, Sider } = Layout
-
-const MENU_ITEMS: MenuProps['items'] = [
-    {
-        key: 'dashboard',
-        label: localize('menu_item.dashboard', 'Dashboard'),
-        icon: <LaptopOutlined />,
-    },
-    {
-        key: 'apps',
-        label: localize('menu_item.app', 'Apps'),
-        icon: <CodeOutlined />,
-    },
-    {
-        key: 'monitoring',
-        label: localize('menu_item.monitoring', 'Monitoring'),
-        icon: <DashboardOutlined />,
-    },
-    {
-        key: 'cluster',
-        label: localize('menu_item.cluster', 'Cluster'),
-        icon: <ClusterOutlined />,
-    },
-    {
-        key: 'settings',
-        label: localize('menu_item.settings', 'Settings'),
-        icon: <SettingOutlined />,
-    },
-]
 
 interface RootPageInterface extends RouteComponentProps<any> {
     rootElementKey: string
@@ -184,8 +157,36 @@ class PageRoot extends ApiComponent<
 
     render() {
         const self = this
+        const MENU_ITEMS: MenuProps['items'] = [
+            {
+                key: 'dashboard',
+                label: localize('menu_item.dashboard', 'Dashboard'),
+                icon: <LaptopOutlined />,
+            },
+            {
+                key: 'apps',
+                label: localize('menu_item.app', 'Apps'),
+                icon: <CodeOutlined />,
+            },
+            {
+                key: 'monitoring',
+                label: localize('menu_item.monitoring', 'Monitoring'),
+                icon: <DashboardOutlined />,
+            },
+            {
+                key: 'cluster',
+                label: localize('menu_item.cluster', 'Cluster'),
+                icon: <ClusterOutlined />,
+            },
+            {
+                key: 'settings',
+                label: localize('menu_item.settings', 'Settings'),
+                icon: <SettingOutlined />,
+            },
+        ]
+
         return (
-            <Layout className="full-screen">
+            <Layout className="full-screen" key={self.props.rootElementKey}>
                 <Header
                     className="header"
                     style={{
@@ -251,6 +252,13 @@ class PageRoot extends ApiComponent<
                                         }}
                                     >
                                         <DarkModeSwitch />
+                                    </span>
+                                    <span
+                                        style={{
+                                            marginInlineEnd: 50,
+                                        }}
+                                    >
+                                        <LanguageSelector />
                                     </span>
                                     <span>
                                         <Button
@@ -362,7 +370,6 @@ class PageRoot extends ApiComponent<
                     </Sider>
                     <Content>
                         <div
-                            key={self.props.rootElementKey}
                             ref={self.mainContainer}
                             style={{
                                 paddingTop: 12,

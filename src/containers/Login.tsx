@@ -1,19 +1,15 @@
 import { LockOutlined } from '@ant-design/icons'
-import { Button, Card, Collapse, Input, Layout, Radio, Row, Select } from 'antd'
-import React, { ReactComponentElement } from 'react'
+import { Button, Card, Collapse, Input, Layout, Radio, Row } from 'antd'
+import React from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import ApiManager from '../api/ApiManager'
 import ErrorFactory from '../utils/ErrorFactory'
-import {
-    currentLanguageOption,
-    isLanguageEnabled,
-    languagesOptions,
-    localize,
-} from '../utils/Language'
+import { isLanguageEnabled, localize } from '../utils/Language'
 import StorageHelper from '../utils/StorageHelper'
 import Toaster from '../utils/Toaster'
 import Utils from '../utils/Utils'
 import ApiComponent from './global/ApiComponent'
+import LanguageSelector from './global/LanguageSelector'
 
 const NO_SESSION = 1
 const SESSION_STORAGE = 2
@@ -67,7 +63,7 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
             .catch(Toaster.createCatcher())
     }
 
-    render(): ReactComponentElement<any> {
+    render() {
         const self = this
 
         if (ApiManager.isLoggedIn()) return <Redirect to="/" />
@@ -83,17 +79,7 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
                         style={{ width: 450 }}
                         extra={
                             isLanguageEnabled ? (
-                                <Select
-                                    style={{ width: 150 }}
-                                    options={languagesOptions}
-                                    value={currentLanguageOption.value}
-                                    onChange={(value) => {
-                                        StorageHelper.setLanguageInLocalStorage(
-                                            value
-                                        )
-                                        window.location.reload()
-                                    }}
-                                />
+                                <LanguageSelector forceReload={true} />
                             ) : undefined
                         }
                     >

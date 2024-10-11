@@ -10,7 +10,7 @@ import DarkModeContext from './contexts/DarkModeContext'
 import reducers from './redux/reducers'
 import './styles/style.css'
 import CrashReporter from './utils/CrashReporter'
-import { currentLanguageOption } from './utils/Language'
+import { getCurrentLanguageOption } from './utils/Language'
 import StorageHelper from './utils/StorageHelper'
 
 CrashReporter.getInstance().init()
@@ -36,6 +36,8 @@ function App() {
     const [isDarkMode, setIsDarkMode] = useState(
         StorageHelper.getDarkModeFromLocalStorage()
     )
+
+    const currentLanguageOption = getCurrentLanguageOption()
 
     return (
         <ConfigProvider
