@@ -50,6 +50,6 @@ export default connect(
     {
         emitRootKeyChanged: emitRootKeyChanged,
     },
-    null,
+    undefined,
     { forwardRef: true }
 )(LanguageSelector)
