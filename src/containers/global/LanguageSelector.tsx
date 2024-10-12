@@ -1,6 +1,6 @@
 import { Select } from 'antd'
-import { Component } from 'react'
-import { connect } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { emitRootKeyChanged } from '../../redux/actions/GlobalActions'
 import {
     getCurrentLanguageOption,
@@ -8,48 +8,37 @@ import {
     setCurrentLanguageOption,
 } from '../../utils/Language'
 
-class LanguageSelector extends Component<
-    { forceReload?: boolean; emitRootKeyChanged: Function },
-    { currentLanguage: string }
-> {
-    constructor(props: any) {
-        super(props)
-        this.state = {
-            currentLanguage: getCurrentLanguageOption().value,
-        }
-    }
+interface LanguageSelectorProps {
+    forceReload?: boolean
+}
 
-    handleChange(value: string) {
-        const self = this
+const LanguageSelector: React.FC<LanguageSelectorProps> = ({ forceReload }) => {
+    const [currentLanguage, setCurrentLanguage] = useState(
+        getCurrentLanguageOption().value
+    )
+    const dispatch = useDispatch()
 
+    const handleChange = (value: string) => {
         setCurrentLanguageOption(value)
-        self.setState({ currentLanguage: value })
-        self.props.emitRootKeyChanged()
-        if (self.props.forceReload) {
+        setCurrentLanguage(value)
+        dispatch(emitRootKeyChanged())
+        if (forceReload) {
             window.location.reload()
         }
     }
 
-    render() {
-        const self = this
-        return (
-            <Select
-                style={{ width: 150 }}
-                options={languagesOptions}
-                value={self.state.currentLanguage}
-                onChange={(v) => {
-                    self.handleChange(v)
-                }}
-            />
-        )
-    }
+    useEffect(() => {
+        setCurrentLanguage(getCurrentLanguageOption().value)
+    }, [])
+
+    return (
+        <Select
+            style={{ width: 150 }}
+            options={languagesOptions}
+            value={currentLanguage}
+            onChange={handleChange}
+        />
+    )
 }
 
-export default connect(
-    undefined,
-    {
-        emitRootKeyChanged: emitRootKeyChanged,
-    },
-    undefined,
-    { forwardRef: true }
-)(LanguageSelector)
+export default LanguageSelector
