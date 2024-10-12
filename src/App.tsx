@@ -7,6 +7,7 @@ import thunk from 'redux-thunk'
 import Login from './containers/Login'
 import PageRoot from './containers/PageRoot'
 import DarkModeContext from './contexts/DarkModeContext'
+import LanguageContext from './contexts/LanguageContext'
 import reducers from './redux/reducers'
 import './styles/style.css'
 import CrashReporter from './utils/CrashReporter'
@@ -36,12 +37,11 @@ function App() {
     const [isDarkMode, setIsDarkMode] = useState(
         StorageHelper.getDarkModeFromLocalStorage()
     )
-
-    const currentLanguageOption = getCurrentLanguageOption()
+    const [currentLang, setCurrentLang] = useState(getCurrentLanguageOption())
 
     return (
         <ConfigProvider
-            direction={currentLanguageOption.rtl ? 'rtl' : 'ltr'}
+            direction={currentLang.rtl ? 'rtl' : 'ltr'}
             theme={{
                 algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
                 token: {
@@ -52,21 +52,29 @@ function App() {
                         'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
                 },
             }}
-            locale={currentLanguageOption.antdLocale}
+            locale={currentLang.antdLocale}
         >
-            <DarkModeContext.Provider
+            <LanguageContext.Provider
                 value={{
-                    isDarkMode,
-                    setIsDarkMode: (value) => {
-                        setIsDarkMode(value)
-                        StorageHelper.setDarkModeInLocalStorage(value)
+                    setCurrentLanguageOptionContext: (value) => {
+                        setCurrentLang(value)
                     },
                 }}
             >
-                <Provider store={store}>
-                    <MainComponent />
-                </Provider>
-            </DarkModeContext.Provider>
+                <DarkModeContext.Provider
+                    value={{
+                        isDarkMode,
+                        setIsDarkMode: (value) => {
+                            setIsDarkMode(value)
+                            StorageHelper.setDarkModeInLocalStorage(value)
+                        },
+                    }}
+                >
+                    <Provider store={store}>
+                        <MainComponent />
+                    </Provider>
+                </DarkModeContext.Provider>
+            </LanguageContext.Provider>
         </ConfigProvider>
     )
 }

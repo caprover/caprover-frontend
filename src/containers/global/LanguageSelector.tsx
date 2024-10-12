@@ -1,6 +1,7 @@
 import { Select } from 'antd'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import LanguageContext from '../../contexts/LanguageContext'
 import { emitRootKeyChanged } from '../../redux/actions/GlobalActions'
 import {
     getCurrentLanguageOption,
@@ -16,10 +17,14 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ forceReload }) => {
     const [currentLanguage, setCurrentLanguage] = useState(
         getCurrentLanguageOption().value
     )
+
+    const { setCurrentLanguageOptionContext } = useContext(LanguageContext)
+
     const dispatch = useDispatch()
 
     const handleChange = (value: string) => {
-        setCurrentLanguageOption(value)
+        const langOption = setCurrentLanguageOption(value)
+        setCurrentLanguageOptionContext(langOption)
         setCurrentLanguage(value)
         dispatch(emitRootKeyChanged())
         if (forceReload) {

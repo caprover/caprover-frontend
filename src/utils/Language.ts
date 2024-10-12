@@ -129,9 +129,13 @@ export function getCurrentLanguageOption() {
     return currentLanguageOption
 }
 
-export function setCurrentLanguageOption(languageAcronym: string) {
+export function setCurrentLanguageOption(
+    languageAcronym: string
+): LanguageOption {
     currentLanguageOption = findLanguageOption(languageAcronym)
     StorageHelper.setLanguageInLocalStorage(currentLanguageOption.value)
+
+    return currentLanguageOption
 }
 
 setCurrentLanguageOption(savedLanguageInBrowser)
