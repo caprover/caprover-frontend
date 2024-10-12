@@ -56,6 +56,7 @@ function App() {
         >
             <LanguageContext.Provider
                 value={{
+                    currentLanguage: currentLang,
                     setCurrentLanguageOptionContext: (value) => {
                         setCurrentLang(value)
                     },

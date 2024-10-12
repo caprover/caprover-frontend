@@ -1,7 +1,8 @@
 import { createContext } from 'react'
-import { LanguageOption } from '../utils/Language'
+import { getCurrentLanguageOption, LanguageOption } from '../utils/Language'
 
 const LanguageContext = createContext({
+    currentLanguage: getCurrentLanguageOption(),
     setCurrentLanguageOptionContext: (value: LanguageOption) => {},
 })
 
