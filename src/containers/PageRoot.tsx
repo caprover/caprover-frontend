@@ -6,6 +6,7 @@ import {
     FileTextOutlined,
     GiftTwoTone,
     GithubOutlined,
+    GlobalOutlined,
     LaptopOutlined,
     LogoutOutlined,
     SettingOutlined,
@@ -49,6 +50,7 @@ class PageRoot extends ApiComponent<
     {
         versionInfo: IVersionInfo | undefined
         collapsed: boolean
+        showLanguageSelector: boolean
     }
 > {
     private mainContainer: RefObject<HTMLDivElement>
@@ -59,6 +61,7 @@ class PageRoot extends ApiComponent<
         this.state = {
             versionInfo: undefined,
             collapsed: false,
+            showLanguageSelector: false,
         }
     }
 
@@ -248,7 +251,7 @@ class PageRoot extends ApiComponent<
                                     </span>
                                     <span
                                         style={{
-                                            marginInlineEnd: 50,
+                                            marginInlineEnd: 20,
                                         }}
                                     >
                                         <DarkModeSwitch />
@@ -258,7 +261,7 @@ class PageRoot extends ApiComponent<
                                             marginInlineEnd: 50,
                                         }}
                                     >
-                                        <LanguageSelector />
+                                        {self.createLanguageSelector()}
                                     </span>
                                     <span>
                                         <Button
@@ -442,6 +445,18 @@ class PageRoot extends ApiComponent<
                     </Content>
                 </Layout>
             </Layout>
+        )
+    }
+    createLanguageSelector(): React.ReactNode {
+        const self = this
+        return self.state.showLanguageSelector ? (
+            <LanguageSelector />
+        ) : (
+            <Button
+                onClick={() => self.setState({ showLanguageSelector: true })}
+                shape="circle"
+                icon={<GlobalOutlined />}
+            />
         )
     }
 }
