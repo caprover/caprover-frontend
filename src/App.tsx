@@ -1,15 +1,21 @@
-import { App as AntdApp, ConfigProvider, theme } from 'antd'
+import { App as AntdApp, ConfigProvider, theme, ThemeConfig } from 'antd'
 import { useState } from 'react'
 import { Provider } from 'react-redux'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import { applyMiddleware, createStore } from 'redux'
 import thunk from 'redux-thunk'
+import CenteredSpinner from './containers/global/CenteredSpinner'
 import Login from './containers/Login'
 import PageRoot from './containers/PageRoot'
+import CapRoverThemeContext from './contexts/CapRoverThemeContext'
 import DarkModeContext from './contexts/DarkModeContext'
 import LanguageContext from './contexts/LanguageContext'
 import reducers from './redux/reducers'
 import './styles/style.css'
+import BuiltInThemes from './styles/theme/BuiltInThemes'
+import CapRoverTheme from './styles/theme/CapRoverTheme'
+import ThemeParser from './styles/theme/ThemeParser'
+import { ThemeProvider } from './styles/theme/ThemeProvider'
 import CrashReporter from './utils/CrashReporter'
 import { getCurrentLanguageOption } from './utils/Language'
 import StorageHelper from './utils/StorageHelper'
@@ -32,26 +38,57 @@ const MainComponent = () => {
     )
 }
 
+let themeState: undefined | 'LOADING' | 'LOADED' | 'TIMED_OUT' = undefined
+
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme
+
     const [isDarkMode, setIsDarkMode] = useState(
         StorageHelper.getDarkModeFromLocalStorage()
     )
+    const [currTheme, setTheme] = useState(
+        undefined as undefined | CapRoverTheme
+    )
+    const [refreshCounter, setRefreshCounter] = useState(0)
     const [currentLang, setCurrentLang] = useState(getCurrentLanguageOption())
+
+    const themeToUse: ThemeConfig = currTheme
+        ? ThemeParser.parseTheme(
+              currTheme,
+              isDarkMode,
+              defaultAlgorithm,
+              darkAlgorithm
+          )
+        : BuiltInThemes.getDefaultTheme(
+              isDarkMode,
+              defaultAlgorithm,
+              darkAlgorithm
+          )
+
+    if (!themeState) {
+        themeState = 'LOADING'
+        setTimeout(() => {
+            if (themeState === 'LOADING') {
+                themeState = 'TIMED_OUT'
+                setRefreshCounter(refreshCounter + 1)
+            }
+        }, 600)
+        ThemeProvider.getInstance()
+            .getSavedTheme()
+            .then((t) => {
+                setTheme(t)
+            })
+            .catch((e) => console.log(e))
+            .then(() => {
+                themeState = 'LOADED'
+                setRefreshCounter(refreshCounter + 1)
+            })
+    }
 
     return (
         <ConfigProvider
             direction={currentLang.rtl ? 'rtl' : 'ltr'}
-            theme={{
-                algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
-                token: {
-                    colorPrimary: '#1b8ad3',
-                    colorLink: '#1b8ad3',
-                    fontFamily: `QuickSand, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-                        'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
-                        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
-                },
-            }}
+            theme={themeToUse}
             locale={currentLang.antdLocale}
         >
             <LanguageContext.Provider
@@ -71,9 +108,22 @@ function App() {
                         },
                     }}
                 >
-                    <Provider store={store}>
-                        <MainComponent />
-                    </Provider>
+                    <CapRoverThemeContext.Provider
+                        value={{
+                            currentTheme: currTheme,
+                            setCapRoverThemeContext: (value) => {
+                                setTheme(value)
+                            },
+                        }}
+                    >
+                        <Provider store={store}>
+                            {themeState === 'LOADING' ? (
+                                <CenteredSpinner />
+                            ) : (
+                                <MainComponent />
+                            )}
+                        </Provider>
+                    </CapRoverThemeContext.Provider>
                 </DarkModeContext.Provider>
             </LanguageContext.Provider>
         </ConfigProvider>
