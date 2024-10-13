@@ -476,6 +476,22 @@ export default class ApiManager {
             )
     }
 
+    getGoAccessInfo() {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/user/system/goaccess', {}))
+    }
+
+    updateGoAccessInfo(goAccessInfo: any) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/system/goaccess', { goAccessInfo })
+            )
+    }
+
     changePass(oldPassword: string, newPassword: string) {
         const http = this.http
 
