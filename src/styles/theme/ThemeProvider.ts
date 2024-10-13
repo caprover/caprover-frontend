@@ -1,5 +1,4 @@
-import Toaster from '../../utils/Toaster'
-import Utils from '../../utils/Utils'
+import ApiManager from '../../api/ApiManager'
 import CapRoverTheme from './CapRoverTheme'
 
 export class ThemeProvider {
@@ -11,37 +10,48 @@ export class ThemeProvider {
         return ThemeProvider.instance
     }
 
+    private apiManager: ApiManager
+
+    constructor() {
+        this.apiManager = new ApiManager()
+    }
+
     getSavedTheme() {
-        return this.getAllThemes().then((themes) => {
-            return themes[0]
-        })
+        const self = this
+        return Promise.resolve() //
+            .then(() => {
+                return self.apiManager.getCurrentTheme()
+            })
     }
 
     saveCurrentTheme(themeName: string) {
-        return Promise.resolve()
+        const self = this
+        return Promise.resolve() //
             .then(() => {
-                console.log(themeName)
-                // call API TODO
+                return self.apiManager.setCurrentTheme(themeName)
             })
-            .catch(Toaster.createCatcher())
     }
 
-    saveCustomTheme(editModalTheme: CapRoverTheme) {
+    saveCustomTheme(oldName: string, editModalTheme: CapRoverTheme) {
+        const self = this
         return Promise.resolve().then(() => {
-            return Utils.getDelayedPromise(600)
-            // TODO
+            return self.apiManager.saveTheme(oldName, editModalTheme)
         })
     }
 
     getAllThemes() {
+        const self = this
         return Promise.resolve()
             .then(() => {
-                return Utils.getDelayedPromise(1000)
+                return self.apiManager.getAllThemes()
             })
-            .then(() => {
-                const themes = [] as CapRoverTheme[]
+            .then((data) => {
+                const fetchedThemes = data.themes || ([] as CapRoverTheme[])
+                fetchedThemes.forEach((it) => (it.customized = true))
 
-                themes.push({
+                const builtInThemes = [] as CapRoverTheme[]
+
+                builtInThemes.push({
                     name: 'legacy',
                     content: `{
                 algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
@@ -62,7 +72,7 @@ export class ThemeProvider {
             }`,
                 })
 
-                themes.push({
+                builtInThemes.push({
                     name: 'red',
                     content: `{
                 algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
@@ -83,7 +93,7 @@ export class ThemeProvider {
             }`,
                 })
 
-                themes.push({
+                builtInThemes.push({
                     name: 'green',
                     content: `{
                 algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
@@ -104,7 +114,7 @@ export class ThemeProvider {
             }`,
                 })
 
-                return themes
+                return [...builtInThemes, ...fetchedThemes]
             })
     }
 }

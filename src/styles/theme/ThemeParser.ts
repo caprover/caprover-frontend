@@ -26,7 +26,7 @@ const ThemeParser = {
                 )
             } catch (error) {
                 console.error('Error evaluating expression:', expression, error)
-                return null
+                return undefined
             }
         }
 

@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import CapRoverThemeContext from '../../contexts/CapRoverThemeContext'
 import CapRoverTheme from '../../styles/theme/CapRoverTheme'
 import { ThemeProvider } from '../../styles/theme/ThemeProvider'
+import Toaster from '../../utils/Toaster'
 
 interface ThemeSelectorProps {
     themes: CapRoverTheme[]
@@ -22,7 +23,9 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ themes }) => {
 
     const handleChange = (value: string) => {
         setCapRoverThemeContext(themes.find((it) => it.name === value))
-        ThemeProvider.getInstance().saveCurrentTheme(value)
+        ThemeProvider.getInstance()
+            .saveCurrentTheme(value)
+            .catch(Toaster.createCatcher())
         // dispatch(emitRootKeyChanged()) Needed? TODO
     }
 

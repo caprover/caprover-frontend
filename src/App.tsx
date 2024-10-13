@@ -19,6 +19,7 @@ import { ThemeProvider } from './styles/theme/ThemeProvider'
 import CrashReporter from './utils/CrashReporter'
 import { getCurrentLanguageOption } from './utils/Language'
 import StorageHelper from './utils/StorageHelper'
+import Toaster from './utils/Toaster'
 
 CrashReporter.getInstance().init()
 
@@ -76,9 +77,9 @@ function App() {
         ThemeProvider.getInstance()
             .getSavedTheme()
             .then((t) => {
-                setTheme(t)
+                setTheme(t.theme)
             })
-            .catch((e) => console.log(e))
+            .catch(Toaster.createCatcher())
             .then(() => {
                 themeState = 'LOADED'
                 setRefreshCounter(refreshCounter + 1)

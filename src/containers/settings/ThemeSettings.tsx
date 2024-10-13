@@ -89,7 +89,7 @@ const ThemeSettings = () => {
                     if (!editModalTheme) return
                     setConfirmLoading(true)
                     return ThemeProvider.getInstance()
-                        .saveCustomTheme(editModalTheme)
+                        .saveCustomTheme(editModalTheme.name, editModalTheme)
                         .then(() => {
                             setCapRoverThemeContext(editModalTheme)
                             setEditModalTheme(undefined)
