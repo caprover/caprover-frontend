@@ -138,6 +138,17 @@ export default class ApiManager {
             )
     }
 
+    deleteTheme(themeName: string): any {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/system/themes/delete', {
+                    themeName,
+                })
+            )
+    }
+
     getProFeaturesState(): Promise<{ proFeaturesState: IProFeatures }> {
         const http = this.http
 

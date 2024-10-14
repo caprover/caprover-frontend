@@ -3,7 +3,7 @@ import {
     EditOutlined,
     InfoCircleOutlined,
 } from '@ant-design/icons'
-import { Button, Input, Modal, Row } from 'antd'
+import { Button, Input, Modal, Popconfirm, Row } from 'antd'
 import { useContext, useEffect, useState } from 'react'
 import CapRoverThemeContext from '../../contexts/CapRoverThemeContext'
 import CapRoverTheme from '../../styles/theme/CapRoverTheme'
@@ -82,26 +82,33 @@ const ThemeSettings = () => {
                 >
                     <EditOutlined />
                 </Button>
-                <Button
-                    shape="circle"
-                    style={{ marginInlineStart: 10 }}
-                    danger={true}
-                    type="default"
-                    disabled={!currentTheme || currentTheme.builtIn}
-                    onClick={() => {
-                        if (!currentTheme) return
-                        const t = Utils.copyObject(currentTheme)
-                        while (
-                            allThemes.some((theme) => theme.name === t.name)
-                        ) {
-                            t.name += '-edited'
-                        }
 
-                        setEditModalTheme(t)
+                <Popconfirm
+                    title={localize(
+                        'theme.delete_theme_title',
+                        'Delete ' + currentTheme?.name + '?'
+                    )}
+                    okText={localize('theme.delete', 'Delete')}
+                    onConfirm={() => {
+                        return ThemeProvider.getInstance()
+                            .deleteTheme(currentTheme?.name || '')
+                            .catch(Toaster.createCatcher())
+                            .then(() => {
+                                setCapRoverThemeContext(undefined)
+                                fetchThemes()
+                            })
                     }}
                 >
-                    <DeleteOutlined />
-                </Button>
+                    <Button
+                        shape="circle"
+                        style={{ marginInlineStart: 10 }}
+                        danger={true}
+                        type="default"
+                        disabled={!currentTheme || currentTheme.builtIn}
+                    >
+                        <DeleteOutlined />
+                    </Button>
+                </Popconfirm>
             </Row>
 
             <Modal

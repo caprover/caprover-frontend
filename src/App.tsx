@@ -52,24 +52,27 @@ function App() {
     const [refreshCounter, setRefreshCounter] = useState(0)
     const [currentLang, setCurrentLang] = useState(getCurrentLanguageOption())
 
-    const themeToUse: ThemeConfig = currTheme
+    const defaultTheme = {
+        algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
+        token: {
+            colorPrimary: '#0090ff',
+            colorLink: '#009000',
+            fontFamily: `QuickSand, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                      'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+                      'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
+        },
+    }
+
+    const customTheme = currTheme
         ? ThemeParser.parseTheme(
               currTheme,
               isDarkMode,
               defaultAlgorithm,
               darkAlgorithm
           )
-        : // Default Theme:
-          {
-              algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
-              token: {
-                  colorPrimary: '#0090ff',
-                  colorLink: '#009000',
-                  fontFamily: `QuickSand, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-                            'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
-                            'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
-              },
-          }
+        : undefined
+
+    const themeToUse: ThemeConfig = customTheme || defaultTheme
 
     if (!themeState) {
         themeState = 'LOADING'

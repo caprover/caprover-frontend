@@ -50,4 +50,11 @@ export class ThemeProvider {
                 return data.themes || ([] as CapRoverTheme[])
             })
     }
+
+    deleteTheme(themeName: string) {
+        const self = this
+        return Promise.resolve().then(() => {
+            return self.apiManager.deleteTheme(themeName)
+        })
+    }
 }

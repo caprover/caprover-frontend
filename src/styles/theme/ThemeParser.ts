@@ -18,7 +18,7 @@ function evaluateExpression(expression: any, context: any) {
             context.defaultAlgorithm
         )
     } catch (error) {
-        console.error('Error evaluating expression:', expression, error)
+        // console.error('Error evaluating expression:', expression, error)
         return undefined
     }
 }
@@ -52,7 +52,7 @@ const ThemeParser = {
         isDarkMode: boolean,
         defaultAlgorithm: any,
         darkAlgorithm: any
-    ): ThemeConfig {
+    ): ThemeConfig | undefined {
         // Define the context for evaluations based on provided algorithms and mode
         const context = { isDarkMode, darkAlgorithm, defaultAlgorithm }
 
