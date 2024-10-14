@@ -80,7 +80,7 @@ function App() {
             }
         }, 600)
         ThemeProvider.getInstance()
-            .getSavedTheme()
+            .getCurrentTheme()
             .then((t) => {
                 setTheme(t.theme)
             })

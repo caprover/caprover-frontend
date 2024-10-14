@@ -1,4 +1,8 @@
-import { EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import {
+    DeleteOutlined,
+    EditOutlined,
+    InfoCircleOutlined,
+} from '@ant-design/icons'
 import { Button, Input, Modal, Row } from 'antd'
 import { useContext, useEffect, useState } from 'react'
 import CapRoverThemeContext from '../../contexts/CapRoverThemeContext'
@@ -77,6 +81,26 @@ const ThemeSettings = () => {
                     }}
                 >
                     <EditOutlined />
+                </Button>
+                <Button
+                    shape="circle"
+                    style={{ marginInlineStart: 10 }}
+                    danger={true}
+                    type="default"
+                    disabled={!currentTheme || currentTheme.builtIn}
+                    onClick={() => {
+                        if (!currentTheme) return
+                        const t = Utils.copyObject(currentTheme)
+                        while (
+                            allThemes.some((theme) => theme.name === t.name)
+                        ) {
+                            t.name += '-edited'
+                        }
+
+                        setEditModalTheme(t)
+                    }}
+                >
+                    <DeleteOutlined />
                 </Button>
             </Row>
 

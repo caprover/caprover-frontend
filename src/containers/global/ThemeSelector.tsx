@@ -22,9 +22,10 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ themes }) => {
     options.unshift({ value: 'default', label: 'Default' })
 
     const handleChange = (value: string) => {
-        setCapRoverThemeContext(themes.find((it) => it.name === value))
+        const t = themes.find((it) => it.name === value)
+        setCapRoverThemeContext(t)
         ThemeProvider.getInstance()
-            .saveCurrentTheme(value)
+            .saveCurrentTheme(t ? t.name : '')
             .catch(Toaster.createCatcher())
         // dispatch(emitRootKeyChanged()) Needed? TODO
     }

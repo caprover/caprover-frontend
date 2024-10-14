@@ -17,7 +17,7 @@ export class ThemeProvider {
         this.apiManager = new ApiManager()
     }
 
-    getSavedTheme() {
+    getCurrentTheme() {
         const self = this
         return Promise.resolve() //
             .then(() => {
