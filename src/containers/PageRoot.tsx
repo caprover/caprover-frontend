@@ -288,6 +288,7 @@ class PageRoot extends ApiComponent<
                 <Layout>
                     <Sider
                         breakpoint="lg"
+                        theme="light"
                         trigger={this.props.isMobile && undefined}
                         collapsible
                         collapsed={this.state.collapsed}
@@ -300,7 +301,7 @@ class PageRoot extends ApiComponent<
                             selectedKeys={[
                                 this.props.location.pathname.substring(1),
                             ]}
-                            theme="dark"
+                            theme="light"
                             mode="inline"
                             defaultSelectedKeys={['dashboard']}
                             style={{ height: '100%', borderRight: 0 }}

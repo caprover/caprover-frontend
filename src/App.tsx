@@ -54,9 +54,21 @@ function App() {
 
     const defaultTheme = {
         algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
+        components: {
+            Menu: {
+                // itemBg:'',
+                darkItemBg: '#001529',
+                darkPopupBg: '#001529',
+            },
+            Layout: {
+                // lightSiderBg: '#ff00ff',
+                // siderBg: '#ff0000',
+                // headerBg: '#ff0000',
+            },
+        },
         token: {
-            colorPrimary: '#1b8ad3',
-            colorLink: '#1b8ad3',
+            colorPrimary: '#4f5bff',
+            colorLink: '#2672c9',
             fontFamily: `QuickSand, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
                 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
                 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,

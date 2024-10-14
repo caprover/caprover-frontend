@@ -76,7 +76,6 @@ const ThemeSettings = () => {
                     onClick={() => {
                         if (!currentTheme) return
                         const t = Utils.copyObject(currentTheme)
-                        t.builtIn = false
                         let oldName = t.name
 
                         if (t.builtIn) {
@@ -88,6 +87,7 @@ const ThemeSettings = () => {
                             }
                         }
 
+                        t.builtIn = false
                         setEditModalTheme({
                             oldName,
                             theme: t,
