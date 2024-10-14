@@ -55,11 +55,11 @@ function App() {
     const defaultTheme = {
         algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
         token: {
-            colorPrimary: '#0090ff',
-            colorLink: '#009000',
+            colorPrimary: '#1b8ad3',
+            colorLink: '#1b8ad3',
             fontFamily: `QuickSand, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-                      'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
-                      'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
+                'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+                'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
         },
     }
 
