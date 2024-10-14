@@ -105,8 +105,8 @@ const ThemeSettings = () => {
                 }}
             >
                 <Input
-                    disabled={!!editModalTheme && editModalTheme.customized}
-                    readOnly={!!editModalTheme && editModalTheme.customized}
+                    disabled={!!editModalTheme && !editModalTheme.builtIn}
+                    readOnly={!!editModalTheme && !editModalTheme.builtIn}
                     addonBefore={localize('themes.edit_name', 'Theme name')}
                     placeholder="my-awesome-theme"
                     value={!editModalTheme ? '' : editModalTheme.name}

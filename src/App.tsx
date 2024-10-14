@@ -12,7 +12,6 @@ import DarkModeContext from './contexts/DarkModeContext'
 import LanguageContext from './contexts/LanguageContext'
 import reducers from './redux/reducers'
 import './styles/style.css'
-import BuiltInThemes from './styles/theme/BuiltInThemes'
 import CapRoverTheme from './styles/theme/CapRoverTheme'
 import ThemeParser from './styles/theme/ThemeParser'
 import { ThemeProvider } from './styles/theme/ThemeProvider'
@@ -60,11 +59,17 @@ function App() {
               defaultAlgorithm,
               darkAlgorithm
           )
-        : BuiltInThemes.getDefaultTheme(
-              isDarkMode,
-              defaultAlgorithm,
-              darkAlgorithm
-          )
+        : // Default Theme:
+          {
+              algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
+              token: {
+                  colorPrimary: '#0090ff',
+                  colorLink: '#009000',
+                  fontFamily: `QuickSand, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                            'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+                            'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
+              },
+          }
 
     if (!themeState) {
         themeState = 'LOADING'
