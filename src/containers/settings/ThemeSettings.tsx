@@ -16,6 +16,11 @@ import ErrorRetry from '../global/ErrorRetry'
 import NewTabLink from '../global/NewTabLink'
 import ThemeSelector from '../global/ThemeSelector'
 
+interface EditModalInfo {
+    theme: CapRoverTheme
+    oldName: string
+}
+
 const ThemeSettings = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [confirmLoading, setConfirmLoading] = useState(false)
@@ -25,7 +30,7 @@ const ThemeSettings = () => {
         useContext(CapRoverThemeContext)
 
     const [editModalTheme, setEditModalTheme] = useState(
-        undefined as undefined | CapRoverTheme
+        undefined as undefined | EditModalInfo
     )
 
     const fetchThemes = async () => {
@@ -71,13 +76,21 @@ const ThemeSettings = () => {
                     onClick={() => {
                         if (!currentTheme) return
                         const t = Utils.copyObject(currentTheme)
-                        while (
-                            allThemes.some((theme) => theme.name === t.name)
-                        ) {
-                            t.name += '-edited'
+                        let oldName = t.name
+
+                        if (t.builtIn) {
+                            oldName = '' // API creates a NEW theme if oldName is empty
+                            while (
+                                allThemes.some((theme) => theme.name === t.name)
+                            ) {
+                                t.name += '-edited'
+                            }
                         }
 
-                        setEditModalTheme(t)
+                        setEditModalTheme({
+                            oldName,
+                            theme: t,
+                        })
                     }}
                 >
                     <EditOutlined />
@@ -120,9 +133,12 @@ const ThemeSettings = () => {
                     if (!editModalTheme) return
                     setConfirmLoading(true)
                     return ThemeProvider.getInstance()
-                        .saveCustomTheme(editModalTheme.name, editModalTheme)
+                        .saveCustomTheme(
+                            editModalTheme.oldName,
+                            editModalTheme.theme
+                        )
                         .then(() => {
-                            setCapRoverThemeContext(editModalTheme)
+                            setCapRoverThemeContext(editModalTheme.theme)
                             setEditModalTheme(undefined)
                         })
                         .catch(Toaster.createCatcher())
@@ -136,14 +152,12 @@ const ThemeSettings = () => {
                 }}
             >
                 <Input
-                    disabled={!!editModalTheme && !editModalTheme.builtIn}
-                    readOnly={!!editModalTheme && !editModalTheme.builtIn}
                     addonBefore={localize('themes.edit_name', 'Theme name')}
-                    placeholder="my-awesome-theme"
-                    value={!editModalTheme ? '' : editModalTheme.name}
+                    placeholder="My Awesome Theme"
+                    value={!editModalTheme ? '' : editModalTheme.theme.name}
                     onChange={(e) => {
                         const cp = Utils.copyObject(editModalTheme!!)
-                        cp.name = e.target.value
+                        cp.theme.name = e.target.value
                         setEditModalTheme(cp)
                     }}
                 />
@@ -157,7 +171,7 @@ const ThemeSettings = () => {
 
                     <span style={{ marginInlineStart: 5 }}>
                         {' '}
-                        <NewTabLink url="https://ant.design/docs/react/customize-theme">
+                        <NewTabLink url="https://caprover.com/docs/theme-customization.html">
                             <InfoCircleOutlined />
                         </NewTabLink>
                     </span>
@@ -171,10 +185,10 @@ const ThemeSettings = () => {
                     }}
                     className="code-input"
                     rows={15}
-                    value={!editModalTheme ? '' : editModalTheme.content}
+                    value={!editModalTheme ? '' : editModalTheme.theme.content}
                     onChange={(e) => {
                         const cp = Utils.copyObject(editModalTheme!!)
-                        cp.content = e.target.value
+                        cp.theme.content = e.target.value
                         setEditModalTheme(cp)
                     }}
                 />
