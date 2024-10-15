@@ -128,7 +128,7 @@ const ThemeSettings = () => {
             <Modal
                 confirmLoading={confirmLoading}
                 width={600}
-                title="Customize Theme"
+                title={localize('themes.customize_theme', 'Customize Theme')}
                 open={!!editModalTheme}
                 onOk={() => {
                     if (!editModalTheme) return
