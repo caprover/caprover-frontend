@@ -100,3 +100,20 @@ hr {
 .pre-line-content {
     white-space: pre-wrap;
 }
+
+.slow-fadein-slow {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.slow-fadein-fast {
+    animation: fadeIn 0.1s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

@@ -10,6 +10,7 @@ import CheckUpdate from './CheckUpdate'
 import DiskCleanup from './DiskCleanup'
 import NginxConfig from './NginxConfig'
 import ProFeatures from './ProFeatures'
+import ThemeSettings from './ThemeSettings'
 
 class Settings extends Component<
     {
@@ -31,6 +32,18 @@ class Settings extends Component<
                 </Row>
 
                 <Row justify="center" gutter={20}>
+                    <Col
+                        style={{ marginBottom: 20 }}
+                        lg={{ span: 16 }}
+                        md={{ span: 23 }}
+                    >
+                        <Card
+                            style={{ height: '100%' }}
+                            title={localize('settings.themes', 'Themes')}
+                        >
+                            <ThemeSettings />
+                        </Card>
+                    </Col>
                     <Col
                         style={{ marginBottom: 20 }}
                         lg={{ span: 10 }}
