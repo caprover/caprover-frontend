@@ -73,7 +73,7 @@ export default class Apps extends ApiComponent<
         }
 
         return (
-            <div>
+            <div className="slow-fadein-fast">
                 <div
                     style={{
                         display: 'flex',
