@@ -7,7 +7,9 @@ import {
     SettingOutlined,
 } from '@ant-design/icons'
 import { Layout, Menu, MenuProps } from 'antd'
-import React from 'react'
+import React, { useContext } from 'react'
+import CapRoverThemeContext from '../contexts/CapRoverThemeContext'
+import ThemeParser from '../styles/theme/ThemeParser'
 import { localize } from '../utils/Language'
 
 const { Sider } = Layout
@@ -29,6 +31,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     location,
     history,
 }) => {
+    const { currentTheme } = useContext(CapRoverThemeContext)
+
+    let siderTheme = (ThemeParser.parseExtra(currentTheme)?.siderTheme ||
+        'light') as 'light' | 'dark'
+
     const MENU_ITEMS: MenuProps['items'] = [
         {
             key: 'dashboard',
@@ -70,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     return (
         <Sider
             breakpoint="lg"
-            theme="light"
+            theme={siderTheme}
             trigger={isMobile && undefined}
             collapsible
             collapsed={collapsed}
@@ -81,7 +88,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         >
             <Menu
                 selectedKeys={[location.pathname.substring(1)]}
-                theme="light"
+                theme={siderTheme}
                 mode="inline"
                 defaultSelectedKeys={['dashboard']}
                 style={{ height: '100%', borderRight: 0 }}

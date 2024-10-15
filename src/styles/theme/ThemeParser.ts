@@ -48,16 +48,24 @@ function parseObject(item: any, context: any) {
 
 const ThemeParser = {
     parseTheme(
-        currTheme: CapRoverTheme,
+        currTheme: CapRoverTheme | undefined,
         isDarkMode: boolean,
         defaultAlgorithm: any,
         darkAlgorithm: any
     ): ThemeConfig | undefined {
+        if (!currTheme) return undefined
+
         // Define the context for evaluations based on provided algorithms and mode
         const context = { isDarkMode, darkAlgorithm, defaultAlgorithm }
 
         // Start parsing the response object
         return parseObject(currTheme, context).content
+    },
+    parseExtra(currTheme: CapRoverTheme | undefined) {
+        if (!currTheme) return undefined
+
+        const context = {}
+        return (parseObject(currTheme, context) as CapRoverTheme)?.extra
     },
 }
 

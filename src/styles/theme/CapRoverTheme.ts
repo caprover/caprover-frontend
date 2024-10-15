@@ -5,6 +5,7 @@ interface CapRoverExtraTheme {
 export default interface CapRoverTheme {
     content: string
     name: string
-    extraTheme?: CapRoverExtraTheme
+    extra?: CapRoverExtraTheme
+    headEmbed?: string
     builtIn?: boolean
 }

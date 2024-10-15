@@ -40,6 +40,8 @@ const MainComponent = () => {
 
 let themeState: undefined | 'LOADING' | 'LOADED' | 'TIMED_OUT' = undefined
 
+const contentPushedToHead = [] as string[]
+
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme
 
@@ -69,10 +71,23 @@ function App() {
         token: {
             colorPrimary: '#4f5bff',
             colorLink: '#2672c9',
-            fontFamily: `QuickSand, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+            fontFamily: `Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI',
                 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
                 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
         },
+    }
+
+    if (
+        currTheme &&
+        currTheme.headEmbed &&
+        contentPushedToHead.some((it) => it === currTheme.headEmbed)
+    ) {
+        const headElement = document.head
+        const injectionElement = document.createElement('div')
+        injectionElement.innerHTML = currTheme.headEmbed
+        Array.from(injectionElement.childNodes).forEach((node) => {
+            headElement.appendChild(node)
+        })
     }
 
     const customTheme = currTheme
