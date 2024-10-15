@@ -80,8 +80,10 @@ function App() {
     if (
         currTheme &&
         currTheme.headEmbed &&
-        contentPushedToHead.some((it) => it === currTheme.headEmbed)
+        !contentPushedToHead.some((it) => it === currTheme.headEmbed)
     ) {
+        contentPushedToHead.push(currTheme.headEmbed)
+
         const headElement = document.head
         const injectionElement = document.createElement('div')
         injectionElement.innerHTML = currTheme.headEmbed

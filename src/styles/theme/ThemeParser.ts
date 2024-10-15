@@ -1,5 +1,5 @@
 import { ThemeConfig } from 'antd'
-import CapRoverTheme from './CapRoverTheme'
+import CapRoverTheme, { CapRoverExtraTheme } from './CapRoverTheme'
 
 function evaluateExpression(expression: any, context: any) {
     try {
@@ -65,7 +65,9 @@ const ThemeParser = {
         if (!currTheme) return undefined
 
         const context = {}
-        return (parseObject(currTheme, context) as CapRoverTheme)?.extra
+        return (parseObject(currTheme, context) as CapRoverTheme)?.extra as
+            | CapRoverExtraTheme
+            | undefined
     },
 }
 
