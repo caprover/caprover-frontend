@@ -56,14 +56,13 @@ class StorageHelper {
 
     getDarkModeFromLocalStorage(): boolean {
         const isDarkMode = localStorage.getItem(DARK_MODE)
-        // If not preference exists, return DarkMode based on users colorScheme
-        return isDarkMode
-            ? JSON.parse(isDarkMode)
-            : // default to dark mode
-              !(
-                  window.matchMedia &&
-                  window.matchMedia('(prefers-color-scheme: light)').matches
-              )
+        // If not preference exists, default to dark mode
+        return isDarkMode ? JSON.parse(isDarkMode) : true
+        //   return DarkMode based on users colorScheme
+        //   !(
+        //       window.matchMedia &&
+        //       window.matchMedia('(prefers-color-scheme: light)').matches
+        //   )
     }
 
     setLanguageInLocalStorage(language: string) {
