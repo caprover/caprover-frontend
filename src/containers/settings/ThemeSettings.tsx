@@ -168,14 +168,29 @@ const ThemeSettings = () => {
                         marginBottom: 5,
                     }}
                 >
-                    {localize('themes.ant_design_theme', 'Ant Design theme')}
-
-                    <span style={{ marginInlineStart: 5 }}>
+                    {localize(
+                        'themes.theme_custom_help',
+                        'You can customize CapRover theme by providing custom theme and inject elements (font, CSS, JS, etc) into the <head> section.'
+                    )}{' '}
+                    <span>
                         {' '}
                         <NewTabLink url="https://caprover.com/docs/theme-customization.html">
+                            {' '}
+                            {localize(
+                                'themes.see_here',
+                                'See here for details.'
+                            )}{' '}
                             <InfoCircleOutlined />
                         </NewTabLink>
                     </span>
+                </div>
+                <div
+                    style={{
+                        marginTop: 32,
+                        marginBottom: 5,
+                    }}
+                >
+                    Ant Design theme
                 </div>
                 <Input.TextArea
                     spellCheck={false}
@@ -185,11 +200,69 @@ const ThemeSettings = () => {
                         fontSize: 12,
                     }}
                     className="code-input"
-                    rows={15}
+                    rows={12}
                     value={!editModalTheme ? '' : editModalTheme.theme.content}
                     onChange={(e) => {
                         const cp = Utils.copyObject(editModalTheme!!)
                         cp.theme.content = e.target.value
+                        setEditModalTheme(cp)
+                    }}
+                />
+                <div
+                    style={{
+                        marginTop: 32,
+                        marginBottom: 5,
+                    }}
+                >
+                    {localize(
+                        'themes.head_embed',
+                        'Embed elements into <head>'
+                    )}
+                </div>
+                <Input.TextArea
+                    spellCheck={false}
+                    style={{
+                        overflowX: 'auto',
+                        whiteSpace: 'nowrap',
+                        fontSize: 12,
+                    }}
+                    placeholder={`<link href="https://fonts.googleapis.com/css" rel="stylesheet"/>`}
+                    className="code-input"
+                    rows={4}
+                    value={
+                        !editModalTheme ? '' : editModalTheme.theme.headEmbed
+                    }
+                    onChange={(e) => {
+                        const cp = Utils.copyObject(editModalTheme!!)
+                        cp.theme.headEmbed = e.target.value
+                        setEditModalTheme(cp)
+                    }}
+                />
+                <div
+                    style={{
+                        marginTop: 32,
+                        marginBottom: 5,
+                    }}
+                >
+                    {localize(
+                        'themes.caprover_extra',
+                        'Other configuration passed to CapRover'
+                    )}
+                </div>
+                <Input.TextArea
+                    spellCheck={false}
+                    placeholder={"{siderTheme:'dark'}"}
+                    style={{
+                        overflowX: 'auto',
+                        whiteSpace: 'nowrap',
+                        fontSize: 12,
+                    }}
+                    className="code-input"
+                    rows={4}
+                    value={!editModalTheme ? '' : editModalTheme.theme.extra}
+                    onChange={(e) => {
+                        const cp = Utils.copyObject(editModalTheme!!)
+                        cp.theme.extra = e.target.value
                         setEditModalTheme(cp)
                     }}
                 />
