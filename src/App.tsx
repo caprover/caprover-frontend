@@ -57,15 +57,9 @@ function App() {
     const defaultTheme = {
         algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
         components: {
-            Menu: {
-                // itemBg:'',
-                darkItemBg: '#001529',
-                darkPopupBg: '#001529',
-            },
+            Menu: {},
             Layout: {
-                // lightSiderBg: '#ff00ff',
-                // siderBg: '#ff0000',
-                // headerBg: '#ff0000',
+                headerBg: '#161729',
             },
         },
         token: {
