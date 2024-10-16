@@ -12,6 +12,7 @@ import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import CenteredSpinner from '../global/CenteredSpinner'
+import CodeEdit from '../global/CodeEdit'
 import ErrorRetry from '../global/ErrorRetry'
 import NewTabLink from '../global/NewTabLink'
 import ThemeSelector from '../global/ThemeSelector'
@@ -192,21 +193,15 @@ const ThemeSettings = () => {
                 >
                     Ant Design theme
                 </div>
-                <Input.TextArea
-                    spellCheck={false}
-                    style={{
-                        overflowX: 'auto',
-                        whiteSpace: 'nowrap',
-                        fontSize: 12,
-                    }}
-                    className="code-input"
-                    rows={12}
-                    value={!editModalTheme ? '' : editModalTheme.theme.content}
-                    onChange={(e) => {
+
+                <CodeEdit
+                    onChange={(v) => {
                         const cp = Utils.copyObject(editModalTheme!!)
-                        cp.theme.content = e.target.value
+                        cp.theme.content = v
                         setEditModalTheme(cp)
                     }}
+                    rows={12}
+                    value={!editModalTheme ? '' : editModalTheme.theme.content}
                 />
                 <div
                     style={{
@@ -219,25 +214,19 @@ const ThemeSettings = () => {
                         'Embed elements into <head>'
                     )}
                 </div>
-                <Input.TextArea
-                    spellCheck={false}
-                    style={{
-                        overflowX: 'auto',
-                        whiteSpace: 'nowrap',
-                        fontSize: 12,
+                <CodeEdit
+                    onChange={(v) => {
+                        const cp = Utils.copyObject(editModalTheme!!)
+                        cp.theme.headEmbed = v
+                        setEditModalTheme(cp)
                     }}
                     placeholder={`<link href="https://fonts.googleapis.com/css" rel="stylesheet"/>`}
-                    className="code-input"
                     rows={4}
                     value={
                         !editModalTheme ? '' : editModalTheme.theme.headEmbed
                     }
-                    onChange={(e) => {
-                        const cp = Utils.copyObject(editModalTheme!!)
-                        cp.theme.headEmbed = e.target.value
-                        setEditModalTheme(cp)
-                    }}
                 />
+
                 <div
                     style={{
                         marginTop: 32,
@@ -249,22 +238,15 @@ const ThemeSettings = () => {
                         'Other configuration passed to CapRover'
                     )}
                 </div>
-                <Input.TextArea
-                    spellCheck={false}
-                    placeholder={"{siderTheme:'dark'}"}
-                    style={{
-                        overflowX: 'auto',
-                        whiteSpace: 'nowrap',
-                        fontSize: 12,
-                    }}
-                    className="code-input"
-                    rows={4}
-                    value={!editModalTheme ? '' : editModalTheme.theme.extra}
-                    onChange={(e) => {
+                <CodeEdit
+                    onChange={(v) => {
                         const cp = Utils.copyObject(editModalTheme!!)
-                        cp.theme.extra = e.target.value
+                        cp.theme.extra = v
                         setEditModalTheme(cp)
                     }}
+                    rows={8}
+                    placeholder={`{siderTheme:'dark'}`}
+                    value={!editModalTheme ? '' : editModalTheme.theme.extra}
                 />
             </Modal>
         </div>
