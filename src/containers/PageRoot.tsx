@@ -26,6 +26,7 @@ import ClickableLink from './global/ClickableLink'
 import DarkModeSwitch from './global/DarkModeSwitch'
 import LanguageSelector from './global/LanguageSelector'
 import NewTabLink from './global/NewTabLink'
+import Maintenance from './maintenance/Maintenance'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
 import Settings from './settings/Settings'
@@ -115,7 +116,9 @@ class PageRoot extends ApiComponent<
         return (
             <Fragment>
                 <ClickableLink
-                    onLinkClicked={() => self.props.history.push('/settings')}
+                    onLinkClicked={() =>
+                        self.props.history.push('/maintenance')
+                    }
                 >
                     <GiftTwoTone
                         style={{
@@ -330,6 +333,10 @@ class PageRoot extends ApiComponent<
                                     component={Monitoring}
                                 />
                                 <Route path="/cluster/" component={Cluster} />
+                                <Route
+                                    path="/maintenance/"
+                                    component={Maintenance}
+                                />
                                 <Route path="/settings/" component={Settings} />
                                 <Route path="/" component={LoggedInCatchAll} />
                             </Switch>

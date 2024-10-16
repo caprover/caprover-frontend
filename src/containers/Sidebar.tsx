@@ -1,6 +1,7 @@
 import {
     ClusterOutlined,
     CodeOutlined,
+    ControlOutlined,
     DashboardOutlined,
     LaptopOutlined,
     LogoutOutlined,
@@ -56,6 +57,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             key: 'cluster',
             label: localize('menu_item.cluster', 'Cluster'),
             icon: <ClusterOutlined />,
+        },
+        {
+            key: 'maintenance',
+            label: localize('menu_item.maintenance', 'Maintenance'),
+            icon: <ControlOutlined />,
         },
         {
             key: 'settings',
