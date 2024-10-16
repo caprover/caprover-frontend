@@ -130,6 +130,10 @@ export default class AppConfigs extends Component<
                 <Row style={{ paddingBottom: 12 }} key={`${index}`}>
                     <Col span={8}>
                         <Input
+                            spellCheck={false}
+                            autoCorrect="off"
+                            autoComplete="off"
+                            autoCapitalize="off"
                             className="code-input"
                             placeholder="key"
                             value={value.key}
@@ -254,6 +258,10 @@ export default class AppConfigs extends Component<
                                 'apps.app_config_vol_path',
                                 'Path in App'
                             )}
+                            spellCheck={false}
+                            autoCorrect="off"
+                            autoComplete="off"
+                            autoCapitalize="off"
                             className="code-input"
                             placeholder="/var/www/html"
                             value={value.containerPath}
@@ -279,6 +287,10 @@ export default class AppConfigs extends Component<
                                 'apps.app_config_vol_label',
                                 'Label'
                             )}
+                            spellCheck={false}
+                            autoCorrect="off"
+                            autoComplete="off"
+                            autoCapitalize="off"
                             className="code-input"
                             placeholder="some-name"
                             value={value.volumeName}
@@ -310,6 +322,10 @@ export default class AppConfigs extends Component<
                                     'apps.app_config_vol_host_path',
                                     'Path on Host'
                                 )}
+                                spellCheck={false}
+                                autoCorrect="off"
+                                autoComplete="off"
+                                autoCapitalize="off"
                                 className="code-input"
                                 placeholder="/host/path/exists"
                                 value={value.hostPath}
@@ -419,6 +435,10 @@ export default class AppConfigs extends Component<
                                     'apps.app_config_vol_node_id',
                                     'Node ID'
                                 )}
+                                spellCheck={false}
+                                autoCorrect="off"
+                                autoComplete="off"
+                                autoCapitalize="off"
                                 className="code-input"
                                 value={app.nodeId ? app.nodeId : ''}
                                 disabled={!this.state.forceEditableNodeId}

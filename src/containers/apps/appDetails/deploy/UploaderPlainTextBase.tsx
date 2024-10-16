@@ -60,6 +60,10 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
         if (self.isSingleLine()) {
             return (
                 <Input
+                    spellCheck={false}
+                    autoCorrect="off"
+                    autoComplete="off"
+                    autoCapitalize="off"
                     className="code-input"
                     placeholder={self.getPlaceHolderValue()}
                     value={self.state.userEnteredValue}
