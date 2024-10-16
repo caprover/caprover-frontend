@@ -195,9 +195,9 @@ const ThemeSettings = () => {
                 </div>
 
                 <CodeEdit
-                    onChange={(v) => {
+                    onChange={(e) => {
                         const cp = Utils.copyObject(editModalTheme!!)
-                        cp.theme.content = v
+                        cp.theme.content = e.target.value
                         setEditModalTheme(cp)
                     }}
                     rows={12}
@@ -215,9 +215,9 @@ const ThemeSettings = () => {
                     )}
                 </div>
                 <CodeEdit
-                    onChange={(v) => {
+                    onChange={(e) => {
                         const cp = Utils.copyObject(editModalTheme!!)
-                        cp.theme.headEmbed = v
+                        cp.theme.headEmbed = e.target.value
                         setEditModalTheme(cp)
                     }}
                     placeholder={`<link href="https://fonts.googleapis.com/css" rel="stylesheet"/>`}
@@ -239,9 +239,9 @@ const ThemeSettings = () => {
                     )}
                 </div>
                 <CodeEdit
-                    onChange={(v) => {
+                    onChange={(e) => {
                         const cp = Utils.copyObject(editModalTheme!!)
-                        cp.theme.extra = v
+                        cp.theme.extra = e.target.value
                         setEditModalTheme(cp)
                     }}
                     rows={8}
