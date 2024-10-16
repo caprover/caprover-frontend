@@ -1,10 +1,11 @@
 import { SyncOutlined } from '@ant-design/icons'
-import { Button, Input, Row } from 'antd'
+import { Button, Row } from 'antd'
 import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
+import CodeEdit from '../global/CodeEdit'
 import ErrorRetry from '../global/ErrorRetry'
 
 export default class NginxConfig extends ApiComponent<
@@ -107,9 +108,7 @@ export default class NginxConfig extends ApiComponent<
                             : 'hide-on-demand'
                     }
                 >
-                    <Input.TextArea
-                        className="code-input"
-                        placeholder=""
+                    <CodeEdit
                         rows={17}
                         value={nginxConfig.baseConfig.customValue}
                         onChange={(e) => {
@@ -118,6 +117,7 @@ export default class NginxConfig extends ApiComponent<
                             self.setState({ nginxConfig: newApiData })
                         }}
                     />
+
                     <div style={{ height: 40 }} />
                 </div>
                 <p>
@@ -138,9 +138,7 @@ export default class NginxConfig extends ApiComponent<
                             : 'hide-on-demand'
                     }
                 >
-                    <Input.TextArea
-                        className="code-input"
-                        placeholder=""
+                    <CodeEdit
                         rows={17}
                         value={nginxConfig.captainConfig.customValue}
                         onChange={(e) => {

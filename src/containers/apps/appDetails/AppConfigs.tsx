@@ -4,6 +4,7 @@ import { Component, Fragment } from 'react'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import { localize } from '../../../utils/Language'
 import Utils from '../../../utils/Utils'
+import CodeEdit from '../../global/CodeEdit'
 import NewTabLink from '../../global/NewTabLink'
 import { IAppEnvVar } from '../AppDefinition'
 import { AppDetailsTabProps } from './AppDetails'
@@ -89,8 +90,7 @@ export default class AppConfigs extends Component<
                 <div>
                     <Row style={{ paddingBottom: 12 }}>
                         <Col span={24}>
-                            <Input.TextArea
-                                className="code-input"
+                            <CodeEdit
                                 placeholder={'key1=value1\nkey2=value2'}
                                 rows={7}
                                 value={
@@ -145,8 +145,7 @@ export default class AppConfigs extends Component<
                         />
                     </Col>
                     <Col style={{ paddingLeft: 12 }} span={16}>
-                        <Input.TextArea
-                            className="code-input"
+                        <CodeEdit
                             placeholder="value"
                             rows={1}
                             value={value.value}
@@ -633,12 +632,7 @@ export default class AppConfigs extends Component<
                             </NewTabLink>
                         </h4>
 
-                        <Input.TextArea
-                            spellCheck={false}
-                            autoCorrect="off"
-                            autoComplete="off"
-                            autoCapitalize="off"
-                            className="code-input"
+                        <CodeEdit
                             placeholder="var preDeployFunction = function (capRoverAppObj, dockerUpdateObject) ..."
                             rows={4}
                             value={
@@ -669,12 +663,7 @@ export default class AppConfigs extends Component<
                             </NewTabLink>
                         </h4>
 
-                        <Input.TextArea
-                            spellCheck={false}
-                            autoCorrect="off"
-                            autoComplete="off"
-                            autoCapitalize="off"
-                            className="code-input"
+                        <CodeEdit
                             placeholder={`## JSON / YAML
 {
   "TaskTemplate": {
@@ -746,8 +735,7 @@ export default class AppConfigs extends Component<
 
         if (this.state.tagsEditMode) {
             return (
-                <Input.TextArea
-                    className="code-input"
+                <CodeEdit
                     placeholder={'tag1,comma,separated,cannot-contain-space'}
                     rows={1}
                     defaultValue={(app.tags || [])

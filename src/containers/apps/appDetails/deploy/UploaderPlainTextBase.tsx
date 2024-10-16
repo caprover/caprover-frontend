@@ -2,6 +2,7 @@ import { Button, Input, Row } from 'antd'
 import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import ApiComponent from '../../../global/ApiComponent'
+import CodeEdit from '../../../global/CodeEdit'
 
 export default abstract class UploaderPlainTextBase extends ApiComponent<
     {
@@ -72,8 +73,7 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
         }
 
         return (
-            <Input.TextArea
-                className="code-input"
+            <CodeEdit
                 placeholder={self.getPlaceHolderValue()}
                 rows={7}
                 value={self.state.userEnteredValue}
