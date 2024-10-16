@@ -71,7 +71,7 @@ function App() {
         token: {
             colorPrimary: '#4f5bff',
             colorLink: '#2672c9',
-            fontFamily: `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+            fontFamily: `'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
                 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
                 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
         },

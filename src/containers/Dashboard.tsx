@@ -342,11 +342,12 @@ export default class Dashboard extends ApiComponent<
             </span>,
             <i> captain.myawesomecompany.com </i>,
             <i> foo.bar.myawesomecompany.com </i>,
-            <p>
+            <div>
+                {' '}
                 <b> Type:</b> <u>A</u>, <b>Name (or host):</b>{' '}
                 <u> *.caprover-root</u>, <b> IP (or Points to):</b>{' '}
                 <u> 110.120.130.140 </u>
-            </p>,
+            </div>,
         ]
         const translatedBody = Utils.formatText(
             localize(
