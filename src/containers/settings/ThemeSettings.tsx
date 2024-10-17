@@ -101,7 +101,7 @@ const ThemeSettings = () => {
                 <Popconfirm
                     title={localize(
                         'theme.delete_theme_title',
-                        'Delete ' + currentTheme?.name + '?'
+                        'Delete theme?'
                     )}
                     okText={localize('theme.delete', 'Delete')}
                     onConfirm={() => {
