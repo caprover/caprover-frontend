@@ -8,6 +8,7 @@ import frFR from 'antd/es/locale/fr_FR'
 import idID from 'antd/es/locale/id_ID'
 import ptBR from 'antd/es/locale/pt_BR'
 import svSE from 'antd/es/locale/sv_SE'
+import trTR from 'antd/es/locale/tr_TR'
 import zhCN from 'antd/es/locale/zh_CN'
 import arEGMessages from '../locales/ar-EG.json'
 import deDEMessages from '../locales/de-DE.json'
@@ -18,6 +19,7 @@ import frFRMessages from '../locales/fr-FR.json'
 import idIDMessages from '../locales/id-ID.json'
 import ptBRMessages from '../locales/pt-BR.json'
 import svSEMessages from '../locales/sv-SE.json'
+import trTRMessages from '../locales/tr-TR.json'
 import zhCNMessages from '../locales/zh-CN.json'
 
 import StorageHelper from './StorageHelper'
@@ -104,6 +106,13 @@ const languagesOptions: LanguageOption[] = [
         antdLocale: arEG,
         rtl: true,
         messages: arEGMessages,
+    },
+    {
+        label: 'Türkçe',
+        value: 'tr-TR',
+        alias: ['tr'],
+        antdLocale: trTR,
+        messages: trTRMessages,
     },
 ]
 
