@@ -3,6 +3,8 @@ import { Component } from 'react'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
 import { localize } from '../../utils/Language'
+import DarkModeSwitch from '../global/DarkModeSwitch'
+import LanguageSelector from '../global/LanguageSelector'
 import ChangePass from './ChangePass'
 import NginxConfig from './NginxConfig'
 import ProFeatures from './ProFeatures'
@@ -15,6 +17,30 @@ class Settings extends Component<
     {}
 > {
     render() {
+        const self = this
+        function createMobileOnlyComponents() {
+            if (!self.props.isMobile) return <div></div>
+
+            return (
+                <Col
+                    style={{ marginTop: 10, marginBottom: 10 }}
+                    lg={{ span: 8 }}
+                    xs={{ span: 23 }}
+                >
+                    <Card style={{ height: '100%' }} title={''}>
+                        <Row justify={'space-between'}>
+                            <div>
+                                <LanguageSelector />
+                            </div>
+                            <div style={{ marginInlineEnd: 5 }}>
+                                <DarkModeSwitch />
+                            </div>
+                        </Row>
+                    </Card>
+                </Col>
+            )
+        }
+
         return (
             <div>
                 <Row justify="center" gutter={20}>
@@ -25,6 +51,7 @@ class Settings extends Component<
                     >
                         <ProFeatures isMobile={this.props.isMobile} />
                     </Col>{' '}
+                    {createMobileOnlyComponents()}
                     <Col
                         style={{ marginTop: 40, marginBottom: 80 }}
                         lg={{ span: 8 }}

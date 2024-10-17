@@ -27,12 +27,12 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ themes }) => {
         ThemeProvider.getInstance()
             .saveCurrentTheme(t ? t.name : '')
             .catch(Toaster.createCatcher())
-        // dispatch(emitRootKeyChanged()) Needed? TODO
+        // dispatch(emitRootKeyChanged()) Needed?
     }
 
     return (
         <Select
-            style={{ width: 250 }}
+            style={{ width: 200 }}
             options={options}
             value={currentTheme?.name || options[0].value}
             onChange={handleChange}
