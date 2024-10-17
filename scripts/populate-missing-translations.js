@@ -1,3 +1,4 @@
+const prettier = require('prettier')
 const fs = require('fs-extra')
 const path = require('path')
 
@@ -5,6 +6,17 @@ const ProjectSourceRoot = path.resolve(__dirname, '..')
 
 const sourceDirectoryPath = path.join(ProjectSourceRoot, './src/locales')
 const translationsFilePath = path.join(ProjectSourceRoot, './translations.json')
+
+function formatJSON(jsonContent) {
+    const prettierConfig = fs.readJSONSync(
+        path.resolve(ProjectSourceRoot, '.prettierrc.json')
+    )
+
+    return prettier.format(JSON.stringify(jsonContent), {
+        ...prettierConfig,
+        parser: 'json',
+    })
+}
 
 // Function to update source JSON files with new translations
 function updateTranslations(translationsFile, sourceDir) {
@@ -20,12 +32,21 @@ function updateTranslations(translationsFile, sourceDir) {
 
                 // Update the translation in the source file
                 data[key] = value
-                fs.writeJsonSync(langFile, data, { spaces: 2 })
+
+                const sortedData = {}
+                const sortedKeys = Object.keys(data).sort((a, b) =>
+                    a.localeCompare(b)
+                )
+                sortedKeys.forEach((key) => {
+                    sortedData[key] = data[key]
+                })
+
+                fs.writeFileSync(langFile, formatJSON(sortedData))
+
+                // fs.writeJsonSync(langFile, data, { spaces: 2 })
             } else {
                 // If the language file does not exist, create it
-                const newData = {}
-                newData[key] = value
-                fs.writeJsonSync(langFile, newData, { spaces: 2 })
+                throw new Error('language does not exist ' + langFile)
             }
         })
     })

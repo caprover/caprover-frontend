@@ -35,7 +35,8 @@
         "test:e2e--open": "cypress open",
         "test:e2e": "cypress run",
         "eject": "react-scripts eject",
-        "generate-locales": "node scripts/generate-locales.mjs && node scripts/find-untranslated.js"
+        "generate-locales": "node scripts/generate-locales.mjs && node scripts/find-untranslated.js",
+        "populate-misssing-locales": "node scripts/populate-missing-translations.js"
     },
     "eslintConfig": {
         "extends": [
