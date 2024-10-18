@@ -49,7 +49,7 @@ type TableData = IAppDef & { lastDeployTime: string }
 
 class LastSelectedKeyMemoryCache {
     static selectedKey = ALL_APPS
-    static expandedKeys = [] as string[]
+    static expandedKeys = [ROOT_APPS] as string[]
 }
 
 class AppsTable extends Component<
@@ -67,8 +67,8 @@ class AppsTable extends Component<
     {
         searchTerm: string
         isBulkEditMode: boolean
-        selectedAppKeys: React.Key[]
-        selectedProjectKeys: React.Key[]
+        checkedAppKeys: React.Key[]
+        checkedProjectKeys: React.Key[]
         selectedProjectId: string // project ID, ROOT_APPS, or ALL_APPS
     }
 > {
@@ -78,8 +78,8 @@ class AppsTable extends Component<
         this.state = {
             searchTerm: urlsQuery,
             isBulkEditMode: false,
-            selectedAppKeys: [],
-            selectedProjectKeys: [],
+            checkedAppKeys: [],
+            checkedProjectKeys: [],
             selectedProjectId: LastSelectedKeyMemoryCache.selectedKey,
         }
     }
@@ -338,11 +338,11 @@ class AppsTable extends Component<
                             >
                                 <Button
                                     disabled={
-                                        (!self.state.selectedAppKeys ||
-                                            self.state.selectedAppKeys
-                                                .length === 0) &&
-                                        (!self.state.selectedProjectKeys ||
-                                            self.state.selectedProjectKeys
+                                        (!self.state.checkedAppKeys ||
+                                            self.state.checkedAppKeys.length ===
+                                                0) &&
+                                        (!self.state.checkedProjectKeys ||
+                                            self.state.checkedProjectKeys
                                                 .length === 0)
                                     }
                                     type="text"
@@ -352,14 +352,14 @@ class AppsTable extends Component<
                                             self.props.apps.filter(
                                                 (a) =>
                                                     a.appName &&
-                                                    self.state.selectedAppKeys.includes(
+                                                    self.state.checkedAppKeys.includes(
                                                         a.appName
                                                     )
                                             ),
                                             self.props.projects.filter(
                                                 (a) =>
                                                     a.id &&
-                                                    self.state.selectedProjectKeys.includes(
+                                                    self.state.checkedProjectKeys.includes(
                                                         a.id
                                                     )
                                             ),
@@ -384,8 +384,8 @@ class AppsTable extends Component<
                                 })
                                 if (!newState) {
                                     self.setState({
-                                        selectedAppKeys: [],
-                                        selectedProjectKeys: [],
+                                        checkedAppKeys: [],
+                                        checkedProjectKeys: [],
                                     })
                                 }
                             }}
@@ -526,12 +526,12 @@ class AppsTable extends Component<
                                                 ? {
                                                       selectedRowKeys:
                                                           self.state
-                                                              .selectedAppKeys,
+                                                              .checkedAppKeys,
                                                       onChange: (
                                                           newSelectedRowKeys: React.Key[]
                                                       ) => {
                                                           self.setState({
-                                                              selectedAppKeys:
+                                                              checkedAppKeys:
                                                                   newSelectedRowKeys,
                                                           })
                                                       },
@@ -710,6 +710,12 @@ class AppsTable extends Component<
 
         root = [
             {
+                title: '*',
+                key: ALL_APPS,
+                children: undefined,
+                checkable: false,
+            },
+            {
                 title: 'root',
                 key: ROOT_APPS,
                 children: root,
@@ -765,7 +771,7 @@ class AppsTable extends Component<
 
         const onCheck: TreeProps['onCheck'] = (checkedKeys, info) => {
             self.setState({
-                selectedProjectKeys: (checkedKeys as any).length
+                checkedProjectKeys: (checkedKeys as any).length
                     ? checkedKeys
                     : (checkedKeys as any).checked,
             })
@@ -830,7 +836,7 @@ class AppsTable extends Component<
                             ? [self.state.selectedProjectId]
                             : []
                     }
-                    checkedKeys={self.state.selectedProjectKeys}
+                    checkedKeys={self.state.checkedProjectKeys}
                     onSelect={onSelect}
                     onCheck={onCheck}
                     onExpand={onExpand}
