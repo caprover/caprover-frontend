@@ -639,7 +639,7 @@ class AppsTable extends Component<
                     {breadCrumbs
                         .map((id) => projectsMap[id]?.name || '')
                         .map((name, index) => (
-                            <>
+                            <Fragment key={name}>
                                 <span
                                     style={{
                                         marginInlineStart: 5,
@@ -651,7 +651,7 @@ class AppsTable extends Component<
                                 {index < breadCrumbs.length - 1 && (
                                     <CaretRightOutlined />
                                 )}
-                            </>
+                            </Fragment>
                         ))}
                 </span>
             )
