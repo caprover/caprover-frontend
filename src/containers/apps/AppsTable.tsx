@@ -25,7 +25,7 @@ import {
 } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
-import React, { Component, Fragment } from 'react'
+import React, { Component, Fragment, Key } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ApiManager from '../../api/ApiManager'
@@ -34,6 +34,7 @@ import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
 import StorageHelper from '../../utils/StorageHelper'
+import Utils from '../../utils/Utils'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
@@ -45,6 +46,11 @@ const ALL_APPS = 'ALL_APPS'
 const ROOT_APPS = 'ROOT_APPS'
 
 type TableData = IAppDef & { lastDeployTime: string }
+
+class LastSelectedKeyMemoryCache {
+    static selectedKey = ALL_APPS
+    static expandedKeys = [] as string[]
+}
 
 class AppsTable extends Component<
     {
@@ -74,7 +80,7 @@ class AppsTable extends Component<
             isBulkEditMode: false,
             selectedAppKeys: [],
             selectedProjectKeys: [],
-            selectedProjectId: ALL_APPS,
+            selectedProjectId: LastSelectedKeyMemoryCache.selectedKey,
         }
     }
 
@@ -719,14 +725,15 @@ class AppsTable extends Component<
             self.props.projects
         )
         const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
+            const selectedKey =
+                info.selected &&
+                self.state.selectedProjectId !== `${info.node.key}`
+                    ? `${info.node.key}`
+                    : ALL_APPS
             self.setState({
-                selectedProjectId:
-                    info.selected &&
-                    self.state.selectedProjectId !== `${info.node.key}`
-                        ? `${info.node.key}`
-                        : ALL_APPS,
+                selectedProjectId: selectedKey,
             })
-
+            LastSelectedKeyMemoryCache.selectedKey = selectedKey
             // info = {
             //     "event": "select",
             //     "selected": true,
@@ -762,6 +769,12 @@ class AppsTable extends Component<
                     ? checkedKeys
                     : (checkedKeys as any).checked,
             })
+        }
+
+        function onExpand(expandedKeys: Key[], _info: any) {
+            LastSelectedKeyMemoryCache.expandedKeys = Utils.copyObject(
+                expandedKeys.map((it) => it.toString())
+            )
         }
 
         return (
@@ -807,8 +820,10 @@ class AppsTable extends Component<
                     checkStrictly={true}
                     showIcon={false}
                     checkable={!!self.state.isBulkEditMode}
-                    defaultExpandedKeys={[ROOT_APPS]}
-                    defaultSelectedKeys={[]}
+                    defaultExpandedKeys={
+                        LastSelectedKeyMemoryCache.expandedKeys
+                    }
+                    defaultSelectedKeys={[self.state.selectedProjectId]}
                     defaultCheckedKeys={[]}
                     selectedKeys={
                         self.state.selectedProjectId
@@ -818,6 +833,7 @@ class AppsTable extends Component<
                     checkedKeys={self.state.selectedProjectKeys}
                     onSelect={onSelect}
                     onCheck={onCheck}
+                    onExpand={onExpand}
                     treeData={treeData}
                     titleRender={(nodeData: TreeDataNode) => {
                         const title = `${nodeData.title}`
