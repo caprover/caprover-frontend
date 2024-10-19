@@ -710,7 +710,7 @@ class AppsTable extends Component<
 
         root = [
             {
-                title: '*',
+                title: '<view all>',
                 key: ALL_APPS,
                 children: undefined,
                 checkable: false,
@@ -838,6 +838,8 @@ class AppsTable extends Component<
                     }
                     checkedKeys={self.state.checkedProjectKeys}
                     onSelect={onSelect}
+                    autoExpandParent={true}
+                    defaultExpandAll={true}
                     onCheck={onCheck}
                     onExpand={onExpand}
                     treeData={treeData}
