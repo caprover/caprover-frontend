@@ -278,7 +278,9 @@ export default class ApiManager {
             )
     }
 
-    registerProject(selectedProject: ProjectDefinition) {
+    registerProject(
+        selectedProject: ProjectDefinition
+    ): Promise<ProjectDefinition> {
         const http = this.http
         return Promise.resolve() //
             .then(

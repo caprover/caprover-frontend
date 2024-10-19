@@ -92,13 +92,26 @@ export default class OneClickAppDeployManager {
         } else {
             const steps: IDeploymentStep[] = []
             const capAppName = values[ONE_CLICK_APP_NAME_VAR_NAME]
+
+            const projectMemoryCache = { projectId: '' }
+
+            if (apps.length > 1) {
+                steps.push(
+                    self.createDeploymentStepForProjectCreation(
+                        capAppName,
+                        projectMemoryCache
+                    )
+                )
+            }
+
             for (let index = 0; index < apps.length; index++) {
                 const appToDeploy = apps[index]
                 steps.push(
                     ...self.createDeploymentStepPromises(
                         appToDeploy.appName,
                         appToDeploy.service,
-                        capAppName
+                        capAppName,
+                        projectMemoryCache
                     )
                 )
             }
@@ -207,11 +220,27 @@ export default class OneClickAppDeployManager {
 
         return apps
     }
+    private createDeploymentStepForProjectCreation(
+        capAppName: string,
+        projectMemoryCache: { projectId: string }
+    ): IDeploymentStep {
+        const self = this
+        return {
+            stepName: `Creating project ${capAppName}`,
+            stepPromise: function () {
+                return self.deploymentHelper.createRegisterPromiseProject(
+                    capAppName,
+                    projectMemoryCache
+                )
+            },
+        }
+    }
 
     private createDeploymentStepPromises(
         appName: string,
         dockerComposeService: IDockerComposeService,
-        capAppName: string
+        capAppName: string,
+        projectMemoryCache: { projectId: string }
     ): IDeploymentStep[] {
         const promises: IDeploymentStep[] = []
         const self = this
@@ -221,7 +250,8 @@ export default class OneClickAppDeployManager {
             stepPromise: function () {
                 return self.deploymentHelper.createRegisterPromise(
                     appName,
-                    dockerComposeService
+                    dockerComposeService,
+                    projectMemoryCache
                 )
             },
         })
