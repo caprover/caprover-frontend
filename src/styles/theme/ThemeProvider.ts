@@ -11,40 +11,30 @@ export class ThemeProvider {
         return ThemeProvider.instance
     }
 
-    private apiManager: ApiManager
-
-    constructor() {
-        this.apiManager = new ApiManager()
-    }
-
     getCurrentTheme() {
-        const self = this
         return Promise.resolve() //
             .then(() => {
-                return self.apiManager.getCurrentTheme()
+                return new ApiManager().getCurrentTheme()
             })
     }
 
     saveCurrentTheme(themeName: string) {
-        const self = this
         return Promise.resolve() //
             .then(() => {
-                return self.apiManager.setCurrentTheme(themeName)
+                return new ApiManager().setCurrentTheme(themeName)
             })
     }
 
     saveCustomTheme(oldName: string, editModalTheme: CapRoverTheme) {
-        const self = this
         return Promise.resolve().then(() => {
-            return self.apiManager.saveTheme(oldName, editModalTheme)
+            return new ApiManager().saveTheme(oldName, editModalTheme)
         })
     }
 
     getAllThemes() {
-        const self = this
         return Promise.resolve()
             .then(() => {
-                return self.apiManager.getAllThemes()
+                return new ApiManager().getAllThemes()
             })
             .then((data) => {
                 return data.themes || ([] as CapRoverTheme[])
@@ -52,9 +42,8 @@ export class ThemeProvider {
     }
 
     deleteTheme(themeName: string) {
-        const self = this
         return Promise.resolve().then(() => {
-            return self.apiManager.deleteTheme(themeName)
+            return new ApiManager().deleteTheme(themeName)
         })
     }
 }
