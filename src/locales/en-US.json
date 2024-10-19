@@ -408,7 +408,7 @@
     "projects.edit_project_hint": "You can set the name, description and the parent of this project.",
     "projects.edit_project_save": "Save",
     "projects.new_project": "Create a New Project",
-    "projects.parent_project_selector_default": "root <no parent>!",
+    "projects.parent_project_selector_default": "root <no parent project>",
     "projects.project_name": "Project Name",
     "settings.backup": "Backup",
     "settings.change_password": "Change Password",

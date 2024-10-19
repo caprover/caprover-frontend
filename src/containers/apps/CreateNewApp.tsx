@@ -102,24 +102,7 @@ class CreateNewApp extends Component<
                     )}
                 </Row>
 
-                <div
-                    style={{
-                        marginTop: 32,
-                        marginBottom: 5,
-                    }}
-                >
-                    {localize('apps.parent_project', 'Parent project')}
-                </div>
-                <ProjectSelector
-                    allProjects={self.props.projects}
-                    selectedProjectId={self.state.selectedProjectId}
-                    onChange={(value: string) => {
-                        self.setState({
-                            selectedProjectId: value,
-                        })
-                    }}
-                    excludeProjectId={'NONE'}
-                />
+                {self.createProjectInApp()}
 
                 <Row
                     style={{ marginTop: 30 }}
@@ -174,6 +157,38 @@ class CreateNewApp extends Component<
                     </Button>
                 </div>
             </Card>
+        )
+    }
+
+    createProjectInApp() {
+        const self = this
+
+        if ((self.props.projects || []).length === 0) {
+            return undefined
+        }
+
+        return (
+            <div>
+                {' '}
+                <div
+                    style={{
+                        marginTop: 32,
+                        marginBottom: 5,
+                    }}
+                >
+                    {localize('apps.parent_project', 'Parent project')}
+                </div>
+                <ProjectSelector
+                    allProjects={self.props.projects}
+                    selectedProjectId={self.state.selectedProjectId}
+                    onChange={(value: string) => {
+                        self.setState({
+                            selectedProjectId: value,
+                        })
+                    }}
+                    excludeProjectId={'NONE'}
+                />
+            </div>
         )
     }
 }
