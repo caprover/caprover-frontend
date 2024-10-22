@@ -379,7 +379,7 @@
     "oneclick_app_selector.one_click_apps_source_end": "abgerufen. Sie können andere öffentliche/private Repositories hinzufügen, wenn Sie möchten.",
     "oneclick_app_selector.safari_warning": "Es scheint, dass Sie Safari verwenden. Die Bereitstellung von One-Click-Apps kann auf Safari instabil sein. Die Verwendung von Chrome wird empfohlen",
     "oneclick_app_selector.template_description": "Eine Vorlage zum Erstellen von One-Click-Apps. Hauptsächlich für die Entwicklung!",
-    "page_root.docs_link": "Dokumente",
+    "page_root.docs_link": "Dokumentation",
     "page_root.github_link": "Github",
     "page_root.logout": "Abmelden",
     "pro_features.build_email_alerts": "E-Mail-Benachrichtigungen für Build-Erfolg und -Fehlschlag",
