@@ -122,7 +122,7 @@ const languagesOptions: LanguageOption[] = [
         alias: ['tr'],
         antdLocale: trTR,
         messages: trTRMessages,
-    }
+    },
 ]
 
 const defaultLanguageOptions = languagesOptions[0]
