@@ -77,7 +77,7 @@ class GoAccessInfo extends ApiComponent<
             return <ErrorRetry />
         }
 
-        const netDataInfo = this.state.apiData
+        const goAccessInfo = this.state.apiData
 
         return (
             <div>
@@ -94,7 +94,7 @@ class GoAccessInfo extends ApiComponent<
                             <div style={{ height: 30 }} />
                             <div
                                 className={
-                                    netDataInfo.isEnabled
+                                    goAccessInfo.isEnabled
                                         ? 'hide-on-demand'
                                         : ''
                                 }
@@ -118,7 +118,7 @@ class GoAccessInfo extends ApiComponent<
 
                             <div
                                 className={
-                                    !netDataInfo.isEnabled
+                                    !goAccessInfo.isEnabled
                                         ? 'hide-on-demand'
                                         : ''
                                 }
@@ -150,7 +150,7 @@ class GoAccessInfo extends ApiComponent<
                                     </Button>
                                     <a
                                         type="submit"
-                                        href={`//${netDataInfo.netDataUrl}`}
+                                        href={`//${goAccessInfo.netDataUrl}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         style={{

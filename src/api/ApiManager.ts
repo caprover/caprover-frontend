@@ -1,5 +1,6 @@
 import { IAppDef } from '../containers/apps/AppDefinition'
 import { ICaptainDefinition } from '../models/ICaptainDefinition'
+import IGoAccessInfo from '../models/IGoAccessInfo'
 import {
     IProConfig,
     IProFeatures,
@@ -476,7 +477,7 @@ export default class ApiManager {
             )
     }
 
-    getGoAccessInfo() {
+    getGoAccessInfo(): Promise<IGoAccessInfo> {
         const http = this.http
 
         return Promise.resolve() //
@@ -489,6 +490,18 @@ export default class ApiManager {
         return Promise.resolve() //
             .then(
                 http.fetch(http.POST, '/user/system/goaccess', { goAccessInfo })
+            )
+    }
+    getGoAccessReports(appName: string) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(
+                    http.GET,
+                    `/user/system/goaccess/${appName}/files`,
+                    {}
+                )
             )
     }
 

@@ -63,6 +63,7 @@
     "apps.app_config_vol_set_path": "Set specific host path",
     "apps.app_configs_tab": "App Configs",
     "apps.app_deployment_tab": "Deployment",
+    "apps.app_logs_tab": "Logs",
     "apps.app_edit_description": "Description",
     "apps.app_edit_name": "App name",
     "apps.app_edit_tags": "Tags",
