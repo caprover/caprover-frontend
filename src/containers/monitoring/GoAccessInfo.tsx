@@ -1,4 +1,4 @@
-import { AreaChartOutlined, PoweroffOutlined } from '@ant-design/icons'
+import { PoweroffOutlined } from '@ant-design/icons'
 import { Button, Card, Col, Row, message } from 'antd'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
@@ -128,7 +128,7 @@ class GoAccessInfo extends ApiComponent<
                                         style={{
                                             marginInlineEnd: self.props.isMobile
                                                 ? 0
-                                                : 40,
+                                                : 10,
                                             marginBottom: self.props.isMobile
                                                 ? 8
                                                 : 0,
@@ -148,32 +148,6 @@ class GoAccessInfo extends ApiComponent<
                                             <PoweroffOutlined />
                                         </span>
                                     </Button>
-                                    <a
-                                        type="submit"
-                                        href={`//${goAccessInfo.netDataUrl}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        style={{
-                                            width: this.props.isMobile
-                                                ? '100%'
-                                                : 'auto',
-                                        }}
-                                    >
-                                        <Button
-                                            block={self.props.isMobile}
-                                            // onClick={() => self.onStartNetDataClicked()}
-                                            type="primary"
-                                        >
-                                            <span>
-                                                {localize(
-                                                    'netdata.open_net_data',
-                                                    'Open NetData'
-                                                )}{' '}
-                                                &nbsp;
-                                                <AreaChartOutlined />
-                                            </span>
-                                        </Button>
-                                    </a>
                                 </Row>
                                 <div style={{ height: 30 }} />
                                 <hr />

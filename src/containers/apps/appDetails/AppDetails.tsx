@@ -38,15 +38,15 @@ import ErrorRetry from '../../global/ErrorRetry'
 import { IAppDef } from '../AppDefinition'
 import onDeleteAppClicked from '../DeleteAppConfirm'
 import EditableSpan from '../EditableSpan'
+import AccessLogReports from './AccessLogReports'
 import AppConfigs from './AppConfigs'
 import HttpSettings from './HttpSettings'
-import LogReports from './LogReports'
 import Deployment from './deploy/Deployment'
 
 const WEB_SETTINGS = 'WEB_SETTINGS'
 const APP_CONFIGS = 'APP_CONFIGS'
 const DEPLOYMENT = 'DEPLOYMENT'
-const LOGS = 'LOGS'
+const ACCESS_LOGS = 'LOGS'
 
 export interface SingleAppApiData {
     appDefinition: IAppDef
@@ -387,19 +387,21 @@ class AppDetails extends ApiComponent<
                                     children: <Deployment {...tabProps} />,
                                 },
                                 {
-                                    key: LOGS,
+                                    key: ACCESS_LOGS,
                                     label: (
                                         <span className="unselectable-span">
                                             {localize(
                                                 'apps.app_logs_tab',
-                                                'Logs'
+                                                'Access Logs'
                                             )}
                                         </span>
                                     ),
                                     disabled:
                                         !this.state.apiData?.goAccessInfo
                                             .isEnabled,
-                                    children: <LogReports {...tabProps} />,
+                                    children: (
+                                        <AccessLogReports {...tabProps} />
+                                    ),
                                 },
                             ]}
                         ></Tabs>
@@ -419,7 +421,7 @@ class AppDetails extends ApiComponent<
                                     'hide-on-demand':
                                         self.state.activeTabKey ===
                                             DEPLOYMENT ||
-                                        self.state.activeTabKey === LOGS,
+                                        self.state.activeTabKey === ACCESS_LOGS,
                                     disabled: this.state.isLoading,
                                 })}
                                 style={{
