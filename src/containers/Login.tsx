@@ -132,7 +132,7 @@ class NormalLoginForm extends React.Component<
 
         this.state = {
             loginOption: NO_SESSION,
-            passwordEntered: ``,
+            passwordEntered: this.getDefaultPassword(),
             otpEntered: ``,
         }
     }
@@ -155,7 +155,7 @@ class NormalLoginForm extends React.Component<
         return (
             <form onSubmit={this.handleSubmit}>
                 <Input.Password
-                    defaultValue={this.isDemo ? 'captain42' : ''}
+                    defaultValue={this.getDefaultPassword()}
                     required
                     onKeyDown={(key) => {
                         if (
@@ -255,5 +255,9 @@ class NormalLoginForm extends React.Component<
                 </Collapse>
             </form>
         )
+    }
+
+    private getDefaultPassword(): string {
+        return this.isDemo ? 'captain42' : ''
     }
 }
