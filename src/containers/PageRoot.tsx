@@ -1,18 +1,10 @@
 import {
     BarsOutlined,
-    ClusterOutlined,
-    CodeOutlined,
-    DashboardOutlined,
-    FileTextOutlined,
     GiftTwoTone,
-    GithubOutlined,
     GlobalOutlined,
-    LaptopOutlined,
     LogoutOutlined,
-    SettingOutlined,
 } from '@ant-design/icons'
-import type { MenuProps } from 'antd'
-import { Button, Col, Layout, Menu, Row } from 'antd'
+import { Button, Col, Layout, Row } from 'antd'
 import React, { Fragment, RefObject } from 'react'
 import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
@@ -23,6 +15,7 @@ import { localize } from '../utils/Language'
 import StorageHelper from '../utils/StorageHelper'
 import Dashboard from './Dashboard'
 import LoggedInCatchAll from './LoggedInCatchAll'
+import Sidebar from './Sidebar'
 import Apps from './apps/Apps'
 import ProjectDetailsEdit from './apps/ProjectDetailsEdit'
 import AppDetails from './apps/appDetails/AppDetails'
@@ -33,11 +26,12 @@ import ClickableLink from './global/ClickableLink'
 import DarkModeSwitch from './global/DarkModeSwitch'
 import LanguageSelector from './global/LanguageSelector'
 import NewTabLink from './global/NewTabLink'
+import Maintenance from './maintenance/Maintenance'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
 import Settings from './settings/Settings'
 
-const { Header, Content, Sider } = Layout
+const { Header, Content } = Layout
 
 interface RootPageInterface extends RouteComponentProps<any> {
     rootElementKey: string
@@ -122,7 +116,9 @@ class PageRoot extends ApiComponent<
         return (
             <Fragment>
                 <ClickableLink
-                    onLinkClicked={() => self.props.history.push('/settings')}
+                    onLinkClicked={() =>
+                        self.props.history.push('/maintenance')
+                    }
                 >
                     <GiftTwoTone
                         style={{
@@ -160,33 +156,6 @@ class PageRoot extends ApiComponent<
 
     render() {
         const self = this
-        const MENU_ITEMS: MenuProps['items'] = [
-            {
-                key: 'dashboard',
-                label: localize('menu_item.dashboard', 'Dashboard'),
-                icon: <LaptopOutlined />,
-            },
-            {
-                key: 'apps',
-                label: localize('menu_item.app', 'Apps'),
-                icon: <CodeOutlined />,
-            },
-            {
-                key: 'monitoring',
-                label: localize('menu_item.monitoring', 'Monitoring'),
-                icon: <DashboardOutlined />,
-            },
-            {
-                key: 'cluster',
-                label: localize('menu_item.cluster', 'Cluster'),
-                icon: <ClusterOutlined />,
-            },
-            {
-                key: 'settings',
-                label: localize('menu_item.settings', 'Settings'),
-                icon: <SettingOutlined />,
-            },
-        ]
 
         return (
             <Layout className="full-screen" key={self.props.rootElementKey}>
@@ -286,91 +255,17 @@ class PageRoot extends ApiComponent<
                 </Header>
 
                 <Layout>
-                    <Sider
-                        breakpoint="lg"
-                        trigger={this.props.isMobile && undefined}
-                        collapsible
+                    <Sidebar
+                        isMobile={this.props.isMobile}
                         collapsed={this.state.collapsed}
-                        width={200}
-                        collapsedWidth={self.props.isMobile ? 0 : 80}
-                        style={{ zIndex: 2 }}
-                        onCollapse={this.toggleSider}
-                    >
-                        <Menu
-                            selectedKeys={[
-                                this.props.location.pathname.substring(1),
-                            ]}
-                            theme="dark"
-                            mode="inline"
-                            defaultSelectedKeys={['dashboard']}
-                            style={{ height: '100%', borderRight: 0 }}
-                            items={MENU_ITEMS}
-                            onClick={(e) => {
-                                this.props.history.push(`/${e.key}`)
-                            }}
-                        >
-                            {this.props.isMobile && (
-                                <Fragment>
-                                    <div
-                                        style={{
-                                            backgroundColor:
-                                                'rgba(255, 255, 255, 0.65)',
-                                            height: 1,
-                                            width: '80%',
-                                            margin: '15px auto',
-                                        }}
-                                    />
-                                    <div
-                                        className="ant-menu-item"
-                                        role="menuitem"
-                                        style={{ paddingLeft: 24 }}
-                                    >
-                                        <NewTabLink url="https://github.com/caprover/caprover">
-                                            <GithubOutlined />
-                                            {localize(
-                                                'page_root.github_link',
-                                                'Github'
-                                            )}
-                                        </NewTabLink>
-                                    </div>
-
-                                    <div
-                                        className="ant-menu-item"
-                                        role="menuitem"
-                                        style={{ paddingLeft: 24 }}
-                                    >
-                                        <NewTabLink url="https://caprover.com">
-                                            <FileTextOutlined />
-                                            {localize(
-                                                'page_root.docs_link',
-                                                'Docs'
-                                            )}
-                                        </NewTabLink>
-                                    </div>
-
-                                    <div
-                                        className="ant-menu-item"
-                                        role="menuitem"
-                                        style={{ paddingLeft: 24 }}
-                                    >
-                                        <ClickableLink
-                                            onLinkClicked={() => {
-                                                this.apiManager.setAuthToken('')
-                                                this.goToLogin()
-                                            }}
-                                        >
-                                            {' '}
-                                            <LogoutOutlined />
-                                            {localize(
-                                                'page_root.logout',
-                                                'Logout'
-                                            )}
-                                        </ClickableLink>
-                                    </div>
-                                </Fragment>
-                            )}
-                        </Menu>
-                    </Sider>
+                        toggleSider={this.toggleSider}
+                        location={this.props.location}
+                        history={this.props.history}
+                        onLogoutClicked={() => {
+                            self.apiManager.setAuthToken('')
+                            self.goToLogin()
+                        }}
+                    />
                     <Content>
                         <div
                             ref={self.mainContainer}
@@ -438,6 +333,10 @@ class PageRoot extends ApiComponent<
                                     component={Monitoring}
                                 />
                                 <Route path="/cluster/" component={Cluster} />
+                                <Route
+                                    path="/maintenance/"
+                                    component={Maintenance}
+                                />
                                 <Route path="/settings/" component={Settings} />
                                 <Route path="/" component={LoggedInCatchAll} />
                             </Switch>

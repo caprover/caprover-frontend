@@ -12,9 +12,8 @@ body {
 }
 
 code {
-    font-family: Menlo, Monaco, 'SFMono-Regular', Consolas, 'Liberation Mono',
-        Courier, monospace;
-    background-color: #f9f2f4;
+    font-family: 'Noto Sans Mono', Menlo, Monaco, 'SFMono-Regular', Consolas,
+        'Liberation Mono', Courier, monospace;
     padding-left: 4px;
     padding-right: 4px;
     padding-top: 2px;
@@ -48,8 +47,8 @@ hr {
 }
 
 .code-input {
-    font-family: Menlo, Monaco, 'SFMono-Regular', Consolas, 'Liberation Mono',
-        Courier, monospace !important;
+    font-family: 'Noto Sans Mono', Menlo, Monaco, 'SFMono-Regular', Consolas,
+        'Liberation Mono', Courier, monospace !important;
 }
 
 .netdata-field {
@@ -57,8 +56,8 @@ hr {
 }
 
 .logs-output {
-    font-family: Menlo, Monaco, 'SFMono-Regular', Consolas, 'Liberation Mono',
-        Courier, monospace !important;
+    font-family: 'Noto Sans Mono', Menlo, Monaco, 'SFMono-Regular', Consolas,
+        'Liberation Mono', Courier, monospace !important;
     overflow: scroll;
     min-height: 250px !important;
     border-width: 2px;
@@ -99,4 +98,21 @@ hr {
 
 .pre-line-content {
     white-space: pre-wrap;
+}
+
+.slow-fadein-slow {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.slow-fadein-fast {
+    animation: fadeIn 0.1s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }

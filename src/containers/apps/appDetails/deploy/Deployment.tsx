@@ -346,7 +346,7 @@ export default class Deployment extends ApiComponent<
                                 ? webhookPushUrlFullPath
                                 : '** ' +
                                   localize(
-                                      'apps.deploy_method_github_url_hiint',
+                                      'apps.deploy_method_github_url_hint',
                                       'Add repo info and save for this webhook to appear'
                                   ) +
                                   ' **'

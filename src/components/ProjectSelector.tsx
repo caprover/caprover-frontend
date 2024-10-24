@@ -20,7 +20,7 @@ class ProjectSelector extends React.Component<ProjectSelectorProps> {
                 value: '',
                 label: localize(
                     'projects.parent_project_selector_default',
-                    'root <no parent>!'
+                    'root <no parent project>'
                 ),
             },
             ...allProjects

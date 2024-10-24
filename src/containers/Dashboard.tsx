@@ -1,5 +1,6 @@
 import { Button, Card, Col, Input, Modal, Row, Tooltip } from 'antd'
 import { Redirect, RouteComponentProps } from 'react-router'
+import { Fragment } from 'react/jsx-runtime'
 import AppConstants from '../utils/AppConstants'
 import { localize } from '../utils/Language'
 import Toaster from '../utils/Toaster'
@@ -342,11 +343,13 @@ export default class Dashboard extends ApiComponent<
             </span>,
             <i> captain.myawesomecompany.com </i>,
             <i> foo.bar.myawesomecompany.com </i>,
-            <p>
+            <Fragment>
+                <br />
                 <b> Type:</b> <u>A</u>, <b>Name (or host):</b>{' '}
                 <u> *.caprover-root</u>, <b> IP (or Points to):</b>{' '}
                 <u> 110.120.130.140 </u>
-            </p>,
+                <br />
+            </Fragment>,
         ]
         const translatedBody = Utils.formatText(
             localize(

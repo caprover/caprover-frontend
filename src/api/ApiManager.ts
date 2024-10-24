@@ -10,6 +10,7 @@ import {
 import { IRegistryInfo } from '../models/IRegistryInfo'
 import { IVersionInfo } from '../models/IVersionInfo'
 import ProjectDefinition from '../models/ProjectDefinition'
+import CapRoverTheme from '../styles/theme/CapRoverTheme'
 import ErrorFactory from '../utils/ErrorFactory'
 import Logger from '../utils/Logger'
 import StorageHelper from '../utils/StorageHelper'
@@ -99,6 +100,54 @@ export default class ApiManager {
 
                 return Promise.reject(error)
             })
+    }
+
+    getAllThemes(): Promise<{ themes: CapRoverTheme[] | undefined }> {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/user/system/themes/all', {}))
+    }
+
+    getCurrentTheme(): Promise<{ theme: CapRoverTheme }> {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/theme/current', {}))
+    }
+
+    setCurrentTheme(themeName: string): any {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/system/themes/setcurrent', {
+                    themeName,
+                })
+            )
+    }
+    saveTheme(oldName: string, theme: CapRoverTheme): any {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/system/themes/update', {
+                    oldName,
+                    name: theme.name,
+                    content: theme.content,
+                })
+            )
+    }
+
+    deleteTheme(themeName: string): any {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/system/themes/delete', {
+                    themeName,
+                })
+            )
     }
 
     getProFeaturesState(): Promise<{ proFeaturesState: IProFeatures }> {
@@ -230,7 +279,9 @@ export default class ApiManager {
             )
     }
 
-    registerProject(selectedProject: ProjectDefinition) {
+    registerProject(
+        selectedProject: ProjectDefinition
+    ): Promise<ProjectDefinition> {
         const http = this.http
         return Promise.resolve() //
             .then(

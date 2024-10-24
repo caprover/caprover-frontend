@@ -1,6 +1,6 @@
-import { Input } from 'antd'
-import React, { Component, Fragment } from 'react'
+import { Component, Fragment } from 'react'
 import yaml from 'yaml'
+import CodeEdit from './CodeEdit'
 
 function ensureStringifiedJson(raw: string) {
     raw = (raw || '').trim()
@@ -38,8 +38,7 @@ export default class InputJsonifier extends Component<
         return (
             <Fragment>
                 {' '}
-                <Input.TextArea
-                    className="code-input"
+                <CodeEdit
                     placeholder={self.props.placeholder}
                     rows={10}
                     defaultValue={self.props.defaultValue}

@@ -4,6 +4,7 @@ import { Component, Fragment } from 'react'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import { localize } from '../../../utils/Language'
 import Utils from '../../../utils/Utils'
+import CodeEdit from '../../global/CodeEdit'
 import NewTabLink from '../../global/NewTabLink'
 import { IAppEnvVar } from '../AppDefinition'
 import { AppDetailsTabProps } from './AppDetails'
@@ -89,8 +90,7 @@ export default class AppConfigs extends Component<
                 <div>
                     <Row style={{ paddingBottom: 12 }}>
                         <Col span={24}>
-                            <Input.TextArea
-                                className="code-input"
+                            <CodeEdit
                                 placeholder={'key1=value1\nkey2=value2'}
                                 rows={7}
                                 value={
@@ -130,6 +130,10 @@ export default class AppConfigs extends Component<
                 <Row style={{ paddingBottom: 12 }} key={`${index}`}>
                     <Col span={8}>
                         <Input
+                            spellCheck={false}
+                            autoCorrect="off"
+                            autoComplete="off"
+                            autoCapitalize="off"
                             className="code-input"
                             placeholder="key"
                             value={value.key}
@@ -145,8 +149,7 @@ export default class AppConfigs extends Component<
                         />
                     </Col>
                     <Col style={{ paddingLeft: 12 }} span={16}>
-                        <Input.TextArea
-                            className="code-input"
+                        <CodeEdit
                             placeholder="value"
                             rows={1}
                             value={value.value}
@@ -255,6 +258,10 @@ export default class AppConfigs extends Component<
                                 'apps.app_config_vol_path',
                                 'Path in App'
                             )}
+                            spellCheck={false}
+                            autoCorrect="off"
+                            autoComplete="off"
+                            autoCapitalize="off"
                             className="code-input"
                             placeholder="/var/www/html"
                             value={value.containerPath}
@@ -280,6 +287,10 @@ export default class AppConfigs extends Component<
                                 'apps.app_config_vol_label',
                                 'Label'
                             )}
+                            spellCheck={false}
+                            autoCorrect="off"
+                            autoComplete="off"
+                            autoCapitalize="off"
                             className="code-input"
                             placeholder="some-name"
                             value={value.volumeName}
@@ -311,6 +322,10 @@ export default class AppConfigs extends Component<
                                     'apps.app_config_vol_host_path',
                                     'Path on Host'
                                 )}
+                                spellCheck={false}
+                                autoCorrect="off"
+                                autoComplete="off"
+                                autoCapitalize="off"
                                 className="code-input"
                                 placeholder="/host/path/exists"
                                 value={value.hostPath}
@@ -420,6 +435,10 @@ export default class AppConfigs extends Component<
                                     'apps.app_config_vol_node_id',
                                     'Node ID'
                                 )}
+                                spellCheck={false}
+                                autoCorrect="off"
+                                autoComplete="off"
+                                autoCapitalize="off"
                                 className="code-input"
                                 value={app.nodeId ? app.nodeId : ''}
                                 disabled={!this.state.forceEditableNodeId}
@@ -633,12 +652,7 @@ export default class AppConfigs extends Component<
                             </NewTabLink>
                         </h4>
 
-                        <Input.TextArea
-                            spellCheck={false}
-                            autoCorrect="off"
-                            autoComplete="off"
-                            autoCapitalize="off"
-                            className="code-input"
+                        <CodeEdit
                             placeholder="var preDeployFunction = function (capRoverAppObj, dockerUpdateObject) ..."
                             rows={4}
                             value={
@@ -669,12 +683,7 @@ export default class AppConfigs extends Component<
                             </NewTabLink>
                         </h4>
 
-                        <Input.TextArea
-                            spellCheck={false}
-                            autoCorrect="off"
-                            autoComplete="off"
-                            autoCapitalize="off"
-                            className="code-input"
+                        <CodeEdit
                             placeholder={`## JSON / YAML
 {
   "TaskTemplate": {
@@ -746,8 +755,7 @@ export default class AppConfigs extends Component<
 
         if (this.state.tagsEditMode) {
             return (
-                <Input.TextArea
-                    className="code-input"
+                <CodeEdit
                     placeholder={'tag1,comma,separated,cannot-contain-space'}
                     rows={1}
                     defaultValue={(app.tags || [])

@@ -3,6 +3,7 @@ import { Button, Card, Col, Collapse, Input, Radio, Row, Tooltip } from 'antd'
 import { Component } from 'react'
 import { localize } from '../../utils/Language'
 import Utils from '../../utils/Utils'
+import CodeEdit from '../global/CodeEdit'
 
 export interface INodeToAdd {
     remoteNodeIpAddress: string
@@ -117,19 +118,20 @@ export default class AddNode extends Component<
                                     />
                                 </Tooltip>
                             </div>
-                            <Input.TextArea
-                                style={{ marginBottom: 20 }}
-                                className="code-input"
-                                rows={6}
-                                placeholder="-----BEGIN RSA PRIVATE KEY-----&#10;MIICWwIBAAKBgQDArfs81aizq8ckg16e+ewFgJg7J..."
-                                value={nodeToAdd.privateKey}
-                                onChange={(e) =>
-                                    self.changeModel(
-                                        'privateKey',
-                                        e.target.value
-                                    )
-                                }
-                            />
+
+                            <div style={{ marginBottom: 20 }}>
+                                <CodeEdit
+                                    rows={6}
+                                    placeholder="-----BEGIN RSA PRIVATE KEY-----&#10;MIICWwIBAAKBgQDArfs81aizq8ckg16e+ewFgJg7J..."
+                                    value={nodeToAdd.privateKey}
+                                    onChange={(e) =>
+                                        self.changeModel(
+                                            'privateKey',
+                                            e.target.value
+                                        )
+                                    }
+                                />
+                            </div>
                         </Col>
                     </Row>
                     <Row justify="end">

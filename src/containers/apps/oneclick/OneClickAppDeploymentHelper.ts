@@ -1,6 +1,7 @@
 import ApiManager from '../../../api/ApiManager'
 import { ICaptainDefinition } from '../../../models/ICaptainDefinition'
 import { IDockerComposeService } from '../../../models/IOneClickAppModels'
+import ProjectDefinition from '../../../models/ProjectDefinition'
 import DockerComposeToServiceOverride from '../../../utils/DockerComposeToServiceOverride'
 import Utils from '../../../utils/Utils'
 import { IAppDef } from '../AppDefinition'
@@ -10,17 +11,37 @@ export default class OneClickAppDeploymentHelper {
 
     createRegisterPromise(
         appName: string,
-        dockerComposeService: IDockerComposeService
+        dockerComposeService: IDockerComposeService,
+        projectMemoryCache: { projectId: string }
     ) {
         const self = this
         return Promise.resolve().then(function () {
             return self.apiManager.registerNewApp(
                 appName,
-                '',
+                projectMemoryCache.projectId,
                 !!dockerComposeService.volumes &&
                     !!dockerComposeService.volumes.length,
                 false
             )
+        })
+    }
+    createRegisterPromiseProject(
+        appName: string,
+        projectMemoryCache: { projectId: string }
+    ) {
+        const self = this
+        return Promise.resolve().then(function () {
+            const projectDef: ProjectDefinition = {
+                id: '',
+                name: appName,
+                description: ``,
+            }
+            // change backend to ensure this returns project ID
+            return self.apiManager
+                .registerProject(projectDef)
+                .then(function (data) {
+                    projectMemoryCache.projectId = data.id
+                })
         })
     }
 

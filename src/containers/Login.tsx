@@ -117,11 +117,22 @@ class NormalLoginForm extends React.Component<
         otpEntered: string
     }
 > {
+    isDemo: boolean = false
     constructor(props: any) {
         super(props)
+
+        try {
+            const urlSearchParams = new URLSearchParams(window.location.search)
+            // @ts-ignore
+            const params = Object.fromEntries(urlSearchParams.entries())
+            this.isDemo = !!params.demo
+        } catch (e) {
+            console.error(e)
+        }
+
         this.state = {
             loginOption: NO_SESSION,
-            passwordEntered: ``,
+            passwordEntered: this.getDefaultPassword(),
             otpEntered: ``,
         }
     }
@@ -144,6 +155,7 @@ class NormalLoginForm extends React.Component<
         return (
             <form onSubmit={this.handleSubmit}>
                 <Input.Password
+                    defaultValue={this.getDefaultPassword()}
                     required
                     onKeyDown={(key) => {
                         if (
@@ -243,5 +255,9 @@ class NormalLoginForm extends React.Component<
                 </Collapse>
             </form>
         )
+    }
+
+    private getDefaultPassword(): string {
+        return this.isDemo ? 'captain42' : ''
     }
 }

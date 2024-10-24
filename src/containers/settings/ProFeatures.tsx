@@ -69,15 +69,7 @@ export default class ProFeatures extends ApiComponent<
         if (!apiData || !apiData.isFeatureFlagEnabled) return <></>
 
         return (
-            <div style={{ animation: 'fadeIn 0.5s ease-in' }}>
-                <style>
-                    {`
-                    @keyframes fadeIn {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
-                    }
-                    `}
-                </style>
+            <div className="slow-fadein-slow">
                 <Card
                     title={
                         <div style={{}}>
