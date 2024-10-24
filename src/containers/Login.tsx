@@ -123,7 +123,7 @@ class NormalLoginForm extends React.Component<
 
         try {
             const urlSearchParams = new URLSearchParams(window.location.search)
-            //@ts-ignore
+            // @ts-ignore
             const params = Object.fromEntries(urlSearchParams.entries())
             this.isDemo = !!params.demo
         } catch (e) {
