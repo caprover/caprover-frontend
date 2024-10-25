@@ -26,7 +26,7 @@ const CodeEdit: React.FC<CodeEditProps> = ({
             placeholder={placeholder}
             style={{
                 overflowX: 'auto',
-                whiteSpace: 'nowrap',
+                whiteSpace: 'pre',
                 fontSize: 12,
             }}
             className="code-input"
