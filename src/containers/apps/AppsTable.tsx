@@ -330,19 +330,23 @@ class AppsTable extends Component<
                 extra={
                     <div
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "0.5em"
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5em',
                         }}
                     >
                         <Button
-                          onClick={() => document.getElementById('create-new-app')?.toggleAttribute('open')}
-                          type="primary"
+                            onClick={() =>
+                                document
+                                    .getElementById('create-new-app')
+                                    ?.toggleAttribute('open')
+                            }
+                            type="primary"
                         >
-                          {localize(
-                            'create_new_app.button',
-                            'Create New App'
-                          )}
+                            {localize(
+                                'create_new_app.button',
+                                'Create New App'
+                            )}
                         </Button>
                         {self.state.isBulkEditMode && (
                             <Tooltip
