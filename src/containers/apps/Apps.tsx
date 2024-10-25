@@ -75,7 +75,7 @@ export default class Apps extends ApiComponent<
         return (
             <div className="slow-fadein-fast">
                 <details id="create-new-app">
-                    <summary style={{display: 'none'}}></summary>
+                    <summary style={{ display: 'none' }}></summary>
                     <div
                         style={{
                             display: 'flex',
@@ -83,7 +83,7 @@ export default class Apps extends ApiComponent<
                             gap: 25,
                             padding: '0 20px',
                             margin: '0 auto 50px',
-                            maxWidth: 1000
+                            maxWidth: 1000,
                         }}
                     >
                         <Row justify="center">
@@ -109,7 +109,9 @@ export default class Apps extends ApiComponent<
                                         )
                                     }}
                                     onOneClickAppClicked={() => {
-                                        self.props.history.push('/apps/oneclick')
+                                        self.props.history.push(
+                                            '/apps/oneclick'
+                                        )
                                     }}
                                 />
                             </Col>
