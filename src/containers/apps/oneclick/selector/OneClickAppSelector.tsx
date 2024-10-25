@@ -94,19 +94,28 @@ export default class OneClickAppSelector extends ApiComponent<
 
                 <InputJsonifier
                     placeholder={`YAML or JSON # use captainVersion 4
-{
-  "captainVersion": "4",
-  "version": "3.3"
-  "services": {
-    "$$cap_appname": {
-          "image": "adminer:$$cap_adminer_version",
-          "containerHttpPort": "8080",
-          "environment": {
-              "ADMINER_DESIGN": "$$cap_adminer_design"
-          }
-    }
-  }
-}`}
+captainVersion: 4
+services:
+    $$cap_appname:
+        image: someimage:$$cap_version
+        caproverExtra:
+            containerHttpPort: '8080'
+caproverOneClickApp:
+    variables:
+        - id: $$cap_version
+          label: Version Tag
+          description: Check out their Docker page for the valid tags https://hub.docker.com/r/library/..../tags/
+          defaultValue: '4'
+          validRegex: /^(1.2.3)+$/
+    instructions:
+        start: >-
+            Some description for the start instruction.
+        end: Some description for the end instruction.
+    displayName: Adminer
+    isOfficial: true
+    description: Some really good description of the app.
+    documentation: 'Taken from https://hub.docker.com/_/someimage '
+    `}
                     onChange={(stringified) => {
                         self.setState({
                             templateOneClickAppData: stringified,
