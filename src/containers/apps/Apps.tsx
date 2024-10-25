@@ -90,7 +90,7 @@ export default class Apps extends ApiComponent<
                                 span: 24,
                             }}
                             lg={{
-                                span: 13,
+                                span: 24,
                             }}
                         >
                             <CreateNewApp
