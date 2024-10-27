@@ -109,6 +109,11 @@ export default class Apps extends ApiComponent<
                                 onOneClickAppClicked={() => {
                                     self.props.history.push('/apps/oneclick')
                                 }}
+                                onDockerComposeClicked={() => {
+                                    self.props.history.push(
+                                        '/apps/dockercompose'
+                                    )
+                                }}
                             />
                         </Col>
                     </Row>

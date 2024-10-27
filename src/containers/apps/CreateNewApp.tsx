@@ -15,6 +15,7 @@ interface MyProps {
         hasPersistency: boolean
     ) => void
     onOneClickAppClicked: () => void
+    onDockerComposeClicked: () => void
 
     projects: ProjectDefinition[]
 }
@@ -192,7 +193,7 @@ class CreateNewApp extends Component<
                                     block
                                     type="default"
                                     onClick={() => {
-                                        self.props.onOneClickAppClicked()
+                                        self.props.onDockerComposeClicked()
                                     }}
                                 >
                                     {localize(
