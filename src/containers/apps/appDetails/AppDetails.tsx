@@ -1,21 +1,23 @@
 import {
     CaretRightOutlined,
-    CloseOutlined,
     DeleteOutlined,
     FolderOpenOutlined,
+    MoreOutlined,
     SaveOutlined,
 } from '@ant-design/icons'
+import type { MenuProps } from 'antd'
 import {
     Affix,
     Button,
     Card,
     Col,
+    Dropdown,
     Input,
     Modal,
     Row,
+    Space,
     Tabs,
     Tag,
-    Tooltip,
     Typography,
 } from 'antd'
 import classnames from 'classnames'
@@ -191,6 +193,36 @@ class AppDetails extends ApiComponent<
 
         const appName = app.appName || ''
 
+        const onEditClicked = () => {
+            self.setState({
+                editAppDataForModal: {
+                    parentProjectId: app.projectId || '',
+                    appName: appName,
+                    description: app.description || '',
+                    tags: (app.tags || []).map((it) => it.tagName),
+                },
+            })
+        }
+
+        const items: MenuProps['items'] = [
+            {
+                key: '1',
+                label: (
+                    <ClickableLink onLinkClicked={() => onEditClicked()}>
+                        {localize('apps.edit', 'Edit')}
+                    </ClickableLink>
+                ),
+            },
+            {
+                key: '2',
+                label: (
+                    <ClickableLink onLinkClicked={() => self.goBackToApps()}>
+                        {localize('apps.close_tooltip', 'Close')}
+                    </ClickableLink>
+                ),
+            },
+        ]
+
         return (
             <div style={{ marginTop: 20, marginBottom: 10, width: '100%' }}>
                 <div
@@ -204,19 +236,18 @@ class AppDetails extends ApiComponent<
                 >
                     <Row justify={'end'}>
                         <Col>
-                            {' '}
-                            <ClickableLink
-                                onLinkClicked={() => self.goBackToApps()}
-                            >
-                                <Tooltip
-                                    title={localize(
-                                        'apps.close_tooltip',
-                                        'Close'
-                                    )}
+                            <Dropdown trigger={['click']} menu={{ items }}>
+                                <a
+                                    href="#/"
+                                    onClick={(e) => e.preventDefault()}
                                 >
-                                    <CloseOutlined />
-                                </Tooltip>
-                            </ClickableLink>
+                                    <Space>
+                                        <MoreOutlined
+                                            style={{ fontSize: `1.6em` }}
+                                        />
+                                    </Space>
+                                </a>
+                            </Dropdown>
                         </Col>
                     </Row>
                 </div>
@@ -230,16 +261,7 @@ class AppDetails extends ApiComponent<
                 >
                     <EditableSpan
                         onEditClick={() => {
-                            self.setState({
-                                editAppDataForModal: {
-                                    parentProjectId: app.projectId || '',
-                                    appName: appName,
-                                    description: app.description || '',
-                                    tags: (app.tags || []).map(
-                                        (it) => it.tagName
-                                    ),
-                                },
-                            })
+                            onEditClicked()
                         }}
                     >
                         {appName}
