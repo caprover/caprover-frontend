@@ -49,41 +49,66 @@ export default class AccessLogReports extends Component<
             .sort((a, b) => b.time - a.time)
 
         return (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 3fr',
+                    gap: '20px',
+                }}
+            >
                 {groupList.map(({ key, reports }) => (
-                    <div>
+                    <>
                         <h3>{key}</h3>
-                        {Object.entries(
-                            reports.reduce(
-                                (
-                                    acc: { [key: string]: GoAccessReport[] },
-                                    report
-                                ) => {
-                                    if (!acc[report.domainName]) {
-                                        acc[report.domainName] = []
-                                    }
-                                    acc[report.domainName].push(report)
-                                    return acc
-                                },
-                                {}
-                            )
-                        ).map(([domainName, reports]) => (
-                            <div>
-                                <h4>{domainName}</h4>
-                                {reports.map((r) => (
-                                    <p>
-                                        <a
-                                            href={r.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {r.name}
-                                        </a>
-                                    </p>
-                                ))}
-                            </div>
-                        ))}
-                    </div>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                flexDirection: 'row',
+                                gap: '40px',
+                            }}
+                        >
+                            {Object.entries(
+                                reports.reduce(
+                                    (
+                                        acc: {
+                                            [key: string]: GoAccessReport[]
+                                        },
+                                        report
+                                    ) => {
+                                        if (!acc[report.domainName]) {
+                                            acc[report.domainName] = []
+                                        }
+                                        acc[report.domainName].push(report)
+                                        return acc
+                                    },
+                                    {}
+                                )
+                            ).map(([domainName, reports]) => (
+                                <div>
+                                    <h4>{domainName}</h4>
+                                    {reports.map((r) => (
+                                        <p>
+                                            <a
+                                                href={r.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {r.name}
+                                            </a>
+                                        </p>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                        <hr
+                            style={{
+                                gridColumn: '1 / 3',
+                                height: '1px',
+                                width: '100%',
+                                opacity: 0.2,
+                            }}
+                        />
+                    </>
                 ))}
             </div>
         )
