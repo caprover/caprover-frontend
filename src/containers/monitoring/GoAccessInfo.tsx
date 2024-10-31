@@ -9,6 +9,7 @@ import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 import ErrorRetry from '../global/ErrorRetry'
 import GoAccessDescription from './GoAccessDescription'
+import GoAccessSettingsForm from './GoAccessSettingsForm'
 
 class GoAccessInfo extends ApiComponent<
     {
@@ -123,7 +124,15 @@ class GoAccessInfo extends ApiComponent<
                                         : ''
                                 }
                             >
-                                <Row justify="end" gutter={20}>
+                                <Row justify="space-between">
+                                    <p>
+                                        <b>
+                                            {localize(
+                                                'goaccess.logs_location',
+                                                'Access logs are available on each app details page'
+                                            )}
+                                        </b>
+                                    </p>
                                     <Button
                                         style={{
                                             marginInlineEnd: self.props.isMobile
@@ -152,31 +161,14 @@ class GoAccessInfo extends ApiComponent<
                                 <div style={{ height: 30 }} />
                                 <hr />
                                 <div style={{ height: 30 }} />
-                                {/* <NetDataSettingsForm
-                                    updateModel={(netDataInfo) => {
-                                        self.setState({ apiData: netDataInfo })
+                                <GoAccessSettingsForm
+                                    goAccessInfo={goAccessInfo}
+                                    saveSettings={(goAccessInfo) => {
+                                        self.onUpdateGoAccessClicked(
+                                            goAccessInfo
+                                        )
                                     }}
-                                    netDataInfo={netDataInfo}
-                                /> */}
-                                GoAccess Settings
-                                <br />
-                                <Row justify="end">
-                                    <Button
-                                        type="primary"
-                                        onClick={() =>
-                                            self.onUpdateGoAccessClicked(
-                                                Utils.copyObject(
-                                                    self.state.apiData
-                                                )
-                                            )
-                                        }
-                                    >
-                                        {localize(
-                                            'goaccess.update',
-                                            'Update GoAccess'
-                                        )}
-                                    </Button>
-                                </Row>
+                                />
                             </div>
                         </Card>
                     </Col>

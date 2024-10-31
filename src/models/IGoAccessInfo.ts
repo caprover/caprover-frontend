@@ -1,6 +1,8 @@
 export default interface IGoAccessInfo {
     isEnabled: boolean
     data: {
-        temp: boolean
+        rotationFrequencyCron: string
+        catchupFrequencyCron: string
+        logRetentionDays?: number
     }
 }
