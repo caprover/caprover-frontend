@@ -129,7 +129,7 @@ class GoAccessInfo extends ApiComponent<
                                         <b>
                                             {localize(
                                                 'goaccess.logs_location',
-                                                'Access logs are available on each app details page'
+                                                'View access logs on the app details page'
                                             )}
                                         </b>
                                     </p>

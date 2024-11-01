@@ -56,28 +56,71 @@ export default class GoAccessSettingsForm extends Component<
     }
 
     rotationFrequencyOptions = [
-        { value: '0 0 * * 0', label: 'Weekly' },
-        { value: '0 0 1 * *', label: 'Monthly' },
-        { value: '0 0 1 */2 *', label: 'Every 2 Months' },
-        { value: '0 0 1 */4 *', label: 'Every 4 Months' },
-        { value: CUSTOM, label: 'Custom' },
+        {
+            value: '0 0 * * 0',
+            label: localize('goaccess_settings.weekly', 'Weekly'),
+        },
+        {
+            value: '0 0 1 * *',
+            label: localize('goaccess_settings.monthly', 'Monthly'),
+        },
+        {
+            value: '0 0 1 */2 *',
+            label: localize(
+                'goaccess_settings.every_2_months',
+                'Every 2 Months'
+            ),
+        },
+        {
+            value: '0 0 1 */4 *',
+            label: localize(
+                'goaccess_settings.every_4_months',
+                'Every 4 Months'
+            ),
+        },
+        {
+            value: CUSTOM,
+            label: localize('goaccess_settings.custom', 'Custom'),
+        },
     ]
 
     catchupFrequencyOptions = [
-        { value: '* * * * *', label: 'Every Minute' },
-        { value: '*/10 * * * *', label: 'Every 10 Minutes' },
-        { value: '0 * * * *', label: 'Every Hour' },
-        { value: '0 */6 * * *', label: 'Every 6 Hours' },
-        { value: '0 0 * * *', label: 'Every Day' },
-        { value: CUSTOM, label: 'Custom' },
+        {
+            value: '* * * * *',
+            label: localize('goaccess_settings.every_minute', 'Every Minute'),
+        },
+        {
+            value: '*/10 * * * *',
+            label: localize(
+                'goaccess_settings.every_10_minute',
+                'Every 10 Minutes'
+            ),
+        },
+        {
+            value: '0 * * * *',
+            label: localize('goaccess_settings.every_hour', 'Every Hour'),
+        },
+        {
+            value: '0 0 * * *',
+            label: localize('goaccess_settings.every_day', 'Every Day'),
+        },
+        {
+            value: CUSTOM,
+            label: localize('goaccess_settings.custom', 'Custom'),
+        },
     ]
 
     logRetentionOptions = [
-        { value: '-1', label: 'Indefinitely' },
-        { value: '30', label: '30 Days' },
-        { value: '183', label: '6 Months' },
-        { value: '365', label: 'One Year' },
-        { value: CUSTOM, label: 'Custom' },
+        {
+            value: '-1',
+            label: localize('goaccess_settings.indefinite', 'Indefinitely'),
+        },
+        { value: '180', label: '180' },
+        { value: '365', label: '365' },
+        {
+            value: CUSTOM,
+            label: localize('goaccess_settings.custom', 'Custom'),
+        },
     ]
 
     updateRotationFrequency(selectValue?: string, customValue?: string) {
@@ -172,7 +215,10 @@ export default class GoAccessSettingsForm extends Component<
                             {this.state.rotationFreqSelect === CUSTOM && (
                                 <Input
                                     style={{ width: 200 }}
-                                    placeholder="Valid Crontab Expression"
+                                    placeholder={localize(
+                                        'goaccess_settings.crontab_placeholder',
+                                        'Valid Crontab Expression'
+                                    )}
                                     value={this.state.rotationFreqCustom}
                                     required
                                     onChange={(e) =>
@@ -202,7 +248,10 @@ export default class GoAccessSettingsForm extends Component<
                             {this.state.catchupFreqSelect === CUSTOM && (
                                 <Input
                                     style={{ width: 200 }}
-                                    placeholder="Valid Crontab Expression"
+                                    placeholder={localize(
+                                        'goaccess_settings.crontab_placeholder',
+                                        'Valid Crontab Expression'
+                                    )}
                                     value={this.state.catchupFreqCustom}
                                     required
                                     onChange={(e) =>
@@ -218,7 +267,7 @@ export default class GoAccessSettingsForm extends Component<
                         <Form.Item
                             label={localize(
                                 'goaccess_settings.log_retention',
-                                'Log Retention Days'
+                                'Log and Report Retention Days'
                             )}
                         >
                             <Select
@@ -233,7 +282,10 @@ export default class GoAccessSettingsForm extends Component<
                                 <Input
                                     type="number"
                                     style={{ width: 200 }}
-                                    placeholder="365"
+                                    placeholder={localize(
+                                        'goaccess_settings.log_retention_placeholder',
+                                        'Number of days'
+                                    )}
                                     required
                                     value={this.state.logRetentionCustom}
                                     onChange={(e) =>
