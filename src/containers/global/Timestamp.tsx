@@ -1,15 +1,15 @@
-import { Tooltip } from 'antd'
-import moment from 'moment'
-import { Component } from 'react'
+import { Tooltip } from 'antd';
+import { Component } from 'react';
+import Utils from '../../utils/Utils';
 
 export default class Timestamp extends Component<{ timestamp: string }, {}> {
     render() {
-        const timestamp = this.props.timestamp
+        const timestamp = this.props.timestamp;
+
         return (
-            <Tooltip title={moment(new Date(timestamp)).fromNow()}>
+            <Tooltip title={Utils.getRelativeDateTime(timestamp)}>
                 <span>
-                    {/* 'L' represents localized date format, 'LT' represents localized time format */}
-                    {moment(new Date(timestamp)).format('L, LT')}
+                    {Utils.getLocalizedDateTime(timestamp)}
                 </span>
             </Tooltip>
         )
