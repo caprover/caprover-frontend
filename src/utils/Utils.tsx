@@ -173,8 +173,8 @@ export default {
         return newObject
     },
 
-    getLocalizedDateTime(ts: string) {
-        const formattedDate = new Date(ts).toLocaleString('default', {
+    getLocalizedDateTime(timestamp: string) {
+        const formattedDate = new Date(timestamp).toLocaleString('default', {
             year: 'numeric',
             month: 'numeric',
             day: 'numeric',
@@ -184,7 +184,7 @@ export default {
         return formattedDate
     },
 
-    getRelativeDateTime(ts: string) {
-        return moment(new Date(ts)).fromNow()
+    getRelativeDateTime(timestamp: string) {
+        return moment(new Date(timestamp)).fromNow()
     },
 }
