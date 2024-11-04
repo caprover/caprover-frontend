@@ -119,11 +119,11 @@ export default {
         return !raw
             ? ''
             : decodeURIComponent(
-                raw
-                    .substring(8, raw.length)
-                    .replace(/\s+/g, '')
-                    .replace(/[0-9a-f]{2}/g, '%$&')
-            )
+                  raw
+                      .substring(8, raw.length)
+                      .replace(/\s+/g, '')
+                      .replace(/[0-9a-f]{2}/g, '%$&')
+              )
     },
 
     formatText(
@@ -179,7 +179,7 @@ export default {
             month: 'numeric',
             day: 'numeric',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
         })
         return formattedDate
     },
