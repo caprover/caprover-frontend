@@ -1,3 +1,4 @@
+import moment from 'moment'
 import React, { ReactElement } from 'react'
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -170,5 +171,20 @@ export default {
         })
 
         return newObject
+    },
+
+    getLocalizedDateTime(timestamp: string) {
+        const formattedDate = new Date(timestamp).toLocaleString('default', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        })
+        return formattedDate
+    },
+
+    getRelativeDateTime(timestamp: string) {
+        return moment(new Date(timestamp)).fromNow()
     },
 }
