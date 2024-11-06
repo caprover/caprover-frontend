@@ -555,6 +555,12 @@ export default class ApiManager {
                 )
             )
     }
+    getGoAccessReport(reportUrl: string) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, reportUrl, {}))
+    }
 
     changePass(oldPassword: string, newPassword: string) {
         const http = this.http

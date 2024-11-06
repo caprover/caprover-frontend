@@ -1,3 +1,4 @@
+import { Button, Modal } from 'antd'
 import { Component } from 'react'
 import { AppDetailsTabProps } from './AppDetails'
 
@@ -9,6 +10,8 @@ interface GoAccessReport {
 }
 interface LogReportState {
     reportList: GoAccessReport[]
+    reportOpen: string | undefined
+    reportHtml: string | undefined
 }
 export default class AccessLogReports extends Component<
     AppDetailsTabProps,
@@ -18,6 +21,8 @@ export default class AccessLogReports extends Component<
         super(props)
         this.state = {
             reportList: [],
+            reportOpen: undefined,
+            reportHtml: undefined,
         }
     }
     render() {
@@ -49,68 +54,95 @@ export default class AccessLogReports extends Component<
             .sort((a, b) => b.time - a.time)
 
         return (
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 3fr',
-                    gap: '20px',
-                }}
-            >
-                {groupList.map(({ key, reports }) => (
-                    <>
-                        <h3>{key}</h3>
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                flexDirection: 'row',
-                                gap: '40px',
-                            }}
-                        >
-                            {Object.entries(
-                                reports.reduce(
-                                    (
-                                        acc: {
-                                            [key: string]: GoAccessReport[]
+            <>
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 3fr',
+                        gap: '20px',
+                    }}
+                >
+                    {groupList.map(({ key, reports }) => (
+                        <div style={{ display: 'contents' }} key={key}>
+                            <h3>{key}</h3>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    flexDirection: 'row',
+                                    gap: '40px',
+                                }}
+                            >
+                                {Object.entries(
+                                    reports.reduce(
+                                        (
+                                            acc: {
+                                                [key: string]: GoAccessReport[]
+                                            },
+                                            report
+                                        ) => {
+                                            if (!acc[report.domainName]) {
+                                                acc[report.domainName] = []
+                                            }
+                                            acc[report.domainName].push(report)
+                                            return acc
                                         },
-                                        report
-                                    ) => {
-                                        if (!acc[report.domainName]) {
-                                            acc[report.domainName] = []
-                                        }
-                                        acc[report.domainName].push(report)
-                                        return acc
-                                    },
-                                    {}
-                                )
-                            ).map(([domainName, reports]) => (
-                                <div>
-                                    <h4>{domainName}</h4>
-                                    {reports.map((r) => (
-                                        <p>
-                                            <a
-                                                href={r.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {r.name}
-                                            </a>
-                                        </p>
-                                    ))}
-                                </div>
-                            ))}
+                                        {}
+                                    )
+                                ).map(([domainName, reports]) => (
+                                    <div key={`${key}-${domainName}`}>
+                                        <h4>{domainName}</h4>
+                                        {reports.map((r) => (
+                                            <p key={r.name}>
+                                                <Button
+                                                    onClick={() =>
+                                                        this.onReportClick(
+                                                            r.name,
+                                                            r.url
+                                                        )
+                                                    }
+                                                >
+                                                    {r.name}
+                                                </Button>
+                                            </p>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                            <hr
+                                style={{
+                                    gridColumn: '1 / 3',
+                                    height: '1px',
+                                    width: '100%',
+                                    opacity: 0.2,
+                                }}
+                            />
                         </div>
-                        <hr
+                    ))}
+                </div>
+
+                <Modal
+                    closable={true}
+                    footer={<div />}
+                    title={this.state.reportOpen}
+                    open={this.state.reportOpen !== undefined}
+                    onCancel={() => this.onModalClose()}
+                    loading={!this.state.reportHtml}
+                    width="90vw"
+                    style={{ top: 20 }}
+                >
+                    {this.state.reportHtml && (
+                        <iframe
+                            title="GoAccess"
                             style={{
-                                gridColumn: '1 / 3',
-                                height: '1px',
                                 width: '100%',
-                                opacity: 0.2,
+                                minHeight: 'calc(85vh - 20px)',
                             }}
-                        />
-                    </>
-                ))}
-            </div>
+                            srcDoc={this.state.reportHtml}
+                        ></iframe>
+                    )}
+                </Modal>
+            </>
         )
     }
 
@@ -125,9 +157,20 @@ export default class AccessLogReports extends Component<
         this.props.apiManager
             .getGoAccessReports(this.props.apiData!.appDefinition.appName!)
             .then((response) => {
-                console.log('Got response', { response })
                 self.setState({ reportList: response })
                 this.props.setLoading(false)
             })
+    }
+
+    onReportClick(reportName: string, reportUrl: string) {
+        this.setState({ reportOpen: reportName })
+
+        this.props.apiManager.getGoAccessReport(reportUrl).then((report) => {
+            this.setState({ reportHtml: report })
+        })
+    }
+
+    onModalClose() {
+        this.setState({ reportOpen: undefined, reportHtml: undefined })
     }
 }
