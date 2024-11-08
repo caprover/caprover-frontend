@@ -10,11 +10,9 @@ interface GoAccessSettingsProps {
 
 interface GoAccessSettingsState {
     rotationFreqSelect: string | undefined
-    catchupFreqSelect: string | undefined
     logRetentionSelect: string | undefined
 
     rotationFreqCustom: string | undefined
-    catchupFreqCustom: string | undefined
     logRetentionCustom: number | undefined
 }
 
@@ -31,10 +29,6 @@ export default class GoAccessSettingsForm extends Component<
                 this.rotationFrequencyOptions,
                 props.goAccessInfo.data.rotationFrequencyCron
             ),
-            catchupFreqSelect: this.valueOrCustom(
-                this.catchupFrequencyOptions,
-                props.goAccessInfo.data.catchupFrequencyCron
-            ),
             logRetentionSelect:
                 props.goAccessInfo.data.logRetentionDays === undefined
                     ? '-1'
@@ -43,7 +37,6 @@ export default class GoAccessSettingsForm extends Component<
                           props.goAccessInfo.data.logRetentionDays.toString()
                       ),
             rotationFreqCustom: props.goAccessInfo.data.rotationFrequencyCron,
-            catchupFreqCustom: props.goAccessInfo.data.catchupFrequencyCron,
             logRetentionCustom: props.goAccessInfo.data.logRetentionDays,
         }
     }
@@ -84,32 +77,6 @@ export default class GoAccessSettingsForm extends Component<
         },
     ]
 
-    catchupFrequencyOptions = [
-        {
-            value: '* * * * *',
-            label: localize('goaccess_settings.every_minute', 'Every Minute'),
-        },
-        {
-            value: '*/10 * * * *',
-            label: localize(
-                'goaccess_settings.every_10_minute',
-                'Every 10 Minutes'
-            ),
-        },
-        {
-            value: '0 * * * *',
-            label: localize('goaccess_settings.every_hour', 'Every Hour'),
-        },
-        {
-            value: '0 0 * * *',
-            label: localize('goaccess_settings.every_day', 'Every Day'),
-        },
-        {
-            value: CUSTOM,
-            label: localize('goaccess_settings.custom', 'Custom'),
-        },
-    ]
-
     logRetentionOptions = [
         {
             value: '-1',
@@ -128,14 +95,6 @@ export default class GoAccessSettingsForm extends Component<
             this.setState({ rotationFreqCustom: customValue })
         } else {
             this.setState({ rotationFreqSelect: selectValue })
-        }
-    }
-
-    updateCatchupFrequency(selectValue?: string, customValue?: string) {
-        if (customValue !== undefined) {
-            this.setState({ catchupFreqCustom: customValue })
-        } else {
-            this.setState({ catchupFreqSelect: selectValue })
         }
     }
 
@@ -165,11 +124,6 @@ export default class GoAccessSettingsForm extends Component<
             (this.state.rotationFreqSelect === CUSTOM
                 ? this.state.rotationFreqCustom
                 : this.state.rotationFreqSelect) ?? '0 0 1 * *'
-
-        updated.data.catchupFrequencyCron =
-            (this.state.catchupFreqSelect === CUSTOM
-                ? this.state.catchupFreqCustom
-                : this.state.catchupFreqSelect) ?? '0 * * * *'
 
         updated.data.logRetentionDays =
             this.state.logRetentionSelect === CUSTOM
@@ -223,39 +177,6 @@ export default class GoAccessSettingsForm extends Component<
                                     required
                                     onChange={(e) =>
                                         this.updateRotationFrequency(
-                                            undefined,
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                            )}
-                        </Form.Item>
-
-                        <Form.Item
-                            label={localize(
-                                'goaccess_settings.catchup_frequency',
-                                'Catch Up Report Processing Frequency'
-                            )}
-                        >
-                            <Select
-                                style={{ width: 200, marginRight: '1em' }}
-                                options={this.catchupFrequencyOptions}
-                                value={this.state.catchupFreqSelect}
-                                onChange={(value) =>
-                                    this.updateCatchupFrequency(value)
-                                }
-                            />
-                            {this.state.catchupFreqSelect === CUSTOM && (
-                                <Input
-                                    style={{ width: 200 }}
-                                    placeholder={localize(
-                                        'goaccess_settings.crontab_placeholder',
-                                        'Valid Crontab Expression'
-                                    )}
-                                    value={this.state.catchupFreqCustom}
-                                    required
-                                    onChange={(e) =>
-                                        this.updateCatchupFrequency(
                                             undefined,
                                             e.target.value
                                         )

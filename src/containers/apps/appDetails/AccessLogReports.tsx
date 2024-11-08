@@ -1,5 +1,6 @@
 import { Button, Modal } from 'antd'
 import { Component } from 'react'
+import { localize } from '../../../utils/Language'
 import { AppDetailsTabProps } from './AppDetails'
 
 interface GoAccessReport {
@@ -102,7 +103,7 @@ export default class AccessLogReports extends Component<
                                                         )
                                                     }
                                                 >
-                                                    {r.name}
+                                                    {this.reportName(r)}
                                                 </Button>
                                             </p>
                                         ))}
@@ -160,6 +161,18 @@ export default class AccessLogReports extends Component<
                 self.setState({ reportList: response })
                 this.props.setLoading(false)
             })
+    }
+
+    reportName(report: GoAccessReport) {
+        if (report.name.includes('Live')) {
+            return localize('goaccess_settings.live', 'Live')
+        }
+        const date = new Date(report.lastModifiedTime)
+
+        return date.toLocaleString(undefined, {
+            dateStyle: 'short',
+            timeStyle: 'medium',
+        })
     }
 
     onReportClick(reportName: string, reportUrl: string) {
