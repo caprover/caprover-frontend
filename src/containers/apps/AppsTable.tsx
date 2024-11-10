@@ -345,8 +345,8 @@ class AppsTable extends Component<
                         >
                             {self.props.showCreateAppForm
                                 ? localize(
-                                      'apps_table.hide_create_app_form',
-                                      'Hide Create App Form'
+                                      'apps_table.hide_create_app',
+                                      'Hide Create App'
                                   )
                                 : localize(
                                       'create_new_app.title',
