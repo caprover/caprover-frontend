@@ -349,8 +349,8 @@ class AppsTable extends Component<
                                       'Hide Create App Form'
                                   )
                                 : localize(
-                                      'apps_table.create_new_app',
-                                      'Create New App'
+                                      'create_new_app.title',
+                                      'Create A New App'
                                   )}
                         </Button>
                         {self.state.isBulkEditMode && (
