@@ -63,6 +63,8 @@ class AppsTable extends Component<
         defaultNginxConfig: string
         isMobile: boolean
         search: string | undefined
+        showCreateAppForm: boolean
+        onToggleCreateAppVisibility: () => void
     },
     {
         searchTerm: string
@@ -337,16 +339,19 @@ class AppsTable extends Component<
                     >
                         <Button
                             onClick={() =>
-                                document
-                                    .getElementById('create-new-app')
-                                    ?.toggleAttribute('open')
+                                self.props.onToggleCreateAppVisibility()
                             }
                             type="primary"
                         >
-                            {localize(
-                                'create_new_app.button',
-                                'Create New App'
-                            )}
+                            {self.props.showCreateAppForm
+                                ? localize(
+                                      'apps_table.hide_create_app_form',
+                                      'Hide Create App Form'
+                                  )
+                                : localize(
+                                      'apps_table.create_new_app',
+                                      'Create New App'
+                                  )}
                         </Button>
                         {self.state.isBulkEditMode && (
                             <Tooltip

@@ -8,6 +8,7 @@ import ErrorRetry from '../global/ErrorRetry'
 import { IAppDef } from './AppDefinition'
 import AppsTable from './AppsTable'
 import CreateNewApp from './CreateNewApp'
+import StorageHelper from '../../utils/StorageHelper'
 
 export default class Apps extends ApiComponent<
     RouteComponentProps<any>,
@@ -23,6 +24,7 @@ export default class Apps extends ApiComponent<
                   projects: ProjectDefinition[]
               }
             | undefined
+        showCreateAppForm: boolean
     }
 > {
     constructor(props: any) {
@@ -30,6 +32,8 @@ export default class Apps extends ApiComponent<
         this.state = {
             isLoading: true,
             apiData: undefined,
+            showCreateAppForm:
+                StorageHelper.getCreateAppFormVisibilityFromLocalStorage(),
         }
     }
 
@@ -72,10 +76,16 @@ export default class Apps extends ApiComponent<
             return <ErrorRetry />
         }
 
+        const showAppsTable: boolean =
+            apiData.apps.appDefinitions.length > 0 ||
+            apiData.projects.length > 0
+
+        const showCreateAppForm: boolean =
+            self.state.showCreateAppForm || !showAppsTable
+
         return (
             <div className="slow-fadein-fast">
-                <details id="create-new-app">
-                    <summary style={{ display: 'none' }}></summary>
+                {showCreateAppForm && (
                     <div
                         style={{
                             display: 'flex',
@@ -117,9 +127,8 @@ export default class Apps extends ApiComponent<
                             </Col>
                         </Row>
                     </div>
-                </details>
-                {(apiData.apps.appDefinitions.length > 0 ||
-                    apiData.projects.length > 0) && (
+                )}
+                {showAppsTable && (
                     <div
                         style={{
                             padding: '0 20px',
@@ -141,6 +150,16 @@ export default class Apps extends ApiComponent<
                                     apps={apiData.apps.appDefinitions}
                                     projects={apiData.projects}
                                     rootDomain={apiData.apps.rootDomain}
+                                    showCreateAppForm={showCreateAppForm}
+                                    onToggleCreateAppVisibility={() => {
+                                        self.setState({
+                                            showCreateAppForm:
+                                                !self.state.showCreateAppForm,
+                                        })
+                                        StorageHelper.setCreateAppFormVisibilityInLocalStorage(
+                                            !self.state.showCreateAppForm
+                                        )
+                                    }}
                                 />
                             </Col>
                         </Row>

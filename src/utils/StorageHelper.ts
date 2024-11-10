@@ -14,6 +14,7 @@ const SIDER_COLLAPSED_STATE = 'CAPROVER_SIDER_COLLAPSED_STATE'
 const DARK_MODE = 'CAPROVER_DARK_MODE'
 const LANGUAGE = 'CAPROVER_LANGUAGE'
 const APP_PROJECT_SPLIT_RATIO = 'APP_PROJECT_SPLIT_RATIO'
+const SHOW_CREATE_APP_FORM_VISIBLE = 'SHOW_CREATE_APP_FORM_VISIBLE'
 
 class StorageHelper {
     getAuthKeyFromStorage() {
@@ -60,6 +61,18 @@ class StorageHelper {
             ? JSON.parse(isDarkMode)
             : window.matchMedia &&
                   window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+
+    setCreateAppFormVisibilityInLocalStorage(isVisible: boolean) {
+        localStorage.setItem(
+            SHOW_CREATE_APP_FORM_VISIBLE,
+            JSON.stringify(isVisible)
+        )
+    }
+
+    getCreateAppFormVisibilityFromLocalStorage(): boolean {
+        const isVisible = localStorage.getItem(SHOW_CREATE_APP_FORM_VISIBLE)
+        return isVisible ? JSON.parse(isVisible) : true
     }
 
     setLanguageInLocalStorage(language: string) {
