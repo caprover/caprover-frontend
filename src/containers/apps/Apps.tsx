@@ -8,7 +8,6 @@ import ErrorRetry from '../global/ErrorRetry'
 import { IAppDef } from './AppDefinition'
 import AppsTable from './AppsTable'
 import CreateNewApp from './CreateNewApp'
-import StorageHelper from '../../utils/StorageHelper'
 
 export default class Apps extends ApiComponent<
     RouteComponentProps<any>,
@@ -32,8 +31,7 @@ export default class Apps extends ApiComponent<
         this.state = {
             isLoading: true,
             apiData: undefined,
-            showCreateAppForm:
-                StorageHelper.getCreateAppFormVisibilityFromLocalStorage(),
+            showCreateAppForm: false
         }
     }
 
@@ -156,9 +154,6 @@ export default class Apps extends ApiComponent<
                                             showCreateAppForm:
                                                 !self.state.showCreateAppForm,
                                         })
-                                        StorageHelper.setCreateAppFormVisibilityInLocalStorage(
-                                            !self.state.showCreateAppForm
-                                        )
                                     }}
                                 />
                             </Col>
