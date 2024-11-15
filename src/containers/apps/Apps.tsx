@@ -31,7 +31,7 @@ export default class Apps extends ApiComponent<
         this.state = {
             isLoading: true,
             apiData: undefined,
-            showCreateAppForm: false
+            showCreateAppForm: false,
         }
     }
 
