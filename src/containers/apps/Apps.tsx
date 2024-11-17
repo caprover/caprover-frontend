@@ -23,6 +23,7 @@ export default class Apps extends ApiComponent<
                   projects: ProjectDefinition[]
               }
             | undefined
+        showCreateAppForm: boolean
     }
 > {
     constructor(props: any) {
@@ -30,6 +31,7 @@ export default class Apps extends ApiComponent<
         this.state = {
             isLoading: true,
             apiData: undefined,
+            showCreateAppForm: false,
         }
     }
 
@@ -72,49 +74,59 @@ export default class Apps extends ApiComponent<
             return <ErrorRetry />
         }
 
+        const showAppsTable: boolean =
+            apiData.apps.appDefinitions.length > 0 ||
+            apiData.projects.length > 0
+
+        const showCreateAppForm: boolean =
+            self.state.showCreateAppForm || !showAppsTable
+
         return (
             <div className="slow-fadein-fast">
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 25,
-                        padding: '0 20px',
-                        margin: '0 auto 50px',
-                        maxWidth: 1000,
-                    }}
-                >
-                    <Row justify="center">
-                        <Col
-                            xs={{
-                                span: 24,
-                            }}
-                            lg={{
-                                span: 13,
-                            }}
-                        >
-                            <CreateNewApp
-                                projects={apiData.projects}
-                                onCreateNewAppClicked={(
-                                    appName: string,
-                                    projectId: string,
-                                    hasPersistency: boolean
-                                ) => {
-                                    self.onCreateNewAppClicked(
-                                        appName,
-                                        projectId,
-                                        hasPersistency
-                                    )
+                {showCreateAppForm && (
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 25,
+                            padding: '0 20px',
+                            margin: '0 auto 50px',
+                            maxWidth: 1000,
+                        }}
+                    >
+                        <Row justify="center">
+                            <Col
+                                xs={{
+                                    span: 24,
                                 }}
-                                onOneClickAppClicked={() => {
-                                    self.props.history.push('/apps/oneclick')
+                                lg={{
+                                    span: 13,
                                 }}
-                            />
-                        </Col>
-                    </Row>
-                </div>
-                {(apiData.apps.appDefinitions.length > 0 ||
-                    apiData.projects.length > 0) && (
+                            >
+                                <CreateNewApp
+                                    projects={apiData.projects}
+                                    onCreateNewAppClicked={(
+                                        appName: string,
+                                        projectId: string,
+                                        hasPersistency: boolean
+                                    ) => {
+                                        self.onCreateNewAppClicked(
+                                            appName,
+                                            projectId,
+                                            hasPersistency
+                                        )
+                                    }}
+                                    onOneClickAppClicked={() => {
+                                        self.props.history.push(
+                                            '/apps/oneclick'
+                                        )
+                                    }}
+                                />
+                            </Col>
+                        </Row>
+                    </div>
+                )}
+                {showAppsTable && (
                     <div
                         style={{
                             padding: '0 20px',
@@ -136,6 +148,13 @@ export default class Apps extends ApiComponent<
                                     apps={apiData.apps.appDefinitions}
                                     projects={apiData.projects}
                                     rootDomain={apiData.apps.rootDomain}
+                                    showCreateAppForm={showCreateAppForm}
+                                    onToggleCreateAppVisibility={() => {
+                                        self.setState({
+                                            showCreateAppForm:
+                                                !self.state.showCreateAppForm,
+                                        })
+                                    }}
                                 />
                             </Col>
                         </Row>

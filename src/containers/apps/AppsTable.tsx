@@ -63,6 +63,8 @@ class AppsTable extends Component<
         defaultNginxConfig: string
         isMobile: boolean
         search: string | undefined
+        showCreateAppForm: boolean
+        onToggleCreateAppVisibility: () => void
     },
     {
         searchTerm: string
@@ -328,7 +330,29 @@ class AppsTable extends Component<
         return (
             <Card
                 extra={
-                    <div>
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5em',
+                        }}
+                    >
+                        <Button
+                            onClick={() =>
+                                self.props.onToggleCreateAppVisibility()
+                            }
+                            type="primary"
+                        >
+                            {self.props.showCreateAppForm
+                                ? localize(
+                                      'apps_table.hide_create_app',
+                                      'Hide Create App'
+                                  )
+                                : localize(
+                                      'create_new_app.title',
+                                      'Create A New App'
+                                  )}
+                        </Button>
                         {self.state.isBulkEditMode && (
                             <Tooltip
                                 title={localize(
