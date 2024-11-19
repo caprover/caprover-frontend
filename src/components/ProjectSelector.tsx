@@ -82,8 +82,6 @@ class ProjectSelector extends React.Component<ProjectSelectorProps> {
             },
         ]
 
-        console.log('tree', this.props)
-
         return (
             <TreeSelect
                 allowClear
