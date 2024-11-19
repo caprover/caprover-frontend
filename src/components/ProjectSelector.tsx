@@ -37,14 +37,14 @@ class ProjectSelector extends React.Component<ProjectSelectorProps> {
 
         // Function to check if a project or its ancestors are excluded
         const isProjectOrAncestorExcluded = (projectId: string): boolean => {
-            let current: string | null = projectId
+            let current: string | undefined = projectId
             while (current) {
                 if (current === this.props.excludeProjectId) {
                     return true
                 }
                 // eslint-disable-next-line no-loop-func
                 const parentProject = allProjects.find((p) => p.id === current)
-                current = parentProject?.parentProjectId ?? null
+                current = parentProject?.parentProjectId
             }
             return false
         }
