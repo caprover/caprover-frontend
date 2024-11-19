@@ -42,6 +42,7 @@ class ProjectSelector extends React.Component<ProjectSelectorProps> {
                 if (current === this.props.excludeProjectId) {
                     return true
                 }
+                // eslint-disable-next-line no-loop-func
                 const parentProject = allProjects.find((p) => p.id === current)
                 current = parentProject?.parentProjectId ?? null
             }
