@@ -15,12 +15,14 @@ interface ProjectSelectorTreeNode {
     key: string
     value: string
     disabled?: boolean
+    parentProjectId?: string
     children?: ProjectSelectorTreeNode[]
 }
 
 class ProjectSelector extends React.Component<ProjectSelectorProps> {
     render() {
-        const { allProjects, selectedProjectId, onChange } = this.props
+        const { allProjects, selectedProjectId, onChange, excludeProjectId } =
+            this.props
 
         const projectsMap: {
             [key: string]: ProjectSelectorTreeNode
@@ -30,6 +32,7 @@ class ProjectSelector extends React.Component<ProjectSelectorProps> {
         allProjects.forEach((item) => {
             projectsMap[item.id] = {
                 title: item.name,
+                parentProjectId: item.parentProjectId,
                 key: item.id,
                 value: item.id,
             }
@@ -39,12 +42,11 @@ class ProjectSelector extends React.Component<ProjectSelectorProps> {
         const isProjectOrAncestorExcluded = (projectId: string): boolean => {
             let current: string | undefined = projectId
             while (current) {
-                if (current === this.props.excludeProjectId) {
+                if (current === excludeProjectId) {
                     return true
                 }
                 // eslint-disable-next-line no-loop-func
-                const parentProject = allProjects.find((p) => p.id === current)
-                current = parentProject?.parentProjectId
+                current = projectsMap[current].parentProjectId
             }
             return false
         }
@@ -82,6 +84,10 @@ class ProjectSelector extends React.Component<ProjectSelectorProps> {
             },
         ]
 
+        const handleChange = (value: string) => {
+            onChange(value ?? '')
+        }
+
         return (
             <TreeSelect
                 allowClear
@@ -93,7 +99,7 @@ class ProjectSelector extends React.Component<ProjectSelectorProps> {
                 )}
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                 value={selectedProjectId || ''}
-                onChange={onChange}
+                onChange={handleChange}
                 treeData={root}
             />
         )
