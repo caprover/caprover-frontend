@@ -71,6 +71,7 @@ export default class HttpClient {
                 })
                 .then(function (data) {
                     if (
+                        typeof data.status == 'number' &&
                         data.status !== ErrorFactory.OKAY &&
                         data.status !== ErrorFactory.OK_PARTIALLY &&
                         data.status !== ErrorFactory.OKAY_BUILD_STARTED
@@ -89,7 +90,12 @@ export default class HttpClient {
                     // network request returns back.
                     return new Promise(function (resolve, reject) {
                         // data.data here is the "data" field inside the API response! {status: 100, description: "Login succeeded", data: {…}}
-                        if (!self.isDestroyed) return resolve(data.data)
+                        if (!self.isDestroyed)
+                            return resolve(
+                                typeof data.data !== 'undefined'
+                                    ? data.data
+                                    : data
+                            )
                         Logger.dev('Destroyed then not called')
                     })
                 })
