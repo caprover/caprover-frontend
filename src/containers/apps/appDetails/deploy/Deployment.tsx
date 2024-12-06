@@ -145,9 +145,13 @@ export default class Deployment extends ApiComponent<
                     {localize('apps.link_see_here', '(here)')}
                 </NewTabLink>
                 .{' '}
-                {localize(
-                    'apps.deploy_cli_description_part2',
-                    "If you're using CI/CD to run <code>caprover deploy</code> and you do not wish to use your password, you can use app-specific tokens"
+                {Utils.formatText(
+                    localize(
+                        'apps.deploy_cli_description_part2',
+                        "If you're using CI/CD to run %s and you do not wish to use your password, you can use app-specific tokens"
+                    ),
+                    ['%s'],
+                    [<code>caprover deploy</code>]
                 )}{' '}
                 <NewTabLink url="https://caprover.com/docs/ci-cd-integration.html#app-tokens">
                     {localize('apps.link_see_here', '(here)')}
