@@ -27,6 +27,7 @@ import { RouteComponentProps } from 'react-router'
 import ApiManager from '../../../api/ApiManager'
 import ProjectSelector from '../../../components/ProjectSelector'
 import { IMobileComponent } from '../../../models/ContainerProps'
+import IGoAccessInfo from '../../../models/IGoAccessInfo'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import ProjectDefinition from '../../../models/ProjectDefinition'
 import { localize } from '../../../utils/Language'
@@ -39,6 +40,7 @@ import ErrorRetry from '../../global/ErrorRetry'
 import { IAppDef } from '../AppDefinition'
 import onDeleteAppClicked from '../DeleteAppConfirm'
 import EditableSpan from '../EditableSpan'
+import AccessLogReports from './AccessLogReports'
 import AppConfigs from './AppConfigs'
 import HttpSettings from './HttpSettings'
 import Deployment from './deploy/Deployment'
@@ -46,6 +48,7 @@ import Deployment from './deploy/Deployment'
 const WEB_SETTINGS = 'WEB_SETTINGS'
 const APP_CONFIGS = 'APP_CONFIGS'
 const DEPLOYMENT = 'DEPLOYMENT'
+const ACCESS_LOGS = 'LOGS'
 
 export interface SingleAppApiData {
     appDefinition: IAppDef
@@ -53,6 +56,7 @@ export interface SingleAppApiData {
     captainSubDomain: string
     defaultNginxConfig: string
     projects: ProjectDefinition[]
+    goAccessInfo: IGoAccessInfo
 }
 
 export interface AppDetailsTabProps {
@@ -328,6 +332,22 @@ class AppDetails extends ApiComponent<
             return <ErrorRetry />
         }
 
+        const tabProps: AppDetailsTabProps = {
+            isMobile: this.props.isMobile,
+            setLoading: (value) =>
+                this.setState({
+                    isLoading: value,
+                }),
+            reFetchData: () => this.reFetchData(),
+            apiData: Utils.copyObject(this.state.apiData!),
+            apiManager: this.apiManager,
+            updateApiData: (newData: any) =>
+                this.setState({
+                    apiData: newData,
+                }),
+            onUpdateConfigAndSave: () => self.onUpdateConfigAndSave(),
+        }
+
         return (
             <Row>
                 {self.createEditAppModal()}
@@ -362,31 +382,7 @@ class AppDetails extends ApiComponent<
                                             )}
                                         </span>
                                     ),
-                                    children: (
-                                        <HttpSettings
-                                            isMobile={this.props.isMobile}
-                                            setLoading={(value) =>
-                                                this.setState({
-                                                    isLoading: value,
-                                                })
-                                            }
-                                            reFetchData={() =>
-                                                this.reFetchData()
-                                            }
-                                            apiData={Utils.copyObject(
-                                                this.state.apiData!
-                                            )}
-                                            apiManager={this.apiManager}
-                                            updateApiData={(newData: any) =>
-                                                this.setState({
-                                                    apiData: newData,
-                                                })
-                                            }
-                                            onUpdateConfigAndSave={() =>
-                                                self.onUpdateConfigAndSave()
-                                            }
-                                        />
-                                    ),
+                                    children: <HttpSettings {...tabProps} />,
                                 },
                                 {
                                     key: APP_CONFIGS,
@@ -398,31 +394,7 @@ class AppDetails extends ApiComponent<
                                             )}
                                         </span>
                                     ),
-                                    children: (
-                                        <AppConfigs
-                                            isMobile={this.props.isMobile}
-                                            setLoading={(value) =>
-                                                this.setState({
-                                                    isLoading: value,
-                                                })
-                                            }
-                                            reFetchData={() =>
-                                                this.reFetchData()
-                                            }
-                                            apiData={Utils.copyObject(
-                                                this.state.apiData!
-                                            )}
-                                            apiManager={this.apiManager}
-                                            updateApiData={(newData: any) =>
-                                                this.setState({
-                                                    apiData: newData,
-                                                })
-                                            }
-                                            onUpdateConfigAndSave={() => {
-                                                self.onUpdateConfigAndSave()
-                                            }}
-                                        />
-                                    ),
+                                    children: <AppConfigs {...tabProps} />,
                                 },
                                 {
                                     key: DEPLOYMENT,
@@ -434,30 +406,23 @@ class AppDetails extends ApiComponent<
                                             )}
                                         </span>
                                     ),
-                                    children: (
-                                        <Deployment
-                                            isMobile={this.props.isMobile}
-                                            setLoading={(value) =>
-                                                this.setState({
-                                                    isLoading: value,
-                                                })
-                                            }
-                                            reFetchData={() =>
-                                                this.reFetchData()
-                                            }
-                                            apiData={Utils.copyObject(
-                                                this.state.apiData!
+                                    children: <Deployment {...tabProps} />,
+                                },
+                                {
+                                    key: ACCESS_LOGS,
+                                    label: (
+                                        <span className="unselectable-span">
+                                            {localize(
+                                                'apps.app_logs_tab',
+                                                'Access Logs'
                                             )}
-                                            apiManager={this.apiManager}
-                                            onUpdateConfigAndSave={() =>
-                                                self.onUpdateConfigAndSave()
-                                            }
-                                            updateApiData={(newData: any) => {
-                                                this.setState({
-                                                    apiData: newData,
-                                                })
-                                            }}
-                                        />
+                                        </span>
+                                    ),
+                                    disabled:
+                                        !this.state.apiData?.goAccessInfo
+                                            .isEnabled,
+                                    children: (
+                                        <AccessLogReports {...tabProps} />
                                     ),
                                 },
                             ]}
@@ -476,7 +441,9 @@ class AppDetails extends ApiComponent<
                             <div
                                 className={classnames({
                                     'hide-on-demand':
-                                        self.state.activeTabKey === DEPLOYMENT,
+                                        self.state.activeTabKey ===
+                                            DEPLOYMENT ||
+                                        self.state.activeTabKey === ACCESS_LOGS,
                                     disabled: this.state.isLoading,
                                 })}
                                 style={{
@@ -734,10 +701,12 @@ class AppDetails extends ApiComponent<
         return Promise.all([
             self.apiManager.getAllApps(),
             self.apiManager.getAllProjects(),
+            self.apiManager.getGoAccessInfo(),
         ])
             .then(function (dataReturns: any) {
                 const getAppsResp = dataReturns[0]
                 const projects = dataReturns[1].projects || []
+                const goAccessInfo = dataReturns[2]
 
                 for (
                     let index = 0;
@@ -755,6 +724,7 @@ class AppDetails extends ApiComponent<
                                 captainSubDomain: getAppsResp.captainSubDomain,
                                 defaultNginxConfig:
                                     getAppsResp.defaultNginxConfig,
+                                goAccessInfo,
                             },
                         })
                         return

@@ -1,5 +1,6 @@
 import { IAppDef } from '../containers/apps/AppDefinition'
 import { ICaptainDefinition } from '../models/ICaptainDefinition'
+import IGoAccessInfo from '../models/IGoAccessInfo'
 import {
     IProConfig,
     IProFeatures,
@@ -525,6 +526,40 @@ export default class ApiManager {
             .then(
                 http.fetch(http.POST, '/user/system/netdata', { netDataInfo })
             )
+    }
+
+    getGoAccessInfo(): Promise<IGoAccessInfo> {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, '/user/system/goaccess', {}))
+    }
+
+    updateGoAccessInfo(goAccessInfo: any) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(http.POST, '/user/system/goaccess', { goAccessInfo })
+            )
+    }
+    getGoAccessReports(appName: string) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(
+                http.fetch(
+                    http.GET,
+                    `/user/system/goaccess/${appName}/files`,
+                    {}
+                )
+            )
+    }
+    getGoAccessReport(reportUrl: string) {
+        const http = this.http
+
+        return Promise.resolve() //
+            .then(http.fetch(http.GET, reportUrl, {}))
     }
 
     changePass(oldPassword: string, newPassword: string) {
