@@ -98,7 +98,7 @@ export default class AccessLogReports extends Component<
                                                 <Button
                                                     onClick={() =>
                                                         this.onReportClick(
-                                                            r.name,
+                                                            this.reportName(r),
                                                             r.url
                                                         )
                                                     }
@@ -178,9 +178,17 @@ export default class AccessLogReports extends Component<
     onReportClick(reportName: string, reportUrl: string) {
         this.setState({ reportOpen: reportName })
 
-        this.props.apiManager.getGoAccessReport(reportUrl).then((report) => {
-            this.setState({ reportHtml: report })
-        })
+        this.props.apiManager
+            .getGoAccessReport(reportUrl)
+            .then((report: string) => {
+                // Add a couple extra override styles to the report to disable the hamburger menu that contains
+                // links which will result in navigating to the caprover dashboard within the iframe
+                report = report.replace(
+                    '</head>',
+                    `<style>.nav-bars{ display: none;} nav .nav-gears{ top: 30px;}</style></head>`
+                )
+                this.setState({ reportHtml: report })
+            })
     }
 
     onModalClose() {
