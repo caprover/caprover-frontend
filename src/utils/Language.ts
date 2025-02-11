@@ -8,6 +8,7 @@ import frFR from 'antd/es/locale/fr_FR'
 import idID from 'antd/es/locale/id_ID'
 import nlNL from 'antd/es/locale/nl_NL'
 import ptBR from 'antd/es/locale/pt_BR'
+import ruRU from 'antd/es/locale/ru_RU'
 import svSE from 'antd/es/locale/sv_SE'
 import trTR from 'antd/es/locale/tr_TR'
 import zhCN from 'antd/es/locale/zh_CN'
@@ -20,6 +21,7 @@ import frFRMessages from '../locales/fr-FR.json'
 import idIDMessages from '../locales/id-ID.json'
 import nlNLMessages from '../locales/nl-NL.json'
 import ptBRMessages from '../locales/pt-BR.json'
+import ruRUMessages from '../locales/ru-RU.json'
 import svSEMessages from '../locales/sv-SE.json'
 import trTRMessages from '../locales/tr-TR.json'
 import zhCNMessages from '../locales/zh-CN.json'
@@ -122,6 +124,13 @@ const languagesOptions: LanguageOption[] = [
         alias: ['tr'],
         antdLocale: trTR,
         messages: trTRMessages,
+    },
+    {
+        label: 'Русский',
+        value: 'ru-RU',
+        alias: ['ru'],
+        antdLocale: ruRU,
+        messages: ruRUMessages,
     },
 ]
 
