@@ -77,7 +77,7 @@ export default class ChangePass extends ApiComponent<
                 <div style={{ height: 20 }} />
                 {localize('change_password.new_password', 'New Password')}
                 <Input.Password
-                    maxLength={30}
+                    maxLength={29}
                     onChange={(e) => this.setState({ new1: e.target.value })}
                 />
                 <div style={{ height: 20 }} />
@@ -86,7 +86,7 @@ export default class ChangePass extends ApiComponent<
                     'Confirm New Password'
                 )}
                 <Input.Password
-                    maxLength={30}
+                    maxLength={29}
                     onChange={(e) => this.setState({ new2: e.target.value })}
                 />
                 <div style={{ height: 40 }} />
