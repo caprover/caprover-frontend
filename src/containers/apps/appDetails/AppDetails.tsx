@@ -21,6 +21,7 @@ import {
     Typography,
 } from 'antd'
 import classnames from 'classnames'
+import { History } from 'history'
 import { RefObject } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
@@ -40,15 +41,15 @@ import ErrorRetry from '../../global/ErrorRetry'
 import { IAppDef } from '../AppDefinition'
 import onDeleteAppClicked from '../DeleteAppConfirm'
 import EditableSpan from '../EditableSpan'
-import AccessLogReports from './AccessLogReports'
 import AppConfigs from './AppConfigs'
 import HttpSettings from './HttpSettings'
 import Deployment from './deploy/Deployment'
+import LogsTab from './logs/LogsTab'
 
 const WEB_SETTINGS = 'WEB_SETTINGS'
 const APP_CONFIGS = 'APP_CONFIGS'
 const DEPLOYMENT = 'DEPLOYMENT'
-const ACCESS_LOGS = 'LOGS'
+const LOGS = 'LOGS'
 
 export interface SingleAppApiData {
     appDefinition: IAppDef
@@ -60,6 +61,7 @@ export interface SingleAppApiData {
 }
 
 export interface AppDetailsTabProps {
+    history: History
     apiData: SingleAppApiData
     apiManager: ApiManager
     updateApiData: Function
@@ -333,6 +335,7 @@ class AppDetails extends ApiComponent<
         }
 
         const tabProps: AppDetailsTabProps = {
+            history: this.props.history,
             isMobile: this.props.isMobile,
             setLoading: (value) =>
                 this.setState({
@@ -409,21 +412,16 @@ class AppDetails extends ApiComponent<
                                     children: <Deployment {...tabProps} />,
                                 },
                                 {
-                                    key: ACCESS_LOGS,
+                                    key: LOGS,
                                     label: (
                                         <span className="unselectable-span">
                                             {localize(
                                                 'apps.app_logs_tab',
-                                                'Access Logs'
+                                                'Logs'
                                             )}
                                         </span>
                                     ),
-                                    disabled:
-                                        !this.state.apiData?.goAccessInfo
-                                            .isEnabled,
-                                    children: (
-                                        <AccessLogReports {...tabProps} />
-                                    ),
+                                    children: <LogsTab {...tabProps} />,
                                 },
                             ]}
                         ></Tabs>
@@ -443,7 +441,7 @@ class AppDetails extends ApiComponent<
                                     'hide-on-demand':
                                         self.state.activeTabKey ===
                                             DEPLOYMENT ||
-                                        self.state.activeTabKey === ACCESS_LOGS,
+                                        self.state.activeTabKey === LOGS,
                                     disabled: this.state.isLoading,
                                 })}
                                 style={{

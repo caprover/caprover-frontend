@@ -9,7 +9,6 @@ import ApiComponent from '../../../global/ApiComponent'
 import NewTabLink from '../../../global/NewTabLink'
 import { IAppDef, IAppVersion, RepoInfo } from '../../AppDefinition'
 import { AppDetailsTabProps } from '../AppDetails'
-import AppLogsView from './AppLogsView'
 import AppVersionTable from './AppVersionTable'
 import BuildLogsView from './BuildLogsView'
 import GitRepoForm from './GitRepoForm'
@@ -183,12 +182,6 @@ export default class Deployment extends ApiComponent<
                             ? self.state.updatedVersions.deployedVersion
                             : app.deployedVersion
                     }
-                />
-
-                <div style={{ height: 20 }} />
-                <AppLogsView
-                    appName={app.appName!}
-                    key={app.appName! + '-LogsView'}
                 />
 
                 <hr />
