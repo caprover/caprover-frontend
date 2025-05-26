@@ -311,7 +311,6 @@
     "goaccess_settings.monthly": "Ежемесячно",
     "goaccess_settings.every_2_months": "Каждые 2 месяца",
     "goaccess_settings.every_4_months": "Каждые 4 месяца",
-    "goaccess_settings.indefinite": "Бессрочно",
     "goaccess_settings.goaccess_settings": "Настройки GoAccess",
     "goaccess_settings.rotation_frequency": "Частота ротации логов и генерации отчетов",
     "goaccess_settings.log_retention": "Срок хранения логов и отчетов (в днях)",

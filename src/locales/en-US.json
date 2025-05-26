@@ -311,7 +311,6 @@
     "goaccess_settings.monthly": "Monthly",
     "goaccess_settings.every_2_months": "Every 2 Months",
     "goaccess_settings.every_4_months": "Every 4 Months",
-    "goaccess_settings.indefinite": "Indefinitely",
     "goaccess_settings.goaccess_settings": "GoAccess Settings",
     "goaccess_settings.rotation_frequency": "Log Rotation and Report Generation Frequency",
     "goaccess_settings.log_retention": "Log and Report Retention Days",

@@ -41,6 +41,7 @@ export default class GoAccessLogs extends Component<
     createReportButton(report: GoAccessReport) {
         return (
             <Button
+                key={report.name}
                 style={{ margin: 5 }}
                 onClick={() => this.onReportClick(report)}
             >
@@ -93,6 +94,7 @@ export default class GoAccessLogs extends Component<
         return (
             <>
                 <Card
+                    key={site}
                     style={{ marginBottom: 30 }}
                     bordered={true}
                     extra={

@@ -29,13 +29,10 @@ export default class GoAccessSettingsForm extends Component<
                 this.rotationFrequencyOptions,
                 props.goAccessInfo.data.rotationFrequencyCron
             ),
-            logRetentionSelect:
-                props.goAccessInfo.data.logRetentionDays === undefined
-                    ? '-1'
-                    : this.valueOrCustom(
-                          this.logRetentionOptions,
-                          props.goAccessInfo.data.logRetentionDays.toString()
-                      ),
+            logRetentionSelect: this.valueOrCustom(
+                this.logRetentionOptions,
+                (props.goAccessInfo.data.logRetentionDays || 180).toString()
+            ),
             rotationFreqCustom: props.goAccessInfo.data.rotationFrequencyCron,
             logRetentionCustom: props.goAccessInfo.data.logRetentionDays,
         }
@@ -78,10 +75,6 @@ export default class GoAccessSettingsForm extends Component<
     ]
 
     logRetentionOptions = [
-        {
-            value: '-1',
-            label: localize('goaccess_settings.indefinite', 'Indefinitely'),
-        },
         { value: '180', label: '180' },
         { value: '365', label: '365' },
         {
@@ -129,11 +122,6 @@ export default class GoAccessSettingsForm extends Component<
             this.state.logRetentionSelect === CUSTOM
                 ? this.state.logRetentionCustom
                 : Number(this.state.logRetentionSelect)
-
-        // Handle indefinite log rotation specially
-        if (updated.data.logRetentionDays === -1) {
-            updated.data.logRetentionDays = undefined
-        }
 
         this.props.saveSettings(updated)
     }
