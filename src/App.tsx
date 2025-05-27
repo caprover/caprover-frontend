@@ -1,9 +1,8 @@
+import { configureStore } from '@reduxjs/toolkit'
 import { App as AntdApp, ConfigProvider, theme, ThemeConfig } from 'antd'
 import { useState } from 'react'
 import { Provider } from 'react-redux'
 import { HashRouter, Route, Switch } from 'react-router-dom'
-import { applyMiddleware, createStore } from 'redux'
-import thunk from 'redux-thunk'
 import CenteredSpinner from './containers/global/CenteredSpinner'
 import Login from './containers/Login'
 import PageRoot from './containers/PageRoot'
@@ -22,8 +21,9 @@ import Toaster from './utils/Toaster'
 
 CrashReporter.getInstance().init()
 
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
-const store = createStoreWithMiddleware(reducers)
+const store = configureStore({
+    reducer: reducers,
+})
 
 const MainComponent = () => {
     return (
