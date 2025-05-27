@@ -277,8 +277,8 @@ class PageRoot extends ApiComponent<
                                 marginInlineEnd: self.state.collapsed
                                     ? 0
                                     : self.props.isMobile
-                                    ? -200
-                                    : 0,
+                                      ? -200
+                                      : 0,
                                 transition: 'margin-right 0.3s ease',
                             }}
                             id="main-content-layout"

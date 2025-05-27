@@ -88,7 +88,8 @@ class CurrentNodes extends ApiComponent<
                 >
                     <Row justify="center">
                         <b>
-                            {localize('nodes.node_id', 'Node ID:')}&nbsp;&nbsp;{' '}
+                            {localize('nodes.node_id', 'Node ID:')}
+                            &nbsp;&nbsp;{' '}
                         </b>{' '}
                         {node.nodeId}
                     </Row>
