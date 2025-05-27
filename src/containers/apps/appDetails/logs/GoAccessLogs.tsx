@@ -12,6 +12,7 @@ import Toaster from '../../../../utils/Toaster'
 import { AppDetailsTabProps } from './../AppDetails'
 
 import { ExportOutlined } from '@ant-design/icons'
+import { localize } from '../../../../utils/Language'
 
 const { Text } = Typography
 interface GoAccessReport {
@@ -80,7 +81,7 @@ export default class GoAccessLogs extends Component<
         const items: CollapseProps['items'] = [
             {
                 key: 'Past Snapshots' + site,
-                label: 'Past Snapshots',
+                label: localize('goaccess.past_snapshots', 'Past Snapshots'),
                 children: (
                     <div>
                         {reports.map((report) =>
@@ -104,7 +105,11 @@ export default class GoAccessLogs extends Component<
                                     self.onReportClick(liveReport)
                                 }}
                             >
-                                Open Live Logs <ExportOutlined />
+                                {localize(
+                                    'goaccess.live_logs',
+                                    'Open Live Logs'
+                                )}{' '}
+                                <ExportOutlined />
                             </Button>
                         )
                     }
