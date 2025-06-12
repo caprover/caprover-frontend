@@ -54,11 +54,11 @@ export default class ChangePass extends ApiComponent<
                     )
                 )
             })
-            .catch(Toaster.createCatcher())
             .then(function () {
-                self.apiManager.getAuthToken(self.state.new1)
                 self.setState({ isLoading: false })
+                return self.apiManager.getAuthToken(self.state.new1)
             })
+            .catch(Toaster.createCatcher())
     }
 
     render() {
