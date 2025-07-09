@@ -237,7 +237,7 @@ class PageRoot extends ApiComponent<
                                             type="primary"
                                             ghost
                                             onClick={() => {
-                                                self.apiManager.setAuthToken('')
+                                                ApiManager.clearAuthKeys()
                                                 self.goToLogin()
                                             }}
                                         >
@@ -262,7 +262,7 @@ class PageRoot extends ApiComponent<
                         location={this.props.location}
                         history={this.props.history}
                         onLogoutClicked={() => {
-                            self.apiManager.setAuthToken('')
+                            ApiManager.clearAuthKeys()
                             self.goToLogin()
                         }}
                     />

@@ -1,6 +1,6 @@
 export interface IRegistryApi {
     registries: IRegistryInfo[]
-    defaultPushRegistryId: string | undefined
+    defaultPushRegistryId?: string
 }
 
 export class IRegistryTypes {

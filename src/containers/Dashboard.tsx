@@ -191,9 +191,13 @@ export default class Dashboard extends ApiComponent<
                 })
             })
             .then(function (data: any) {
-                if (data === undefined) return IGNORE
+                if (data === undefined) return Promise.resolve(IGNORE)
                 self.setState({ isLoading: true })
-                return self.apiManager.enableRootSsl(data)
+                return self.apiManager
+                    .enableRootSsl(data) //
+                    .then(function () {
+                        return Promise.resolve('')
+                    })
             })
 
             .then(function (data: any) {

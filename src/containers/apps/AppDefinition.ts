@@ -98,8 +98,8 @@ interface AppDeployTokenConfig {
 export interface IAppDef extends IAppDefinitionBase {
     appPushWebhook?: {
         repoInfo: RepoInfo
-        tokenVersion?: string // On FrontEnd, these values are null, until they are assigned.
-        pushWebhookToken?: string // On FrontEnd, these values are null, until they are assigned.
+        tokenVersion: string
+        pushWebhookToken: string
     }
     appName?: string
     isAppBuilding?: boolean

@@ -1,9 +1,10 @@
-import { Card, Col, message, Row } from 'antd'
+import { Card, Col, Row } from 'antd'
 import ReactMarkdown from 'react-markdown'
 import { RouteComponentProps } from 'react-router'
 import gfm from 'remark-gfm'
 import { IOneClickTemplate } from '../../../../models/IOneClickAppModels'
 import DomUtils from '../../../../utils/DomUtils'
+import ErrorFactory from '../../../../utils/ErrorFactory'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
@@ -92,10 +93,10 @@ export default class OneClickAppConfigPage extends ApiComponent<
             })
             .then(function (data: IOneClickTemplate) {
                 if (`${data.captainVersion}` !== '4') {
-                    message.error(
+                    throw ErrorFactory.createError(
+                        ErrorFactory.ILLEGAL_PARAMETER,
                         `One-click app version is ${data.captainVersion}, this version supports "v4". Make sure your CapRover is up-to-date with the latest version!!`
                     )
-                    return
                 }
 
                 data.caproverOneClickApp.variables =

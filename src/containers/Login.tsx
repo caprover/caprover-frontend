@@ -34,16 +34,12 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
     onLoginRequested(password: string, otp: string) {
         const self = this
         this.apiManager
-            .getAuthToken(password, otp)
-            .then(function () {
+            .loginAndSavePassword(password, otp)
+            .then(function (token) {
                 if (self.state.loginOption === SESSION_STORAGE) {
-                    StorageHelper.setAuthKeyInSessionStorage(
-                        ApiManager.getAuthTokenString()
-                    )
+                    StorageHelper.setAuthKeyInSessionStorage(token)
                 } else if (self.state.loginOption === LOCAL_STORAGE) {
-                    StorageHelper.setAuthKeyInLocalStorage(
-                        ApiManager.getAuthTokenString()
-                    )
+                    StorageHelper.setAuthKeyInLocalStorage(token)
                 }
                 self.props.history.push('/')
             })

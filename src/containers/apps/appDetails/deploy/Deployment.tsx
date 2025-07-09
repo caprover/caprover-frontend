@@ -357,6 +357,8 @@ export default class Deployment extends ApiComponent<
                         } else {
                             newApiData.appDefinition.appPushWebhook = {
                                 repoInfo: Utils.copyObject(newRepo),
+                                tokenVersion: '',
+                                pushWebhookToken: '',
                             }
                         }
                         this.props.updateApiData(newApiData)

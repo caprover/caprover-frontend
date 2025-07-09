@@ -56,7 +56,7 @@ export default class ChangePass extends ApiComponent<
             })
             .then(function () {
                 self.setState({ isLoading: false })
-                return self.apiManager.getAuthToken(self.state.new1)
+                return self.apiManager.loginAndSavePassword(self.state.new1)
             })
             .catch(Toaster.createCatcher())
     }
