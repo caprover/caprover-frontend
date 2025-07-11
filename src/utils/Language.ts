@@ -5,6 +5,7 @@ import enUS from 'antd/es/locale/en_US'
 import esES from 'antd/es/locale/es_ES'
 import faIR from 'antd/es/locale/fa_IR'
 import frFR from 'antd/es/locale/fr_FR'
+import hrHR from 'antd/es/locale/hr_HR'
 import idID from 'antd/es/locale/id_ID'
 import nlNL from 'antd/es/locale/nl_NL'
 import ptBR from 'antd/es/locale/pt_BR'
@@ -18,6 +19,7 @@ import enUSMessages from '../locales/en-US.json'
 import esESMessages from '../locales/es-ES.json'
 import faIRMessages from '../locales/fa-IR.json'
 import frFRMessages from '../locales/fr-FR.json'
+import hrHRMessages from '../locales/hr-HR.json'
 import idIDMessages from '../locales/id-ID.json'
 import nlNLMessages from '../locales/nl-NL.json'
 import ptBRMessages from '../locales/pt-BR.json'
@@ -87,6 +89,13 @@ const languagesOptions: LanguageOption[] = [
         alias: ['fr'],
         antdLocale: frFR,
         messages: frFRMessages,
+    },
+    {
+        label: 'Hrvatski',
+        value: 'hr-HR',
+        alias: ['hr'],
+        antdLocale: hrHR,
+        messages: hrHRMessages,
     },
     {
         label: 'Nederlands',
