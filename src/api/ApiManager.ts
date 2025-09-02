@@ -68,4 +68,44 @@ export default class ApiManager extends CapRoverAPI {
                 return Promise.reject(error)
             })
     }
+
+    // Starts a one-click deploy job on the backend. Sends template and variables to backend for hydration.
+    startOneClickDeploy(
+        template: any,
+        values?: any
+    ): Promise<{ jobId: string }> {
+        const endpoint = `${URL}/oneclick/deploy`
+        return fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ template, values }),
+        }).then(async (res) => {
+            if (!res.ok) {
+                const text = await res.text()
+                return Promise.reject(text || res.statusText)
+            }
+            return res.json()
+        })
+    }
+
+    // Polls the backend for progress of a one-click deploy job.
+    getOneClickDeployProgress(jobId: string): Promise<any> {
+        const endpoint = `${URL}/oneclick/deploy/progress?jobId=${encodeURIComponent(
+            jobId
+        )}`
+        return fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async (res) => {
+            if (!res.ok) {
+                const text = await res.text()
+                return Promise.reject(text || res.statusText)
+            }
+            return res.json()
+        })
+    }
 }

@@ -1,20 +1,26 @@
 import { LoadingOutlined } from '@ant-design/icons'
 import { Alert, Button, Card, Col, Row, Steps } from 'antd'
-import { Component } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Prompt } from 'react-router-dom'
+import ApiComponent from '../../global/ApiComponent'
 import { IDeploymentState } from './OneClickAppDeployManager'
 
 const Step = Steps.Step
 
-export default class OneClickAppDeployProgress extends Component<{
-    appName: string
-    deploymentState: IDeploymentState
-    onRestartClicked: () => void
-    onFinishClicked: () => void
-}> {
+export default class OneClickAppDeployProgress extends ApiComponent<
+    {
+        appName: string
+        onRestartClicked: () => void
+        onFinishClicked: () => void
+        jobId?: string
+    },
+    { deploymentState?: IDeploymentState }
+> {
+    private pollIntervalId: any = undefined
+
     createSteps() {
-        const steps = this.props.deploymentState.steps
+        const deploymentState = this.getDeploymentState()
+        const steps = deploymentState.steps
         const stepsInfo = []
 
         for (let index = 0; index < steps.length; index++) {
@@ -22,8 +28,8 @@ export default class OneClickAppDeployProgress extends Component<{
                 text: (
                     <span>
                         <span>
-                            {index === this.props.deploymentState.currentStep &&
-                            !this.props.deploymentState.error ? (
+                            {index === deploymentState.currentStep &&
+                            !deploymentState.error ? (
                                 <LoadingOutlined
                                     style={{
                                         fontSize: '16px',
@@ -48,7 +54,7 @@ export default class OneClickAppDeployProgress extends Component<{
     }
 
     isRunning() {
-        const { successMessage, error } = this.props.deploymentState
+        const { successMessage, error } = this.getDeploymentState()
         return !successMessage && !error
     }
 
@@ -63,8 +69,58 @@ It will interrupt the deployment at the current step, leaving the applications i
         )
     }
 
+    componentDidMount() {
+        // If jobId provided, start polling backend
+        if (this.props.jobId) {
+            this.startPolling(this.props.jobId)
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.pollIntervalId) clearTimeout(this.pollIntervalId)
+    }
+
+    startPolling(jobId: string) {
+        // start a sequential polling loop
+        this.fetchLoop(jobId)
+    }
+
+    private fetchLoop(jobId: string) {
+        // call backend, then schedule next call 2s after completion (if still running)
+        this.apiManager
+            .getOneClickDeployProgress(jobId)
+            .then((res: any) => {
+                const deploymentState: IDeploymentState = {
+                    steps: res.steps || ['Queued'],
+                    error: res.error || '',
+                    successMessage: res.successMessage,
+                    currentStep: res.currentStep || 0,
+                }
+
+                this.setState({ deploymentState })
+
+                if (
+                    !(deploymentState.error || deploymentState.successMessage)
+                ) {
+                    // still running -> schedule next fetch 2s later
+                    this.pollIntervalId = setTimeout(() => {
+                        this.fetchLoop(jobId)
+                    }, 2000)
+                } else {
+                    this.pollIntervalId = undefined
+                }
+            })
+            .catch(() => {
+                // On error, schedule a retry after 2s
+                this.pollIntervalId = setTimeout(() => {
+                    this.fetchLoop(jobId)
+                }, 2000)
+            })
+    }
+
     render() {
         const self = this
+        const deploymentState = this.getDeploymentState()
 
         return (
             <div>
@@ -85,23 +141,19 @@ It will interrupt the deployment at the current step, leaving the applications i
                                     <div style={{ height: 20 }} />
                                     <Steps
                                         status={
-                                            !!self.props.deploymentState.error
+                                            !!deploymentState.error
                                                 ? 'error'
                                                 : undefined
                                         }
                                         direction="vertical"
-                                        current={
-                                            self.props.deploymentState
-                                                .currentStep
-                                        }
+                                        current={deploymentState.currentStep}
                                     >
                                         {self.createSteps()}
                                     </Steps>
 
                                     <div
                                         className={
-                                            !!self.props.deploymentState
-                                                .successMessage
+                                            !!deploymentState.successMessage
                                                 ? ''
                                                 : 'hide-on-demand'
                                         }
@@ -117,9 +169,7 @@ It will interrupt the deployment at the current step, leaving the applications i
                                                     }}
                                                 >
                                                     <ReactMarkdown>
-                                                        {self.props
-                                                            .deploymentState
-                                                            .successMessage ||
+                                                        {deploymentState.successMessage ||
                                                             ''}
                                                     </ReactMarkdown>
                                                 </div>
@@ -142,7 +192,7 @@ It will interrupt the deployment at the current step, leaving the applications i
 
                                     <div
                                         className={
-                                            !!self.props.deploymentState.error
+                                            !!deploymentState.error
                                                 ? ''
                                                 : 'hide-on-demand'
                                         }
@@ -151,9 +201,7 @@ It will interrupt the deployment at the current step, leaving the applications i
                                         <Alert
                                             showIcon
                                             type="error"
-                                            message={
-                                                self.props.deploymentState.error
-                                            }
+                                            message={deploymentState.error}
                                         />
                                         <div style={{ height: 80 }} />
 
@@ -175,6 +223,16 @@ It will interrupt the deployment at the current step, leaving the applications i
                     </Row>
                 </div>
             </div>
+        )
+    }
+
+    private getDeploymentState(): IDeploymentState {
+        return (
+            this.state.deploymentState || {
+                steps: ['Queued'],
+                error: '',
+                currentStep: 0,
+            }
         )
     }
 }

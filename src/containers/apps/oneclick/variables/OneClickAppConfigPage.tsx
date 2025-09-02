@@ -9,9 +9,6 @@ import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
 import CenteredSpinner from '../../../global/CenteredSpinner'
-import OneClickAppDeployManager, {
-    IDeploymentState,
-} from '../OneClickAppDeployManager'
 import OneClickAppDeployProgress from '../OneClickAppDeployProgress'
 import {
     ONE_CLICK_APP_STRINGIFIED_KEY,
@@ -27,28 +24,19 @@ export default class OneClickAppConfigPage extends ApiComponent<
     {
         apiData: IOneClickTemplate | undefined
         rootDomain: string
-        deploymentState: IDeploymentState | undefined
+        oneClickJobId?: string
     }
 > {
-    private oneClickAppDeployHelper: OneClickAppDeployManager
+    // orchestration now done on backend; no local deploy manager
     private isUnmount: boolean = false
 
     constructor(props: any) {
         super(props)
-        const self = this
         this.state = {
             apiData: undefined,
             rootDomain: '',
-            deploymentState: undefined,
+            oneClickJobId: undefined,
         }
-        this.oneClickAppDeployHelper = new OneClickAppDeployManager(
-            (deploymentState) => {
-                if (self.isUnmount) {
-                    return
-                }
-                self.setState({ deploymentState })
-            }
-        )
     }
 
     componentWillUnmount() {
@@ -125,7 +113,6 @@ export default class OneClickAppConfigPage extends ApiComponent<
 
     render() {
         const self = this
-        const deploymentState = this.state.deploymentState
         const apiData = this.state.apiData
         const displayName =
             apiData && apiData.caproverOneClickApp.displayName
@@ -137,14 +124,15 @@ export default class OneClickAppConfigPage extends ApiComponent<
             return <CenteredSpinner />
         }
 
-        if (!!deploymentState) {
+        // If we have an active backend job id, render progress and poll
+        if (this.state.oneClickJobId) {
             return (
                 <OneClickAppDeployProgress
                     appName={self.props.match.params.appName}
-                    deploymentState={deploymentState}
+                    jobId={this.state.oneClickJobId}
                     onFinishClicked={() => self.props.history.push('/apps')}
                     onRestartClicked={() =>
-                        self.setState({ deploymentState: undefined })
+                        this.setState({ oneClickJobId: undefined })
                     }
                 />
             )
@@ -176,6 +164,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                     apiData.caproverOneClickApp.variables
                                 }
                                 onNextClicked={(values) => {
+                                    // Hydrate template on frontend and POST to backend stub endpoint
                                     const template = Utils.copyObject(
                                         self.state.apiData!
                                     )
@@ -192,11 +181,20 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                         ONE_CLICK_ROOT_DOMAIN_VAR_NAME
                                     ] = self.state.rootDomain
 
-                                    self.oneClickAppDeployHelper.startDeployProcess(
-                                        template,
-                                        valuesAugmented
-                                    )
-                                    DomUtils.scrollToTopBar()
+                                    // Send template and values to backend for hydration and deployment
+                                    self.apiManager
+                                        .startOneClickDeploy(
+                                            template,
+                                            valuesAugmented
+                                        )
+                                        .then((data: any) => {
+                                            // store job id and render progress component
+                                            self.setState({
+                                                oneClickJobId: data.jobId,
+                                            })
+                                            DomUtils.scrollToTopBar()
+                                        })
+                                        .catch(Toaster.createCatcher())
                                 }}
                             />
                         </Card>
