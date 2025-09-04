@@ -2,9 +2,15 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { Alert, Button, Card, Col, Row, Steps } from 'antd'
 import ReactMarkdown from 'react-markdown'
 import { Prompt } from 'react-router-dom'
+import Toaster from '../../../utils/Toaster'
 import ApiComponent from '../../global/ApiComponent'
-import { IDeploymentState } from './OneClickAppDeployManager'
 
+interface IDeploymentState {
+    steps: string[]
+    error: string
+    successMessage?: string
+    currentStep: number
+}
 const Step = Steps.Step
 
 export default class OneClickAppDeployProgress extends ApiComponent<
@@ -111,7 +117,9 @@ It will interrupt the deployment at the current step, leaving the applications i
                 }
             })
             .catch(() => {
-                // On error, schedule a retry after 2s
+                Toaster.toastError(
+                    'Error fetching deployment status. Retrying...'
+                )
                 this.pollIntervalId = setTimeout(() => {
                     this.fetchLoop(jobId)
                 }, 2000)
