@@ -27,7 +27,6 @@ export default class OneClickAppConfigPage extends ApiComponent<
         oneClickJobId?: string
     }
 > {
-    // orchestration now done on backend; no local deploy manager
     private isUnmount: boolean = false
 
     constructor(props: any) {
@@ -129,10 +128,10 @@ export default class OneClickAppConfigPage extends ApiComponent<
             return (
                 <OneClickAppDeployProgress
                     appName={self.props.match.params.appName}
-                    jobId={this.state.oneClickJobId}
+                    jobId={self.state.oneClickJobId}
                     onFinishClicked={() => self.props.history.push('/apps')}
                     onRestartClicked={() =>
-                        this.setState({ oneClickJobId: undefined })
+                        self.setState({ oneClickJobId: undefined })
                     }
                 />
             )
@@ -164,7 +163,6 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                     apiData.caproverOneClickApp.variables
                                 }
                                 onNextClicked={(values) => {
-                                    // Hydrate template on frontend and POST to backend stub endpoint
                                     const template = Utils.copyObject(
                                         self.state.apiData!
                                     )
@@ -181,7 +179,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                         ONE_CLICK_ROOT_DOMAIN_VAR_NAME
                                     ] = self.state.rootDomain
 
-                                    // Send template and values to backend for hydration and deployment
+                                    DomUtils.scrollToTopBar()
                                     self.apiManager
                                         .startOneClickDeploy(
                                             template,
@@ -192,7 +190,6 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                             self.setState({
                                                 oneClickJobId: data.jobId,
                                             })
-                                            DomUtils.scrollToTopBar()
                                         })
                                         .catch(Toaster.createCatcher())
                                 }}

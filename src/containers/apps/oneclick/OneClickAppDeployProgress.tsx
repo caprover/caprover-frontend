@@ -12,13 +12,14 @@ interface IDeploymentState {
     currentStep: number
 }
 const Step = Steps.Step
+const REFRESH_INTERVAL_MS = 2000
 
 export default class OneClickAppDeployProgress extends ApiComponent<
     {
         appName: string
+        jobId?: string
         onRestartClicked: () => void
         onFinishClicked: () => void
-        jobId?: string
     },
     { deploymentState?: IDeploymentState }
 > {
@@ -111,7 +112,7 @@ It will interrupt the deployment at the current step, leaving the applications i
                     // still running -> schedule next fetch 2s later
                     this.pollIntervalId = setTimeout(() => {
                         this.fetchLoop(jobId)
-                    }, 2000)
+                    }, REFRESH_INTERVAL_MS)
                 } else {
                     this.pollIntervalId = undefined
                 }
@@ -122,7 +123,7 @@ It will interrupt the deployment at the current step, leaving the applications i
                 )
                 this.pollIntervalId = setTimeout(() => {
                     this.fetchLoop(jobId)
-                }, 2000)
+                }, REFRESH_INTERVAL_MS)
             })
     }
 
