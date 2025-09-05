@@ -69,43 +69,32 @@ export default class ApiManager extends CapRoverAPI {
             })
     }
 
-    // Starts a one-click deploy job on the backend. Sends template and variables to backend for hydration.
+    private getDebugHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            'x-captain-auth':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5hbWVzcGFjZSI6ImNhcHRhaW4iLCJ0b2tlblZlcnNpb24iOiJ0ZXN0In0sImlhdCI6MTc1NzA0OTQ3MiwiZXhwIjoxNzU4Nzc3NDcyfQ.KHAiq5eM7AKbV5QdwakDMvEjubqt9qxnlMRfTZPUeYA',
+            'x-namespace': 'captain',
+        }
+    }
+
     startOneClickDeploy(
         template: any,
         values?: any
     ): Promise<{ jobId: string }> {
-        const endpoint = `${URL}/oneclick/deploy`
-        return fetch(endpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ template, values }),
-        }).then(async (res) => {
-            if (!res.ok) {
-                const text = await res.text()
-                return Promise.reject(text || res.statusText)
-            }
-            return res.json()
+        return this.executeGenericApiCommand('POST', '/user/oneclick/deploy', {
+            template,
+            values,
         })
     }
 
-    // Polls the backend for progress of a one-click deploy job.
     getOneClickDeployProgress(jobId: string): Promise<any> {
-        const endpoint = `${URL}/oneclick/deploy/progress?jobId=${encodeURIComponent(
-            jobId
-        )}`
-        return fetch(endpoint, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async (res) => {
-            if (!res.ok) {
-                const text = await res.text()
-                return Promise.reject(text || res.statusText)
+        return this.executeGenericApiCommand(
+            'GET',
+            '/user/oneclick/deploy/progress',
+            {
+                jobId,
             }
-            return res.json()
-        })
+        )
     }
 }

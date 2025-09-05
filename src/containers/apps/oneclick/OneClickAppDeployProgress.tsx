@@ -25,6 +25,13 @@ export default class OneClickAppDeployProgress extends ApiComponent<
 > {
     private pollIntervalId: any = undefined
 
+    constructor(props: any) {
+        super(props)
+        this.state = {
+            deploymentState: undefined,
+        }
+    }
+
     createSteps() {
         const deploymentState = this.getDeploymentState()
         const steps = deploymentState.steps
