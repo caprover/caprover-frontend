@@ -69,15 +69,6 @@ export default class ApiManager extends CapRoverAPI {
             })
     }
 
-    private getDebugHeaders() {
-        return {
-            'Content-Type': 'application/json',
-            'x-captain-auth':
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5hbWVzcGFjZSI6ImNhcHRhaW4iLCJ0b2tlblZlcnNpb24iOiJ0ZXN0In0sImlhdCI6MTc1NzA0OTQ3MiwiZXhwIjoxNzU4Nzc3NDcyfQ.KHAiq5eM7AKbV5QdwakDMvEjubqt9qxnlMRfTZPUeYA',
-            'x-namespace': 'captain',
-        }
-    }
-
     startOneClickDeploy(
         template: any,
         values?: any
