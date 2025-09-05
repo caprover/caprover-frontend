@@ -3833,10 +3833,10 @@ caniuse-lite@^1.0.30001702, caniuse-lite@^1.0.30001716:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001718.tgz#dae13a9c80d517c30c6197515a96131c194d8f82"
   integrity sha512-AflseV1ahcSunK53NfEs9gFWgOEmzr0f+kaMFA4xiLZlr9Hzt7HxcSpIFcnNCUkz6R6dWKa54rUz3HUmI3nVcw==
 
-caprover-api@^0.0.16:
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/caprover-api/-/caprover-api-0.0.16.tgz#f8f2d77802d045810c000ef65e5e1ab5ed1d2587"
-  integrity sha512-A4xzNlI3ziN8eFmKoT5kAcqQAGwPtshOzX65RNG07gfnohtr1ohUcPB9/fW12nAS0PK0ASBt+MonXSBpjK+VuQ==
+caprover-api@^0.0.18:
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/caprover-api/-/caprover-api-0.0.18.tgz#4fd4f24c0af7bdebafa2fbd1dec5d97c476cd356"
+  integrity sha512-wGkVTUCzqmgl8tRRj4+5H2C5cnVp0t11mfglDTjxnCZzQv2gEmCp40UdVHwFXsJ5qz4Jbm5WchB5nM/8cMNXPA==
   dependencies:
     cross-fetch "^4.1.0"
 

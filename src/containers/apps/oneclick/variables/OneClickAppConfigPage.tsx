@@ -181,7 +181,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
 
                                     DomUtils.scrollToTopBar()
                                     self.apiManager
-                                        .startOneClickDeploy(
+                                        .startOneClickAppDeploy(
                                             template,
                                             valuesAugmented
                                         )

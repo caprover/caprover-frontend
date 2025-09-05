@@ -68,24 +68,4 @@ export default class ApiManager extends CapRoverAPI {
                 return Promise.reject(error)
             })
     }
-
-    startOneClickDeploy(
-        template: any,
-        values?: any
-    ): Promise<{ jobId: string }> {
-        return this.executeGenericApiCommand('POST', '/user/oneclick/deploy', {
-            template,
-            values,
-        })
-    }
-
-    getOneClickDeployProgress(jobId: string): Promise<any> {
-        return this.executeGenericApiCommand(
-            'GET',
-            '/user/oneclick/deploy/progress',
-            {
-                jobId,
-            }
-        )
-    }
 }

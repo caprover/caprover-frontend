@@ -102,7 +102,7 @@ It will interrupt the deployment at the current step, leaving the applications i
     private fetchLoop(jobId: string) {
         // call backend, then schedule next call 2s after completion (if still running)
         this.apiManager
-            .getOneClickDeployProgress(jobId)
+            .getOneClickAppDeployProgress(jobId)
             .then((res: any) => {
                 const deploymentState: IDeploymentState = {
                     steps: res.steps || ['Queued'],
