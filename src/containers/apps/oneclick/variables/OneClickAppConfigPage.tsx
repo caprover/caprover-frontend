@@ -179,11 +179,20 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                         ONE_CLICK_ROOT_DOMAIN_VAR_NAME
                                     ] = self.state.rootDomain
 
+                                    const valuesArray = Object.keys(
+                                        valuesAugmented
+                                    ).map((key) => {
+                                        return {
+                                            key: key,
+                                            value: valuesAugmented[key],
+                                        }
+                                    })
+
                                     DomUtils.scrollToTopBar()
                                     self.apiManager
                                         .startOneClickAppDeploy(
                                             template,
-                                            valuesAugmented
+                                            valuesArray
                                         )
                                         .then((data: any) => {
                                             // store job id and render progress component
