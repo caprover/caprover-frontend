@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Col, Row } from 'antd'
+import { Alert, Card, Col, Row } from 'antd'
 import { RouteComponentProps } from 'react-router'
 import { IOneClickAppIdentifier } from '../../../../models/IOneClickAppModels'
 import { localize } from '../../../../utils/Language'
@@ -6,7 +6,6 @@ import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
 import CenteredSpinner from '../../../global/CenteredSpinner'
-import InputJsonifier from '../../../global/InputJsonifier'
 import NewTabLink from '../../../global/NewTabLink'
 import OneClickGrid from './OneClickGrid'
 import OneClickReposList from './OneClickReposList'
@@ -18,16 +17,12 @@ export default class OneClickAppSelector extends ApiComponent<
     RouteComponentProps<any>,
     {
         oneClickAppList: IOneClickAppIdentifier[] | undefined
-        isCustomTemplateSelected: boolean
-        templateOneClickAppData: string
     }
 > {
     constructor(props: any) {
         super(props)
         this.state = {
             oneClickAppList: undefined,
-            isCustomTemplateSelected: false,
-            templateOneClickAppData: '',
         }
     }
 
@@ -59,107 +54,6 @@ export default class OneClickAppSelector extends ApiComponent<
             .catch(Toaster.createCatcher())
     }
 
-    createCustomTemplateInput() {
-        const self = this
-
-        let isOneClickJsonValid = true
-        if (this.state.templateOneClickAppData) {
-            try {
-                JSON.parse(this.state.templateOneClickAppData)
-            } catch (error) {
-                isOneClickJsonValid = false
-            }
-        }
-
-        return (
-            <div
-                className={
-                    self.state.isCustomTemplateSelected ? '' : 'hide-on-demand'
-                }
-            >
-                <div>
-                    <p>
-                        {localize(
-                            'oneclick_app_selector.custom_template_info',
-                            'This is mainly for testing. You can copy and paste your custom One-Click app template here. For examples and ideas, see '
-                        )}
-                        <NewTabLink url="https://github.com/caprover/one-click-apps/tree/master/public/v4/apps">
-                            {localize(
-                                'oneclick_app_selector.one_click_apps_github_repository_main_repo',
-                                'the main one click apps GitHub repository'
-                            )}
-                        </NewTabLink>{' '}
-                    </p>
-                </div>
-
-                <InputJsonifier
-                    placeholder={`YAML or JSON # use captainVersion 4
-captainVersion: 4
-services:
-    $$cap_appname:
-        image: someimage:$$cap_version
-        caproverExtra:
-            containerHttpPort: '8080'
-caproverOneClickApp:
-    variables:
-        - id: $$cap_version
-          label: Version Tag
-          description: Check out their Docker page for the valid tags https://hub.docker.com/r/library/..../tags/
-          defaultValue: '4'
-          validRegex: /^(1.2.3)+$/
-    instructions:
-        start: >-
-            Some description for the start instruction.
-        end: Some description for the end instruction.
-    displayName: Adminer
-    isOfficial: true
-    description: Some really good description of the app.
-    documentation: 'Taken from https://hub.docker.com/_/someimage '
-    `}
-                    onChange={(stringified) => {
-                        self.setState({
-                            templateOneClickAppData: stringified,
-                        })
-                    }}
-                />
-                <div style={{ height: 10 }} />
-                {!isOneClickJsonValid ? (
-                    <Alert
-                        message={localize(
-                            'oneclick_app_selector.invalid_json_alert',
-                            "One Click data that you've entered is not a valid JSON."
-                        )}
-                        type="error"
-                    />
-                ) : (
-                    <div />
-                )}
-                <div style={{ height: 30 }} />
-                <Row justify="space-between" align="middle">
-                    <Button
-                        onClick={() =>
-                            self.props.history.push(
-                                `/apps/oneclick/${TEMPLATE_ONE_CLICK_APP}` +
-                                    (`?${ONE_CLICK_APP_STRINGIFIED_KEY}=` +
-                                        encodeURIComponent(
-                                            self.state.templateOneClickAppData
-                                        ))
-                            )
-                        }
-                        disabled={
-                            !self.state.templateOneClickAppData ||
-                            !isOneClickJsonValid
-                        }
-                        style={{ minWidth: 150 }}
-                        type="primary"
-                    >
-                        {localize('oneclick_app_selector.next_button', 'Next')}
-                    </Button>
-                </Row>
-            </div>
-        )
-    }
-
     createOneClickAppListGrid() {
         const self = this
 
@@ -170,7 +64,9 @@ caproverOneClickApp:
                 onAppSelectionChanged={(event, appName) => {
                     if (appName === TEMPLATE_ONE_CLICK_APP) {
                         event.preventDefault()
-                        self.setState({ isCustomTemplateSelected: true })
+                        self.props.history.push(
+                            `/apps/oneclick/input/${TEMPLATE_ONE_CLICK_APP}`
+                        )
                     }
                 }}
                 oneClickAppList={self.state.oneClickAppList!}
@@ -205,13 +101,7 @@ caproverOneClickApp:
                             ) : (
                                 <div />
                             )}
-                            <div
-                                className={
-                                    self.state.isCustomTemplateSelected
-                                        ? 'hide-on-demand'
-                                        : ''
-                                }
-                            >
+                            <div>
                                 <p>
                                     {localize(
                                         'oneclick_app_selector.app_selection_info',
@@ -241,7 +131,6 @@ caproverOneClickApp:
 
                                 <OneClickReposList />
                             </div>
-                            {self.createCustomTemplateInput()}
                         </Card>
                     </Col>
                 </Row>
