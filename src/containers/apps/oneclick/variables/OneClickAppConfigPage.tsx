@@ -9,11 +9,11 @@ import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
 import CenteredSpinner from '../../../global/CenteredSpinner'
-import OneClickAppDeployProgress from '../OneClickAppDeployProgress'
 import {
     ONE_CLICK_APP_STRINGIFIED_KEY,
     TEMPLATE_ONE_CLICK_APP,
 } from '../selector/OneClickAppSelector'
+import OneClickAppDeployProgress from './OneClickAppDeployProgress'
 import OneClickVariablesSection from './OneClickVariablesSection'
 
 export const ONE_CLICK_APP_NAME_VAR_NAME = '$$cap_appname'
