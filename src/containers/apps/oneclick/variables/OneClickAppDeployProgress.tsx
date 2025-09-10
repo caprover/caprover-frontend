@@ -2,8 +2,8 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { Alert, Button, Card, Col, Row, Steps } from 'antd'
 import ReactMarkdown from 'react-markdown'
 import { Prompt } from 'react-router-dom'
-import Toaster from '../../../utils/Toaster'
-import ApiComponent from '../../global/ApiComponent'
+import Toaster from '../../../../utils/Toaster'
+import ApiComponent from '../../../global/ApiComponent'
 
 interface IDeploymentState {
     steps: string[]
