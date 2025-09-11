@@ -19,6 +19,7 @@ import Sidebar from './Sidebar'
 import Apps from './apps/Apps'
 import ProjectDetailsEdit from './apps/ProjectDetailsEdit'
 import AppDetails from './apps/appDetails/AppDetails'
+import DockerComposeEntry from './apps/compose/DockerComposeEntry'
 import OneClickAppSelector, {
     TEMPLATE_ONE_CLICK_APP,
 } from './apps/oneclick/selector/OneClickAppSelector'
@@ -338,6 +339,10 @@ class PageRoot extends ApiComponent<
                                 <Route
                                     path="/apps/oneclick"
                                     component={OneClickAppSelector}
+                                />
+                                <Route
+                                    path="/apps/dockercompose"
+                                    component={DockerComposeEntry}
                                 />
                                 <Route path="/apps/" component={Apps} />
                                 <Route
