@@ -3,7 +3,6 @@ import ReactMarkdown from 'react-markdown'
 import { RouteComponentProps } from 'react-router'
 import gfm from 'remark-gfm'
 import { IOneClickTemplate } from '../../../../models/IOneClickAppModels'
-import DomUtils from '../../../../utils/DomUtils'
 import ErrorFactory from '../../../../utils/ErrorFactory'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
@@ -13,18 +12,21 @@ import {
     ONE_CLICK_APP_STRINGIFIED_KEY,
     TEMPLATE_ONE_CLICK_APP,
 } from '../selector/OneClickAppSelector'
-import OneClickAppDeployProgress from './OneClickAppDeployProgress'
 import OneClickVariablesSection from './OneClickVariablesSection'
 
 export const ONE_CLICK_APP_NAME_VAR_NAME = '$$cap_appname'
 export const ONE_CLICK_ROOT_DOMAIN_VAR_NAME = '$$cap_root_domain'
+
+// Query parameter constants for deployment page
+export const DEPLOYMENT_QUERY_PARAM_TEMPLATE = 'template'
+export const DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY = 'valuesArray'
+export const DEPLOYMENT_QUERY_PARAM_APP_NAME = 'appName'
 
 export default class OneClickAppConfigPage extends ApiComponent<
     RouteComponentProps<any>,
     {
         apiData: IOneClickTemplate | undefined
         rootDomain: string
-        oneClickJobId?: string
     }
 > {
     private isUnmount: boolean = false
@@ -34,7 +36,6 @@ export default class OneClickAppConfigPage extends ApiComponent<
         this.state = {
             apiData: undefined,
             rootDomain: '',
-            oneClickJobId: undefined,
         }
     }
 
@@ -123,20 +124,6 @@ export default class OneClickAppConfigPage extends ApiComponent<
             return <CenteredSpinner />
         }
 
-        // If we have an active backend job id, render progress and poll
-        if (this.state.oneClickJobId) {
-            return (
-                <OneClickAppDeployProgress
-                    appName={self.props.match.params.appName}
-                    jobId={self.state.oneClickJobId}
-                    onFinishClicked={() => self.props.history.push('/apps')}
-                    onRestartClicked={() =>
-                        self.setState({ oneClickJobId: undefined })
-                    }
-                />
-            )
-        }
-
         return (
             <div>
                 <Row justify="center">
@@ -188,19 +175,19 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                         }
                                     })
 
-                                    DomUtils.scrollToTopBar()
-                                    self.apiManager
-                                        .startOneClickAppDeploy(
-                                            template,
-                                            valuesArray
-                                        )
-                                        .then((data: any) => {
-                                            // store job id and render progress component
-                                            self.setState({
-                                                oneClickJobId: data.jobId,
-                                            })
-                                        })
-                                        .catch(Toaster.createCatcher())
+                                    // Navigate to deployment page with template and values
+                                    const templateStr = encodeURIComponent(
+                                        JSON.stringify(template)
+                                    )
+                                    const valuesArrayStr = encodeURIComponent(
+                                        JSON.stringify(valuesArray)
+                                    )
+                                    const appName = encodeURIComponent(
+                                        self.props.match.params.appName
+                                    )
+
+                                    const deployUrl = `/apps/oneclick/deployment?${DEPLOYMENT_QUERY_PARAM_TEMPLATE}=${templateStr}&${DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY}=${valuesArrayStr}&${DEPLOYMENT_QUERY_PARAM_APP_NAME}=${appName}`
+                                    self.props.history.push(deployUrl)
                                 }}
                             />
                         </Card>
