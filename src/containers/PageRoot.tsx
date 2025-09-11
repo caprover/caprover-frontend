@@ -25,6 +25,7 @@ import OneClickAppSelector, {
 } from './apps/oneclick/selector/OneClickAppSelector'
 import TemplateInputPage from './apps/oneclick/template/TemplateInputPage'
 import OneClickAppConfigPage from './apps/oneclick/variables/OneClickAppConfigPage'
+import OneClickDeploymentPage from './apps/oneclick/variables/OneClickDeploymentPage'
 import ApiComponent from './global/ApiComponent'
 import ClickableLink from './global/ClickableLink'
 import DarkModeSwitch from './global/DarkModeSwitch'
@@ -326,6 +327,10 @@ class PageRoot extends ApiComponent<
                                 <Route
                                     path={`/apps/oneclick/input/${TEMPLATE_ONE_CLICK_APP}`}
                                     component={TemplateInputPage}
+                                />
+                                <Route
+                                    path="/apps/oneclick/deployment"
+                                    component={OneClickDeploymentPage}
                                 />
                                 <Route
                                     path="/apps/oneclick/:appName"
