@@ -127,7 +127,7 @@ volumes:
     deploy(template: any) {
         const self = this
         // Navigate to deployment page with template and values
-
+        // TODO move the constants to a common file
         template.captainVersion = 4
         template.caproverOneClickApp = {
             instructions: {
