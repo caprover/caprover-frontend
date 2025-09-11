@@ -3,6 +3,11 @@ import { message } from 'antd'
 export default class Toaster {
     static toastError(error: any) {
         let errorMessage = 'Something bad happened.'
+
+        if (typeof error === 'string') {
+            errorMessage = error
+        }
+
         if (error.captainStatus) {
             let errorDescription = error.captainMessage || errorMessage
             errorMessage = `${error.captainStatus} : ${errorDescription}`
