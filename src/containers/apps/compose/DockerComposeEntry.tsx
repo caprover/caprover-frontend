@@ -34,7 +34,7 @@ export default class OneClickAppSelector extends ApiComponent<
     render() {
         const self = this
 
-        let parsedJson = null as any
+        let parsedJson = undefined as any
         try {
             parsedJson = JSON.parse(this.state.stringifiedJsonComposeContent)
         } catch (error) {}
