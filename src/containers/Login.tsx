@@ -194,6 +194,7 @@ class NormalLoginForm extends React.Component<
                                         otpEntered: `${e.target.value}`,
                                     })
                                 }}
+                                autoComplete="one-time-code"
                                 autoFocus
                             />
                         </Row>

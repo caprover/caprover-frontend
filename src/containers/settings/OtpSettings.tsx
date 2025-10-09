@@ -135,6 +135,7 @@ export default class OtpSettings extends ApiComponent<
                                     enteredToken: `${e.target.value}`,
                                 })
                             }}
+                            autoComplete="one-time-code"
                             autoFocus
                         />
                     </div>
