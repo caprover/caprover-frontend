@@ -291,7 +291,7 @@ export default class Deployment extends ApiComponent<
                         ['%s'],
                         [
                             <span>
-                                <code>.tar file</code>
+                                <code>.tar</code> file
                             </span>,
                         ]
                     )}
