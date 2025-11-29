@@ -274,7 +274,12 @@ class AppsTable extends Component<
                     return tagExists
                 }
 
-                return app.appName!.indexOf(searchTerm) >= 0
+                return (
+                    app.appName!.includes(searchTerm) ||
+                    app.customDomain.some((domain) =>
+                        domain.publicDomain.includes(searchTerm)
+                    )
+                )
             })
             .filter((app) => {
                 const selectedProjectId = self.state.selectedProjectId
