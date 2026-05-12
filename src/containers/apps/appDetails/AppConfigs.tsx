@@ -1,7 +1,8 @@
 import { EditFilled, EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
-import { Button, Col, Input, Row, Switch, Tag, Tooltip } from 'antd'
+import { Button, Col, Input, Row, Switch, Tag, Tooltip, Typography } from 'antd'
 import { Component, Fragment } from 'react'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
+import ProjectDefinition from '../../../models/ProjectDefinition'
 import { localize } from '../../../utils/Language'
 import Utils from '../../../utils/Utils'
 import CodeEdit from '../../global/CodeEdit'
@@ -67,6 +68,110 @@ export default class AppConfigs extends Component<
             })
 
         return obj
+    }
+
+    getInheritedEnvVars(): { envVars: IAppEnvVar[]; projectName: string }[] {
+        const app = this.props.apiData.appDefinition
+        const projects = this.props.apiData.projects || []
+
+        if (!app.projectId) return []
+
+        const projectMap = new Map<string, ProjectDefinition>()
+        projects.forEach((p) => projectMap.set(p.id, p))
+
+        const chain: ProjectDefinition[] = []
+        let current = projectMap.get(app.projectId)
+        while (current) {
+            chain.unshift(current)
+            current = current.parentProjectId
+                ? projectMap.get(current.parentProjectId)
+                : undefined
+        }
+
+        return chain
+            .filter((p) => p.envVars && p.envVars.length > 0)
+            .map((p) => ({ envVars: p.envVars!, projectName: p.name }))
+    }
+
+    getEffectiveInheritedEnvVars(): IAppEnvVar[] {
+        const layers = this.getInheritedEnvVars()
+        const map = new Map<string, string>()
+        layers.forEach(({ envVars }) =>
+            envVars.forEach((v) => map.set(v.key, v.value))
+        )
+        return Array.from(map.entries()).map(([key, value]) => ({ key, value }))
+    }
+
+    createInheritedEnvVarSection() {
+        const inherited = this.getEffectiveInheritedEnvVars()
+        const appEnvVarKeys = new Set(
+            (this.props.apiData.appDefinition.envVars || []).map((v) => v.key)
+        )
+
+        if (inherited.length === 0) return null
+
+        return (
+            <div
+                style={{
+                    marginBottom: 16,
+                    padding: '12px 16px',
+                    background: '#f6f6f6',
+                    borderRadius: 6,
+                    border: '1px solid #e0e0e0',
+                }}
+            >
+                <Row align="middle" style={{ marginBottom: 8 }}>
+                    <Typography.Text strong>
+                        {localize(
+                            'apps.inherited_env_vars_title',
+                            'Inherited from project'
+                        )}
+                    </Typography.Text>
+                    <Tooltip
+                        title={localize(
+                            'apps.inherited_env_vars_hint',
+                            'These environment variables are inherited from the parent project(s). To override a variable, add it below with the same key.'
+                        )}
+                    >
+                        <InfoCircleOutlined
+                            style={{ marginLeft: 8, color: '#888' }}
+                        />
+                    </Tooltip>
+                </Row>
+                {inherited.map((v) => (
+                    <Row
+                        key={v.key}
+                        style={{ paddingBottom: 6 }}
+                        align="middle"
+                    >
+                        <Col span={8}>
+                            <Input
+                                className="code-input"
+                                value={v.key}
+                                disabled
+                            />
+                        </Col>
+                        <Col style={{ paddingLeft: 12 }} span={12}>
+                            <Input
+                                className="code-input"
+                                value={v.value}
+                                disabled
+                            />
+                        </Col>
+                        <Col style={{ paddingLeft: 12 }} span={4}>
+                            {appEnvVarKeys.has(v.key) && (
+                                <Tag color="blue">
+                                    {localize(
+                                        'apps.inherited_env_var_overridden',
+                                        'overridden'
+                                    )}
+                                </Tag>
+                            )}
+                        </Col>
+                    </Row>
+                ))}
+            </div>
+        )
     }
 
     convertEnvVarsToBulk(envVars: IAppEnvVar[]) {
@@ -518,6 +623,7 @@ export default class AppConfigs extends Component<
                         </h5>
                     </Col>
                 </Row>
+                {this.createInheritedEnvVarSection()}
                 <div
                     className={
                         app.envVars && !!app.envVars.length
