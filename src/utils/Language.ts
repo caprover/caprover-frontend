@@ -7,6 +7,7 @@ import faIR from 'antd/es/locale/fa_IR'
 import frFR from 'antd/es/locale/fr_FR'
 import hrHR from 'antd/es/locale/hr_HR'
 import idID from 'antd/es/locale/id_ID'
+import koKR from 'antd/es/locale/ko_KR'
 import nlNL from 'antd/es/locale/nl_NL'
 import ptBR from 'antd/es/locale/pt_BR'
 import ruRU from 'antd/es/locale/ru_RU'
@@ -21,6 +22,7 @@ import faIRMessages from '../locales/fa-IR.json'
 import frFRMessages from '../locales/fr-FR.json'
 import hrHRMessages from '../locales/hr-HR.json'
 import idIDMessages from '../locales/id-ID.json'
+import koKRMessages from '../locales/ko-KR.json'
 import nlNLMessages from '../locales/nl-NL.json'
 import ptBRMessages from '../locales/pt-BR.json'
 import ruRUMessages from '../locales/ru-RU.json'
@@ -68,6 +70,13 @@ const languagesOptions: LanguageOption[] = [
         alias: ['es'],
         antdLocale: esES,
         messages: esESMessages,
+    },
+    {
+        label: '한국어',
+        value: 'ko-KR',
+        alias: ['ko'],
+        antdLocale: koKR,
+        messages: koKRMessages,
     },
     {
         label: 'Deutsch',
