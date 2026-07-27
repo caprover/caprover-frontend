@@ -7,6 +7,7 @@ import { localize } from '../../../utils/Language'
 import Logger from '../../../utils/Logger'
 import Utils from '../../../utils/Utils'
 import {
+    formatLocalized,
     getOtherAppsUsingVolume,
     resolvePhysicalVolumeName,
 } from '../../../utils/volumeHelpers'
@@ -24,9 +25,7 @@ export default class AppConfigs extends Component<
         envVarBulkVals: string
         forceEditableNodeId: boolean
         forceEditableInstanceCount: boolean
-        volumes: VolumeListItem[]
-        volumesLoading: boolean
-        volumesFetchFailed: boolean
+        volumeInventory: VolumeListItem[]
     }
 > {
     private willUnmountSoon = false
@@ -40,9 +39,7 @@ export default class AppConfigs extends Component<
             envVarBulkEdit: false,
             envVarBulkVals: '',
             forceEditableNodeId: false,
-            volumes: [],
-            volumesLoading: false,
-            volumesFetchFailed: false,
+            volumeInventory: [],
         }
     }
 
@@ -59,7 +56,6 @@ export default class AppConfigs extends Component<
         if (!self.props.apiData.appDefinition.hasPersistentData) {
             return
         }
-        self.setState({ volumesLoading: true })
         self.props.apiManager
             .getAllVolumes()
             .then((data: { volumes?: VolumeListItem[] }) => {
@@ -67,9 +63,7 @@ export default class AppConfigs extends Component<
                     return
                 }
                 self.setState({
-                    volumes: data.volumes || [],
-                    volumesLoading: false,
-                    volumesFetchFailed: false,
+                    volumeInventory: data.volumes || [],
                 })
             })
             .catch((err) => {
@@ -82,9 +76,7 @@ export default class AppConfigs extends Component<
                     return
                 }
                 self.setState({
-                    volumes: [],
-                    volumesLoading: false,
-                    volumesFetchFailed: true,
+                    volumeInventory: [],
                 })
             })
     }
@@ -317,7 +309,7 @@ export default class AppConfigs extends Component<
                               value.volumeName || '',
                               app.isLegacyAppName
                           ),
-                          self.state.volumes,
+                          self.state.volumeInventory,
                           app.appName
                       )
 
@@ -452,12 +444,13 @@ export default class AppConfigs extends Component<
                                 <Alert
                                     type="warning"
                                     showIcon={true}
-                                    message={localize(
-                                        'apps.app_config_vol_in_use_warning',
-                                        'This volume is already used by other application(s): %s'
-                                    )
-                                        .split('%s')
-                                        .join(otherApps.join(', '))}
+                                    message={formatLocalized(
+                                        localize(
+                                            'apps.app_config_vol_in_use_warning',
+                                            'This volume is already used by other application(s): %s'
+                                        ),
+                                        otherApps.join(', ')
+                                    )}
                                 />
                             </Col>
                         </Row>

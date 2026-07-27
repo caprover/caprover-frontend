@@ -27,3 +27,5 @@ cypress/videos/
 
 public/dark-theme.css
 public/light-theme.css
+.env
+.gitlock

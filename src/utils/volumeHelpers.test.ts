@@ -138,3 +138,26 @@ describe('formatLocalized', () => {
         expect(formatLocalized('%s and %s', 'a')).toBe('a and a')
     })
 })
+
+describe('legacy resolve → getOtherAppsUsingVolume (AppConfigs path)', () => {
+    it('resolves logical label for legacy app and lists other apps', () => {
+        const inventory: VolumeListItem[] = [
+            makeVolume('captain--data', ['legacy-app', 'other-app']),
+        ]
+        const physical = resolvePhysicalVolumeName('data', true)
+        expect(physical).toBe('captain--data')
+        expect(
+            getOtherAppsUsingVolume(physical, inventory, 'legacy-app')
+        ).toEqual(['other-app'])
+    })
+
+    it('does not warn when only the current legacy app uses the volume', () => {
+        const inventory: VolumeListItem[] = [
+            makeVolume('captain--data', ['legacy-app']),
+        ]
+        const physical = resolvePhysicalVolumeName('data', true)
+        expect(
+            getOtherAppsUsingVolume(physical, inventory, 'legacy-app')
+        ).toEqual([])
+    })
+})
