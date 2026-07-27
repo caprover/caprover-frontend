@@ -1,4 +1,5 @@
 import CapRoverAPI from 'caprover-api'
+import { VolumesListResponse } from '../models/VolumeInfo'
 import Logger from '../utils/Logger'
 import StorageHelper from '../utils/StorageHelper'
 
@@ -67,5 +68,13 @@ export default class ApiManager extends CapRoverAPI {
 
                 return Promise.reject(error)
             })
+    }
+
+    getAllVolumes(): Promise<VolumesListResponse> {
+        return this.executeGenericApiCommand(
+            'GET',
+            '/user/system/volumes/',
+            {}
+        ) as Promise<VolumesListResponse>
     }
 }

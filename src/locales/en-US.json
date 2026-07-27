@@ -53,6 +53,7 @@
     "apps.app_config_vol_directories": "Persistent Directories",
     "apps.app_config_vol_host_path": "Path on Host",
     "apps.app_config_vol_host_path_hint": "IMPORTANT: Ensure Host Path exists before assigning it here",
+    "apps.app_config_vol_in_use_warning": "This volume is already used by other application(s): %s",
     "apps.app_config_vol_label": "Label",
     "apps.app_config_vol_manage_path": "Let CapRover manage path",
     "apps.app_config_vol_no_directories": "Currently, this app does not have any persistent directories.",
