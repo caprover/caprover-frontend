@@ -16,7 +16,7 @@ function makeVolume(
         mountpoint: `/var/lib/docker/volumes/${name}/_data`,
         scope: 'local',
         labels: {},
-        options: null,
+        options: undefined,
         usedByAppNames,
         isLikelySystem,
     }

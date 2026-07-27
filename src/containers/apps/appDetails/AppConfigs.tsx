@@ -454,7 +454,7 @@ export default class AppConfigs extends Component<
                                 />
                             </Col>
                         </Row>
-                    ) : null}
+                    ) : undefined}
                 </div>
             )
         })
