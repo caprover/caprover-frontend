@@ -301,17 +301,16 @@ export default class AppConfigs extends Component<
         const volumes = app.volumes || []
         return volumes.map((value, index) => {
             // Bind mounts: Label is hidden; do not warn on volume sharing
-            const otherApps =
-                value.hostPath
-                    ? []
-                    : getOtherAppsUsingVolume(
-                          resolvePhysicalVolumeName(
-                              value.volumeName || '',
-                              app.isLegacyAppName
-                          ),
-                          self.state.volumeInventory,
-                          app.appName
-                      )
+            const otherApps = value.hostPath
+                ? []
+                : getOtherAppsUsingVolume(
+                      resolvePhysicalVolumeName(
+                          value.volumeName || '',
+                          app.isLegacyAppName
+                      ),
+                      self.state.volumeInventory,
+                      app.appName
+                  )
 
             return (
                 <div key={`${index}`}>
@@ -418,11 +417,10 @@ export default class AppConfigs extends Component<
                                     )
                                     newApiData.appDefinition.volumes[
                                         index
-                                    ].hostPath =
-                                        newApiData.appDefinition.volumes[index]
-                                            .hostPath
-                                            ? ''
-                                            : '/'
+                                    ].hostPath = newApiData.appDefinition
+                                        .volumes[index].hostPath
+                                        ? ''
+                                        : '/'
                                     self.props.updateApiData(newApiData)
                                 }}
                             >
