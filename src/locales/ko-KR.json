@@ -53,6 +53,7 @@
     "apps.app_config_vol_directories": "영구 디렉터리",
     "apps.app_config_vol_host_path": "호스트 경로",
     "apps.app_config_vol_host_path_hint": "중요: 여기에 지정하기 전에 호스트 경로가 존재하는지 확인하세요",
+    "apps.app_config_vol_in_use_warning": "이 볼륨은 이미 다른 애플리케이션에서 사용 중입니다: %s",
     "apps.app_config_vol_label": "레이블",
     "apps.app_config_vol_manage_path": "CapRover가 경로 관리",
     "apps.app_config_vol_no_directories": "현재 이 앱에는 영구 디렉터리가 없습니다.",

@@ -53,6 +53,7 @@
     "apps.app_config_vol_directories": "Directorios Persistentes",
     "apps.app_config_vol_host_path": "Ruta en el Host",
     "apps.app_config_vol_host_path_hint": "IMPORTANTE: Asegúrese de que la Ruta del Host exista antes de asignarla aquí",
+    "apps.app_config_vol_in_use_warning": "Este volumen ya está siendo usado por otra(s) aplicación(es): %s",
     "apps.app_config_vol_label": "Etiqueta",
     "apps.app_config_vol_manage_path": "Dejar que CapRover administre la ruta",
     "apps.app_config_vol_no_directories": "Actualmente, esta app no tiene ningún directorio persistente.",

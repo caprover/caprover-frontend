@@ -53,6 +53,7 @@
     "apps.app_config_vol_directories": "Persistente mappen",
     "apps.app_config_vol_host_path": "Pad op host",
     "apps.app_config_vol_host_path_hint": "BELANGRIJK: Zorg ervoor dat het hostpad bestaat voordat je het hier toewijst",
+    "apps.app_config_vol_in_use_warning": "Dit volume wordt al gebruikt door andere applicatie(s): %s",
     "apps.app_config_vol_label": "Label",
     "apps.app_config_vol_manage_path": "Laat CapRover het pad beheren",
     "apps.app_config_vol_no_directories": "Momenteel heeft deze app geen persistente mappen.",

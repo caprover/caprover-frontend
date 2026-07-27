@@ -53,6 +53,7 @@
     "apps.app_config_vol_directories": "الأدلة المستمرة",
     "apps.app_config_vol_host_path": "المسار على الخادم",
     "apps.app_config_vol_host_path_hint": "مهم: تأكد من وجود المسار على الخادم قبل تعيينه هنا",
+    "apps.app_config_vol_in_use_warning": "هذا المجلد مستخدم بالفعل بواسطة تطبيق(ات) أخرى: %s",
     "apps.app_config_vol_label": "العلامة",
     "apps.app_config_vol_manage_path": "دع CapRover يدير المسار",
     "apps.app_config_vol_no_directories": "حاليًا، لا يمتلك هذا التطبيق أي أدلة مستمرة.",

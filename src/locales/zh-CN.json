@@ -53,6 +53,7 @@
     "apps.app_config_vol_directories": "持久目录",
     "apps.app_config_vol_host_path": "主机路径",
     "apps.app_config_vol_host_path_hint": "重要：分配路径之前，请确保主机路径存在",
+    "apps.app_config_vol_in_use_warning": "此卷已被其他应用使用：%s",
     "apps.app_config_vol_label": "标签",
     "apps.app_config_vol_manage_path": "让 CapRover 管理路径",
     "apps.app_config_vol_no_directories": "当前，此应用没有任何持久目录。",

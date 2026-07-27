@@ -53,6 +53,7 @@
     "apps.app_config_vol_directories": "Постоянные volume",
     "apps.app_config_vol_host_path": "Путь на хосте",
     "apps.app_config_vol_host_path_hint": "ВАЖНО: убедитесь, что путь на хосте существует",
+    "apps.app_config_vol_in_use_warning": "Этот volume уже используется другим приложением(ями): %s",
     "apps.app_config_vol_label": "Метка",
     "apps.app_config_vol_manage_path": "Разрешить CapRover управлять путём",
     "apps.app_config_vol_no_directories": "У этого приложения пока нет docker volumes.",
