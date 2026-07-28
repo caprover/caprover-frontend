@@ -43,6 +43,7 @@ import onDeleteAppClicked from '../DeleteAppConfirm'
 import EditableSpan from '../EditableSpan'
 import AppConfigs from './AppConfigs'
 import HttpSettings from './HttpSettings'
+import AppBackups from './backups/AppBackups'
 import Deployment from './deploy/Deployment'
 import LogsTab from './logs/LogsTab'
 
@@ -50,6 +51,7 @@ const WEB_SETTINGS = 'WEB_SETTINGS'
 const APP_CONFIGS = 'APP_CONFIGS'
 const DEPLOYMENT = 'DEPLOYMENT'
 const LOGS = 'LOGS'
+const BACKUPS = 'BACKUPS'
 
 export interface SingleAppApiData {
     appDefinition: IAppDef
@@ -422,6 +424,18 @@ class AppDetails extends ApiComponent<
                                         </span>
                                     ),
                                     children: <LogsTab {...tabProps} />,
+                                },
+                                {
+                                    key: BACKUPS,
+                                    label: (
+                                        <span className="unselectable-span">
+                                            {localize(
+                                                'apps.app_backups_tab',
+                                                'Backups'
+                                            )}
+                                        </span>
+                                    ),
+                                    children: <AppBackups {...tabProps} />,
                                 },
                             ]}
                         ></Tabs>
