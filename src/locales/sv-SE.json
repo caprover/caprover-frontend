@@ -53,6 +53,8 @@
     "apps.app_config_vol_directories": "Beständiga mappar",
     "apps.app_config_vol_host_path": "Sökväg på värd",
     "apps.app_config_vol_host_path_hint": "VIKTIGT: Se till att värdvägen finns innan du tilldelar den här",
+    "apps.app_config_vol_in_use_warning": "Denna volym används redan av annan applikation/applikationer: %s",
+    "apps.app_config_vol_in_use_warning_desc": "Du kan ignorera den här varningen om du avsiktligt delar den här volymen mellan applikationer.",
     "apps.app_config_vol_label": "Etikett",
     "apps.app_config_vol_manage_path": "Låt CapRover hantera sökvägen",
     "apps.app_config_vol_no_directories": "För närvarande har denna app inga beständiga mappar.",

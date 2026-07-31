@@ -53,6 +53,8 @@
     "apps.app_config_vol_directories": "永続ディレクトリ",
     "apps.app_config_vol_host_path": "ホスト上のパス",
     "apps.app_config_vol_host_path_hint": "重要：ここで割り当てる前に、ホストパスが存在することを確認してください",
+    "apps.app_config_vol_in_use_warning": "このボリュームは既に他のアプリケーションで使用されています: %s",
+    "apps.app_config_vol_in_use_warning_desc": "アプリケーション間でこのボリュームを意図的に共有している場合は、この警告を無視してかまいません。",
     "apps.app_config_vol_label": "ラベル",
     "apps.app_config_vol_manage_path": "CapRoverにパスを管理させる",
     "apps.app_config_vol_no_directories": "現在、このアプリには永続ディレクトリがありません。",
