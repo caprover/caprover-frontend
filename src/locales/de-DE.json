@@ -53,6 +53,8 @@
     "apps.app_config_vol_directories": "Persistente Verzeichnisse",
     "apps.app_config_vol_host_path": "Hostpfad",
     "apps.app_config_vol_host_path_hint": "WICHTIG: Stellen Sie sicher, dass der Hostpfad vorhanden ist, bevor Sie ihn hier zuweisen",
+    "apps.app_config_vol_in_use_warning": "Dieses Volume wird bereits von anderen Anwendung(en) verwendet: %s",
+    "apps.app_config_vol_in_use_warning_desc": "Sie können diese Warnung ignorieren, wenn Sie dieses Volume absichtlich über Anwendungen hinweg teilen.",
     "apps.app_config_vol_label": "Bezeichnung",
     "apps.app_config_vol_manage_path": "Lassen Sie CapRover den Pfad verwalten",
     "apps.app_config_vol_no_directories": "Derzeit hat diese App keine persistenten Verzeichnisse.",

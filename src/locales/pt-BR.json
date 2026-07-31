@@ -53,6 +53,8 @@
     "apps.app_config_vol_directories": "Diretórios Persistentes",
     "apps.app_config_vol_host_path": "Caminho no Host",
     "apps.app_config_vol_host_path_hint": "IMPORTANTE: Garanta que o Caminho do Host exista antes de atribuí-lo aqui",
+    "apps.app_config_vol_in_use_warning": "Este volume já está sendo usado por outro(s) aplicativo(s): %s",
+    "apps.app_config_vol_in_use_warning_desc": "Você pode ignorar este aviso se compartilhar intencionalmente este volume entre aplicativos.",
     "apps.app_config_vol_label": "Rótulo",
     "apps.app_config_vol_manage_path": "Permitir que o CapRover gerencie o caminho",
     "apps.app_config_vol_no_directories": "Atualmente, este app não possui diretórios persistentes.",

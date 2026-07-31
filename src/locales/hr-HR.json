@@ -53,6 +53,8 @@
     "apps.app_config_vol_directories": "Trajni direktoriji",
     "apps.app_config_vol_host_path": "Putanja na hostu",
     "apps.app_config_vol_host_path_hint": "VAŽNO: Provjerite postoji li putanja na hostu prije nego što je ovdje dodijelite",
+    "apps.app_config_vol_in_use_warning": "Ovaj volume već koriste druge aplikacije: %s",
+    "apps.app_config_vol_in_use_warning_desc": "Možete zanemariti ovo upozorenje ako namjerno dijelite ovaj volume između aplikacija.",
     "apps.app_config_vol_label": "Oznaka",
     "apps.app_config_vol_manage_path": "Prepusti CapRoveru upravljanje putanjom",
     "apps.app_config_vol_no_directories": "Trenutno ova aplikacija nema trajne direktorije.",

@@ -53,6 +53,8 @@
     "apps.app_config_vol_directories": "دایرکتوری‌های دائمی",
     "apps.app_config_vol_host_path": "مسیر روی میزبان",
     "apps.app_config_vol_host_path_hint": "مهم: قبل از اختصاص دادن آن در اینجا، اطمینان حاصل کنید که مسیر میزبان وجود دارد",
+    "apps.app_config_vol_in_use_warning": "این volume قبلاً توسط برنامه(های) دیگر استفاده می‌شود: %s",
+    "apps.app_config_vol_in_use_warning_desc": "اگر عمداً این volume را بین برنامه‌ها به اشتراک می‌گذارید، می‌توانید این هشدار را نادیده بگیرید.",
     "apps.app_config_vol_label": "برچسب",
     "apps.app_config_vol_manage_path": "مدیریت مسیر توسط کپروور",
     "apps.app_config_vol_no_directories": "در حال حاضر، این برنامه هیچ دایرکتوری دائمی ندارد.",

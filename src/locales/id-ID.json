@@ -53,6 +53,8 @@
     "apps.app_config_vol_directories": "Direktori Persisten",
     "apps.app_config_vol_host_path": "Jalur di Host",
     "apps.app_config_vol_host_path_hint": "PENTING: Pastikan Jalur Host ada sebelum menetapkannya di sini",
+    "apps.app_config_vol_in_use_warning": "Volume ini sudah digunakan oleh aplikasi lain: %s",
+    "apps.app_config_vol_in_use_warning_desc": "Anda dapat mengabaikan peringatan ini jika memang sengaja berbagi volume ini antar aplikasi.",
     "apps.app_config_vol_label": "Label",
     "apps.app_config_vol_manage_path": "Biarkan CapRover mengelola jalur",
     "apps.app_config_vol_no_directories": "Saat ini, aplikasi ini tidak memiliki direktori persisten.",
