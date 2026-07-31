@@ -54,7 +54,7 @@
     "apps.app_config_vol_host_path": "Ev Sahibi Yolu",
     "apps.app_config_vol_host_path_hint": "ÖNEMLİ: Buraya atama yapmadan önce Ev Sahibi Yolu'nun var olduğundan emin olun",
     "apps.app_config_vol_in_use_warning": "Bu birim zaten diğer uygulama(lar) tarafından kullanılıyor: %s",
-    "apps.app_config_vol_in_use_warning_desc": "Bu volume'u uygulamalar arasında bilerek paylaşıyorsanız bu uyarıyı yok sayabilirsiniz.",
+    "apps.app_config_vol_in_use_warning_desc": "Bu birimi uygulamalar arasında bilerek paylaşıyorsanız bu uyarıyı yok sayabilirsiniz.",
     "apps.app_config_vol_label": "Etiket",
     "apps.app_config_vol_manage_path": "Yolu CapRover yönetir",
     "apps.app_config_vol_no_directories": "Şu anda, bu uygulamada herhangi bir kalıcı dizin yok.",
