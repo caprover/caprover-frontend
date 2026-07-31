@@ -4,6 +4,7 @@ import { localize } from '../../../../utils/Language'
 import ApiComponent from '../../../global/ApiComponent'
 import InputJsonifier from '../../../global/InputJsonifier'
 import NewTabLink from '../../../global/NewTabLink'
+import { DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME } from '../OneClickDeploymentConstants'
 import { TEMPLATE_ONE_CLICK_APP } from '../selector/OneClickAppSelector'
 
 export const ONE_CLICK_APP_STRINGIFIED_KEY = 'oneClickAppStringifiedData'
@@ -100,7 +101,8 @@ caproverOneClickApp:
                                 `/apps/oneclick/${TEMPLATE_ONE_CLICK_APP}?${ONE_CLICK_APP_STRINGIFIED_KEY}=` +
                                     encodeURIComponent(
                                         self.state.templateOneClickAppData
-                                    )
+                                    ) +
+                                    `&${DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME}=TEMPLATE_ONE_CLICK`
                             )
                         }
                         disabled={

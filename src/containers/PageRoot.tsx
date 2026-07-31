@@ -20,9 +20,7 @@ import Apps from './apps/Apps'
 import ProjectDetailsEdit from './apps/ProjectDetailsEdit'
 import AppDetails from './apps/appDetails/AppDetails'
 import DockerComposeEntry from './apps/compose/DockerComposeEntry'
-import OneClickAppSelector, {
-    TEMPLATE_ONE_CLICK_APP,
-} from './apps/oneclick/selector/OneClickAppSelector'
+import OneClickAppSelector from './apps/oneclick/selector/OneClickAppSelector'
 import TemplateInputPage from './apps/oneclick/template/TemplateInputPage'
 import OneClickAppConfigPage from './apps/oneclick/variables/OneClickAppConfigPage'
 import OneClickDeploymentPage from './apps/oneclick/variables/OneClickDeploymentPage'
@@ -325,7 +323,7 @@ class PageRoot extends ApiComponent<
                                     )}
                                 />
                                 <Route
-                                    path={`/apps/oneclick/input/${TEMPLATE_ONE_CLICK_APP}`}
+                                    path={`/apps/oneclick/templategenerator`}
                                     component={TemplateInputPage}
                                 />
                                 <Route
