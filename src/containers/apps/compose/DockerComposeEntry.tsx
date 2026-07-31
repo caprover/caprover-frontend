@@ -1,34 +1,69 @@
-import { Button, Card, Col, Row, Typography } from 'antd'
+import { Button, Card, Col, Input, Row, Typography } from 'antd'
 import { RouteComponentProps } from 'react-router'
+import ParentProjectSelector from '../../../components/ParentProjectSelector'
+import ProjectDefinition from '../../../models/ProjectDefinition'
 import { localize } from '../../../utils/Language'
+import {
+    isProjectNameAllowed,
+    normalizeProjectName,
+} from '../../../utils/ProjectName'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
+import { createOneClickDeploymentUrl } from '../../../utils/OneClickDeploymentUrl'
 import ApiComponent from '../../global/ApiComponent'
+import CenteredSpinner from '../../global/CenteredSpinner'
+import ErrorRetry from '../../global/ErrorRetry'
 import InputJsonifier from '../../global/InputJsonifier'
-import {
-    DEPLOYMENT_QUERY_PARAM_APP_NAME,
-    DEPLOYMENT_QUERY_PARAM_TEMPLATE,
-    DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY,
-} from '../oneclick/variables/OneClickAppConfigPage'
 
 export const TEMPLATE_ONE_CLICK_APP = 'TEMPLATE_ONE_CLICK_APP'
 export const ONE_CLICK_APP_STRINGIFIED_KEY = 'oneClickAppStringifiedData'
 
-export default class OneClickAppSelector extends ApiComponent<
+export function getDockerComposeServiceCount(template: any): number {
+    if (!template?.services || typeof template.services !== 'object') {
+        return 0
+    }
+    return Object.keys(template.services).length
+}
+
+export default class DockerComposeEntry extends ApiComponent<
     RouteComponentProps<any>,
     {
         stringifiedJsonComposeContent: string
+        projects: ProjectDefinition[] | undefined
+        selectedProjectId: string
+        projectName: string
+        loadError: boolean
     }
 > {
     constructor(props: any) {
         super(props)
         this.state = {
             stringifiedJsonComposeContent: '',
+            projects: undefined,
+            selectedProjectId: '',
+            projectName: '',
+            loadError: false,
         }
     }
 
     componentDidMount() {
-        // const self = this
+        const self = this
+        self.apiManager
+            .getAllProjects()
+            .then(function (response) {
+                if (!self.willUnmountSoon) {
+                    self.setState({
+                        projects: (response.projects ||
+                            []) as ProjectDefinition[],
+                    })
+                }
+            })
+            .catch(function (error) {
+                Toaster.createCatcher()(error)
+                if (!self.willUnmountSoon) {
+                    self.setState({ loadError: true })
+                }
+            })
     }
 
     render() {
@@ -38,6 +73,20 @@ export default class OneClickAppSelector extends ApiComponent<
         try {
             parsedJson = JSON.parse(this.state.stringifiedJsonComposeContent)
         } catch (error) {}
+
+        if (self.state.loadError) {
+            return <ErrorRetry />
+        }
+
+        if (!self.state.projects) {
+            return <CenteredSpinner />
+        }
+
+        const serviceCount = getDockerComposeServiceCount(parsedJson)
+        const isMultiService = serviceCount > 1
+        const normalizedProjectName = normalizeProjectName(
+            self.state.projectName
+        )
 
         return (
             <div>
@@ -93,13 +142,58 @@ volumes:
                                     }}
                                 />
                             </div>
+                            <ParentProjectSelector
+                                projects={self.state.projects}
+                                selectedProjectId={self.state.selectedProjectId}
+                                onChange={(selectedProjectId) => {
+                                    self.setState({ selectedProjectId })
+                                }}
+                                hideWhenEmpty={false}
+                                style={{ marginTop: 24 }}
+                            />
+                            {isMultiService && (
+                                <div style={{ marginTop: 24 }}>
+                                    <div style={{ marginBottom: 5 }}>
+                                        {localize(
+                                            'projects.project_name',
+                                            'Project Name'
+                                        )}
+                                    </div>
+                                    <Input
+                                        aria-required="true"
+                                        placeholder="my-compose-stack"
+                                        value={self.state.projectName}
+                                        status={
+                                            self.state.projectName &&
+                                            !isProjectNameAllowed(
+                                                normalizedProjectName
+                                            )
+                                                ? 'error'
+                                                : undefined
+                                        }
+                                        onChange={(event) => {
+                                            self.setState({
+                                                projectName: event.target.value,
+                                            })
+                                        }}
+                                        onBlur={(event) => {
+                                            self.setState({
+                                                projectName:
+                                                    normalizeProjectName(
+                                                        event.target.value
+                                                    ),
+                                            })
+                                        }}
+                                    />
+                                </div>
+                            )}
                             <Row justify="end" style={{ marginTop: 15 }}>
                                 <Button
                                     size="large"
                                     style={{ minWidth: 150 }}
                                     type="primary"
                                     onClick={() => {
-                                        if (!parsedJson?.services) {
+                                        if (serviceCount === 0) {
                                             Toaster.toastError(
                                                 localize(
                                                     'one_click_app_selector.invalid_compose_json_toast',
@@ -108,7 +202,26 @@ volumes:
                                             )
                                             return
                                         }
-                                        self.deploy(parsedJson)
+                                        if (
+                                            isMultiService &&
+                                            !isProjectNameAllowed(
+                                                normalizedProjectName
+                                            )
+                                        ) {
+                                            Toaster.toastError(
+                                                localize(
+                                                    'docker_compose_entry.invalid_project_name',
+                                                    'Enter a valid lowercase project name using letters, numbers, and single hyphens.'
+                                                )
+                                            )
+                                            return
+                                        }
+                                        self.deploy(
+                                            parsedJson,
+                                            isMultiService
+                                                ? normalizedProjectName
+                                                : undefined
+                                        )
                                     }}
                                 >
                                     {' '}
@@ -124,12 +237,11 @@ volumes:
             </div>
         )
     }
-    deploy(template: any) {
+    deploy(template: any, projectName?: string) {
         const self = this
-        // Navigate to deployment page with template and values
-        // TODO move the constants to a common file
-        template.captainVersion = 4
-        template.caproverOneClickApp = {
+        const deploymentTemplate = Utils.copyObject(template)
+        deploymentTemplate.captainVersion = 4
+        deploymentTemplate.caproverOneClickApp = {
             instructions: {
                 start: localize(
                     'docker_compose_entry.start_instruction_text',
@@ -143,11 +255,13 @@ volumes:
             variables: [],
         }
 
-        const templateStr = encodeURIComponent(JSON.stringify(template))
-        const valuesArrayStr = encodeURIComponent(JSON.stringify([]))
-        const appName = 'Docker Compose'
-
-        const deployUrl = `/apps/oneclick/deployment?${DEPLOYMENT_QUERY_PARAM_TEMPLATE}=${templateStr}&${DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY}=${valuesArrayStr}&${DEPLOYMENT_QUERY_PARAM_APP_NAME}=${appName}`
+        const deployUrl = createOneClickDeploymentUrl({
+            template: deploymentTemplate,
+            valuesArray: [],
+            appName: 'Docker Compose',
+            parentProjectId: self.state.selectedProjectId,
+            projectName,
+        })
         self.props.history.push(deployUrl)
     }
 }

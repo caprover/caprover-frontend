@@ -20,7 +20,7 @@ interface MyProps {
     projects: ProjectDefinition[]
 }
 
-class CreateNewApp extends Component<
+export class CreateNewApp extends Component<
     MyProps & IMobileComponent,
     { appName: string; selectedProjectId: string; hasPersistency: boolean }
 > {

@@ -2,12 +2,16 @@ import { Card, Col, Row } from 'antd'
 import ReactMarkdown from 'react-markdown'
 import { RouteComponentProps } from 'react-router'
 import gfm from 'remark-gfm'
+import ParentProjectSelector from '../../../../components/ParentProjectSelector'
 import { IOneClickTemplate } from '../../../../models/IOneClickAppModels'
+import ProjectDefinition from '../../../../models/ProjectDefinition'
 import ErrorFactory from '../../../../utils/ErrorFactory'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
+import { createOneClickDeploymentUrl } from '../../../../utils/OneClickDeploymentUrl'
 import ApiComponent from '../../../global/ApiComponent'
 import CenteredSpinner from '../../../global/CenteredSpinner'
+import ErrorRetry from '../../../global/ErrorRetry'
 import {
     ONE_CLICK_APP_STRINGIFIED_KEY,
     TEMPLATE_ONE_CLICK_APP,
@@ -17,16 +21,20 @@ import OneClickVariablesSection from './OneClickVariablesSection'
 export const ONE_CLICK_APP_NAME_VAR_NAME = '$$cap_appname'
 export const ONE_CLICK_ROOT_DOMAIN_VAR_NAME = '$$cap_root_domain'
 
-// Query parameter constants for deployment page
-export const DEPLOYMENT_QUERY_PARAM_TEMPLATE = 'template'
-export const DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY = 'valuesArray'
-export const DEPLOYMENT_QUERY_PARAM_APP_NAME = 'appName'
+export {
+    DEPLOYMENT_QUERY_PARAM_APP_NAME,
+    DEPLOYMENT_QUERY_PARAM_TEMPLATE,
+    DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY,
+} from '../../../../utils/OneClickDeploymentUrl'
 
 export default class OneClickAppConfigPage extends ApiComponent<
     RouteComponentProps<any>,
     {
         apiData: IOneClickTemplate | undefined
         rootDomain: string
+        projects: ProjectDefinition[] | undefined
+        selectedProjectId: string
+        loadError: boolean
     }
 > {
     private isUnmount: boolean = false
@@ -36,6 +44,9 @@ export default class OneClickAppConfigPage extends ApiComponent<
         this.state = {
             apiData: undefined,
             rootDomain: '',
+            projects: undefined,
+            selectedProjectId: '',
+            loadError: false,
         }
     }
 
@@ -51,7 +62,7 @@ export default class OneClickAppConfigPage extends ApiComponent<
         const appNameFromPath = this.props.match.params.appName
         const qs = new URLSearchParams(self.props.location.search)
         const baseDomainFromPath = qs.get('baseDomain')
-        let promiseToFetchOneClick =
+        const promiseToFetchOneClick =
             appNameFromPath === TEMPLATE_ONE_CLICK_APP
                 ? new Promise<any>(function (resolve) {
                       resolve(
@@ -68,8 +79,6 @@ export default class OneClickAppConfigPage extends ApiComponent<
                       .then(function (data) {
                           return data.appTemplate
                       })
-
-        let apiData: IOneClickTemplate
 
         promiseToFetchOneClick
             .then(function (data: IOneClickTemplate) {
@@ -98,17 +107,29 @@ export default class OneClickAppConfigPage extends ApiComponent<
                     validRegex: '/^([a-z0-9]+\\-)*[a-z0-9]+$/', // string version of /^([a-z0-9]+\-)*[a-z0-9]+$/
                 })
 
-                apiData = data
-
-                return self.apiManager.getCaptainInfo()
+                return Promise.all([
+                    Promise.resolve(data),
+                    self.apiManager.getCaptainInfo(),
+                    self.apiManager.getAllProjects(),
+                ])
             })
-            .then(function (captainInfo) {
+            .then(function ([apiData, captainInfo, projectsResponse]) {
+                if (self.isUnmount) {
+                    return
+                }
                 self.setState({
-                    apiData: apiData,
+                    apiData,
                     rootDomain: captainInfo.rootDomain,
+                    projects: (projectsResponse.projects ||
+                        []) as ProjectDefinition[],
                 })
             })
-            .catch(Toaster.createCatcher())
+            .catch(function (error) {
+                Toaster.createCatcher()(error)
+                if (!self.isUnmount) {
+                    self.setState({ loadError: true })
+                }
+            })
     }
 
     render() {
@@ -120,7 +141,11 @@ export default class OneClickAppConfigPage extends ApiComponent<
                 : self.props.match.params.appName[0].toUpperCase() +
                   self.props.match.params.appName.slice(1)
 
-        if (!apiData) {
+        if (self.state.loadError) {
+            return <ErrorRetry />
+        }
+
+        if (!apiData || !self.state.projects) {
             return <CenteredSpinner />
         }
 
@@ -145,6 +170,15 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                 </ReactMarkdown>
                             </div>
                             <div style={{ height: 40 }} />
+                            <ParentProjectSelector
+                                projects={self.state.projects || []}
+                                selectedProjectId={self.state.selectedProjectId}
+                                onChange={(selectedProjectId) => {
+                                    self.setState({ selectedProjectId })
+                                }}
+                                hideWhenEmpty={false}
+                                style={{ marginBottom: 24 }}
+                            />
                             <OneClickVariablesSection
                                 oneClickAppVariables={
                                     apiData.caproverOneClickApp.variables
@@ -175,18 +209,16 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                         }
                                     })
 
-                                    // Navigate to deployment page with template and values
-                                    const templateStr = encodeURIComponent(
-                                        JSON.stringify(template)
-                                    )
-                                    const valuesArrayStr = encodeURIComponent(
-                                        JSON.stringify(valuesArray)
-                                    )
-                                    const appName = encodeURIComponent(
+                                    const appName =
                                         self.props.match.params.appName
-                                    )
-
-                                    const deployUrl = `/apps/oneclick/deployment?${DEPLOYMENT_QUERY_PARAM_TEMPLATE}=${templateStr}&${DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY}=${valuesArrayStr}&${DEPLOYMENT_QUERY_PARAM_APP_NAME}=${appName}`
+                                    const deployUrl =
+                                        createOneClickDeploymentUrl({
+                                            template,
+                                            valuesArray,
+                                            appName,
+                                            parentProjectId:
+                                                self.state.selectedProjectId,
+                                        })
                                     self.props.history.push(deployUrl)
                                 }}
                             />

@@ -8,6 +8,11 @@ const BASE_DOMAIN = process.env.REACT_APP_API_URL
 const URL = BASE_DOMAIN
 Logger.dev(`API URL: ${URL}`)
 
+export interface OneClickDeploymentOptions {
+    parentProjectId?: string
+    projectName?: string
+}
+
 const authProvider = {
     authToken: '' as string,
     hadEnteredOtp: false as boolean,
@@ -42,6 +47,35 @@ export default class ApiManager extends CapRoverAPI {
 
     getApiBaseUrl() {
         return URL
+    }
+
+    startOneClickAppDeploy(
+        template: any,
+        values?: any,
+        optionsOrParentProjectId: OneClickDeploymentOptions | string = {},
+        projectName?: string
+    ): Promise<{ jobId: string }> {
+        const options: OneClickDeploymentOptions =
+            typeof optionsOrParentProjectId === 'string'
+                ? {
+                      parentProjectId: optionsOrParentProjectId,
+                      projectName,
+                  }
+                : optionsOrParentProjectId || {}
+        const requestBody: any = {
+            template,
+            values,
+            parentProjectId: `${options.parentProjectId || ''}`.trim(),
+        }
+
+        if (options.projectName !== undefined) {
+            requestBody.projectName = `${options.projectName || ''}`.trim()
+        }
+        return this.executeGenericApiCommand(
+            'POST',
+            '/user/oneclick/deploy',
+            requestBody
+        )
     }
 
     static clearAuthKeys() {

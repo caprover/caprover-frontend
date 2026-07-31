@@ -1,14 +1,10 @@
 import { RouteComponentProps } from 'react-router'
 import { IOneClickTemplate } from '../../../../models/IOneClickAppModels'
 import DomUtils from '../../../../utils/DomUtils'
+import { parseOneClickDeploymentUrl } from '../../../../utils/OneClickDeploymentUrl'
 import Toaster from '../../../../utils/Toaster'
 import ApiComponent from '../../../global/ApiComponent'
 import CenteredSpinner from '../../../global/CenteredSpinner'
-import {
-    DEPLOYMENT_QUERY_PARAM_APP_NAME,
-    DEPLOYMENT_QUERY_PARAM_TEMPLATE,
-    DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY,
-} from './OneClickAppConfigPage'
 import OneClickAppDeployProgress from './OneClickAppDeployProgress'
 
 export default class OneClickDeploymentPage extends ApiComponent<
@@ -40,37 +36,29 @@ export default class OneClickDeploymentPage extends ApiComponent<
 
     componentDidMount() {
         const self = this
-        const qs = new URLSearchParams(self.props.location.search)
-
-        const templateStr = qs.get(DEPLOYMENT_QUERY_PARAM_TEMPLATE)
-        const valuesArrayStr = qs.get(DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY)
-        const appName = qs.get(DEPLOYMENT_QUERY_PARAM_APP_NAME) || ''
-
-        if (!templateStr || !valuesArrayStr || !appName) {
-            Toaster.createCatcher()(
-                'Missing required parameters for deployment'
-            )
-            self.props.history.goBack()
-            return
-        }
 
         try {
-            const template = JSON.parse(templateStr) as IOneClickTemplate
-            const valuesArray = JSON.parse(valuesArrayStr) as Array<{
-                key: string
-                value: string
-            }>
+            const deployment = parseOneClickDeploymentUrl(
+                self.props.location.search
+            )
 
             self.setState({
-                appName,
-                template,
-                valuesArray,
+                appName: deployment.appName,
+                template: deployment.template,
+                valuesArray: deployment.valuesArray,
             })
 
             // Start deployment immediately
             DomUtils.scrollToTopBar()
             self.apiManager
-                .startOneClickAppDeploy(template, valuesArray)
+                .startOneClickAppDeploy(
+                    deployment.template,
+                    deployment.valuesArray,
+                    {
+                        parentProjectId: deployment.parentProjectId,
+                        projectName: deployment.projectName,
+                    }
+                )
                 .then((data: any) => {
                     // store job id and render progress component
                     self.setState({
