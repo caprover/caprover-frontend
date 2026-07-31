@@ -1,4 +1,5 @@
-import { Button, Card, Col, Row, Typography } from 'antd'
+import { ExperimentOutlined } from '@ant-design/icons'
+import { Alert, Button, Card, Col, Row, Space, Tag, Typography } from 'antd'
 import { RouteComponentProps } from 'react-router'
 import { localize } from '../../../utils/Language'
 import Toaster from '../../../utils/Toaster'
@@ -44,8 +45,34 @@ export default class OneClickAppSelector extends ApiComponent<
             <div>
                 <Row justify="center">
                     <Col xs={{ span: 23 }} lg={{ span: 16 }}>
-                        <Card title="Docker Compose">
+                        <Card
+                            title={
+                                <Space>
+                                    <ExperimentOutlined />
+                                    <span>Docker Compose</span>
+                                    <Tag color="warning">
+                                        {localize(
+                                            'docker_compose_entry.experimental_badge',
+                                            'Experimental'
+                                        )}
+                                    </Tag>
+                                </Space>
+                            }
+                        >
                             <div>
+                                <Alert
+                                    showIcon
+                                    type="warning"
+                                    message={localize(
+                                        'docker_compose_entry.experimental_title',
+                                        'Docker Compose support is experimental'
+                                    )}
+                                    description={localize(
+                                        'docker_compose_entry.experimental_description',
+                                        'Some Docker Compose options may be unsupported or behave differently in CapRover. Review the compatibility documentation and verify your deployment before using it in production.'
+                                    )}
+                                    style={{ marginBottom: 16 }}
+                                />
                                 <Typography.Paragraph>
                                     {Utils.formatText(
                                         localize(
