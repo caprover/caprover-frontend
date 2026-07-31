@@ -9,6 +9,12 @@ import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
 import CenteredSpinner from '../../../global/CenteredSpinner'
 import {
+    DEPLOYMENT_QUERY_PARAM_APP_NAME,
+    DEPLOYMENT_QUERY_PARAM_TEMPLATE,
+    DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME,
+    DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY,
+} from '../OneClickDeploymentConstants'
+import {
     ONE_CLICK_APP_STRINGIFIED_KEY,
     TEMPLATE_ONE_CLICK_APP,
 } from '../selector/OneClickAppSelector'
@@ -16,11 +22,6 @@ import OneClickVariablesSection from './OneClickVariablesSection'
 
 export const ONE_CLICK_APP_NAME_VAR_NAME = '$$cap_appname'
 export const ONE_CLICK_ROOT_DOMAIN_VAR_NAME = '$$cap_root_domain'
-
-// Query parameter constants for deployment page
-export const DEPLOYMENT_QUERY_PARAM_TEMPLATE = 'template'
-export const DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY = 'valuesArray'
-export const DEPLOYMENT_QUERY_PARAM_APP_NAME = 'appName'
 
 export default class OneClickAppConfigPage extends ApiComponent<
     RouteComponentProps<any>,
@@ -186,7 +187,14 @@ export default class OneClickAppConfigPage extends ApiComponent<
                                         self.props.match.params.appName
                                     )
 
-                                    const deployUrl = `/apps/oneclick/deployment?${DEPLOYMENT_QUERY_PARAM_TEMPLATE}=${templateStr}&${DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY}=${valuesArrayStr}&${DEPLOYMENT_QUERY_PARAM_APP_NAME}=${appName}`
+                                    const templateName =
+                                        new URLSearchParams(
+                                            self.props.location.search
+                                        ).get(
+                                            DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME
+                                        ) || ''
+
+                                    const deployUrl = `/apps/oneclick/deployment?${DEPLOYMENT_QUERY_PARAM_TEMPLATE}=${templateStr}&${DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY}=${valuesArrayStr}&${DEPLOYMENT_QUERY_PARAM_APP_NAME}=${appName}&${DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME}=${templateName}`
                                     self.props.history.push(deployUrl)
                                 }}
                             />

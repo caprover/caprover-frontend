@@ -8,8 +8,9 @@ import InputJsonifier from '../../global/InputJsonifier'
 import {
     DEPLOYMENT_QUERY_PARAM_APP_NAME,
     DEPLOYMENT_QUERY_PARAM_TEMPLATE,
+    DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME,
     DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY,
-} from '../oneclick/variables/OneClickAppConfigPage'
+} from '../oneclick/OneClickDeploymentConstants'
 
 export const TEMPLATE_ONE_CLICK_APP = 'TEMPLATE_ONE_CLICK_APP'
 export const ONE_CLICK_APP_STRINGIFIED_KEY = 'oneClickAppStringifiedData'
@@ -146,8 +147,8 @@ volumes:
         const templateStr = encodeURIComponent(JSON.stringify(template))
         const valuesArrayStr = encodeURIComponent(JSON.stringify([]))
         const appName = 'Docker Compose'
-
-        const deployUrl = `/apps/oneclick/deployment?${DEPLOYMENT_QUERY_PARAM_TEMPLATE}=${templateStr}&${DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY}=${valuesArrayStr}&${DEPLOYMENT_QUERY_PARAM_APP_NAME}=${appName}`
+        const templateName = 'DOCKER_COMPOSE'
+        const deployUrl = `/apps/oneclick/deployment?${DEPLOYMENT_QUERY_PARAM_TEMPLATE}=${templateStr}&${DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY}=${valuesArrayStr}&${DEPLOYMENT_QUERY_PARAM_APP_NAME}=${appName}&${DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME}=${templateName}`
         self.props.history.push(deployUrl)
     }
 }

@@ -65,7 +65,7 @@ export default class OneClickAppSelector extends ApiComponent<
                     if (appName === TEMPLATE_ONE_CLICK_APP) {
                         event.preventDefault()
                         self.props.history.push(
-                            `/apps/oneclick/input/${TEMPLATE_ONE_CLICK_APP}`
+                            `/apps/oneclick/templategenerator`
                         )
                     }
                 }}

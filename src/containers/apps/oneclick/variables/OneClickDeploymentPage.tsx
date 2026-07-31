@@ -7,8 +7,9 @@ import CenteredSpinner from '../../../global/CenteredSpinner'
 import {
     DEPLOYMENT_QUERY_PARAM_APP_NAME,
     DEPLOYMENT_QUERY_PARAM_TEMPLATE,
+    DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME,
     DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY,
-} from './OneClickAppConfigPage'
+} from '../OneClickDeploymentConstants'
 import OneClickAppDeployProgress from './OneClickAppDeployProgress'
 
 export default class OneClickDeploymentPage extends ApiComponent<
@@ -45,8 +46,9 @@ export default class OneClickDeploymentPage extends ApiComponent<
         const templateStr = qs.get(DEPLOYMENT_QUERY_PARAM_TEMPLATE)
         const valuesArrayStr = qs.get(DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY)
         const appName = qs.get(DEPLOYMENT_QUERY_PARAM_APP_NAME) || ''
+        const templateName = qs.get(DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME) || ''
 
-        if (!templateStr || !valuesArrayStr || !appName) {
+        if (!templateStr || !valuesArrayStr || !appName || !templateName) {
             Toaster.createCatcher()(
                 'Missing required parameters for deployment'
             )
@@ -70,7 +72,7 @@ export default class OneClickDeploymentPage extends ApiComponent<
             // Start deployment immediately
             DomUtils.scrollToTopBar()
             self.apiManager
-                .startOneClickAppDeploy(template, valuesArray)
+                .startOneClickAppDeploy(template, valuesArray, templateName)
                 .then((data: any) => {
                     // store job id and render progress component
                     self.setState({

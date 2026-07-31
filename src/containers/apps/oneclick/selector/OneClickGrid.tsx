@@ -10,6 +10,23 @@ import { IHashMapGeneric } from '../../../../models/IHashMapGeneric'
 import { IOneClickAppIdentifier } from '../../../../models/IOneClickAppModels'
 import StringSimilarity from '../../../../utils/StringSimilarity'
 import NewTabLink from '../../../global/NewTabLink'
+import { DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME } from '../OneClickDeploymentConstants'
+
+const MAIN_ONE_CLICK_APP_REPOSITORY = 'https://oneclickapps.caprover.com'
+
+function isMainOneClickAppRepository(baseUrl: string) {
+    try {
+        const repositoryUrl = new URL(baseUrl)
+        return (
+            repositoryUrl.origin === MAIN_ONE_CLICK_APP_REPOSITORY &&
+            (repositoryUrl.pathname === '' || repositoryUrl.pathname === '/') &&
+            !repositoryUrl.search &&
+            !repositoryUrl.hash
+        )
+    } catch {
+        return false
+    }
+}
 
 export default class OneClickGrid extends Component<
     {
@@ -30,9 +47,8 @@ export default class OneClickGrid extends Component<
     }
 
     create3rdPartyTagIfNeeded(app: IOneClickAppIdentifier) {
-        const MAIN_REPO = `https://oneclickapps.caprover.com`
-
-        const isFromMainRepository = app.baseUrl === MAIN_REPO || !app.baseUrl
+        const isFromMainRepository =
+            isMainOneClickAppRepository(app.baseUrl) || !app.baseUrl
         const isUsingOfficialImage = !!app.isOfficial
 
         return (
@@ -62,7 +78,8 @@ export default class OneClickGrid extends Component<
             app.name && app.baseUrl
                 ? `/apps/oneclick/${app.name}?baseDomain=${encodeURIComponent(
                       app.baseUrl
-                  )}`
+                  )}` +
+                  `&${DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME}=${isMainOneClickAppRepository(app.baseUrl) ? 'OFFICIAL_' + app.name : 'PRIVATE'}`
                 : '#'
         return (
             <div key={app.name + app.baseUrl} className="one-click-app-card">
