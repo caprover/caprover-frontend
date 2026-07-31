@@ -151,12 +151,10 @@ describe('buildVolumeUsageIndex', () => {
 describe('getOtherAppsUsingVolumeLabel', () => {
     it('returns empty array when label is empty', () => {
         const index = { data: ['other'] }
-        expect(
-            getOtherAppsUsingVolumeLabel('', false, 'me', index)
-        ).toEqual([])
-        expect(
-            getOtherAppsUsingVolumeLabel('   ', false, 'me', index)
-        ).toEqual([])
+        expect(getOtherAppsUsingVolumeLabel('', false, 'me', index)).toEqual([])
+        expect(getOtherAppsUsingVolumeLabel('   ', false, 'me', index)).toEqual(
+            []
+        )
     })
 
     it('returns other modern apps using the same label', () => {
@@ -166,12 +164,7 @@ describe('getOtherAppsUsingVolumeLabel', () => {
         ]
         const index = buildVolumeUsageIndex(apps)
         expect(
-            getOtherAppsUsingVolumeLabel(
-                'shared-db',
-                false,
-                'api',
-                index
-            )
+            getOtherAppsUsingVolumeLabel('shared-db', false, 'api', index)
         ).toEqual(['worker'])
     })
 
@@ -203,20 +196,10 @@ describe('getOtherAppsUsingVolumeLabel', () => {
             data: ['modern-app'],
         })
         expect(
-            getOtherAppsUsingVolumeLabel(
-                'data',
-                true,
-                'legacy-app',
-                index
-            )
+            getOtherAppsUsingVolumeLabel('data', true, 'legacy-app', index)
         ).toEqual([])
         expect(
-            getOtherAppsUsingVolumeLabel(
-                'data',
-                false,
-                'modern-app',
-                index
-            )
+            getOtherAppsUsingVolumeLabel('data', false, 'modern-app', index)
         ).toEqual([])
     })
 
@@ -244,19 +227,14 @@ describe('getOtherAppsUsingVolumeLabel', () => {
         ]
         const index = buildVolumeUsageIndex(apps)
         expect(
-            getOtherAppsUsingVolumeLabel(
-                'data',
-                true,
-                'legacy-app',
-                index
-            )
+            getOtherAppsUsingVolumeLabel('data', true, 'legacy-app', index)
         ).toEqual(['other-legacy'])
     })
 
     it('returns empty when index is empty', () => {
-        expect(
-            getOtherAppsUsingVolumeLabel('data', false, 'me', {})
-        ).toEqual([])
+        expect(getOtherAppsUsingVolumeLabel('data', false, 'me', {})).toEqual(
+            []
+        )
     })
 })
 

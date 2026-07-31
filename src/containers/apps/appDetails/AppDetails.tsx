@@ -34,6 +34,10 @@ import ProjectDefinition from '../../../models/ProjectDefinition'
 import { localize } from '../../../utils/Language'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
+import {
+    buildVolumeUsageIndex,
+    VolumeUsageIndex,
+} from '../../../utils/volumeHelpers'
 import ApiComponent from '../../global/ApiComponent'
 import CenteredSpinner from '../../global/CenteredSpinner'
 import ClickableLink from '../../global/ClickableLink'
@@ -83,6 +87,7 @@ class AppDetails extends ApiComponent<
         apiData: SingleAppApiData | undefined
         activeTabKey: string
         renderCounterForAffixBug: number
+        volumeUsageIndex: VolumeUsageIndex
         editAppDataForModal:
             | {
                   appName: string
@@ -106,6 +111,7 @@ class AppDetails extends ApiComponent<
             renderCounterForAffixBug: 0,
             apiData: undefined,
             editAppDataForModal: undefined,
+            volumeUsageIndex: {},
         }
     }
 
@@ -397,7 +403,15 @@ class AppDetails extends ApiComponent<
                                             )}
                                         </span>
                                     ),
-                                    children: <AppConfigs {...tabProps} />,
+                                    children: (
+                                        <AppConfigs
+                                            {...tabProps}
+                                            volumeUsageIndex={
+                                                this.state.volumeUsageIndex ||
+                                                {}
+                                            }
+                                        />
+                                    ),
                                 },
                                 {
                                     key: DEPLOYMENT,
@@ -705,16 +719,17 @@ class AppDetails extends ApiComponent<
                 const getAppsResp = dataReturns[0]
                 const projects = dataReturns[1].projects || []
                 const goAccessInfo = dataReturns[2]
+                const appDefinitions = getAppsResp.appDefinitions || []
 
-                for (
-                    let index = 0;
-                    index < getAppsResp.appDefinitions.length;
-                    index++
-                ) {
-                    const element = getAppsResp.appDefinitions[index]
+                // Build index from FULL list before filtering to current app
+                const volumeUsageIndex = buildVolumeUsageIndex(appDefinitions)
+
+                for (let index = 0; index < appDefinitions.length; index++) {
+                    const element = appDefinitions[index]
                     if (element.appName === self.props.match.params.appName) {
                         self.setState({
                             isLoading: false,
+                            volumeUsageIndex,
                             apiData: {
                                 projects: projects,
                                 appDefinition: element,

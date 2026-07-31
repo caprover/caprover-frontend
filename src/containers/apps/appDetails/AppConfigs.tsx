@@ -1,16 +1,26 @@
 import { EditFilled, EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
-import { Button, Col, Input, Row, Switch, Tag, Tooltip } from 'antd'
+import { Alert, Button, Col, Input, Row, Switch, Tag, Tooltip } from 'antd'
 import { Component, Fragment } from 'react'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import { localize } from '../../../utils/Language'
 import Utils from '../../../utils/Utils'
+import {
+    formatLocalized,
+    getOtherAppsUsingVolumeLabel,
+    VolumeUsageIndex,
+} from '../../../utils/volumeHelpers'
 import CodeEdit from '../../global/CodeEdit'
 import NewTabLink from '../../global/NewTabLink'
 import { IAppEnvVar } from '../AppDefinition'
 import { AppDetailsTabProps } from './AppDetails'
 
+export interface AppConfigsProps extends AppDetailsTabProps {
+    /** physicalVolumeName → app names; from getAllApps() via AppDetails */
+    volumeUsageIndex: VolumeUsageIndex
+}
+
 export default class AppConfigs extends Component<
-    AppDetailsTabProps,
+    AppConfigsProps,
     {
         dummyVar: undefined
         tagsEditMode: boolean
@@ -248,128 +258,166 @@ export default class AppConfigs extends Component<
 
     createVolRows() {
         const self = this
-        const volumes = this.props.apiData.appDefinition.volumes || []
+        const app = this.props.apiData.appDefinition
+        const volumes = app.volumes || []
         return volumes.map((value, index) => {
-            return (
-                <Row style={{ paddingBottom: 12 }} key={`${index}`}>
-                    <Col span={8}>
-                        <Input
-                            addonBefore={localize(
-                                'apps.app_config_vol_path',
-                                'Path in App'
-                            )}
-                            spellCheck={false}
-                            autoCorrect="off"
-                            autoComplete="off"
-                            autoCapitalize="off"
-                            className="code-input"
-                            placeholder="/var/www/html"
-                            value={value.containerPath}
-                            type="text"
-                            onChange={(e) => {
-                                const newApiData = Utils.copyObject(
-                                    self.props.apiData
-                                )
-                                newApiData.appDefinition.volumes[
-                                    index
-                                ].containerPath = e.target.value
-                                self.props.updateApiData(newApiData)
-                            }}
-                        />
-                    </Col>
-                    <Col
-                        style={{ paddingLeft: 12 }}
-                        span={8}
-                        className={value.hostPath ? 'hide-on-demand' : ''}
-                    >
-                        <Input
-                            addonBefore={localize(
-                                'apps.app_config_vol_label',
-                                'Label'
-                            )}
-                            spellCheck={false}
-                            autoCorrect="off"
-                            autoComplete="off"
-                            autoCapitalize="off"
-                            className="code-input"
-                            placeholder="some-name"
-                            value={value.volumeName}
-                            onChange={(e) => {
-                                const newApiData = Utils.copyObject(
-                                    self.props.apiData
-                                )
-                                newApiData.appDefinition.volumes[
-                                    index
-                                ].volumeName = e.target.value
-                                self.props.updateApiData(newApiData)
-                            }}
-                        />
-                    </Col>
+            // Bind mounts: Label is hidden; do not warn on volume sharing
+            // even if residual volumeName remains after toggling host path.
+            const otherApps = value.hostPath
+                ? []
+                : getOtherAppsUsingVolumeLabel(
+                      value.volumeName || '',
+                      app.isLegacyAppName,
+                      app.appName,
+                      self.props.volumeUsageIndex || {}
+                  )
 
-                    <Col
-                        style={{ paddingLeft: 12 }}
-                        span={8}
-                        className={!value.hostPath ? 'hide-on-demand' : ''}
+            return (
+                <div key={`${index}`}>
+                    <Row
+                        style={{
+                            paddingBottom: otherApps.length ? 4 : 12,
+                        }}
                     >
-                        <Tooltip
-                            title={localize(
-                                'apps.app_config_vol_host_path_hint',
-                                'IMPORTANT: Ensure Host Path exists before assigning it here'
-                            )}
-                        >
+                        <Col span={8}>
                             <Input
                                 addonBefore={localize(
-                                    'apps.app_config_vol_host_path',
-                                    'Path on Host'
+                                    'apps.app_config_vol_path',
+                                    'Path in App'
                                 )}
                                 spellCheck={false}
                                 autoCorrect="off"
                                 autoComplete="off"
                                 autoCapitalize="off"
                                 className="code-input"
-                                placeholder="/host/path/exists"
-                                value={value.hostPath}
+                                placeholder="/var/www/html"
+                                value={value.containerPath}
+                                type="text"
                                 onChange={(e) => {
                                     const newApiData = Utils.copyObject(
                                         self.props.apiData
                                     )
                                     newApiData.appDefinition.volumes[
                                         index
-                                    ].hostPath = e.target.value
+                                    ].containerPath = e.target.value
                                     self.props.updateApiData(newApiData)
                                 }}
                             />
-                        </Tooltip>
-                    </Col>
-                    <Col style={{ paddingLeft: 12 }} span={8}>
-                        <Button
-                            type="dashed"
-                            onClick={() => {
-                                const newApiData = Utils.copyObject(
-                                    self.props.apiData
-                                )
-                                newApiData.appDefinition.volumes[
-                                    index
-                                ].hostPath = newApiData.appDefinition.volumes[
-                                    index
-                                ].hostPath
-                                    ? ''
-                                    : '/'
-                                self.props.updateApiData(newApiData)
-                            }}
+                        </Col>
+                        <Col
+                            style={{ paddingLeft: 12 }}
+                            span={8}
+                            className={value.hostPath ? 'hide-on-demand' : ''}
                         >
-                            {value.hostPath
-                                ? localize(
-                                      'apps.app_config_vol_manage_path',
-                                      'Let CapRover manage path'
-                                  )
-                                : localize(
-                                      'apps.app_config_vol_set_path',
-                                      'Set specific host path'
-                                  )}
-                        </Button>
-                    </Col>
-                </Row>
+                            <Input
+                                addonBefore={localize(
+                                    'apps.app_config_vol_label',
+                                    'Label'
+                                )}
+                                spellCheck={false}
+                                autoCorrect="off"
+                                autoComplete="off"
+                                autoCapitalize="off"
+                                className="code-input"
+                                placeholder="some-name"
+                                value={value.volumeName}
+                                onChange={(e) => {
+                                    const newApiData = Utils.copyObject(
+                                        self.props.apiData
+                                    )
+                                    newApiData.appDefinition.volumes[
+                                        index
+                                    ].volumeName = e.target.value
+                                    self.props.updateApiData(newApiData)
+                                }}
+                            />
+                        </Col>
+
+                        <Col
+                            style={{ paddingLeft: 12 }}
+                            span={8}
+                            className={!value.hostPath ? 'hide-on-demand' : ''}
+                        >
+                            <Tooltip
+                                title={localize(
+                                    'apps.app_config_vol_host_path_hint',
+                                    'IMPORTANT: Ensure Host Path exists before assigning it here'
+                                )}
+                            >
+                                <Input
+                                    addonBefore={localize(
+                                        'apps.app_config_vol_host_path',
+                                        'Path on Host'
+                                    )}
+                                    spellCheck={false}
+                                    autoCorrect="off"
+                                    autoComplete="off"
+                                    autoCapitalize="off"
+                                    className="code-input"
+                                    placeholder="/host/path/exists"
+                                    value={value.hostPath}
+                                    onChange={(e) => {
+                                        const newApiData = Utils.copyObject(
+                                            self.props.apiData
+                                        )
+                                        newApiData.appDefinition.volumes[
+                                            index
+                                        ].hostPath = e.target.value
+                                        self.props.updateApiData(newApiData)
+                                    }}
+                                />
+                            </Tooltip>
+                        </Col>
+                        <Col style={{ paddingLeft: 12 }} span={8}>
+                            <Button
+                                type="dashed"
+                                onClick={() => {
+                                    const newApiData = Utils.copyObject(
+                                        self.props.apiData
+                                    )
+                                    newApiData.appDefinition.volumes[
+                                        index
+                                    ].hostPath = newApiData.appDefinition
+                                        .volumes[index].hostPath
+                                        ? ''
+                                        : '/'
+                                    self.props.updateApiData(newApiData)
+                                }}
+                            >
+                                {value.hostPath
+                                    ? localize(
+                                          'apps.app_config_vol_manage_path',
+                                          'Let CapRover manage path'
+                                      )
+                                    : localize(
+                                          'apps.app_config_vol_set_path',
+                                          'Set specific host path'
+                                      )}
+                            </Button>
+                        </Col>
+                    </Row>
+                    {otherApps.length > 0 ? (
+                        <Row style={{ paddingBottom: 12 }}>
+                            <Col span={24}>
+                                <Alert
+                                    type="warning"
+                                    showIcon={true}
+                                    message={formatLocalized(
+                                        localize(
+                                            'apps.app_config_vol_in_use_warning',
+                                            'This volume is already used by other application(s): %s'
+                                        ),
+                                        otherApps.join(', ')
+                                    )}
+                                    description={localize(
+                                        'apps.app_config_vol_in_use_warning_desc',
+                                        'You can ignore this warning if you intentionally share this volume across applications.'
+                                    )}
+                                />
+                            </Col>
+                        </Row>
+                    ) : undefined}
+                </div>
             )
         })
     }
