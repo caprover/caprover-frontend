@@ -1,5 +1,5 @@
 import { PlusCircleOutlined, QuestionCircleFilled } from '@ant-design/icons'
-import { Button, Card, Checkbox, Col, Input, Row, Tooltip } from 'antd'
+import { Button, Card, Checkbox, Col, Divider, Input, Row, Tooltip } from 'antd'
 import { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import ProjectSelector from '../../components/ProjectSelector'
@@ -146,7 +146,30 @@ class CreateNewApp extends Component<
                             />
                         )}
                     </Col>
-                    <Col md={4} sm={24}></Col>
+                    <Col
+                        aria-hidden="true"
+                        md={4}
+                        sm={24}
+                        xs={24}
+                        style={{
+                            alignItems: 'stretch',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            padding: self.props.isMobile ? '28px 0' : '8px 0',
+                        }}
+                    >
+                        <Divider
+                            type={
+                                self.props.isMobile ? 'horizontal' : 'vertical'
+                            }
+                            style={{
+                                height: self.props.isMobile
+                                    ? undefined
+                                    : 'auto',
+                                margin: 0,
+                            }}
+                        />
+                    </Col>
                     <Col md={8} sm={24} xs={24}>
                         <Row justify={'center'}>
                             <div
