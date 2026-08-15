@@ -9,7 +9,7 @@ const URL = BASE_DOMAIN
 Logger.dev(`API URL: ${URL}`)
 
 const authProvider = {
-    authToken: '' as string,
+    authToken: StorageHelper.getAuthKeyFromStorage(),
     hadEnteredOtp: false as boolean,
     lastKnownPassword: '' as string,
     onAuthTokenRequested: () => {
