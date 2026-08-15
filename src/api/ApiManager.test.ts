@@ -6,10 +6,7 @@ let mockAuthProvider: TestAuthProvider | undefined
 
 jest.mock('caprover-api', () => {
     return class {
-        constructor(
-            _baseDomain: string,
-            authProvider: TestAuthProvider
-        ) {
+        constructor(_baseDomain: string, authProvider: TestAuthProvider) {
             mockAuthProvider = authProvider
         }
     }
