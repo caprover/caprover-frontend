@@ -29,7 +29,7 @@ export default class BackupCreator extends ApiComponent<
                 let link = document.createElement('a') // create 'a' element
                 link.setAttribute(
                     'href',
-                    `${self.apiManager.getApiBaseUrl()}/downloads/?namespace=captain&downloadToken=${encodeURIComponent(
+                    `${self.apiManager.getApiBaseUrlForDownload()}/downloads/?namespace=captain&downloadToken=${encodeURIComponent(
                         data.downloadToken
                     )}`
                 )

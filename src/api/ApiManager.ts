@@ -40,8 +40,8 @@ export default class ApiManager extends CapRoverAPI {
         })
     }
 
-    getApiBaseUrl() {
-        return URL
+    getApiBaseUrlForDownload() {
+        return `${URL}/api/v2`
     }
 
     static clearAuthKeys() {
