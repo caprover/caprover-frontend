@@ -18,6 +18,11 @@ const loadApiManager = () => {
     return ApiManager
 }
 
+const createApiManager = () => {
+    const ApiManager = require('./ApiManager').default
+    return new ApiManager()
+}
+
 describe('ApiManager authentication initialization', () => {
     beforeEach(() => {
         jest.resetModules()
@@ -55,6 +60,12 @@ describe('ApiManager authentication initialization', () => {
 
         expect(ApiManager.isLoggedIn()).toBe(false)
         expect(await mockAuthProvider!.onAuthTokenRequested()).toBe('')
+    })
+
+    it('returns the complete API base URL for direct downloads', () => {
+        const apiManager = createApiManager()
+
+        expect(apiManager.getApiBaseUrlForDownload()).toBe('/api/v2')
     })
 })
 
