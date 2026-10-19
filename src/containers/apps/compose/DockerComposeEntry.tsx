@@ -1,6 +1,7 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Alert, Button, Card, Col, Row, Space, Tag, Typography } from 'antd'
 import { RouteComponentProps } from 'react-router'
+import { getIgnoredDockerComposeFields } from '../../../utils/dockerComposeFields'
 import { localize } from '../../../utils/Language'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
@@ -15,6 +16,47 @@ import {
 
 export const TEMPLATE_ONE_CLICK_APP = 'TEMPLATE_ONE_CLICK_APP'
 export const ONE_CLICK_APP_STRINGIFIED_KEY = 'oneClickAppStringifiedData'
+
+function DockerComposeWarnings({ fields }: { fields: string[] }) {
+    if (fields.length === 0) return <></>
+
+    return (
+        <Alert
+            showIcon
+            type="warning"
+            style={{ marginTop: 16 }}
+            message={localize(
+                'docker_compose_entry.ignored_fields_title',
+                'These fields will be ignored'
+            )}
+            description={
+                <div>
+                    <p>
+                        {localize(
+                            'docker_compose_entry.ignored_fields_description',
+                            'CapRover does not use the following fields during deployment. Review them before deploying.'
+                        )}
+                    </p>
+                    <ul style={{ paddingInlineStart: 20 }}>
+                        {fields.map((field) => (
+                            <li key={field}>
+                                <Tag
+                                    color="warning"
+                                    style={{
+                                        whiteSpace: 'normal',
+                                        overflowWrap: 'anywhere',
+                                    }}
+                                >
+                                    <code>{field}</code>
+                                </Tag>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            }
+        />
+    )
+}
 
 export default class OneClickAppSelector extends ApiComponent<
     RouteComponentProps<any>,
@@ -40,6 +82,8 @@ export default class OneClickAppSelector extends ApiComponent<
         try {
             parsedJson = JSON.parse(this.state.stringifiedJsonComposeContent)
         } catch (error) {}
+
+        const ignoredFields = getIgnoredDockerComposeFields(parsedJson)
 
         return (
             <div>
@@ -120,6 +164,7 @@ volumes:
                                         })
                                     }}
                                 />
+                                <DockerComposeWarnings fields={ignoredFields} />
                             </div>
                             <Row justify="end" style={{ marginTop: 15 }}>
                                 <Button
