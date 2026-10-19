@@ -3,6 +3,7 @@ import { Alert, Button, Card, Col, Row, Space, Tag, Typography } from 'antd'
 import { RouteComponentProps } from 'react-router'
 import { getIgnoredDockerComposeFields } from '../../../utils/dockerComposeFields'
 import { localize } from '../../../utils/Language'
+import normalizeComposeTemplate from '../../../utils/normalizeComposeTemplate'
 import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
 import ApiComponent from '../../global/ApiComponent'
@@ -79,9 +80,17 @@ export default class OneClickAppSelector extends ApiComponent<
         const self = this
 
         let parsedJson = undefined as any
+        let compatibilityError = ''
         try {
             parsedJson = JSON.parse(this.state.stringifiedJsonComposeContent)
         } catch (error) {}
+        if (parsedJson?.services) {
+            try {
+                parsedJson = normalizeComposeTemplate(parsedJson)
+            } catch (error) {
+                compatibilityError = (error as Error).message
+            }
+        }
 
         const ignoredFields = getIgnoredDockerComposeFields(parsedJson)
 
@@ -165,12 +174,21 @@ volumes:
                                     }}
                                 />
                                 <DockerComposeWarnings fields={ignoredFields} />
+                                {compatibilityError && (
+                                    <Alert
+                                        showIcon
+                                        type="error"
+                                        message={compatibilityError}
+                                        style={{ marginTop: 16 }}
+                                    />
+                                )}
                             </div>
                             <Row justify="end" style={{ marginTop: 15 }}>
                                 <Button
                                     size="large"
                                     style={{ minWidth: 150 }}
                                     type="primary"
+                                    disabled={!!compatibilityError}
                                     onClick={() => {
                                         if (!parsedJson?.services) {
                                             Toaster.toastError(

@@ -1,6 +1,7 @@
 import { RouteComponentProps } from 'react-router'
 import { IOneClickTemplate } from '../../../../models/IOneClickAppModels'
 import DomUtils from '../../../../utils/DomUtils'
+import normalizeComposeTemplate from '../../../../utils/normalizeComposeTemplate'
 import Toaster from '../../../../utils/Toaster'
 import ApiComponent from '../../../global/ApiComponent'
 import CenteredSpinner from '../../../global/CenteredSpinner'
@@ -57,7 +58,7 @@ export default class OneClickDeploymentPage extends ApiComponent<
         }
 
         try {
-            const template = JSON.parse(templateStr) as IOneClickTemplate
+            const template = normalizeComposeTemplate(JSON.parse(templateStr))
             const valuesArray = JSON.parse(valuesArrayStr) as Array<{
                 key: string
                 value: string
@@ -85,7 +86,11 @@ export default class OneClickDeploymentPage extends ApiComponent<
                     })
                 )
         } catch (error) {
-            Toaster.createCatcher()('Invalid parameters for deployment')
+            Toaster.createCatcher()(
+                error instanceof Error
+                    ? error.message
+                    : 'Invalid parameters for deployment'
+            )
             self.props.history.goBack()
         }
     }
