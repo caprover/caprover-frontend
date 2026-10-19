@@ -28,7 +28,7 @@ describe('getIgnoredDockerComposeFields', () => {
         ])
     })
 
-    it('accepts consumed fields and arbitrary environment variable names', () => {
+    it('accepts consumed fields and environment variable names', () => {
         expect(
             getIgnoredDockerComposeFields({
                 services: {
@@ -53,7 +53,7 @@ describe('getIgnoredDockerComposeFields', () => {
         ).toEqual([])
     })
 
-    it('checks caproverExtra without treating arbitrary nested keys as fields', () => {
+    it('checks unknown caproverExtra options', () => {
         expect(
             getIgnoredDockerComposeFields({
                 services: {
@@ -63,10 +63,7 @@ describe('getIgnoredDockerComposeFields', () => {
                     },
                 },
             })
-        ).toEqual([
-            'services.web.caproverExtra.typo',
-            'services.web.labels',
-        ])
+        ).toEqual(['services.web.caproverExtra.typo', 'services.web.labels'])
     })
 
     it('reports metadata overwritten by the Compose entry page', () => {
@@ -80,20 +77,25 @@ describe('getIgnoredDockerComposeFields', () => {
     })
 
     it('handles empty and incomplete input without throwing', () => {
-        for (const input of [undefined, null, '', [], 42, {}]) {
+        const nullValue = JSON.parse('null')
+        for (const input of [undefined, nullValue, '', [], 42, {}]) {
             expect(getIgnoredDockerComposeFields(input)).toEqual([])
         }
-        for (const services of [null, [], 'invalid']) {
+        for (const services of [nullValue, [], 'invalid']) {
             expect(getIgnoredDockerComposeFields({ services })).toEqual([])
         }
         expect(
             getIgnoredDockerComposeFields({
-                services: { web: null, db: [], api: { caproverExtra: null } },
+                services: {
+                    web: nullValue,
+                    db: [],
+                    api: { caproverExtra: nullValue },
+                },
             })
         ).toEqual([])
     })
 
-    it('updates warnings as fields are removed without changing the input', () => {
+    it('updates warnings without changing the input', () => {
         const compose = {
             services: { web: { image: 'nginx', restart: 'always' } },
         }

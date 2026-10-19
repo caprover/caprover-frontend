@@ -18,7 +18,7 @@ export const TEMPLATE_ONE_CLICK_APP = 'TEMPLATE_ONE_CLICK_APP'
 export const ONE_CLICK_APP_STRINGIFIED_KEY = 'oneClickAppStringifiedData'
 
 function DockerComposeWarnings({ fields }: { fields: string[] }) {
-    if (fields.length === 0) return null
+    if (fields.length === 0) return <></>
 
     return (
         <Alert
