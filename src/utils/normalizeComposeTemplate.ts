@@ -1,5 +1,11 @@
 import { IOneClickTemplate } from '../models/IOneClickAppModels'
 
+function isSet(value: unknown) {
+    // YAML null is a valid unset value.
+    // tslint:disable-next-line:no-null-keyword
+    return value !== undefined && value !== null
+}
+
 function fail(path: string, message: string): never {
     throw new Error(`${path}: ${message}`)
 }
@@ -27,6 +33,8 @@ function checkOptions(
 }
 
 function normalizeEnvironment(value: unknown, path: string) {
+    // Preserve arbitrary environment names, including __proto__, as data.
+    // tslint:disable-next-line:no-null-keyword
     const result: Record<string, string> = Object.create(null)
     if (Array.isArray(value)) {
         value.forEach((entry, index) => {
@@ -45,7 +53,7 @@ function normalizeEnvironment(value: unknown, path: string) {
         const entries = mapping(value, path)
         Object.keys(entries).forEach((key) => {
             const entry = entries[key]
-            if (entry == undefined) return
+            if (!isSet(entry)) return
             if (!['string', 'number', 'boolean'].includes(typeof entry)) {
                 fail(`${path}.${key}`, 'Expected a scalar environment value.')
             }
@@ -136,24 +144,26 @@ export default function normalizeComposeTemplate(
     template: IOneClickTemplate
 ): IOneClickTemplate {
     const services = mapping(template.services, 'services')
+    // Service names must also be treated as data.
+    // tslint:disable-next-line:no-null-keyword
     const normalized: IOneClickTemplate['services'] = Object.create(null)
     Object.keys(services).forEach((name) => {
         const service = mapping(services[name], `services.${name}`)
         const result = { ...service }
-        if (service.environment != undefined) {
+        if (isSet(service.environment)) {
             result.environment = normalizeEnvironment(
                 service.environment,
                 `services.${name}.environment`
             )
         }
-        if (service.volumes != undefined) {
+        if (isSet(service.volumes)) {
             result.volumes = normalizeList(
                 service.volumes,
                 `services.${name}.volumes`,
                 normalizeVolume
             )
         }
-        if (service.ports != undefined) {
+        if (isSet(service.ports)) {
             result.ports = normalizeList(
                 service.ports,
                 `services.${name}.ports`,
