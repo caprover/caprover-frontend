@@ -76,7 +76,7 @@ describe('DiskUsageAlert', () => {
             screen.getByText('Disk space is running low')
         ).toBeInTheDocument()
         expect(screen.getByText(/captain-01/)).toHaveTextContent(
-            '3.2 GB available · 92% used'
+            '3.2 GB available (8% of capacity)'
         )
 
         fireEvent.click(screen.getByRole('button', { name: 'View disk usage' }))
@@ -94,6 +94,22 @@ describe('DiskUsageAlert', () => {
         expect(
             screen.getByText('Disk space is critically low')
         ).toBeInTheDocument()
+    })
+
+    it('marks a previous warning reading as outdated after refresh fails', () => {
+        render(
+            <DiskUsageAlert
+                diskUsage={{
+                    ...createDiskUsage('warning'),
+                    refreshFailed: true,
+                }}
+                onOpenMonitoring={jest.fn()}
+            />
+        )
+
+        expect(screen.getByText(/captain-01/)).toHaveTextContent(
+            'Could not refresh disk usage. These values may be outdated.'
+        )
     })
 })
 
@@ -122,6 +138,7 @@ describe('DiskUsage', () => {
     })
 
     it('keeps the previous reading visible after a refresh failure', () => {
+        const onRefresh = jest.fn()
         render(
             <DiskUsage
                 diskUsage={{
@@ -129,7 +146,7 @@ describe('DiskUsage', () => {
                     refreshFailed: true,
                 }}
                 onOpenMaintenance={jest.fn()}
-                onRefresh={jest.fn()}
+                onRefresh={onRefresh}
             />
         )
 
@@ -139,6 +156,9 @@ describe('DiskUsage', () => {
             )
         ).toBeInTheDocument()
         expect(screen.getByText('3.2 GB')).toBeInTheDocument()
+
+        fireEvent.click(screen.getByRole('button', { name: 'Try again' }))
+        expect(onRefresh).toHaveBeenCalledTimes(1)
     })
 
     it('shows an unavailable state and supports a manual retry', () => {
