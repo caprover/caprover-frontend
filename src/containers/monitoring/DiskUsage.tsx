@@ -1,0 +1,252 @@
+import {
+    Alert,
+    Button,
+    Card,
+    Col,
+    Progress,
+    Row,
+    Space,
+    Spin,
+    Tag,
+    theme,
+} from 'antd'
+import { CapRoverModels } from 'caprover-api'
+import { localize } from '../../utils/Language'
+
+export interface DiskUsageViewState {
+    data?: CapRoverModels.DiskUsageResponse
+    isLoading: boolean
+    refreshFailed: boolean
+}
+
+interface DiskUsageProps {
+    diskUsage: DiskUsageViewState
+    onOpenMaintenance: () => void
+    onRefresh: () => void
+}
+
+interface DiskUsageAlertProps {
+    diskUsage: DiskUsageViewState
+    onOpenMonitoring: () => void
+}
+
+const BYTES_PER_UNIT = 1000
+const BYTE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+
+export function formatBytes(bytes: number): string {
+    if (bytes === 0) return '0 B'
+
+    const unitIndex = Math.min(
+        Math.floor(Math.log(bytes) / Math.log(BYTES_PER_UNIT)),
+        BYTE_UNITS.length - 1
+    )
+    const value = bytes / Math.pow(BYTES_PER_UNIT, unitIndex)
+    return `${value.toFixed(unitIndex === 0 ? 0 : 1)} ${BYTE_UNITS[unitIndex]}`
+}
+
+function getReading(data?: CapRoverModels.DiskUsageResponse) {
+    const node = data && data.nodes[0]
+    const disk = node && node.disks[0]
+
+    if (!node || !disk) return undefined
+
+    return { node, disk }
+}
+
+function getUsedPercent(disk: CapRoverModels.DiskUsageDisk): number {
+    return Math.round((disk.usedBytes / disk.totalBytes) * 100)
+}
+
+function getSeverityLabel(severity: CapRoverModels.DiskUsageSeverity): string {
+    if (severity === 'critical') {
+        return localize('disk_usage.status_critical', 'Critical')
+    }
+    if (severity === 'warning') {
+        return localize('disk_usage.status_warning', 'Warning')
+    }
+    return localize('disk_usage.status_healthy', 'Healthy')
+}
+
+export function DiskUsageAlert({
+    diskUsage,
+    onOpenMonitoring,
+}: DiskUsageAlertProps) {
+    const reading = getReading(diskUsage.data)
+
+    if (!reading || reading.disk.severity === 'normal') return <></>
+
+    const isCritical = reading.disk.severity === 'critical'
+    const title = isCritical
+        ? localize(
+              'disk_usage.critical_alert_title',
+              'Disk space is critically low'
+          )
+        : localize(
+              'disk_usage.warning_alert_title',
+              'Disk space is running low'
+          )
+
+    return (
+        <Alert
+            showIcon
+            type={isCritical ? 'error' : 'warning'}
+            message={
+                <span>
+                    <strong>{title}</strong>
+                    {` ${localize('disk_usage.on_host', 'on')} ${
+                        reading.node.hostname
+                    }. ${formatBytes(reading.disk.availableBytes)} ${localize(
+                        'disk_usage.available',
+                        'available'
+                    )} · ${getUsedPercent(reading.disk)}% ${localize(
+                        'disk_usage.used',
+                        'used'
+                    )}. ${localize(
+                        'disk_usage.failure_warning',
+                        'Builds and deployments may fail.'
+                    )}`}
+                </span>
+            }
+            action={
+                <Button size="small" type="link" onClick={onOpenMonitoring}>
+                    {localize('disk_usage.view_disk_usage', 'View disk usage')}
+                </Button>
+            }
+            style={{ margin: '12px 16px 0' }}
+        />
+    )
+}
+
+export default function DiskUsage({
+    diskUsage,
+    onOpenMaintenance,
+    onRefresh,
+}: DiskUsageProps) {
+    const { token } = theme.useToken()
+    const reading = getReading(diskUsage.data)
+
+    if (diskUsage.isLoading && !reading) {
+        return (
+            <Row justify="center">
+                <Col xs={{ span: 23 }} lg={{ span: 22 }}>
+                    <Card
+                        title={localize('disk_usage.title', 'Disk Usage')}
+                        style={{ textAlign: 'center' }}
+                    >
+                        <Spin />
+                    </Card>
+                </Col>
+            </Row>
+        )
+    }
+
+    if (!reading) {
+        return (
+            <Row justify="center">
+                <Col xs={{ span: 23 }} lg={{ span: 22 }}>
+                    <Card title={localize('disk_usage.title', 'Disk Usage')}>
+                        <Alert
+                            showIcon
+                            type="warning"
+                            message={localize(
+                                'disk_usage.unavailable',
+                                'Disk usage is unavailable'
+                            )}
+                            description={localize(
+                                'disk_usage.unavailable_description',
+                                'CapRover could not read the disk capacity.'
+                            )}
+                            action={
+                                <Button size="small" onClick={onRefresh}>
+                                    {localize(
+                                        'disk_usage.try_again',
+                                        'Try again'
+                                    )}
+                                </Button>
+                            }
+                        />
+                    </Card>
+                </Col>
+            </Row>
+        )
+    }
+
+    const usedPercent = getUsedPercent(reading.disk)
+    const progressStatus =
+        reading.disk.severity === 'critical' ? 'exception' : 'normal'
+    const progressColor =
+        reading.disk.severity === 'warning' ? token.colorWarning : undefined
+
+    return (
+        <Row justify="center">
+            <Col xs={{ span: 23 }} lg={{ span: 22 }}>
+                <Card
+                    title={localize('disk_usage.title', 'Disk Usage')}
+                    extra={
+                        <Space>
+                            {diskUsage.isLoading && <Spin size="small" />}
+                            <Tag
+                                color={
+                                    reading.disk.severity === 'critical'
+                                        ? 'error'
+                                        : reading.disk.severity === 'warning'
+                                          ? 'warning'
+                                          : 'success'
+                                }
+                            >
+                                {getSeverityLabel(reading.disk.severity)}
+                            </Tag>
+                        </Space>
+                    }
+                >
+                    {diskUsage.refreshFailed && (
+                        <Alert
+                            showIcon
+                            type="warning"
+                            message={localize(
+                                'disk_usage.refresh_failed',
+                                'Could not refresh disk usage. These values may be outdated.'
+                            )}
+                            style={{ marginBottom: 20 }}
+                        />
+                    )}
+
+                    <div style={{ fontSize: 28, fontWeight: 600 }}>
+                        {formatBytes(reading.disk.availableBytes)}
+                    </div>
+                    <div style={{ marginBottom: 18 }}>
+                        {localize('disk_usage.available_of', 'available of')}{' '}
+                        {formatBytes(reading.disk.totalBytes)}{' '}
+                        {localize('disk_usage.on_host', 'on')}{' '}
+                        <strong>{reading.node.hostname}</strong>
+                    </div>
+
+                    <Progress
+                        percent={usedPercent}
+                        status={progressStatus}
+                        strokeColor={progressColor}
+                        format={(percent) =>
+                            `${percent}% ${localize('disk_usage.used', 'used')}`
+                        }
+                    />
+
+                    <div style={{ marginTop: 14 }}>
+                        {localize(
+                            'disk_usage.scope_description',
+                            "This is the filesystem that backs CapRover's data directory. Its capacity includes all usage on that filesystem."
+                        )}
+                    </div>
+
+                    <div style={{ marginTop: 10 }}>
+                        <Button type="link" onClick={onOpenMaintenance}>
+                            {localize(
+                                'disk_usage.review_cleanup',
+                                'Review disk cleanup'
+                            )}
+                        </Button>
+                    </div>
+                </Card>
+            </Col>
+        </Row>
+    )
+}
