@@ -2,6 +2,7 @@ import { Component } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import DiskUsageViewState from '../../models/DiskUsageViewState'
+import ReduxState from '../../models/ReduxState'
 import { refreshDiskUsage } from '../../redux/actions/DiskUsageActions'
 import DiskUsage from './DiskUsage'
 import GoAccessInfo from './GoAccessInfo'
@@ -15,9 +16,7 @@ interface MonitoringProps extends RouteComponentProps<any> {
 
 export class Monitoring extends Component<MonitoringProps> {
     componentDidMount() {
-        if (!this.props.diskUsage.isLoading) {
-            this.props.refreshDiskUsage()
-        }
+        this.props.refreshDiskUsage()
     }
 
     render() {
@@ -42,7 +41,7 @@ export class Monitoring extends Component<MonitoringProps> {
     }
 }
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: ReduxState) {
     return {
         diskUsage: state.globalReducer.diskUsage,
     }

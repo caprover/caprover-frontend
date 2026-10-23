@@ -11,12 +11,8 @@ import {
     theme,
 } from 'antd'
 import { CapRoverModels } from 'caprover-api'
-import { Component } from 'react'
-import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
-import ApiManager from '../../api/ApiManager'
 import DiskUsageViewState from '../../models/DiskUsageViewState'
-import { refreshDiskUsage } from '../../redux/actions/DiskUsageActions'
 import { localize } from '../../utils/Language'
 
 interface DiskUsageProps {
@@ -28,10 +24,6 @@ interface DiskUsageProps {
 interface DiskUsageAlertProps {
     diskUsage: DiskUsageViewState
     history: RouteComponentProps<any>['history']
-}
-
-interface DiskUsageAlertContainerProps extends DiskUsageAlertProps {
-    refreshDiskUsage: () => void
 }
 
 const BYTES_PER_UNIT = 1000
@@ -273,30 +265,3 @@ export default function DiskUsage({
         </Row>
     )
 }
-
-class DiskUsageAlertContainer extends Component<DiskUsageAlertContainerProps> {
-    componentDidMount() {
-        if (ApiManager.isLoggedIn()) {
-            this.props.refreshDiskUsage()
-        }
-    }
-
-    render() {
-        return (
-            <DiskUsageAlert
-                diskUsage={this.props.diskUsage}
-                history={this.props.history}
-            />
-        )
-    }
-}
-
-function mapStateToProps(state: any) {
-    return {
-        diskUsage: state.globalReducer.diskUsage,
-    }
-}
-
-export const ConnectedDiskUsageAlert = connect(mapStateToProps, {
-    refreshDiskUsage,
-})(DiskUsageAlertContainer)

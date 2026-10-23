@@ -1,6 +1,8 @@
 import Utils from '../../utils/Utils'
 import DiskUsageViewState from '../../models/DiskUsageViewState'
+import { GlobalState } from '../../models/ReduxState'
 import {
+    DiskUsageAction,
     DISK_USAGE_REFRESH_FAILED,
     DISK_USAGE_REFRESH_STARTED,
     DISK_USAGE_REFRESH_SUCCEEDED,
@@ -13,16 +15,21 @@ const initialDiskUsage: DiskUsageViewState = {
     refreshFailed: false,
 }
 
-const initialState = {
+const initialState: GlobalState = {
     diskUsage: initialDiskUsage,
     diskUsageRequestId: 0,
 }
 
+type GlobalReducerAction =
+    | DiskUsageAction
+    | { type: typeof ROOT_KEY_CHANGED; payload: {} }
+    | { type: typeof SIZE_CHANGED; payload: {} }
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default function (
-    state: any = initialState,
-    action: { payload: any; type: string }
-) {
+    state: GlobalState = initialState,
+    action: GlobalReducerAction
+): GlobalState {
     switch (action.type) {
         case ROOT_KEY_CHANGED:
             return { ...state, rootElementKey: Utils.generateUuidV4() }

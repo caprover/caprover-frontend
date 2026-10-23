@@ -30,7 +30,7 @@ import DarkModeSwitch from './global/DarkModeSwitch'
 import LanguageSelector from './global/LanguageSelector'
 import NewTabLink from './global/NewTabLink'
 import Maintenance from './maintenance/Maintenance'
-import { ConnectedDiskUsageAlert } from './monitoring/DiskUsage'
+import DiskUsageAlertContainer from './monitoring/DiskUsageAlertContainer'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
 import Settings from './settings/Settings'
@@ -283,7 +283,7 @@ class PageRoot extends ApiComponent<
                             transition: 'margin-right 0.3s ease',
                         }}
                     >
-                        <ConnectedDiskUsageAlert history={self.props.history} />
+                        <DiskUsageAlertContainer history={self.props.history} />
                         <div
                             ref={self.mainContainer}
                             style={{

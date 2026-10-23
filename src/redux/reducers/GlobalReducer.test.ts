@@ -6,7 +6,7 @@ import {
 import GlobalReducer from './GlobalReducer'
 
 const diskUsageData = {
-    coverage: 'captain-node',
+    coverage: 'captain-node' as const,
     nodes: [],
 }
 

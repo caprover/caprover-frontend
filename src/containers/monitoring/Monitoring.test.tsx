@@ -15,19 +15,14 @@ const createProps = (isLoading: boolean) =>
     }) as any
 
 describe('Monitoring disk usage refresh', () => {
-    it('refreshes disk usage when Monitoring mounts', () => {
-        const props = createProps(false)
+    it.each([false, true])(
+        'requests a refresh when Monitoring mounts (isLoading: %s)',
+        (isLoading) => {
+            const props = createProps(isLoading)
 
-        new Monitoring(props).componentDidMount()
+            new Monitoring(props).componentDidMount()
 
-        expect(props.refreshDiskUsage).toHaveBeenCalledTimes(1)
-    })
-
-    it('reuses a refresh that is already in progress', () => {
-        const props = createProps(true)
-
-        new Monitoring(props).componentDidMount()
-
-        expect(props.refreshDiskUsage).not.toHaveBeenCalled()
-    })
+            expect(props.refreshDiskUsage).toHaveBeenCalledTimes(1)
+        }
+    )
 })
