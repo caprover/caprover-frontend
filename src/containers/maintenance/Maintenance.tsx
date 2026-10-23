@@ -14,6 +14,12 @@ class Maintenance extends Component<
     },
     {}
 > {
+    componentDidMount() {
+        if (window.location.hash.endsWith('#disk-cleanup')) {
+            document.getElementById('disk-cleanup')?.scrollIntoView()
+        }
+    }
+
     render() {
         return (
             <div>
@@ -47,6 +53,7 @@ class Maintenance extends Component<
                     </Col>
 
                     <Col
+                        id="disk-cleanup"
                         style={{ marginBottom: 20, marginTop: 20 }}
                         lg={{ span: 14 }}
                         xs={{ span: 23 }}

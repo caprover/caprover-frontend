@@ -30,6 +30,7 @@ import DarkModeSwitch from './global/DarkModeSwitch'
 import LanguageSelector from './global/LanguageSelector'
 import NewTabLink from './global/NewTabLink'
 import Maintenance from './maintenance/Maintenance'
+import DiskUsageAlertContainer from './monitoring/DiskUsageAlertContainer'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
 import Settings from './settings/Settings'
@@ -269,20 +270,28 @@ class PageRoot extends ApiComponent<
                             self.goToLogin()
                         }}
                     />
-                    <Content>
+                    <Content
+                        style={{
+                            minWidth: 0,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            marginInlineEnd: self.state.collapsed
+                                ? 0
+                                : self.props.isMobile
+                                  ? -200
+                                  : 0,
+                            transition: 'margin-right 0.3s ease',
+                        }}
+                    >
+                        <DiskUsageAlertContainer history={self.props.history} />
                         <div
                             ref={self.mainContainer}
                             style={{
                                 paddingTop: 12,
                                 paddingBottom: 36,
-                                height: '100%',
+                                flex: 1,
+                                minHeight: 0,
                                 overflowY: 'scroll',
-                                marginInlineEnd: self.state.collapsed
-                                    ? 0
-                                    : self.props.isMobile
-                                      ? -200
-                                      : 0,
-                                transition: 'margin-right 0.3s ease',
                             }}
                             id="main-content-layout"
                         >
