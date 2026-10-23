@@ -11,23 +11,27 @@ import {
     theme,
 } from 'antd'
 import { CapRoverModels } from 'caprover-api'
+import { Component } from 'react'
+import { connect } from 'react-redux'
+import { RouteComponentProps } from 'react-router'
+import ApiManager from '../../api/ApiManager'
+import DiskUsageViewState from '../../models/DiskUsageViewState'
+import { refreshDiskUsage } from '../../redux/actions/DiskUsageActions'
 import { localize } from '../../utils/Language'
-
-export interface DiskUsageViewState {
-    data?: CapRoverModels.DiskUsageResponse
-    isLoading: boolean
-    refreshFailed: boolean
-}
 
 interface DiskUsageProps {
     diskUsage: DiskUsageViewState
-    onOpenMaintenance: () => void
-    onRefresh: () => void
+    history: RouteComponentProps<any>['history']
+    refreshDiskUsage: () => void
 }
 
 interface DiskUsageAlertProps {
     diskUsage: DiskUsageViewState
-    onOpenMonitoring: () => void
+    history: RouteComponentProps<any>['history']
+}
+
+interface DiskUsageAlertContainerProps extends DiskUsageAlertProps {
+    refreshDiskUsage: () => void
 }
 
 const BYTES_PER_UNIT = 1000
@@ -71,10 +75,7 @@ function getSeverityLabel(severity: CapRoverModels.DiskUsageSeverity): string {
     return localize('disk_usage.status_healthy', 'Healthy')
 }
 
-export function DiskUsageAlert({
-    diskUsage,
-    onOpenMonitoring,
-}: DiskUsageAlertProps) {
+export function DiskUsageAlert({ diskUsage, history }: DiskUsageAlertProps) {
     const reading = getReading(diskUsage.data)
 
     if (!reading || reading.disk.severity === 'normal') return <></>
@@ -119,7 +120,11 @@ export function DiskUsageAlert({
                 </span>
             }
             action={
-                <Button size="small" type="link" onClick={onOpenMonitoring}>
+                <Button
+                    size="small"
+                    type="link"
+                    onClick={() => history.push('/monitoring')}
+                >
                     {localize('disk_usage.view_disk_usage', 'View disk usage')}
                 </Button>
             }
@@ -130,8 +135,8 @@ export function DiskUsageAlert({
 
 export default function DiskUsage({
     diskUsage,
-    onOpenMaintenance,
-    onRefresh,
+    history,
+    refreshDiskUsage,
 }: DiskUsageProps) {
     const { token } = theme.useToken()
     const reading = getReading(diskUsage.data)
@@ -158,7 +163,7 @@ export default function DiskUsage({
                     'CapRover could not read the disk capacity.'
                 )}
                 action={
-                    <Button size="small" onClick={onRefresh}>
+                    <Button size="small" onClick={refreshDiskUsage}>
                         {localize('disk_usage.try_again', 'Try again')}
                     </Button>
                 }
@@ -198,7 +203,7 @@ export default function DiskUsage({
                             'Could not refresh disk usage. These values may be outdated.'
                         )}
                         action={
-                            <Button size="small" onClick={onRefresh}>
+                            <Button size="small" onClick={refreshDiskUsage}>
                                 {localize('disk_usage.try_again', 'Try again')}
                             </Button>
                         }
@@ -239,7 +244,12 @@ export default function DiskUsage({
                 </div>
 
                 <div style={{ marginTop: 10 }}>
-                    <Button type="link" onClick={onOpenMaintenance}>
+                    <Button
+                        type="link"
+                        onClick={() =>
+                            history.push('/maintenance#disk-cleanup')
+                        }
+                    >
                         {localize(
                             'disk_usage.review_cleanup',
                             'Review disk cleanup'
@@ -263,3 +273,30 @@ export default function DiskUsage({
         </Row>
     )
 }
+
+class DiskUsageAlertContainer extends Component<DiskUsageAlertContainerProps> {
+    componentDidMount() {
+        if (ApiManager.isLoggedIn()) {
+            this.props.refreshDiskUsage()
+        }
+    }
+
+    render() {
+        return (
+            <DiskUsageAlert
+                diskUsage={this.props.diskUsage}
+                history={this.props.history}
+            />
+        )
+    }
+}
+
+function mapStateToProps(state: any) {
+    return {
+        diskUsage: state.globalReducer.diskUsage,
+    }
+}
+
+export const ConnectedDiskUsageAlert = connect(mapStateToProps, {
+    refreshDiskUsage,
+})(DiskUsageAlertContainer)

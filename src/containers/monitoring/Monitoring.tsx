@@ -1,17 +1,25 @@
 import { Component } from 'react'
-import { DiskUsageViewState } from './DiskUsage'
+import { connect } from 'react-redux'
+import { RouteComponentProps } from 'react-router'
+import DiskUsageViewState from '../../models/DiskUsageViewState'
+import { refreshDiskUsage } from '../../redux/actions/DiskUsageActions'
 import DiskUsage from './DiskUsage'
 import GoAccessInfo from './GoAccessInfo'
 import LoadBalancerStats from './LoadBalancerStats'
 import NetDataInfo from './NetDataInfo'
 
-interface MonitoringProps {
+interface MonitoringProps extends RouteComponentProps<any> {
     diskUsage: DiskUsageViewState
-    onOpenMaintenance: () => void
-    onRefreshDiskUsage: () => void
+    refreshDiskUsage: () => void
 }
 
-export default class Monitoring extends Component<MonitoringProps> {
+export class Monitoring extends Component<MonitoringProps> {
+    componentDidMount() {
+        if (!this.props.diskUsage.isLoading) {
+            this.props.refreshDiskUsage()
+        }
+    }
+
     render() {
         return (
             <div
@@ -23,8 +31,8 @@ export default class Monitoring extends Component<MonitoringProps> {
             >
                 <DiskUsage
                     diskUsage={this.props.diskUsage}
-                    onOpenMaintenance={this.props.onOpenMaintenance}
-                    onRefresh={this.props.onRefreshDiskUsage}
+                    history={this.props.history}
+                    refreshDiskUsage={this.props.refreshDiskUsage}
                 />
                 <LoadBalancerStats />
                 <NetDataInfo />
@@ -33,3 +41,13 @@ export default class Monitoring extends Component<MonitoringProps> {
         )
     }
 }
+
+function mapStateToProps(state: any) {
+    return {
+        diskUsage: state.globalReducer.diskUsage,
+    }
+}
+
+export default connect(mapStateToProps, {
+    refreshDiskUsage,
+})(Monitoring)

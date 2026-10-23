@@ -1,11 +1,8 @@
 import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { CapRoverModels } from 'caprover-api'
-import DiskUsage, {
-    DiskUsageAlert,
-    DiskUsageViewState,
-    formatBytes,
-} from './DiskUsage'
+import DiskUsageViewState from '../../models/DiskUsageViewState'
+import DiskUsage, { DiskUsageAlert, formatBytes } from './DiskUsage'
 
 jest.mock('../../utils/Language', () => ({
     localize: (_key: string, message: string) => message,
@@ -51,12 +48,14 @@ const createDiskUsage = (
     refreshFailed: false,
 })
 
+const createHistory = () => ({ push: jest.fn() }) as any
+
 describe('DiskUsageAlert', () => {
     it('stays hidden while disk usage is healthy', () => {
         const { container } = render(
             <DiskUsageAlert
                 diskUsage={createDiskUsage()}
-                onOpenMonitoring={jest.fn()}
+                history={createHistory()}
             />
         )
 
@@ -64,11 +63,11 @@ describe('DiskUsageAlert', () => {
     })
 
     it('shows the backend warning severity and links to Monitoring', () => {
-        const onOpenMonitoring = jest.fn()
+        const history = createHistory()
         render(
             <DiskUsageAlert
                 diskUsage={createDiskUsage('warning')}
-                onOpenMonitoring={onOpenMonitoring}
+                history={history}
             />
         )
 
@@ -80,14 +79,14 @@ describe('DiskUsageAlert', () => {
         )
 
         fireEvent.click(screen.getByRole('button', { name: 'View disk usage' }))
-        expect(onOpenMonitoring).toHaveBeenCalledTimes(1)
+        expect(history.push).toHaveBeenCalledWith('/monitoring')
     })
 
     it('shows a critical alert when the backend reports critical severity', () => {
         render(
             <DiskUsageAlert
                 diskUsage={createDiskUsage('critical')}
-                onOpenMonitoring={jest.fn()}
+                history={createHistory()}
             />
         )
 
@@ -103,7 +102,7 @@ describe('DiskUsageAlert', () => {
                     ...createDiskUsage('warning'),
                     refreshFailed: true,
                 }}
-                onOpenMonitoring={jest.fn()}
+                history={createHistory()}
             />
         )
 
@@ -115,12 +114,12 @@ describe('DiskUsageAlert', () => {
 
 describe('DiskUsage', () => {
     it('shows capacity, host, usage, and the cleanup action', () => {
-        const onOpenMaintenance = jest.fn()
+        const history = createHistory()
         render(
             <DiskUsage
                 diskUsage={createDiskUsage('warning')}
-                onOpenMaintenance={onOpenMaintenance}
-                onRefresh={jest.fn()}
+                history={history}
+                refreshDiskUsage={jest.fn()}
             />
         )
 
@@ -134,7 +133,7 @@ describe('DiskUsage', () => {
         fireEvent.click(
             screen.getByRole('button', { name: 'Review disk cleanup' })
         )
-        expect(onOpenMaintenance).toHaveBeenCalledTimes(1)
+        expect(history.push).toHaveBeenCalledWith('/maintenance#disk-cleanup')
     })
 
     it('keeps the previous reading visible after a refresh failure', () => {
@@ -145,8 +144,8 @@ describe('DiskUsage', () => {
                     ...createDiskUsage(),
                     refreshFailed: true,
                 }}
-                onOpenMaintenance={jest.fn()}
-                onRefresh={onRefresh}
+                history={createHistory()}
+                refreshDiskUsage={onRefresh}
             />
         )
 
@@ -170,8 +169,8 @@ describe('DiskUsage', () => {
                     isLoading: false,
                     refreshFailed: true,
                 }}
-                onOpenMaintenance={jest.fn()}
-                onRefresh={onRefresh}
+                history={createHistory()}
+                refreshDiskUsage={onRefresh}
             />
         )
 

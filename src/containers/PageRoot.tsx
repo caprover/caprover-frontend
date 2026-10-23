@@ -5,7 +5,6 @@ import {
     LogoutOutlined,
 } from '@ant-design/icons'
 import { Button, Col, Layout, Row } from 'antd'
-import { CapRoverModels } from 'caprover-api'
 import React, { Fragment, RefObject } from 'react'
 import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
@@ -31,8 +30,7 @@ import DarkModeSwitch from './global/DarkModeSwitch'
 import LanguageSelector from './global/LanguageSelector'
 import NewTabLink from './global/NewTabLink'
 import Maintenance from './maintenance/Maintenance'
-import { DiskUsageAlert, DiskUsageViewState } from './monitoring/DiskUsage'
-import { isEnteringMonitoring } from './monitoring/DiskUsageRefresh'
+import { ConnectedDiskUsageAlert } from './monitoring/DiskUsage'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
 import Settings from './settings/Settings'
@@ -51,11 +49,9 @@ class PageRoot extends ApiComponent<
         versionInfo: IVersionInfo | undefined
         collapsed: boolean
         showLanguageSelector: boolean
-        diskUsage: DiskUsageViewState
     }
 > {
     private mainContainer: RefObject<HTMLDivElement>
-    private diskUsageRequestId = 0
 
     constructor(props: any) {
         super(props)
@@ -64,11 +60,6 @@ class PageRoot extends ApiComponent<
             versionInfo: undefined,
             collapsed: false,
             showLanguageSelector: false,
-            diskUsage: {
-                data: undefined,
-                isLoading: true,
-                refreshFailed: false,
-            },
         }
     }
 
@@ -89,15 +80,6 @@ class PageRoot extends ApiComponent<
         ) {
             this.setState({ collapsed: true })
         }
-
-        if (
-            isEnteringMonitoring(
-                prevProps.location.pathname,
-                this.props.location.pathname
-            )
-        ) {
-            this.refreshDiskUsage()
-        }
     }
 
     componentDidMount() {
@@ -117,54 +99,11 @@ class PageRoot extends ApiComponent<
                 .catch((err) => {
                     // ignore error
                 })
-            this.refreshDiskUsage()
             this.setState({
                 collapsed:
                     StorageHelper.getSiderCollapsedStateFromLocalStorage(),
             })
         }
-    }
-
-    refreshDiskUsage = (): Promise<void> => {
-        const requestId = ++this.diskUsageRequestId
-        this.setState((state) => ({
-            diskUsage: {
-                ...state.diskUsage,
-                isLoading: true,
-                refreshFailed: false,
-            },
-        }))
-
-        return this.apiManager
-            .getDiskUsage()
-            .then((data: CapRoverModels.DiskUsageResponse) => {
-                if (
-                    !this.willUnmountSoon &&
-                    requestId === this.diskUsageRequestId
-                ) {
-                    this.setState({
-                        diskUsage: {
-                            data,
-                            isLoading: false,
-                            refreshFailed: false,
-                        },
-                    })
-                }
-            })
-            .catch(() => {
-                if (
-                    !this.willUnmountSoon &&
-                    requestId === this.diskUsageRequestId
-                ) {
-                    this.setState((state) => ({
-                        diskUsage: {
-                            ...state.diskUsage,
-                            isLoading: false,
-                            refreshFailed: true,
-                        },
-                    }))
-                }
-            })
     }
 
     goToLogin() {
@@ -344,12 +283,7 @@ class PageRoot extends ApiComponent<
                             transition: 'margin-right 0.3s ease',
                         }}
                     >
-                        <DiskUsageAlert
-                            diskUsage={self.state.diskUsage}
-                            onOpenMonitoring={() =>
-                                self.props.history.push('/monitoring')
-                            }
-                        />
+                        <ConnectedDiskUsageAlert history={self.props.history} />
                         <div
                             ref={self.mainContainer}
                             style={{
@@ -420,19 +354,7 @@ class PageRoot extends ApiComponent<
                                 <Route path="/apps/" component={Apps} />
                                 <Route
                                     path="/monitoring/"
-                                    render={() => (
-                                        <Monitoring
-                                            diskUsage={self.state.diskUsage}
-                                            onRefreshDiskUsage={
-                                                self.refreshDiskUsage
-                                            }
-                                            onOpenMaintenance={() =>
-                                                self.props.history.push(
-                                                    '/maintenance#disk-cleanup'
-                                                )
-                                            }
-                                        />
-                                    )}
+                                    component={Monitoring}
                                 />
                                 <Route path="/cluster/" component={Cluster} />
                                 <Route
