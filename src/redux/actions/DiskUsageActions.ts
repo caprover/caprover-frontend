@@ -29,6 +29,10 @@ export function refreshDiskUsage() {
         return apiManager
             .getDiskUsage()
             .then((data) => {
+                if (!data?.nodes?.[0]?.disks?.[0]) {
+                    throw new Error('Disk usage response is empty')
+                }
+
                 dispatch({
                     type: DISK_USAGE_UPDATED,
                     payload: { data, isLoading: false },

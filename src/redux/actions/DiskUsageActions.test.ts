@@ -6,7 +6,20 @@ jest.mock('../../api/ApiManager')
 
 const diskUsageData = {
     coverage: 'captain-node' as const,
-    nodes: [],
+    nodes: [
+        {
+            nodeId: 'node-1',
+            hostname: 'captain-01',
+            disks: [
+                {
+                    totalBytes: 40_000_000_000,
+                    usedBytes: 36_800_000_000,
+                    availableBytes: 3_200_000_000,
+                    severity: 'warning' as const,
+                },
+            ],
+        },
+    ],
 }
 
 function createState(isLoading: boolean): ReduxState {
@@ -58,5 +71,21 @@ describe('refreshDiskUsage', () => {
 
         expect(ApiManager).not.toHaveBeenCalled()
         expect(dispatch).not.toHaveBeenCalled()
+    })
+
+    it('treats an empty response as a refresh failure', async () => {
+        getDiskUsage.mockResolvedValue({
+            coverage: 'captain-node',
+            nodes: [],
+        })
+        const dispatch = jest.fn()
+
+        await refreshDiskUsage()(dispatch, () => createState(false))
+
+        expect(dispatch).toHaveBeenLastCalledWith({
+            type: DISK_USAGE_UPDATED,
+            payload: { isLoading: false, refreshFailed: true },
+        })
+        expect(destroy).toHaveBeenCalledTimes(1)
     })
 })
