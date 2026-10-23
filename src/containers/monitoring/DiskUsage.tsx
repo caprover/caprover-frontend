@@ -135,7 +135,7 @@ export default function DiskUsage({
     let cardContent: JSX.Element
     let cardExtra: JSX.Element | undefined
 
-    if (diskUsage.isLoading && !reading) {
+    if (!reading && !diskUsage.refreshFailed) {
         cardContent = (
             <div style={{ textAlign: 'center' }}>
                 <Spin />

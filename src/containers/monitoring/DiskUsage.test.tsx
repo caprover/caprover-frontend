@@ -113,6 +113,22 @@ describe('DiskUsageAlert', () => {
 })
 
 describe('DiskUsage', () => {
+    it('shows loading before the first disk usage response', () => {
+        const { container } = render(
+            <DiskUsage
+                diskUsage={{
+                    data: undefined,
+                    isLoading: false,
+                    refreshFailed: false,
+                }}
+                history={createHistory()}
+                refreshDiskUsage={jest.fn()}
+            />
+        )
+
+        expect(container.querySelector('.ant-spin')).toBeInTheDocument()
+    })
+
     it('shows capacity, host, usage, and the cleanup action', () => {
         const history = createHistory()
         render(

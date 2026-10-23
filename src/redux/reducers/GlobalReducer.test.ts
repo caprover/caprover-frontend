@@ -1,8 +1,4 @@
-import {
-    DISK_USAGE_REFRESH_FAILED,
-    DISK_USAGE_REFRESH_STARTED,
-    DISK_USAGE_REFRESH_SUCCEEDED,
-} from '../actions/DiskUsageActions'
+import { DISK_USAGE_UPDATED } from '../actions/DiskUsageActions'
 import GlobalReducer from './GlobalReducer'
 
 const diskUsageData = {
@@ -12,13 +8,9 @@ const diskUsageData = {
 
 describe('disk usage state', () => {
     it('stores a successful refresh', () => {
-        const loadingState = GlobalReducer(undefined, {
-            type: DISK_USAGE_REFRESH_STARTED,
-            payload: { requestId: 1 },
-        })
-        const loadedState = GlobalReducer(loadingState, {
-            type: DISK_USAGE_REFRESH_SUCCEEDED,
-            payload: { requestId: 1, data: diskUsageData },
+        const loadedState = GlobalReducer(undefined, {
+            type: DISK_USAGE_UPDATED,
+            payload: { data: diskUsageData, isLoading: false },
         })
 
         expect(loadedState.diskUsage).toEqual({
@@ -30,7 +22,6 @@ describe('disk usage state', () => {
 
     it('preserves the previous reading when a refresh fails', () => {
         const previousState = {
-            diskUsageRequestId: 2,
             diskUsage: {
                 data: diskUsageData,
                 isLoading: true,
@@ -38,8 +29,8 @@ describe('disk usage state', () => {
             },
         }
         const failedState = GlobalReducer(previousState, {
-            type: DISK_USAGE_REFRESH_FAILED,
-            payload: { requestId: 2 },
+            type: DISK_USAGE_UPDATED,
+            payload: { isLoading: false, refreshFailed: true },
         })
 
         expect(failedState.diskUsage).toEqual({
@@ -47,23 +38,5 @@ describe('disk usage state', () => {
             isLoading: false,
             refreshFailed: true,
         })
-    })
-
-    it('ignores a response from an older request', () => {
-        const currentState = {
-            diskUsageRequestId: 3,
-            diskUsage: {
-                data: undefined,
-                isLoading: true,
-                refreshFailed: false,
-            },
-        }
-
-        expect(
-            GlobalReducer(currentState, {
-                type: DISK_USAGE_REFRESH_SUCCEEDED,
-                payload: { requestId: 2, data: diskUsageData },
-            })
-        ).toBe(currentState)
     })
 })

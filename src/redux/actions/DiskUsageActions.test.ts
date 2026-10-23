@@ -1,10 +1,6 @@
 import ApiManager from '../../api/ApiManager'
 import ReduxState from '../../models/ReduxState'
-import {
-    DISK_USAGE_REFRESH_STARTED,
-    DISK_USAGE_REFRESH_SUCCEEDED,
-    refreshDiskUsage,
-} from './DiskUsageActions'
+import { DISK_USAGE_UPDATED, refreshDiskUsage } from './DiskUsageActions'
 
 jest.mock('../../api/ApiManager')
 
@@ -13,7 +9,7 @@ const diskUsageData = {
     nodes: [],
 }
 
-function createState(isLoading: boolean, requestId: number): ReduxState {
+function createState(isLoading: boolean): ReduxState {
     return {
         globalReducer: {
             diskUsage: {
@@ -21,7 +17,6 @@ function createState(isLoading: boolean, requestId: number): ReduxState {
                 isLoading,
                 refreshFailed: false,
             },
-            diskUsageRequestId: requestId,
         },
     }
 }
@@ -39,19 +34,19 @@ describe('refreshDiskUsage', () => {
         }))
     })
 
-    it('starts the initial refresh even though initial state is loading', async () => {
+    it('refreshes disk usage', async () => {
         getDiskUsage.mockResolvedValue(diskUsageData)
         const dispatch = jest.fn()
 
-        await refreshDiskUsage()(dispatch, () => createState(true, 0))
+        await refreshDiskUsage()(dispatch, () => createState(false))
 
         expect(dispatch).toHaveBeenNthCalledWith(1, {
-            type: DISK_USAGE_REFRESH_STARTED,
-            payload: { requestId: 1 },
+            type: DISK_USAGE_UPDATED,
+            payload: { isLoading: true, refreshFailed: false },
         })
         expect(dispatch).toHaveBeenNthCalledWith(2, {
-            type: DISK_USAGE_REFRESH_SUCCEEDED,
-            payload: { requestId: 1, data: diskUsageData },
+            type: DISK_USAGE_UPDATED,
+            payload: { data: diskUsageData, isLoading: false },
         })
         expect(destroy).toHaveBeenCalledTimes(1)
     })
@@ -59,7 +54,7 @@ describe('refreshDiskUsage', () => {
     it('reuses a refresh that is already in progress', async () => {
         const dispatch = jest.fn()
 
-        await refreshDiskUsage()(dispatch, () => createState(true, 1))
+        await refreshDiskUsage()(dispatch, () => createState(true))
 
         expect(ApiManager).not.toHaveBeenCalled()
         expect(dispatch).not.toHaveBeenCalled()

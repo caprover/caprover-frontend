@@ -1,58 +1,43 @@
-import { CapRoverModels } from 'caprover-api'
 import ApiManager from '../../api/ApiManager'
+import DiskUsageViewState from '../../models/DiskUsageViewState'
 import ReduxState from '../../models/ReduxState'
 
-export const DISK_USAGE_REFRESH_STARTED = 'DISK_USAGE_REFRESH_STARTED'
-export const DISK_USAGE_REFRESH_SUCCEEDED = 'DISK_USAGE_REFRESH_SUCCEEDED'
-export const DISK_USAGE_REFRESH_FAILED = 'DISK_USAGE_REFRESH_FAILED'
+export const DISK_USAGE_UPDATED = 'DISK_USAGE_UPDATED'
 
-export type DiskUsageAction =
-    | {
-          type: typeof DISK_USAGE_REFRESH_STARTED
-          payload: { requestId: number }
-      }
-    | {
-          type: typeof DISK_USAGE_REFRESH_SUCCEEDED
-          payload: {
-              requestId: number
-              data: CapRoverModels.DiskUsageResponse
-          }
-      }
-    | {
-          type: typeof DISK_USAGE_REFRESH_FAILED
-          payload: { requestId: number }
-      }
+export interface DiskUsageAction {
+    type: typeof DISK_USAGE_UPDATED
+    payload: Partial<DiskUsageViewState>
+}
 
 type DiskUsageDispatch = (action: DiskUsageAction) => void
 
 export function refreshDiskUsage() {
     return (dispatch: DiskUsageDispatch, getState: () => ReduxState) => {
-        const { diskUsage, diskUsageRequestId } = getState().globalReducer
+        const { diskUsage } = getState().globalReducer
 
-        if (diskUsage.isLoading && diskUsageRequestId > 0) {
+        if (diskUsage.isLoading) {
             return Promise.resolve()
         }
 
-        const requestId = diskUsageRequestId + 1
         const apiManager = new ApiManager()
 
         dispatch({
-            type: DISK_USAGE_REFRESH_STARTED,
-            payload: { requestId },
+            type: DISK_USAGE_UPDATED,
+            payload: { isLoading: true, refreshFailed: false },
         })
 
         return apiManager
             .getDiskUsage()
-            .then((data: CapRoverModels.DiskUsageResponse) => {
+            .then((data) => {
                 dispatch({
-                    type: DISK_USAGE_REFRESH_SUCCEEDED,
-                    payload: { requestId, data },
+                    type: DISK_USAGE_UPDATED,
+                    payload: { data, isLoading: false },
                 })
             })
             .catch(() => {
                 dispatch({
-                    type: DISK_USAGE_REFRESH_FAILED,
-                    payload: { requestId },
+                    type: DISK_USAGE_UPDATED,
+                    payload: { isLoading: false, refreshFailed: true },
                 })
             })
             .then(() => {
