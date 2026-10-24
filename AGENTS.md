@@ -13,6 +13,10 @@ Those existing requirements still apply.
   component style, prop/ref usage, routing, fetching, state, error handling, and
   naming. If adjacent components use a simple ref or component, avoid introducing
   render functions, wrappers, or other indirection without a concrete need.
+- Treat the closest code in the same file and feature as the primary style
+  reference. Match how neighboring methods access props/state, structure Promise
+  chains, and pass data. Do not make one value a special parameter when comparable
+  values are consistently read from `this.props` or `this.state`.
 - Prefer **KISS, YAGNI, and proportionate DRY**. Add an abstraction only when it
   clearly reduces real duplication or complexity. Avoid speculative helpers,
   generic frameworks, and layers introduced for a single use case.
@@ -39,9 +43,21 @@ Those existing requirements still apply.
   Avoid route-transition detectors solely to refresh a page that can refresh on mount.
 - Favor straightforward JSX over custom render machinery. Reuse existing UI
   components and keep common layout wrappers in one place when practical.
-- Avoid duplicating source state with derived React state. Use current values,
-  guard against stale async responses and unmounted components, and handle
-  concurrent refreshes deliberately. Poll only when the feature requires it.
+- Model one lifecycle with one state value. Use an enum or discriminated union for
+  mutually exclusive states such as loading, ready, and failed. Avoid combinations
+  of booleans that can represent impossible states, duplicate another field, or
+  exist only to support defensive machinery.
+- Avoid duplicating source state with derived React state. Use current values and
+  the repository's established unmount guards. Keep identity checks when a late
+  response could be shown for the wrong entity.
+- For polling and refreshes, start with the direct request pattern used by the
+  neighboring code. Add request IDs, in-flight flags, queues, cancellation, or
+  serialization only for a concrete, material failure mode required by the feature.
+  State that scenario and cover it with a focused test. Deliberately accepting a
+  brief, harmless stale window is valid when its impact does not justify more state.
+- When a design is simplified, remove the state, helpers, and tests that only
+  supported the discarded design. Apply the simplification consistently to every
+  parallel implementation of the same behavior.
 
 ## Types, contracts, and behavior
 
@@ -49,6 +65,13 @@ Those existing requirements still apply.
   code. Reuse existing typed models and methods; type new response contracts,
   props, and important public boundaries explicitly. Avoid `any`, unsafe casts,
   unchecked assumptions, and unstructured hardcoded status strings.
+- Model the full contract rather than the most common sample. Check every member of
+  finite backend enums and every allowed combination of nullable or independent
+  fields. Do not make one diagnostic field conditional on an unrelated field.
+- Preserve the meaning and provenance of data. Current state takes precedence when
+  describing current behavior; label historical events as historical. When a
+  preferred display value is optional, use an available stable identifier as a
+  fallback when it remains useful to the user.
 - Keep backend-owned decisions (for example, supported fields or severity)
   authoritative. Avoid duplicating feature/capability lists and business rules
   across frontend files or repositories; identify every consumer when changing
@@ -68,7 +91,9 @@ Those existing requirements still apply.
   treatments, and naming. Follow the README's theme guidance; use theme-aware
   colors rather than arbitrary hardcoded colors. Respect mobile layouts and RTL.
 - Use the existing `localize(key, fallback)` convention for user-facing text.
-  Prefer existing components/helpers over slightly different copies.
+  Audit generated labels and backend enum/status labels as user-facing text too.
+  Search for and reuse existing components, date/formatting helpers, and display
+  conventions before writing a slightly different copy.
 - Add focused regression tests for changed behavior, including relevant failure,
   retry, stale-data, compatibility, and boundary cases. Assert behavior and
   contracts rather than implementation details; never weaken tests to hide defects.
@@ -83,10 +108,15 @@ Those existing requirements still apply.
 
 1. Independently identify the **simplest solution consistent with nearby code**;
    compare the submitted design against it before reviewing individual lines.
-2. Question every added abstraction, helper, cross-component callback, shared
-   state owner, render indirection, and special-case route or timer.
-3. Check correctness, regressions, API contracts, error states, tests, and style
+2. Inventory every added state field, instance field, helper, timer, callback, and
+   coordination mechanism. Remove each one that is redundant, derivable, supports
+   an impossible state, or addresses only an unrequired hypothetical case.
+3. Compare each touched method with the closest analogous methods, including data
+   access, naming, Promise style, lifecycle cleanup, and helper usage. Use plural
+   names for collections and names that make scope clear at the call site.
+4. Re-read the complete final diff after all fixes. Check correctness, regressions,
+   API contracts, all enum/nullable states, user-facing strings, tests, and style
    consistency. Verify claims against current code and real behavior.
-4. Report actionable findings with file/line, impact, and the smallest concrete
+5. Report actionable findings with file/line, impact, and the smallest concrete
    fix. Distinguish merge blockers from optional improvements; reject speculative
    or purely stylistic refactors.
