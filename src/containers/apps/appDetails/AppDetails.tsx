@@ -21,6 +21,7 @@ import {
     Typography,
 } from 'antd'
 import classnames from 'classnames'
+import { CapRoverModels } from 'caprover-api'
 import { History } from 'history'
 import { RefObject } from 'react'
 import { connect } from 'react-redux'
@@ -43,6 +44,7 @@ import CenteredSpinner from '../../global/CenteredSpinner'
 import ClickableLink from '../../global/ClickableLink'
 import ErrorRetry from '../../global/ErrorRetry'
 import { IAppDef } from '../AppDefinition'
+import AppRuntimeStatus from '../AppRuntimeStatus'
 import onDeleteAppClicked from '../DeleteAppConfirm'
 import EditableSpan from '../EditableSpan'
 import AppConfigs from './AppConfigs'
@@ -88,6 +90,9 @@ class AppDetails extends ApiComponent<
         activeTabKey: string
         renderCounterForAffixBug: number
         volumeUsageIndex: VolumeUsageIndex
+        appRuntime: CapRoverModels.AppRuntimeDetails | undefined
+        isRuntimeLoading: boolean
+        runtimeRefreshFailed: boolean
         editAppDataForModal:
             | {
                   appName: string
@@ -99,6 +104,8 @@ class AppDetails extends ApiComponent<
     }
 > {
     private reRenderTriggered = false
+    private updateRuntimeInterval: any
+    private runtimeRequestId = 0
     private confirmedAppNameToDelete: string = ''
     private volumesToDelete: IHashMapGeneric<boolean> = {}
 
@@ -112,6 +119,9 @@ class AppDetails extends ApiComponent<
             apiData: undefined,
             editAppDataForModal: undefined,
             volumeUsageIndex: {},
+            appRuntime: undefined,
+            isRuntimeLoading: true,
+            runtimeRefreshFailed: false,
         }
     }
 
@@ -271,13 +281,22 @@ class AppDetails extends ApiComponent<
                         marginTop: 0,
                     }}
                 >
-                    <EditableSpan
-                        onEditClick={() => {
-                            onEditClicked()
-                        }}
-                    >
-                        {appName}
-                    </EditableSpan>
+                    <Space size={4} align="center">
+                        <AppRuntimeStatus
+                            appName={appName}
+                            runtime={self.state.appRuntime}
+                            isLoading={self.state.isRuntimeLoading}
+                            refreshFailed={self.state.runtimeRefreshFailed}
+                            isMobile={self.props.isMobile}
+                        />
+                        <EditableSpan
+                            onEditClick={() => {
+                                onEditClicked()
+                            }}
+                        >
+                            {appName}
+                        </EditableSpan>
+                    </Space>
                 </h2>
 
                 {app.tags && app.tags.length > 0 && (
@@ -705,6 +724,19 @@ class AppDetails extends ApiComponent<
 
     componentDidMount() {
         this.reFetchData()
+        const self = this
+        this.updateRuntimeInterval = setInterval(function () {
+            self.refreshRuntime()
+        }, 20000)
+    }
+
+    componentWillUnmount() {
+        // @ts-ignore
+        if (super.componentWillUnmount) super.componentWillUnmount()
+        this.runtimeRequestId++
+        if (this.updateRuntimeInterval) {
+            clearInterval(this.updateRuntimeInterval)
+        }
     }
 
     reFetchData() {
@@ -740,6 +772,7 @@ class AppDetails extends ApiComponent<
                                 goAccessInfo,
                             },
                         })
+                        self.refreshRuntime()
                         return
                     }
                 }
@@ -750,6 +783,45 @@ class AppDetails extends ApiComponent<
             .catch(Toaster.createCatcher())
             .then(function () {
                 self.setState({ isLoading: false })
+            })
+    }
+
+    refreshRuntime() {
+        const self = this
+        const requestId = ++self.runtimeRequestId
+        const appName =
+            self.state.apiData?.appDefinition.appName ||
+            self.props.match.params.appName
+        self.setState({ isRuntimeLoading: !self.state.appRuntime })
+
+        return self.apiManager
+            .getAppRuntime(appName)
+            .then(function (appRuntime) {
+                if (
+                    !self.willUnmountSoon &&
+                    requestId === self.runtimeRequestId
+                ) {
+                    self.setState({
+                        appRuntime,
+                        runtimeRefreshFailed: false,
+                    })
+                }
+            })
+            .catch(function () {
+                if (
+                    !self.willUnmountSoon &&
+                    requestId === self.runtimeRequestId
+                ) {
+                    self.setState({ runtimeRefreshFailed: true })
+                }
+            })
+            .then(function () {
+                if (
+                    !self.willUnmountSoon &&
+                    requestId === self.runtimeRequestId
+                ) {
+                    self.setState({ isRuntimeLoading: false })
+                }
             })
     }
 }

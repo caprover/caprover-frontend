@@ -17,12 +17,14 @@ import {
     Card,
     Input,
     Row,
+    Space,
     Splitter,
     Table,
     Tag,
     Tooltip,
     Tree,
 } from 'antd'
+import { CapRoverModels } from 'caprover-api'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component, Fragment, Key } from 'react'
@@ -38,6 +40,7 @@ import Utils from '../../utils/Utils'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
+import AppRuntimeStatus from './AppRuntimeStatus'
 import onDeleteAppClicked from './DeleteAppConfirm'
 import DescriptionPanel from './DescriptionPanel'
 import EditableSpan from './EditableSpan'
@@ -46,6 +49,7 @@ const ALL_APPS = 'ALL_APPS'
 const ROOT_APPS = 'ROOT_APPS'
 
 type TableData = IAppDef & { lastDeployTime: string }
+type RuntimeByAppName = { [appName: string]: CapRoverModels.AppRuntime }
 
 class LastSelectedKeyMemoryCache {
     static selectedKey = ALL_APPS
@@ -56,6 +60,9 @@ class AppsTable extends Component<
     {
         history: History
         apps: IAppDef[]
+        runtimeData: CapRoverModels.AppsRuntimeResponse | undefined
+        isRuntimeLoading: boolean
+        runtimeRefreshFailed: boolean
         projects: ProjectDefinition[]
         apiManager: ApiManager
         onReloadRequested: () => void
@@ -90,7 +97,7 @@ class AppsTable extends Component<
         return `/apps/details/${appName}`
     }
 
-    createColumns() {
+    createColumns(runtimeByAppName: RuntimeByAppName) {
         const self = this
         const ALIGN: 'center' = 'center'
         const columns: ColumnProps<TableData>[] = [
@@ -100,7 +107,17 @@ class AppsTable extends Component<
                 key: 'appName',
                 width: '25%',
                 render: (appName: string) => (
-                    <Link to={this.appDetailPath(appName)}>{appName}</Link>
+                    <Space size={4}>
+                        <AppRuntimeStatus
+                            appName={appName}
+                            runtime={runtimeByAppName[appName]}
+                            isLoading={self.props.isRuntimeLoading}
+                            refreshFailed={self.props.runtimeRefreshFailed}
+                            appDetailsPath={self.appDetailPath(appName)}
+                            isMobile={self.props.isMobile}
+                        />
+                        <Link to={this.appDetailPath(appName)}>{appName}</Link>
+                    </Space>
                 ),
                 sorter: (a, b) => {
                     return a.appName
@@ -249,6 +266,10 @@ class AppsTable extends Component<
 
     render() {
         const self = this
+        const runtimeByAppName: RuntimeByAppName = {}
+        self.props.runtimeData?.apps?.forEach((runtime) => {
+            runtimeByAppName[runtime.appName] = runtime
+        })
 
         const appsToRender = self.props.apps
             .filter((app) => {
@@ -463,7 +484,28 @@ class AppsTable extends Component<
                             }) => (
                                 <Card
                                     type="inner"
-                                    title={appName}
+                                    title={
+                                        <Space size={4}>
+                                            <AppRuntimeStatus
+                                                appName={appName}
+                                                runtime={
+                                                    runtimeByAppName[appName]
+                                                }
+                                                isLoading={
+                                                    self.props.isRuntimeLoading
+                                                }
+                                                refreshFailed={
+                                                    self.props
+                                                        .runtimeRefreshFailed
+                                                }
+                                                appDetailsPath={self.appDetailPath(
+                                                    appName
+                                                )}
+                                                isMobile={self.props.isMobile}
+                                            />
+                                            <span>{appName}</span>
+                                        </Space>
+                                    }
                                     key={appName}
                                     extra={
                                         <Link to={this.appDetailPath(appName)}>
@@ -546,7 +588,9 @@ class AppsTable extends Component<
                                     {self.createAppTableHeader()}
                                     <Table<TableData>
                                         rowKey="appName"
-                                        columns={self.createColumns()}
+                                        columns={self.createColumns(
+                                            runtimeByAppName
+                                        )}
                                         dataSource={appsToRender}
                                         pagination={false}
                                         size="middle"
