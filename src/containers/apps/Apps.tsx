@@ -1,4 +1,5 @@
 import { Col, Row } from 'antd'
+import { CapRoverModels } from 'caprover-api'
 import { RouteComponentProps } from 'react-router'
 import ProjectDefinition from '../../models/ProjectDefinition'
 import Toaster from '../../utils/Toaster'
@@ -6,6 +7,7 @@ import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 import ErrorRetry from '../global/ErrorRetry'
 import { IAppDef } from './AppDefinition'
+import { RuntimeDataStatus } from './AppRuntimeStatus'
 import AppsTable from './AppsTable'
 
 export default class Apps extends ApiComponent<
@@ -22,14 +24,20 @@ export default class Apps extends ApiComponent<
                   projects: ProjectDefinition[]
               }
             | undefined
+        appsRuntimeData: CapRoverModels.AppsRuntimeResponse | undefined
+        runtimeDataStatus: RuntimeDataStatus
         isCreatingApp: boolean
     }
 > {
+    private updateRuntimeInterval: any
+
     constructor(props: any) {
         super(props)
         this.state = {
             isLoading: true,
             apiData: undefined,
+            appsRuntimeData: undefined,
+            runtimeDataStatus: RuntimeDataStatus.Loading,
             isCreatingApp: false,
         }
     }
@@ -96,6 +104,8 @@ export default class Apps extends ApiComponent<
                                     apiData.apps.defaultNginxConfig
                                 }
                                 apps={apiData.apps.appDefinitions}
+                                appsRuntimeData={self.state.appsRuntimeData}
+                                runtimeDataStatus={self.state.runtimeDataStatus}
                                 projects={apiData.projects}
                                 rootDomain={apiData.apps.rootDomain}
                                 isCreatingApp={self.state.isCreatingApp}
@@ -120,6 +130,18 @@ export default class Apps extends ApiComponent<
 
     componentDidMount() {
         this.reFetchData()
+        const self = this
+        this.updateRuntimeInterval = setInterval(function () {
+            self.refreshRuntime()
+        }, 20000)
+    }
+
+    componentWillUnmount() {
+        // @ts-ignore
+        if (super.componentWillUnmount) super.componentWillUnmount()
+        if (this.updateRuntimeInterval) {
+            clearInterval(this.updateRuntimeInterval)
+        }
     }
 
     reFetchData() {
@@ -133,10 +155,32 @@ export default class Apps extends ApiComponent<
                 self.setState({
                     apiData: { apps: data[0], projects: data[1].projects },
                 })
+                self.refreshRuntime()
             })
             .catch(Toaster.createCatcher())
             .then(function () {
                 self.setState({ isLoading: false })
+            })
+    }
+
+    refreshRuntime(): Promise<void> {
+        const self = this
+        return self.apiManager
+            .getAppsRuntime()
+            .then(function (appsRuntimeData) {
+                if (!self.willUnmountSoon) {
+                    self.setState({
+                        appsRuntimeData,
+                        runtimeDataStatus: RuntimeDataStatus.Ready,
+                    })
+                }
+            })
+            .catch(function () {
+                if (!self.willUnmountSoon) {
+                    self.setState({
+                        runtimeDataStatus: RuntimeDataStatus.Failed,
+                    })
+                }
             })
     }
 }

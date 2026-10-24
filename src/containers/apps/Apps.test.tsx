@@ -29,6 +29,9 @@ jest.mock('../../api/ApiManager', () => ({
         getAllProjects() {
             return Promise.resolve()
         }
+        getAppsRuntime() {
+            return Promise.resolve({ apps: [] })
+        }
         registerNewApp() {
             return Promise.resolve()
         }

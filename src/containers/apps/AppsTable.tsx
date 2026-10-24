@@ -18,12 +18,14 @@ import {
     Empty,
     Input,
     Row,
+    Space,
     Splitter,
     Table,
     Tag,
     Tooltip,
     Tree,
 } from 'antd'
+import { CapRoverModels } from 'caprover-api'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component, Fragment, Key } from 'react'
@@ -39,6 +41,7 @@ import Utils from '../../utils/Utils'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
+import AppRuntimeStatus, { RuntimeDataStatus } from './AppRuntimeStatus'
 import CreateNewApp from './CreateNewApp'
 import onDeleteAppClicked from './DeleteAppConfirm'
 import DescriptionPanel from './DescriptionPanel'
@@ -58,6 +61,8 @@ class AppsTable extends Component<
     {
         history: History
         apps: IAppDef[]
+        appsRuntimeData: CapRoverModels.AppsRuntimeResponse | undefined
+        runtimeDataStatus: RuntimeDataStatus
         projects: ProjectDefinition[]
         apiManager: ApiManager
         onReloadRequested: () => void
@@ -96,6 +101,12 @@ class AppsTable extends Component<
         return `/apps/details/${appName}`
     }
 
+    getAppRuntime(appName: string) {
+        return this.props.appsRuntimeData?.apps?.find(
+            (runtime) => runtime.appName === appName
+        )
+    }
+
     createColumns() {
         const self = this
         const ALIGN: 'center' = 'center'
@@ -106,7 +117,16 @@ class AppsTable extends Component<
                 key: 'appName',
                 width: '25%',
                 render: (appName: string) => (
-                    <Link to={this.appDetailPath(appName)}>{appName}</Link>
+                    <Space size={4}>
+                        <AppRuntimeStatus
+                            appName={appName}
+                            runtime={self.getAppRuntime(appName)}
+                            runtimeDataStatus={self.props.runtimeDataStatus}
+                            appDetailsPath={self.appDetailPath(appName)}
+                            isMobile={self.props.isMobile}
+                        />
+                        <Link to={this.appDetailPath(appName)}>{appName}</Link>
+                    </Space>
                 ),
                 sorter: (a, b) => {
                     return a.appName
@@ -471,7 +491,24 @@ class AppsTable extends Component<
                             }) => (
                                 <Card
                                     type="inner"
-                                    title={appName}
+                                    title={
+                                        <Space size={4}>
+                                            <AppRuntimeStatus
+                                                appName={appName}
+                                                runtime={self.getAppRuntime(
+                                                    appName
+                                                )}
+                                                runtimeDataStatus={
+                                                    self.props.runtimeDataStatus
+                                                }
+                                                appDetailsPath={self.appDetailPath(
+                                                    appName
+                                                )}
+                                                isMobile={self.props.isMobile}
+                                            />
+                                            <span>{appName}</span>
+                                        </Space>
+                                    }
                                     key={appName}
                                     extra={
                                         <Link to={this.appDetailPath(appName)}>
