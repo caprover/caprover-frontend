@@ -7,7 +7,6 @@ import CenteredSpinner from '../global/CenteredSpinner'
 import ErrorRetry from '../global/ErrorRetry'
 import { IAppDef } from './AppDefinition'
 import AppsTable from './AppsTable'
-import CreateNewApp from './CreateNewApp'
 
 export default class Apps extends ApiComponent<
     RouteComponentProps<any>,
@@ -23,7 +22,7 @@ export default class Apps extends ApiComponent<
                   projects: ProjectDefinition[]
               }
             | undefined
-        showCreateAppForm: boolean
+        isCreatingApp: boolean
     }
 > {
     constructor(props: any) {
@@ -31,7 +30,7 @@ export default class Apps extends ApiComponent<
         this.state = {
             isLoading: true,
             apiData: undefined,
-            showCreateAppForm: false,
+            isCreatingApp: false,
         }
     }
 
@@ -42,9 +41,11 @@ export default class Apps extends ApiComponent<
     ) {
         const self = this
 
+        if (self.state.isCreatingApp) return
+        self.setState({ isCreatingApp: true })
+
         Promise.resolve() //
             .then(function () {
-                self.setState({ isLoading: true })
                 return self.apiManager.registerNewApp(
                     appName,
                     projectId,
@@ -57,7 +58,7 @@ export default class Apps extends ApiComponent<
             })
             .catch(Toaster.createCatcher())
             .then(function () {
-                self.setState({ isLoading: false })
+                self.setState({ isCreatingApp: false })
             })
     }
 
@@ -74,97 +75,45 @@ export default class Apps extends ApiComponent<
             return <ErrorRetry />
         }
 
-        const showAppsTable: boolean =
-            apiData.apps.appDefinitions.length > 0 ||
-            apiData.projects.length > 0
-
-        const showCreateAppForm: boolean =
-            self.state.showCreateAppForm || !showAppsTable
-
         return (
             <div className="slow-fadein-fast">
-                {showCreateAppForm && (
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 25,
-                            padding: '0 20px',
-                            margin: '0 auto 50px',
-                            maxWidth: 1000,
-                        }}
-                    >
-                        <Row justify="center">
-                            <Col
-                                xs={{
-                                    span: 24,
+                <div
+                    style={{
+                        padding: '0 20px',
+                        margin: '0 auto 50px',
+                    }}
+                >
+                    <Row justify="center">
+                        <Col lg={{ span: 24 }}>
+                            <AppsTable
+                                onReloadRequested={() => {
+                                    self.reFetchData()
                                 }}
-                                lg={{
-                                    span: 24,
+                                search={self.props.location.search}
+                                history={self.props.history}
+                                apiManager={self.apiManager}
+                                defaultNginxConfig={
+                                    apiData.apps.defaultNginxConfig
+                                }
+                                apps={apiData.apps.appDefinitions}
+                                projects={apiData.projects}
+                                rootDomain={apiData.apps.rootDomain}
+                                isCreatingApp={self.state.isCreatingApp}
+                                onCreateNewAppClicked={(
+                                    appName: string,
+                                    projectId: string,
+                                    hasPersistency: boolean
+                                ) => {
+                                    self.onCreateNewAppClicked(
+                                        appName,
+                                        projectId,
+                                        hasPersistency
+                                    )
                                 }}
-                            >
-                                <CreateNewApp
-                                    projects={apiData.projects}
-                                    onCreateNewAppClicked={(
-                                        appName: string,
-                                        projectId: string,
-                                        hasPersistency: boolean
-                                    ) => {
-                                        self.onCreateNewAppClicked(
-                                            appName,
-                                            projectId,
-                                            hasPersistency
-                                        )
-                                    }}
-                                    onOneClickAppClicked={() => {
-                                        self.props.history.push(
-                                            '/apps/oneclick'
-                                        )
-                                    }}
-                                    onDockerComposeClicked={() => {
-                                        self.props.history.push(
-                                            '/apps/dockercompose'
-                                        )
-                                    }}
-                                />
-                            </Col>
-                        </Row>
-                    </div>
-                )}
-                {showAppsTable && (
-                    <div
-                        style={{
-                            padding: '0 20px',
-                            margin: '0 auto 50px',
-                        }}
-                    >
-                        <Row justify="center">
-                            <Col lg={{ span: 24 }}>
-                                <AppsTable
-                                    onReloadRequested={() => {
-                                        self.reFetchData()
-                                    }}
-                                    search={self.props.location.search}
-                                    history={self.props.history}
-                                    apiManager={self.apiManager}
-                                    defaultNginxConfig={
-                                        apiData.apps.defaultNginxConfig
-                                    }
-                                    apps={apiData.apps.appDefinitions}
-                                    projects={apiData.projects}
-                                    rootDomain={apiData.apps.rootDomain}
-                                    showCreateAppForm={showCreateAppForm}
-                                    onToggleCreateAppVisibility={() => {
-                                        self.setState({
-                                            showCreateAppForm:
-                                                !self.state.showCreateAppForm,
-                                        })
-                                    }}
-                                />
-                            </Col>
-                        </Row>
-                    </div>
-                )}
+                            />
+                        </Col>
+                    </Row>
+                </div>
             </div>
         )
     }
