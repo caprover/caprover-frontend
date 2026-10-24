@@ -1,9 +1,24 @@
-import { PlusCircleOutlined, QuestionCircleFilled } from '@ant-design/icons'
-import { Button, Card, Checkbox, Col, Divider, Input, Row, Tooltip } from 'antd'
+import {
+    AppstoreOutlined,
+    CodeOutlined,
+    FileAddOutlined,
+    PlusOutlined,
+    QuestionCircleFilled,
+} from '@ant-design/icons'
+import {
+    Button,
+    Checkbox,
+    Dropdown,
+    Form,
+    Input,
+    MenuProps,
+    Modal,
+    Tooltip,
+    Typography,
+} from 'antd'
+import { History } from 'history'
 import { Component, Fragment } from 'react'
-import { connect } from 'react-redux'
 import ProjectSelector from '../../components/ProjectSelector'
-import { IMobileComponent } from '../../models/ContainerProps'
 import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
 import NewTabLink from '../global/NewTabLink'
@@ -14,79 +29,209 @@ interface MyProps {
         projectId: string,
         hasPersistency: boolean
     ) => void
-    onOneClickAppClicked: () => void
-    onDockerComposeClicked: () => void
-
+    history: History
+    isCreatingApp: boolean
     projects: ProjectDefinition[]
 }
 
-class CreateNewApp extends Component<
-    MyProps & IMobileComponent,
-    { appName: string; selectedProjectId: string; hasPersistency: boolean }
+export default class CreateNewApp extends Component<
+    MyProps,
+    {
+        isModalOpen: boolean
+        selectedProjectId: string
+        hasPersistency: boolean
+    }
 > {
-    constructor(props: any) {
+    constructor(props: MyProps) {
         super(props)
         this.state = {
+            isModalOpen: false,
             hasPersistency: false,
-            appName: '',
             selectedProjectId: '',
         }
     }
 
-    onCreateNewAppClicked() {
-        this.props.onCreateNewAppClicked(
-            this.state.appName,
-            this.state.selectedProjectId,
-            this.state.hasPersistency
-        )
-    }
     render() {
         const self = this
+        const createAppText = localize(
+            'create_new_app.create_app',
+            'Create App'
+        )
+
+        const items: MenuProps['items'] = [
+            {
+                key: 'empty',
+                icon: <FileAddOutlined />,
+                label: (
+                    <div>
+                        {localize('create_new_app.empty_app', 'Empty App')}
+                        <div>
+                            <Typography.Text type="secondary">
+                                {localize(
+                                    'create_new_app.empty_app_description',
+                                    'Deploy your own code or image'
+                                )}
+                            </Typography.Text>
+                        </div>
+                    </div>
+                ),
+                onClick: () =>
+                    self.setState({
+                        isModalOpen: true,
+                        selectedProjectId: '',
+                        hasPersistency: false,
+                    }),
+            },
+            {
+                key: 'oneclick',
+                icon: <AppstoreOutlined />,
+                label: (
+                    <div>
+                        {localize(
+                            'create_new_app.one_click_app',
+                            'One-Click App'
+                        )}
+                        <div>
+                            <Typography.Text type="secondary">
+                                {localize(
+                                    'create_new_app.one_click_app_description',
+                                    'Install a ready-to-use app or database'
+                                )}
+                            </Typography.Text>
+                        </div>
+                    </div>
+                ),
+                onClick: () => self.props.history.push('/apps/oneclick'),
+            },
+            {
+                key: 'dockercompose',
+                icon: <CodeOutlined />,
+                label: (
+                    <div>
+                        {localize(
+                            'create_new_app.docker_compose',
+                            'Docker Compose'
+                        )}
+                        <div>
+                            <Typography.Text type="secondary">
+                                {localize(
+                                    'create_new_app.docker_compose_description',
+                                    'Deploy from a Compose file'
+                                )}
+                            </Typography.Text>
+                        </div>
+                    </div>
+                ),
+                onClick: () => self.props.history.push('/apps/dockercompose'),
+            },
+        ]
 
         return (
-            <Card
-                title={
-                    <span>
-                        <PlusCircleOutlined />
-                        &nbsp;&nbsp;&nbsp;{' '}
-                        {localize('create_new_app.title', 'Create A New App')}
-                    </span>
-                }
-            >
-                <Row
-                    style={{
-                        marginBottom: 20,
-                    }}
-                >
-                    <Col md={12} sm={24} xs={24}>
-                        <div
-                            style={{
-                                paddingBottom: 20,
-                                width: '100%',
-                                textAlign: 'center',
+            <Fragment>
+                <Dropdown autoFocus trigger={['click']} menu={{ items }}>
+                    <Button type="primary" icon={<PlusOutlined />}>
+                        {createAppText}
+                    </Button>
+                </Dropdown>
+                {self.state.isModalOpen && (
+                    <Modal
+                        open
+                        title={createAppText}
+                        okText={createAppText}
+                        cancelText={localize('create_new_app.cancel', 'Cancel')}
+                        confirmLoading={self.props.isCreatingApp}
+                        okButtonProps={{
+                            htmlType: 'submit',
+                            form: 'create-app-form',
+                        }}
+                        cancelButtonProps={{
+                            disabled: self.props.isCreatingApp,
+                        }}
+                        closable={!self.props.isCreatingApp}
+                        maskClosable={!self.props.isCreatingApp}
+                        keyboard={!self.props.isCreatingApp}
+                        onCancel={() => {
+                            if (!self.props.isCreatingApp) {
+                                self.setState({ isModalOpen: false })
+                            }
+                        }}
+                    >
+                        <Form
+                            id="create-app-form"
+                            layout="vertical"
+                            disabled={self.props.isCreatingApp}
+                            onSubmitCapture={(event) => {
+                                if (self.props.isCreatingApp) {
+                                    event.preventDefault()
+                                    event.stopPropagation()
+                                }
+                            }}
+                            onFinish={(values: { appName: string }) => {
+                                self.props.onCreateNewAppClicked(
+                                    values.appName,
+                                    self.state.selectedProjectId,
+                                    self.state.hasPersistency
+                                )
                             }}
                         >
-                            {localize(
-                                'create_new_app.scratch',
-                                'Create from scratch'
+                            <Form.Item
+                                name="appName"
+                                label={localize(
+                                    'create_new_app.application_name',
+                                    'Application Name'
+                                )}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: localize(
+                                            'create_new_app.name_required',
+                                            'Enter an application name.'
+                                        ),
+                                    },
+                                ]}
+                            >
+                                <Input
+                                    autoFocus
+                                    placeholder={localize(
+                                        'create_new_app.placeholder',
+                                        'my-amazing-app'
+                                    )}
+                                />
+                            </Form.Item>
+                            {self.props.projects.length > 0 && (
+                                <Form.Item
+                                    label={localize(
+                                        'apps.parent_project',
+                                        'Parent project'
+                                    )}
+                                >
+                                    <ProjectSelector
+                                        allProjects={self.props.projects}
+                                        selectedProjectId={
+                                            self.state.selectedProjectId
+                                        }
+                                        onChange={(value: string) =>
+                                            self.setState({
+                                                selectedProjectId: value,
+                                            })
+                                        }
+                                        excludeProjectId={'NONE'}
+                                    />
+                                </Form.Item>
                             )}
-                            <hr style={{ opacity: 0.1 }} />
-                        </div>
-                        {self.createProjectInApp()}
-                        <Row style={{ marginTop: 30, marginBottom: 30 }}>
                             <Checkbox
-                                onChange={(e: any) =>
+                                checked={self.state.hasPersistency}
+                                onChange={(e) =>
                                     self.setState({
-                                        hasPersistency: !!e.target.checked,
+                                        hasPersistency: e.target.checked,
                                     })
                                 }
                             >
                                 {localize(
                                     'create_new_app.has_persistent_data',
                                     'Has Persistent Data'
-                                )}{' '}
+                                )}
                             </Checkbox>
-                            &nbsp;&nbsp;
                             <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
                                 <Tooltip
                                     title={localize(
@@ -94,183 +239,13 @@ class CreateNewApp extends Component<
                                         'Mostly used for databases, see docs for details.'
                                     )}
                                 >
-                                    <span>
-                                        <QuestionCircleFilled />
-                                    </span>
+                                    <QuestionCircleFilled />
                                 </Tooltip>
                             </NewTabLink>
-                        </Row>
-                        {self.props.isMobile ? (
-                            <Fragment>
-                                <Input
-                                    placeholder={localize(
-                                        'create_new_app.placeholder',
-                                        'my-amazing-app'
-                                    )}
-                                    onChange={(e) =>
-                                        self.setState({
-                                            appName: e.target.value,
-                                        })
-                                    }
-                                />
-                                <Button
-                                    style={{ marginTop: 8 }}
-                                    block
-                                    onClick={() => self.onCreateNewAppClicked()}
-                                    type="primary"
-                                >
-                                    {localize(
-                                        'create_new_app.button',
-                                        'Create New App'
-                                    )}
-                                </Button>
-                            </Fragment>
-                        ) : (
-                            <Input.Search
-                                placeholder={localize(
-                                    'create_new_app.placeholder',
-                                    'my-amazing-app'
-                                )}
-                                enterButton={localize(
-                                    'create_new_app.button',
-                                    'Create New App'
-                                )}
-                                onChange={(e) =>
-                                    self.setState({
-                                        appName: e.target.value,
-                                    })
-                                }
-                                onSearch={(value) =>
-                                    self.onCreateNewAppClicked()
-                                }
-                            />
-                        )}
-                    </Col>
-                    <Col
-                        aria-hidden="true"
-                        md={4}
-                        sm={24}
-                        xs={24}
-                        style={{
-                            alignItems: 'stretch',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            padding: self.props.isMobile ? '28px 0' : '8px 0',
-                        }}
-                    >
-                        <Divider
-                            type={
-                                self.props.isMobile ? 'horizontal' : 'vertical'
-                            }
-                            style={{
-                                height: self.props.isMobile
-                                    ? undefined
-                                    : 'auto',
-                                margin: 0,
-                            }}
-                        />
-                    </Col>
-                    <Col md={8} sm={24} xs={24}>
-                        <Row justify={'center'}>
-                            <div
-                                style={{
-                                    paddingBottom: 20,
-                                    width: '100%',
-                                    textAlign: 'center',
-                                }}
-                            >
-                                {localize(
-                                    'create_new_app.or_select_from',
-                                    'Or select from'
-                                )}
-                                <hr style={{ opacity: 0.1 }} />
-                            </div>
-                            <div
-                                style={{
-                                    marginBottom: 15,
-                                    width: '100%',
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <Button
-                                    block
-                                    type="default"
-                                    onClick={() => {
-                                        self.props.onOneClickAppClicked()
-                                    }}
-                                >
-                                    {localize(
-                                        'create_new_app.one_click_apps',
-                                        'One-Click Apps/Databases'
-                                    )}
-                                </Button>
-                            </div>
-                            <div
-                                style={{
-                                    marginBottom: 15,
-                                    width: '100%',
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <Button
-                                    block
-                                    type="default"
-                                    onClick={() => {
-                                        self.props.onDockerComposeClicked()
-                                    }}
-                                >
-                                    {localize(
-                                        'create_new_app.docker_compose',
-                                        'Docker Compose'
-                                    )}
-                                </Button>
-                            </div>
-                        </Row>
-                    </Col>
-                </Row>
-            </Card>
-        )
-    }
-
-    createProjectInApp() {
-        const self = this
-
-        if ((self.props.projects || []).length === 0) {
-            return undefined
-        }
-
-        return (
-            <div>
-                {' '}
-                <div
-                    style={{
-                        marginBottom: 5,
-                    }}
-                >
-                    {localize('apps.parent_project', 'Parent project')}
-                </div>
-                <ProjectSelector
-                    allProjects={self.props.projects}
-                    selectedProjectId={self.state.selectedProjectId}
-                    onChange={(value: string) => {
-                        self.setState({
-                            selectedProjectId: value,
-                        })
-                    }}
-                    excludeProjectId={'NONE'}
-                />
-            </div>
+                        </Form>
+                    </Modal>
+                )}
+            </Fragment>
         )
     }
 }
-
-function mapStateToProps(state: any) {
-    return {
-        isMobile: state.globalReducer.isMobile,
-    }
-}
-
-export default connect<IMobileComponent, any, any>(
-    mapStateToProps,
-    undefined
-)(CreateNewApp)

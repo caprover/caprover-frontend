@@ -15,6 +15,7 @@ import type { TreeDataNode, TreeProps } from 'antd'
 import {
     Button,
     Card,
+    Empty,
     Input,
     Row,
     Splitter,
@@ -38,6 +39,7 @@ import Utils from '../../utils/Utils'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
+import CreateNewApp from './CreateNewApp'
 import onDeleteAppClicked from './DeleteAppConfirm'
 import DescriptionPanel from './DescriptionPanel'
 import EditableSpan from './EditableSpan'
@@ -63,8 +65,12 @@ class AppsTable extends Component<
         defaultNginxConfig: string
         isMobile: boolean
         search: string | undefined
-        showCreateAppForm: boolean
-        onToggleCreateAppVisibility: () => void
+        isCreatingApp: boolean
+        onCreateNewAppClicked: (
+            appName: string,
+            projectId: string,
+            hasPersistency: boolean
+        ) => void
     },
     {
         searchTerm: string
@@ -342,22 +348,14 @@ class AppsTable extends Component<
                             gap: '0.5em',
                         }}
                     >
-                        <Button
-                            onClick={() =>
-                                self.props.onToggleCreateAppVisibility()
+                        <CreateNewApp
+                            projects={self.props.projects}
+                            history={self.props.history}
+                            isCreatingApp={self.props.isCreatingApp}
+                            onCreateNewAppClicked={
+                                self.props.onCreateNewAppClicked
                             }
-                            type="primary"
-                        >
-                            {self.props.showCreateAppForm
-                                ? localize(
-                                      'apps_table.hide_create_app',
-                                      'Hide Create App'
-                                  )
-                                : localize(
-                                      'create_new_app.title',
-                                      'Create A New App'
-                                  )}
-                        </Button>
+                        />
                         {self.state.isBulkEditMode && (
                             <Tooltip
                                 title={localize(
@@ -452,7 +450,17 @@ class AppsTable extends Component<
                 }
             >
                 <Row justify="center">
-                    {self.props.isMobile ? (
+                    {self.props.apps.length === 0 &&
+                    (self.props.isMobile ||
+                        self.props.projects.length === 0) ? (
+                        <Empty
+                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                            description={localize(
+                                'apps_table.empty',
+                                'Create your first application using Create App above.'
+                            )}
+                        />
+                    ) : self.props.isMobile ? (
                         appsToRender.map(
                             ({
                                 appName = '',
