@@ -19,10 +19,15 @@ import Utils from '../../utils/Utils'
 interface AppRuntimeStatusProps {
     appName: string
     runtime: CapRoverModels.AppRuntime | undefined
-    isLoading: boolean
-    refreshFailed: boolean
+    runtimeDataStatus: RuntimeDataStatus
     appDetailsPath?: string
     isMobile: boolean
+}
+
+export enum RuntimeDataStatus {
+    Loading = 'LOADING',
+    Failed = 'FAILED',
+    Ready = 'READY',
 }
 
 interface AppRuntimeStatusState {
@@ -281,7 +286,7 @@ export default class AppRuntimeStatus extends Component<
             <Space direction="vertical" size={0}>
                 <strong>{getRuntimeSummary(runtime)}</strong>
                 {!!detail && <span>{detail}</span>}
-                {this.props.refreshFailed && (
+                {this.props.runtimeDataStatus === RuntimeDataStatus.Failed && (
                     <span>
                         {localize(
                             'app_runtime.refresh_failed_short',
@@ -313,7 +318,7 @@ export default class AppRuntimeStatus extends Component<
                 onClose={() => this.setState({ isDrawerOpen: false })}
                 width={this.props.isMobile ? '100%' : 440}
             >
-                {this.props.refreshFailed && (
+                {this.props.runtimeDataStatus === RuntimeDataStatus.Failed && (
                     <Alert
                         showIcon
                         type="warning"
@@ -454,7 +459,12 @@ export default class AppRuntimeStatus extends Component<
     }
 
     render() {
-        if (this.props.isLoading && !this.props.runtime) return <></>
+        if (
+            this.props.runtimeDataStatus === RuntimeDataStatus.Loading &&
+            !this.props.runtime
+        ) {
+            return <></>
+        }
 
         const runtime = this.props.runtime
         const statusLabel = getStatusLabel(runtime)

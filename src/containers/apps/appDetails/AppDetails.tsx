@@ -44,7 +44,7 @@ import CenteredSpinner from '../../global/CenteredSpinner'
 import ClickableLink from '../../global/ClickableLink'
 import ErrorRetry from '../../global/ErrorRetry'
 import { IAppDef } from '../AppDefinition'
-import AppRuntimeStatus from '../AppRuntimeStatus'
+import AppRuntimeStatus, { RuntimeDataStatus } from '../AppRuntimeStatus'
 import onDeleteAppClicked from '../DeleteAppConfirm'
 import EditableSpan from '../EditableSpan'
 import AppConfigs from './AppConfigs'
@@ -91,8 +91,7 @@ export class AppDetails extends ApiComponent<
         renderCounterForAffixBug: number
         volumeUsageIndex: VolumeUsageIndex
         appRuntime: CapRoverModels.AppRuntimeDetails | undefined
-        isRuntimeLoading: boolean
-        runtimeRefreshFailed: boolean
+        runtimeDataStatus: RuntimeDataStatus
         editAppDataForModal:
             | {
                   appName: string
@@ -105,9 +104,6 @@ export class AppDetails extends ApiComponent<
 > {
     private reRenderTriggered = false
     private updateRuntimeInterval: any
-    private runtimeRequestId = 0
-    private runtimeRequestInProgress = false
-    private runtimeRefreshQueued = false
     private confirmedAppNameToDelete: string = ''
     private volumesToDelete: IHashMapGeneric<boolean> = {}
 
@@ -122,8 +118,7 @@ export class AppDetails extends ApiComponent<
             editAppDataForModal: undefined,
             volumeUsageIndex: {},
             appRuntime: undefined,
-            isRuntimeLoading: true,
-            runtimeRefreshFailed: false,
+            runtimeDataStatus: RuntimeDataStatus.Loading,
         }
     }
 
@@ -291,8 +286,7 @@ export class AppDetails extends ApiComponent<
                         <AppRuntimeStatus
                             appName={appName}
                             runtime={appRuntime}
-                            isLoading={self.state.isRuntimeLoading}
-                            refreshFailed={self.state.runtimeRefreshFailed}
+                            runtimeDataStatus={self.state.runtimeDataStatus}
                             isMobile={self.props.isMobile}
                         />
                         <EditableSpan
@@ -630,7 +624,7 @@ export class AppDetails extends ApiComponent<
                             self.setState({
                                 apiData: newData,
                                 appRuntime: undefined,
-                                isRuntimeLoading: true,
+                                runtimeDataStatus: RuntimeDataStatus.Loading,
                             })
 
                             setTimeout(() => {
@@ -741,8 +735,6 @@ export class AppDetails extends ApiComponent<
     componentWillUnmount() {
         // @ts-ignore
         if (super.componentWillUnmount) super.componentWillUnmount()
-        this.runtimeRequestId++
-        this.runtimeRefreshQueued = false
         if (this.updateRuntimeInterval) {
             clearInterval(this.updateRuntimeInterval)
         }
@@ -801,57 +793,35 @@ export class AppDetails extends ApiComponent<
             self.state.apiData?.appDefinition.appName ||
             self.props.match.params.appName
 
-        if (self.runtimeRequestInProgress) {
-            self.runtimeRefreshQueued = true
-            return Promise.resolve()
+        if (!self.state.appRuntime) {
+            self.setState({ runtimeDataStatus: RuntimeDataStatus.Loading })
         }
-
-        self.runtimeRequestInProgress = true
-        const requestId = ++self.runtimeRequestId
-        self.setState({ isRuntimeLoading: !self.state.appRuntime })
 
         return self.apiManager
             .getAppRuntime(appName)
             .then(function (appRuntime) {
                 if (
                     !self.willUnmountSoon &&
-                    requestId === self.runtimeRequestId &&
                     appName ===
                         (self.state.apiData?.appDefinition.appName ||
                             self.props.match.params.appName)
                 ) {
                     self.setState({
                         appRuntime,
-                        runtimeRefreshFailed: false,
+                        runtimeDataStatus: RuntimeDataStatus.Ready,
                     })
                 }
             })
             .catch(function () {
                 if (
                     !self.willUnmountSoon &&
-                    requestId === self.runtimeRequestId &&
                     appName ===
                         (self.state.apiData?.appDefinition.appName ||
                             self.props.match.params.appName)
                 ) {
-                    self.setState({ runtimeRefreshFailed: true })
-                }
-            })
-            .then(function () {
-                self.runtimeRequestInProgress = false
-                if (
-                    !self.willUnmountSoon &&
-                    requestId === self.runtimeRequestId &&
-                    appName ===
-                        (self.state.apiData?.appDefinition.appName ||
-                            self.props.match.params.appName)
-                ) {
-                    self.setState({ isRuntimeLoading: false })
-                }
-
-                if (self.runtimeRefreshQueued && !self.willUnmountSoon) {
-                    self.runtimeRefreshQueued = false
-                    return self.refreshRuntime()
+                    self.setState({
+                        runtimeDataStatus: RuntimeDataStatus.Failed,
+                    })
                 }
             })
     }

@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import { CapRoverModels } from 'caprover-api'
 import { MemoryRouter } from 'react-router-dom'
+import { RuntimeDataStatus } from '../AppRuntimeStatus'
 import { SingleAppApiData, AppDetails } from './AppDetails'
 
 jest.mock('../../../utils/Language', () => ({
@@ -63,7 +64,7 @@ it("does not show a previous app's runtime beside a renamed app", () => {
         ...appDetails.state,
         apiData,
         isLoading: false,
-        isRuntimeLoading: true,
+        runtimeDataStatus: RuntimeDataStatus.Loading,
         appRuntime: {
             appName: 'old-app',
             status: CapRoverModels.AppRuntimeStatus.Running,

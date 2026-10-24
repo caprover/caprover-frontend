@@ -7,6 +7,7 @@ import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 import ErrorRetry from '../global/ErrorRetry'
 import { IAppDef } from './AppDefinition'
+import { RuntimeDataStatus } from './AppRuntimeStatus'
 import AppsTable from './AppsTable'
 import CreateNewApp from './CreateNewApp'
 
@@ -26,14 +27,10 @@ export default class Apps extends ApiComponent<
             | undefined
         showCreateAppForm: boolean
         appsRuntimeData: CapRoverModels.AppsRuntimeResponse | undefined
-        isRuntimeLoading: boolean
-        runtimeRefreshFailed: boolean
+        runtimeDataStatus: RuntimeDataStatus
     }
 > {
     private updateRuntimeInterval: any
-    private runtimeRequestId = 0
-    private runtimeRequestInProgress = false
-    private runtimeRefreshQueued = false
 
     constructor(props: any) {
         super(props)
@@ -42,8 +39,7 @@ export default class Apps extends ApiComponent<
             apiData: undefined,
             showCreateAppForm: false,
             appsRuntimeData: undefined,
-            isRuntimeLoading: true,
-            runtimeRefreshFailed: false,
+            runtimeDataStatus: RuntimeDataStatus.Loading,
         }
     }
 
@@ -164,11 +160,8 @@ export default class Apps extends ApiComponent<
                                     }
                                     apps={apiData.apps.appDefinitions}
                                     appsRuntimeData={self.state.appsRuntimeData}
-                                    isRuntimeLoading={
-                                        self.state.isRuntimeLoading
-                                    }
-                                    runtimeRefreshFailed={
-                                        self.state.runtimeRefreshFailed
+                                    runtimeDataStatus={
+                                        self.state.runtimeDataStatus
                                     }
                                     projects={apiData.projects}
                                     rootDomain={apiData.apps.rootDomain}
@@ -199,8 +192,6 @@ export default class Apps extends ApiComponent<
     componentWillUnmount() {
         // @ts-ignore
         if (super.componentWillUnmount) super.componentWillUnmount()
-        this.runtimeRequestId++
-        this.runtimeRefreshQueued = false
         if (this.updateRuntimeInterval) {
             clearInterval(this.updateRuntimeInterval)
         }
@@ -227,48 +218,25 @@ export default class Apps extends ApiComponent<
 
     refreshRuntime(): Promise<void> {
         const self = this
-        if (self.runtimeRequestInProgress) {
-            self.runtimeRefreshQueued = true
-            return Promise.resolve()
+        if (!self.state.appsRuntimeData) {
+            self.setState({ runtimeDataStatus: RuntimeDataStatus.Loading })
         }
-
-        self.runtimeRequestInProgress = true
-        const requestId = ++self.runtimeRequestId
-        self.setState({ isRuntimeLoading: !self.state.appsRuntimeData })
 
         return self.apiManager
             .getAppsRuntime()
             .then(function (appsRuntimeData) {
-                if (
-                    !self.willUnmountSoon &&
-                    requestId === self.runtimeRequestId
-                ) {
+                if (!self.willUnmountSoon) {
                     self.setState({
                         appsRuntimeData,
-                        runtimeRefreshFailed: false,
+                        runtimeDataStatus: RuntimeDataStatus.Ready,
                     })
                 }
             })
             .catch(function () {
-                if (
-                    !self.willUnmountSoon &&
-                    requestId === self.runtimeRequestId
-                ) {
-                    self.setState({ runtimeRefreshFailed: true })
-                }
-            })
-            .then(function () {
-                self.runtimeRequestInProgress = false
-                if (
-                    !self.willUnmountSoon &&
-                    requestId === self.runtimeRequestId
-                ) {
-                    self.setState({ isRuntimeLoading: false })
-                }
-
-                if (self.runtimeRefreshQueued && !self.willUnmountSoon) {
-                    self.runtimeRefreshQueued = false
-                    return self.refreshRuntime()
+                if (!self.willUnmountSoon) {
+                    self.setState({
+                        runtimeDataStatus: RuntimeDataStatus.Failed,
+                    })
                 }
             })
     }

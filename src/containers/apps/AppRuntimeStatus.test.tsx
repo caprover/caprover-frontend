@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { CapRoverModels } from 'caprover-api'
 import { MemoryRouter } from 'react-router-dom'
-import AppRuntimeStatus from './AppRuntimeStatus'
+import AppRuntimeStatus, { RuntimeDataStatus } from './AppRuntimeStatus'
 
 jest.mock('../../utils/Language', () => ({
     localize: (_key: string, message: string) => message,
@@ -68,8 +68,7 @@ function renderStatus(
             <AppRuntimeStatus
                 appName="website"
                 runtime={runtime}
-                isLoading={false}
-                refreshFailed={false}
+                runtimeDataStatus={RuntimeDataStatus.Ready}
                 isMobile={false}
                 {...overrides}
             />
@@ -230,7 +229,9 @@ it('shows bounded history from the app details response', () => {
 })
 
 it('preserves stale runtime data and labels a refresh failure', () => {
-    renderStatus(createRuntime(), { refreshFailed: true })
+    renderStatus(createRuntime(), {
+        runtimeDataStatus: RuntimeDataStatus.Failed,
+    })
 
     fireEvent.click(
         screen.getByRole('button', {
@@ -248,7 +249,7 @@ it('preserves stale runtime data and labels a refresh failure', () => {
 
 it('shows unavailable runtime data and links to app details', () => {
     renderStatus(undefined, {
-        refreshFailed: true,
+        runtimeDataStatus: RuntimeDataStatus.Failed,
         appDetailsPath: '/apps/details/website',
     })
 
@@ -267,7 +268,9 @@ it('shows unavailable runtime data and links to app details', () => {
 })
 
 it('renders nothing before the first runtime response', () => {
-    const { container } = renderStatus(undefined, { isLoading: true })
+    const { container } = renderStatus(undefined, {
+        runtimeDataStatus: RuntimeDataStatus.Loading,
+    })
 
     expect(container).toBeEmptyDOMElement()
 })

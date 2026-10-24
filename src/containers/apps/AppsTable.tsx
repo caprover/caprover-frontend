@@ -40,7 +40,7 @@ import Utils from '../../utils/Utils'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
 import { IAppDef } from './AppDefinition'
-import AppRuntimeStatus from './AppRuntimeStatus'
+import AppRuntimeStatus, { RuntimeDataStatus } from './AppRuntimeStatus'
 import onDeleteAppClicked from './DeleteAppConfirm'
 import DescriptionPanel from './DescriptionPanel'
 import EditableSpan from './EditableSpan'
@@ -60,8 +60,7 @@ class AppsTable extends Component<
         history: History
         apps: IAppDef[]
         appsRuntimeData: CapRoverModels.AppsRuntimeResponse | undefined
-        isRuntimeLoading: boolean
-        runtimeRefreshFailed: boolean
+        runtimeDataStatus: RuntimeDataStatus
         projects: ProjectDefinition[]
         apiManager: ApiManager
         onReloadRequested: () => void
@@ -116,8 +115,7 @@ class AppsTable extends Component<
                         <AppRuntimeStatus
                             appName={appName}
                             runtime={self.getAppRuntime(appName)}
-                            isLoading={self.props.isRuntimeLoading}
-                            refreshFailed={self.props.runtimeRefreshFailed}
+                            runtimeDataStatus={self.props.runtimeDataStatus}
                             appDetailsPath={self.appDetailPath(appName)}
                             isMobile={self.props.isMobile}
                         />
@@ -492,12 +490,8 @@ class AppsTable extends Component<
                                                 runtime={self.getAppRuntime(
                                                     appName
                                                 )}
-                                                isLoading={
-                                                    self.props.isRuntimeLoading
-                                                }
-                                                refreshFailed={
-                                                    self.props
-                                                        .runtimeRefreshFailed
+                                                runtimeDataStatus={
+                                                    self.props.runtimeDataStatus
                                                 }
                                                 appDetailsPath={self.appDetailPath(
                                                     appName
