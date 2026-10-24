@@ -17,7 +17,7 @@ import {
     Typography,
 } from 'antd'
 import { History } from 'history'
-import { Component, Fragment } from 'react'
+import { Component, createRef, Fragment, RefObject } from 'react'
 import ProjectSelector from '../../components/ProjectSelector'
 import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
@@ -42,8 +42,11 @@ export default class CreateNewApp extends Component<
         hasPersistency: boolean
     }
 > {
+    private createAppButton: RefObject<HTMLButtonElement>
+
     constructor(props: MyProps) {
         super(props)
+        this.createAppButton = createRef()
         this.state = {
             isModalOpen: false,
             hasPersistency: false,
@@ -129,122 +132,126 @@ export default class CreateNewApp extends Component<
         return (
             <Fragment>
                 <Dropdown autoFocus trigger={['click']} menu={{ items }}>
-                    <Button type="primary" icon={<PlusOutlined />}>
+                    <Button
+                        ref={self.createAppButton}
+                        type="primary"
+                        icon={<PlusOutlined />}
+                    >
                         {createAppText}
                     </Button>
                 </Dropdown>
-                {self.state.isModalOpen && (
-                    <Modal
-                        open
-                        title={createAppText}
-                        okText={createAppText}
-                        cancelText={localize('create_new_app.cancel', 'Cancel')}
-                        confirmLoading={self.props.isCreatingApp}
-                        okButtonProps={{
-                            htmlType: 'submit',
-                            form: 'create-app-form',
-                        }}
-                        cancelButtonProps={{
-                            disabled: self.props.isCreatingApp,
-                        }}
-                        closable={!self.props.isCreatingApp}
-                        maskClosable={!self.props.isCreatingApp}
-                        keyboard={!self.props.isCreatingApp}
-                        onCancel={() => {
-                            if (!self.props.isCreatingApp) {
-                                self.setState({ isModalOpen: false })
+                <Modal
+                    open={self.state.isModalOpen}
+                    destroyOnHidden
+                    afterClose={() => self.createAppButton.current?.focus()}
+                    title={createAppText}
+                    okText={createAppText}
+                    cancelText={localize('create_new_app.cancel', 'Cancel')}
+                    confirmLoading={self.props.isCreatingApp}
+                    okButtonProps={{
+                        htmlType: 'submit',
+                        form: 'create-app-form',
+                    }}
+                    cancelButtonProps={{
+                        disabled: self.props.isCreatingApp,
+                    }}
+                    closable={!self.props.isCreatingApp}
+                    maskClosable={!self.props.isCreatingApp}
+                    keyboard={!self.props.isCreatingApp}
+                    onCancel={() => {
+                        if (!self.props.isCreatingApp) {
+                            self.setState({ isModalOpen: false })
+                        }
+                    }}
+                >
+                    <Form
+                        id="create-app-form"
+                        layout="vertical"
+                        disabled={self.props.isCreatingApp}
+                        onSubmitCapture={(event) => {
+                            if (self.props.isCreatingApp) {
+                                event.preventDefault()
+                                event.stopPropagation()
                             }
                         }}
+                        onFinish={(values: { appName: string }) => {
+                            self.props.onCreateNewAppClicked(
+                                values.appName,
+                                self.state.selectedProjectId,
+                                self.state.hasPersistency
+                            )
+                        }}
                     >
-                        <Form
-                            id="create-app-form"
-                            layout="vertical"
-                            disabled={self.props.isCreatingApp}
-                            onSubmitCapture={(event) => {
-                                if (self.props.isCreatingApp) {
-                                    event.preventDefault()
-                                    event.stopPropagation()
-                                }
-                            }}
-                            onFinish={(values: { appName: string }) => {
-                                self.props.onCreateNewAppClicked(
-                                    values.appName,
-                                    self.state.selectedProjectId,
-                                    self.state.hasPersistency
-                                )
-                            }}
+                        <Form.Item
+                            name="appName"
+                            label={localize(
+                                'create_new_app.application_name',
+                                'Application Name'
+                            )}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: localize(
+                                        'create_new_app.name_required',
+                                        'Enter an application name.'
+                                    ),
+                                },
+                            ]}
                         >
-                            <Form.Item
-                                name="appName"
-                                label={localize(
-                                    'create_new_app.application_name',
-                                    'Application Name'
+                            <Input
+                                autoFocus
+                                placeholder={localize(
+                                    'create_new_app.placeholder',
+                                    'my-amazing-app'
                                 )}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: localize(
-                                            'create_new_app.name_required',
-                                            'Enter an application name.'
-                                        ),
-                                    },
-                                ]}
+                            />
+                        </Form.Item>
+                        {self.props.projects.length > 0 && (
+                            <Form.Item
+                                label={localize(
+                                    'apps.parent_project',
+                                    'Parent project'
+                                )}
                             >
-                                <Input
-                                    autoFocus
-                                    placeholder={localize(
-                                        'create_new_app.placeholder',
-                                        'my-amazing-app'
-                                    )}
+                                <ProjectSelector
+                                    allProjects={self.props.projects}
+                                    selectedProjectId={
+                                        self.state.selectedProjectId
+                                    }
+                                    onChange={(value: string) =>
+                                        self.setState({
+                                            selectedProjectId: value,
+                                        })
+                                    }
+                                    excludeProjectId={'NONE'}
                                 />
                             </Form.Item>
-                            {self.props.projects.length > 0 && (
-                                <Form.Item
-                                    label={localize(
-                                        'apps.parent_project',
-                                        'Parent project'
-                                    )}
-                                >
-                                    <ProjectSelector
-                                        allProjects={self.props.projects}
-                                        selectedProjectId={
-                                            self.state.selectedProjectId
-                                        }
-                                        onChange={(value: string) =>
-                                            self.setState({
-                                                selectedProjectId: value,
-                                            })
-                                        }
-                                        excludeProjectId={'NONE'}
-                                    />
-                                </Form.Item>
+                        )}
+                        <Checkbox
+                            checked={self.state.hasPersistency}
+                            onChange={(e) =>
+                                self.setState({
+                                    hasPersistency: e.target.checked,
+                                })
+                            }
+                        >
+                            {localize(
+                                'create_new_app.has_persistent_data',
+                                'Has Persistent Data'
                             )}
-                            <Checkbox
-                                checked={self.state.hasPersistency}
-                                onChange={(e) =>
-                                    self.setState({
-                                        hasPersistency: e.target.checked,
-                                    })
-                                }
-                            >
-                                {localize(
-                                    'create_new_app.has_persistent_data',
-                                    'Has Persistent Data'
+                        </Checkbox>
+                        <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
+                            <Tooltip
+                                title={localize(
+                                    'create_new_app.has_persistent_data_tooltip',
+                                    'Mostly used for databases, see docs for details.'
                                 )}
-                            </Checkbox>
-                            <NewTabLink url="https://caprover.com/docs/persistent-apps.html">
-                                <Tooltip
-                                    title={localize(
-                                        'create_new_app.has_persistent_data_tooltip',
-                                        'Mostly used for databases, see docs for details.'
-                                    )}
-                                >
-                                    <QuestionCircleFilled />
-                                </Tooltip>
-                            </NewTabLink>
-                        </Form>
-                    </Modal>
-                )}
+                            >
+                                <QuestionCircleFilled />
+                            </Tooltip>
+                        </NewTabLink>
+                    </Form>
+                </Modal>
             </Fragment>
         )
     }

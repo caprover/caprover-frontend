@@ -77,8 +77,8 @@ const openModal = async () => {
     return screen.findByRole('dialog')
 }
 
-const submitForm = (dialog: HTMLElement) => {
-    fireEvent.submit(dialog.querySelector('form') as HTMLFormElement)
+const clickCreateApp = (dialog: HTMLElement) => {
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Create App' }))
 }
 
 jest.setTimeout(15000)
@@ -145,7 +145,7 @@ it.each([
 it('requires a name and preserves backend validation for other names', async () => {
     const { registerNewApp } = await renderApps()
     const dialog = await openModal()
-    submitForm(dialog)
+    clickCreateApp(dialog)
     expect(
         await screen.findByText('Enter an application name.')
     ).toBeInTheDocument()
@@ -154,7 +154,7 @@ it('requires a name and preserves backend validation for other names', async () 
     fireEvent.change(within(dialog).getByLabelText('Application Name'), {
         target: { value: 'INVALID NAME' },
     })
-    submitForm(dialog)
+    clickCreateApp(dialog)
     await waitFor(() =>
         expect(Toaster.toastError).toHaveBeenCalledWith('Invalid app name')
     )
@@ -170,7 +170,7 @@ it('sends the default arguments, closes on success, and reloads the app list', a
     fireEvent.change(within(dialog).getByLabelText('Application Name'), {
         target: { value: 'my-amazing-app' },
     })
-    submitForm(dialog)
+    clickCreateApp(dialog)
     await waitFor(() =>
         expect(registerNewApp).toHaveBeenCalledWith(
             'my-amazing-app',
@@ -212,12 +212,12 @@ it('retains project and persistence on failure, blocks duplicate submits, and al
         target: { value: 'database' },
     })
     fireEvent.click(within(dialog).getByRole('checkbox'))
-    submitForm(dialog)
+    clickCreateApp(dialog)
     await waitFor(() => expect(registerNewApp).toHaveBeenCalledTimes(1))
     expect(
         within(dialog).getByRole('button', { name: 'Cancel' })
     ).toBeDisabled()
-    submitForm(dialog)
+    fireEvent.submit(dialog.querySelector('form') as HTMLFormElement)
     await act(async () => rejectRequest('Creation failed'))
     expect(registerNewApp).toHaveBeenCalledTimes(1)
     expect(Toaster.toastError).toHaveBeenCalledWith('Creation failed')
@@ -225,7 +225,7 @@ it('retains project and persistence on failure, blocks duplicate submits, and al
         'database'
     )
     expect(within(dialog).getByRole('checkbox')).toBeChecked()
-    submitForm(dialog)
+    clickCreateApp(dialog)
     await waitFor(() => expect(registerNewApp).toHaveBeenCalledTimes(2))
     expect(registerNewApp).toHaveBeenLastCalledWith(
         'database',
@@ -244,6 +244,9 @@ it('resets the fields after canceling and reopening', async () => {
     fireEvent.click(within(dialog).getByRole('checkbox'))
     fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
     expect(registerNewApp).not.toHaveBeenCalled()
+    await waitFor(() =>
+        expect(screen.getByRole('button', { name: /Create App/ })).toHaveFocus()
+    )
     dialog = await openModal()
     expect(within(dialog).getByLabelText('Application Name')).toHaveValue('')
     expect(within(dialog).getByRole('checkbox')).not.toBeChecked()
@@ -261,4 +264,15 @@ it('shows the empty state with projects and no applications on mobile', async ()
     ).toBeInTheDocument()
     const dialog = await openModal()
     expect(within(dialog).getByText('Parent project')).toBeInTheDocument()
+})
+
+it('restores focus to Create App after closing with Escape', async () => {
+    await renderApps()
+    const createApp = screen.getByRole('button', { name: /Create App/ })
+    const dialog = await openModal()
+    fireEvent.keyDown(dialog, { key: 'Escape', code: 'Escape', keyCode: 27 })
+    await waitFor(() =>
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    )
+    expect(createApp).toHaveFocus()
 })
