@@ -793,10 +793,6 @@ export class AppDetails extends ApiComponent<
             self.state.apiData?.appDefinition.appName ||
             self.props.match.params.appName
 
-        if (!self.state.appRuntime) {
-            self.setState({ runtimeDataStatus: RuntimeDataStatus.Loading })
-        }
-
         return self.apiManager
             .getAppRuntime(appName)
             .then(function (appRuntime) {
