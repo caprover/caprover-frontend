@@ -25,13 +25,15 @@ export default class Apps extends ApiComponent<
               }
             | undefined
         showCreateAppForm: boolean
-        runtimeData: CapRoverModels.AppsRuntimeResponse | undefined
+        appsRuntimeData: CapRoverModels.AppsRuntimeResponse | undefined
         isRuntimeLoading: boolean
         runtimeRefreshFailed: boolean
     }
 > {
     private updateRuntimeInterval: any
     private runtimeRequestId = 0
+    private runtimeRequestInProgress = false
+    private runtimeRefreshQueued = false
 
     constructor(props: any) {
         super(props)
@@ -39,7 +41,7 @@ export default class Apps extends ApiComponent<
             isLoading: true,
             apiData: undefined,
             showCreateAppForm: false,
-            runtimeData: undefined,
+            appsRuntimeData: undefined,
             isRuntimeLoading: true,
             runtimeRefreshFailed: false,
         }
@@ -161,7 +163,7 @@ export default class Apps extends ApiComponent<
                                         apiData.apps.defaultNginxConfig
                                     }
                                     apps={apiData.apps.appDefinitions}
-                                    runtimeData={self.state.runtimeData}
+                                    appsRuntimeData={self.state.appsRuntimeData}
                                     isRuntimeLoading={
                                         self.state.isRuntimeLoading
                                     }
@@ -198,6 +200,7 @@ export default class Apps extends ApiComponent<
         // @ts-ignore
         if (super.componentWillUnmount) super.componentWillUnmount()
         this.runtimeRequestId++
+        this.runtimeRefreshQueued = false
         if (this.updateRuntimeInterval) {
             clearInterval(this.updateRuntimeInterval)
         }
@@ -222,20 +225,26 @@ export default class Apps extends ApiComponent<
             })
     }
 
-    refreshRuntime() {
+    refreshRuntime(): Promise<void> {
         const self = this
+        if (self.runtimeRequestInProgress) {
+            self.runtimeRefreshQueued = true
+            return Promise.resolve()
+        }
+
+        self.runtimeRequestInProgress = true
         const requestId = ++self.runtimeRequestId
-        self.setState({ isRuntimeLoading: !self.state.runtimeData })
+        self.setState({ isRuntimeLoading: !self.state.appsRuntimeData })
 
         return self.apiManager
             .getAppsRuntime()
-            .then(function (runtimeData) {
+            .then(function (appsRuntimeData) {
                 if (
                     !self.willUnmountSoon &&
                     requestId === self.runtimeRequestId
                 ) {
                     self.setState({
-                        runtimeData,
+                        appsRuntimeData,
                         runtimeRefreshFailed: false,
                     })
                 }
@@ -249,11 +258,17 @@ export default class Apps extends ApiComponent<
                 }
             })
             .then(function () {
+                self.runtimeRequestInProgress = false
                 if (
                     !self.willUnmountSoon &&
                     requestId === self.runtimeRequestId
                 ) {
                     self.setState({ isRuntimeLoading: false })
+                }
+
+                if (self.runtimeRefreshQueued && !self.willUnmountSoon) {
+                    self.runtimeRefreshQueued = false
+                    return self.refreshRuntime()
                 }
             })
     }

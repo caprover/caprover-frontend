@@ -49,7 +49,6 @@ const ALL_APPS = 'ALL_APPS'
 const ROOT_APPS = 'ROOT_APPS'
 
 type TableData = IAppDef & { lastDeployTime: string }
-type RuntimeByAppName = { [appName: string]: CapRoverModels.AppRuntime }
 
 class LastSelectedKeyMemoryCache {
     static selectedKey = ALL_APPS
@@ -60,7 +59,7 @@ class AppsTable extends Component<
     {
         history: History
         apps: IAppDef[]
-        runtimeData: CapRoverModels.AppsRuntimeResponse | undefined
+        appsRuntimeData: CapRoverModels.AppsRuntimeResponse | undefined
         isRuntimeLoading: boolean
         runtimeRefreshFailed: boolean
         projects: ProjectDefinition[]
@@ -97,7 +96,13 @@ class AppsTable extends Component<
         return `/apps/details/${appName}`
     }
 
-    createColumns(runtimeByAppName: RuntimeByAppName) {
+    getAppRuntime(appName: string) {
+        return this.props.appsRuntimeData?.apps?.find(
+            (runtime) => runtime.appName === appName
+        )
+    }
+
+    createColumns() {
         const self = this
         const ALIGN: 'center' = 'center'
         const columns: ColumnProps<TableData>[] = [
@@ -110,7 +115,7 @@ class AppsTable extends Component<
                     <Space size={4}>
                         <AppRuntimeStatus
                             appName={appName}
-                            runtime={runtimeByAppName[appName]}
+                            runtime={self.getAppRuntime(appName)}
                             isLoading={self.props.isRuntimeLoading}
                             refreshFailed={self.props.runtimeRefreshFailed}
                             appDetailsPath={self.appDetailPath(appName)}
@@ -266,10 +271,6 @@ class AppsTable extends Component<
 
     render() {
         const self = this
-        const runtimeByAppName: RuntimeByAppName = {}
-        self.props.runtimeData?.apps?.forEach((runtime) => {
-            runtimeByAppName[runtime.appName] = runtime
-        })
 
         const appsToRender = self.props.apps
             .filter((app) => {
@@ -488,9 +489,9 @@ class AppsTable extends Component<
                                         <Space size={4}>
                                             <AppRuntimeStatus
                                                 appName={appName}
-                                                runtime={
-                                                    runtimeByAppName[appName]
-                                                }
+                                                runtime={self.getAppRuntime(
+                                                    appName
+                                                )}
                                                 isLoading={
                                                     self.props.isRuntimeLoading
                                                 }
@@ -588,9 +589,7 @@ class AppsTable extends Component<
                                     {self.createAppTableHeader()}
                                     <Table<TableData>
                                         rowKey="appName"
-                                        columns={self.createColumns(
-                                            runtimeByAppName
-                                        )}
+                                        columns={self.createColumns()}
                                         dataSource={appsToRender}
                                         pagination={false}
                                         size="middle"

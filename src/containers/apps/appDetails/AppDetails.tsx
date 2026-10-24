@@ -106,6 +106,8 @@ class AppDetails extends ApiComponent<
     private reRenderTriggered = false
     private updateRuntimeInterval: any
     private runtimeRequestId = 0
+    private runtimeRequestInProgress = false
+    private runtimeRefreshQueued = false
     private confirmedAppNameToDelete: string = ''
     private volumesToDelete: IHashMapGeneric<boolean> = {}
 
@@ -214,6 +216,10 @@ class AppDetails extends ApiComponent<
         }
 
         const appName = app.appName || ''
+        const appRuntime =
+            self.state.appRuntime?.appName === appName
+                ? self.state.appRuntime
+                : undefined
 
         const onEditClicked = () => {
             self.setState({
@@ -284,7 +290,7 @@ class AppDetails extends ApiComponent<
                     <Space size={4} align="center">
                         <AppRuntimeStatus
                             appName={appName}
-                            runtime={self.state.appRuntime}
+                            runtime={appRuntime}
                             isLoading={self.state.isRuntimeLoading}
                             refreshFailed={self.state.runtimeRefreshFailed}
                             isMobile={self.props.isMobile}
@@ -623,6 +629,8 @@ class AppDetails extends ApiComponent<
                             )
                             self.setState({
                                 apiData: newData,
+                                appRuntime: undefined,
+                                isRuntimeLoading: true,
                             })
 
                             setTimeout(() => {
@@ -734,6 +742,7 @@ class AppDetails extends ApiComponent<
         // @ts-ignore
         if (super.componentWillUnmount) super.componentWillUnmount()
         this.runtimeRequestId++
+        this.runtimeRefreshQueued = false
         if (this.updateRuntimeInterval) {
             clearInterval(this.updateRuntimeInterval)
         }
@@ -786,12 +795,19 @@ class AppDetails extends ApiComponent<
             })
     }
 
-    refreshRuntime() {
+    refreshRuntime(): Promise<void> {
         const self = this
-        const requestId = ++self.runtimeRequestId
         const appName =
             self.state.apiData?.appDefinition.appName ||
             self.props.match.params.appName
+
+        if (self.runtimeRequestInProgress) {
+            self.runtimeRefreshQueued = true
+            return Promise.resolve()
+        }
+
+        self.runtimeRequestInProgress = true
+        const requestId = ++self.runtimeRequestId
         self.setState({ isRuntimeLoading: !self.state.appRuntime })
 
         return self.apiManager
@@ -799,7 +815,10 @@ class AppDetails extends ApiComponent<
             .then(function (appRuntime) {
                 if (
                     !self.willUnmountSoon &&
-                    requestId === self.runtimeRequestId
+                    requestId === self.runtimeRequestId &&
+                    appName ===
+                        (self.state.apiData?.appDefinition.appName ||
+                            self.props.match.params.appName)
                 ) {
                     self.setState({
                         appRuntime,
@@ -810,17 +829,29 @@ class AppDetails extends ApiComponent<
             .catch(function () {
                 if (
                     !self.willUnmountSoon &&
-                    requestId === self.runtimeRequestId
+                    requestId === self.runtimeRequestId &&
+                    appName ===
+                        (self.state.apiData?.appDefinition.appName ||
+                            self.props.match.params.appName)
                 ) {
                     self.setState({ runtimeRefreshFailed: true })
                 }
             })
             .then(function () {
+                self.runtimeRequestInProgress = false
                 if (
                     !self.willUnmountSoon &&
-                    requestId === self.runtimeRequestId
+                    requestId === self.runtimeRequestId &&
+                    appName ===
+                        (self.state.apiData?.appDefinition.appName ||
+                            self.props.match.params.appName)
                 ) {
                     self.setState({ isRuntimeLoading: false })
+                }
+
+                if (self.runtimeRefreshQueued && !self.willUnmountSoon) {
+                    self.runtimeRefreshQueued = false
+                    return self.refreshRuntime()
                 }
             })
     }

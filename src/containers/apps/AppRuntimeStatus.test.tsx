@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { CapRoverModels } from 'caprover-api'
 import { MemoryRouter } from 'react-router-dom'
 import AppRuntimeStatus from './AppRuntimeStatus'
@@ -24,7 +24,7 @@ beforeAll(() => {
     })
 })
 
-const EMPTY_VALUE = JSON.parse('null') as never
+const nullValue = JSON.parse('null')
 
 const createTask = (
     state: CapRoverModels.TaskState = CapRoverModels.TaskState.Running
@@ -41,7 +41,7 @@ const createTask = (
     error:
         state === CapRoverModels.TaskState.Failed
             ? 'task: non-zero exit (1)'
-            : EMPTY_VALUE,
+            : nullValue,
     exitCode: state === CapRoverModels.TaskState.Failed ? 1 : 0,
 })
 
@@ -55,8 +55,8 @@ const createRuntime = (
         status === CapRoverModels.AppRuntimeStatus.Degraded ? 2 : 1,
     runningInstances: 1,
     currentTasks: [createTask()],
-    latestFailure: EMPTY_VALUE,
-    error: EMPTY_VALUE,
+    latestFailure: nullValue,
+    error: nullValue,
 })
 
 function renderStatus(
@@ -101,8 +101,8 @@ it('shows degraded tasks and the latest failure', () => {
         currentTasks: [
             createTask(),
             {
-                ...createTask(CapRoverModels.TaskState.Failed),
-                taskId: 'task-failed-2',
+                ...createTask(CapRoverModels.TaskState.Starting),
+                taskId: 'task-starting-2',
                 slot: 2,
             },
         ],
@@ -124,7 +124,87 @@ it('shows degraded tasks and the latest failure', () => {
     expect(screen.getByText('Needs attention')).toBeInTheDocument()
     expect(screen.getByText('Instance 2')).toBeInTheDocument()
     expect(screen.getByText('Latest failure')).toBeInTheDocument()
-    expect(screen.getAllByText(/task: non-zero exit/)).toHaveLength(2)
+    expect(screen.getByText('Starting')).toBeInTheDocument()
+    expect(screen.getByText(/task: non-zero exit/)).toBeInTheDocument()
+})
+
+it('describes the current transition before an older failure', async () => {
+    const runtime: CapRoverModels.AppRuntime = {
+        ...createRuntime(CapRoverModels.AppRuntimeStatus.Degraded),
+        currentTasks: [
+            createTask(),
+            {
+                ...createTask(CapRoverModels.TaskState.Starting),
+                taskId: 'task-starting-2',
+                slot: 2,
+            },
+        ],
+        latestFailure: {
+            taskId: 'old-failure',
+            occurredAt: new Date(Date.now() - 86400000).toISOString(),
+            error: 'old failure',
+        },
+    }
+    renderStatus(runtime)
+
+    fireEvent.mouseOver(
+        screen.getByRole('button', {
+            name: 'website, Needs attention, 1/2 running',
+        })
+    )
+
+    await waitFor(() => {
+        expect(screen.getByText(/Starting .* ago/)).toBeInTheDocument()
+    })
+    expect(screen.queryByText(/Latest failure:/)).not.toBeInTheDocument()
+})
+
+it('uses the node ID when a task has no node name', () => {
+    const runtime = createRuntime()
+    runtime.currentTasks = [
+        {
+            ...createTask(),
+            nodeName: nullValue,
+            nodeId: 'node-fallback-id',
+        },
+    ]
+    renderStatus(runtime)
+
+    fireEvent.click(
+        screen.getByRole('button', {
+            name: 'website, Healthy, 1/1 running',
+        })
+    )
+
+    expect(screen.getByText(/node-fallback-id/)).toBeInTheDocument()
+})
+
+it('marks every Docker transition state as processing', () => {
+    const transitionStates = [
+        CapRoverModels.TaskState.New,
+        CapRoverModels.TaskState.Allocated,
+        CapRoverModels.TaskState.Assigned,
+        CapRoverModels.TaskState.Accepted,
+    ]
+    const runtime: CapRoverModels.AppRuntime = {
+        ...createRuntime(CapRoverModels.AppRuntimeStatus.Degraded),
+        desiredInstances: transitionStates.length,
+        runningInstances: 0,
+        currentTasks: transitionStates.map((state, index) => ({
+            ...createTask(state),
+            taskId: `transition-${state}`,
+            slot: index + 1,
+        })),
+    }
+    renderStatus(runtime)
+
+    fireEvent.click(
+        screen.getByRole('button', {
+            name: 'website, Needs attention, 0/4 running',
+        })
+    )
+
+    expect(document.querySelectorAll('.ant-tag-processing')).toHaveLength(4)
 })
 
 it('shows bounded history from the app details response', () => {
