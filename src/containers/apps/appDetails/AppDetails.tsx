@@ -82,7 +82,7 @@ interface PropsInterface extends RouteComponentProps<any> {
     isMobile: boolean
 }
 
-class AppDetails extends ApiComponent<
+export class AppDetails extends ApiComponent<
     PropsInterface,
     {
         isLoading: boolean
