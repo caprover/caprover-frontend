@@ -287,9 +287,6 @@ body {
     gap: 8px;
     min-width: 0;
 }
-.app-identity > :first-child {
-    flex-shrink: 0;
-}
 .ant-table-cell .app-identity .app-name-link {
     display: block;
     overflow: hidden;
@@ -324,6 +321,14 @@ body {
     outline: 2px solid var(--ant-color-primary);
     outline-offset: 2px;
     border-radius: 2px;
+}
+.app-runtime-instances.ant-btn {
+    padding-inline: 6px;
+}
+.app-runtime-instances .ant-tag {
+    margin-inline-end: 0;
+    min-width: 22px;
+    text-align: center;
 }
 .app-tag.ant-tag {
     margin: 2px 0;

@@ -121,13 +121,6 @@ class AppsTable extends Component<
                 ellipsis: true,
                 render: (appName: string) => (
                     <div className="app-identity">
-                        <AppRuntimeStatus
-                            appName={appName}
-                            runtime={self.getAppRuntime(appName)}
-                            runtimeDataStatus={self.props.runtimeDataStatus}
-                            appDetailsPath={self.appDetailPath(appName)}
-                            isMobile={self.props.isMobile}
-                        />
                         <Link
                             className="app-name-link"
                             title={appName}
@@ -182,8 +175,22 @@ class AppsTable extends Component<
                 title: localize('apps_table.instances', 'Instances'),
                 dataIndex: 'instanceCount',
                 key: 'instanceCount',
-                width: 112,
-                align: 'right',
+                width: 88,
+                align: 'center',
+                render: (
+                    instanceCount: number,
+                    { appName = '' }: TableData
+                ) => (
+                    <AppRuntimeStatus
+                        appName={appName}
+                        runtime={self.getAppRuntime(appName)}
+                        runtimeDataStatus={self.props.runtimeDataStatus}
+                        appDetailsPath={self.appDetailPath(appName)}
+                        isMobile={self.props.isMobile}
+                        showInstances
+                        configuredInstances={instanceCount}
+                    />
+                ),
             },
             {
                 title: localize('apps_table.tags', 'Tags'),
@@ -563,19 +570,6 @@ class AppsTable extends Component<
                                     className="mobile-app-card"
                                     title={
                                         <div className="app-identity">
-                                            <AppRuntimeStatus
-                                                appName={appName}
-                                                runtime={self.getAppRuntime(
-                                                    appName
-                                                )}
-                                                runtimeDataStatus={
-                                                    self.props.runtimeDataStatus
-                                                }
-                                                appDetailsPath={self.appDetailPath(
-                                                    appName
-                                                )}
-                                                isMobile={self.props.isMobile}
-                                            />
                                             <Link
                                                 className="app-name-link"
                                                 title={appName}
@@ -625,7 +619,22 @@ class AppsTable extends Component<
                                             'apps_table.instance_count',
                                             'Instance Count'
                                         )}
-                                        : {instanceCount}
+                                        :{' '}
+                                        <AppRuntimeStatus
+                                            appName={appName}
+                                            runtime={self.getAppRuntime(
+                                                appName
+                                            )}
+                                            runtimeDataStatus={
+                                                self.props.runtimeDataStatus
+                                            }
+                                            appDetailsPath={self.appDetailPath(
+                                                appName
+                                            )}
+                                            isMobile={self.props.isMobile}
+                                            showInstances
+                                            configuredInstances={instanceCount}
+                                        />
                                     </p>
                                     <p>
                                         {localize(
