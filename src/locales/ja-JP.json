@@ -586,5 +586,11 @@
   "themes.edit_name": "テーマ名",
   "themes.head_embed": "<head>に要素を埋め込む",
   "themes.see_here": "詳細についてはこちらをご覧ください。",
-  "themes.theme_custom_help": "カスタムテーマを提供したり、<head> セクションに要素 (フォント、CSS、JSなど) を挿入したりすることで、CapRoverのテーマをカスタマイズできます。"
+  "themes.theme_custom_help": "カスタムテーマを提供したり、<head> セクションに要素 (フォント、CSS、JSなど) を挿入したりすることで、CapRoverのテーマをカスタマイズできます。",
+  "disk_usage.capacity_summary": "%s3：全容量 %s2 のうち %s1 が利用可能",
+  "disk_usage.alert_summary": "%s2 の%s1。空き容量 %s3（全容量の %s4%）。",
+  "app_runtime.running_duration": "稼働時間：%s1",
+  "app_runtime.past_duration": "%s2 前：%s1",
+  "overview.app_count": "アプリ %s1 件",
+  "overview.missing_runtime_count": "実行状態データを取得できないアプリ %s1 件"
 }
