@@ -5,6 +5,7 @@ import Logger from '../../utils/Logger'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
+import ClickableLink from '../global/ClickableLink'
 import ErrorRetry from '../global/ErrorRetry'
 import AddNode, { INodeToAdd } from './AddNode'
 
@@ -218,6 +219,20 @@ class CurrentNodes extends ApiComponent<
                         <Alert
                             type="warning"
                             showIcon={true}
+                            description={
+                                <ClickableLink
+                                    onLinkClicked={() =>
+                                        document
+                                            .getElementById('docker-registries')
+                                            ?.scrollIntoView()
+                                    }
+                                >
+                                    {localize(
+                                        'nodes.configure_registries',
+                                        'Configure Docker Registries'
+                                    )}
+                                </ClickableLink>
+                            }
                             message={localize(
                                 'nodes.no_default_push_registry',
                                 'You cannot add more nodes as no default push registry is set. To add more nodes and create a cluster, you first need to add a docker registry and set it as the default push registry.'

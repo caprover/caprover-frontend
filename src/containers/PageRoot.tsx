@@ -116,7 +116,7 @@ export class PageRoot extends ApiComponent<
             dashboard: localize('menu_item.dashboard', 'Dashboard'),
             apps: localize('menu_item.app', 'Apps'),
             monitoring: localize('menu_item.monitoring', 'Monitoring'),
-            cluster: localize('menu_item.cluster', 'Cluster'),
+            cluster: localize('menu_item.infrastructure', 'Infrastructure'),
             maintenance: localize('menu_item.maintenance', 'Maintenance'),
             settings: localize('menu_item.settings', 'Settings'),
         }

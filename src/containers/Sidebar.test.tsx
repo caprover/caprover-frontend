@@ -61,3 +61,15 @@ it('opens mobile navigation in a dismissible drawer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Close' }))
     expect(toggleSider).toHaveBeenCalledTimes(1)
 })
+
+it.each([false, true])(
+    'uses Administration and Infrastructure while retaining the cluster route (mobile: %s)',
+    (isMobile) => {
+        const { history } = renderSidebar(isMobile)
+        expect(screen.getByText('Administration')).toBeInTheDocument()
+        fireEvent.click(
+            screen.getByRole('menuitem', { name: 'Infrastructure' })
+        )
+        expect(history.push).toHaveBeenCalledWith('/cluster')
+    }
+)

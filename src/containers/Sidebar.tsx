@@ -75,11 +75,14 @@ const Sidebar: React.FC<SidebarProps> = ({
             type: 'group',
             label: compact
                 ? ''
-                : localize('navigation.infrastructure', 'Infrastructure'),
+                : localize('navigation.administration', 'Administration'),
             children: [
                 {
                     key: 'cluster',
-                    label: localize('menu_item.cluster', 'Cluster'),
+                    label: localize(
+                        'menu_item.infrastructure',
+                        'Infrastructure'
+                    ),
                     icon: <Server size={16} />,
                 },
                 {

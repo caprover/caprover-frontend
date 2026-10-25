@@ -528,5 +528,17 @@
     "themes.edit_name": "Theme name",
     "themes.head_embed": "Embed elements into <head>",
     "themes.see_here": "See here for details.",
-    "themes.theme_custom_help": "You can customize CapRover theme by providing custom theme and inject elements (font, CSS, JS, etc) into the <head> section."
+    "themes.theme_custom_help": "You can customize CapRover theme by providing custom theme and inject elements (font, CSS, JS, etc) into the <head> section.",
+    "navigation.administration": "Administration",
+    "menu_item.infrastructure": "Infrastructure",
+    "cluster.docker_registries": "Docker Registries",
+    "maintenance.caprover_updates": "CapRover Updates",
+    "maintenance.configuration_backup": "Configuration Backup",
+    "maintenance.docker_image_cleanup": "Docker Image Cleanup",
+    "maintenance.automatic_cleanup": "Automatic Cleanup",
+    "maintenance.manual_cleanup": "Manual Cleanup",
+    "monitoring.system_health": "System Health",
+    "monitoring.tools": "Monitoring Tools",
+    "monitoring.advanced_settings": "Advanced Settings",
+    "nodes.configure_registries": "Configure Docker Registries"
 }

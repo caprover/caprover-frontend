@@ -1,5 +1,5 @@
 import { PoweroffOutlined } from '@ant-design/icons'
-import { Button, Card, Col, Row, message } from 'antd'
+import { Button, Card, Col, Collapse, Row, message } from 'antd'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
 import { localize } from '../../utils/Language'
@@ -158,16 +158,33 @@ class GoAccessInfo extends ApiComponent<
                                         </span>
                                     </Button>
                                 </Row>
-                                <div style={{ height: 30 }} />
-                                <hr />
-                                <div style={{ height: 30 }} />
-                                <GoAccessSettingsForm
-                                    goAccessInfo={goAccessInfo}
-                                    saveSettings={(goAccessInfo) => {
-                                        self.onUpdateGoAccessClicked(
-                                            goAccessInfo
-                                        )
-                                    }}
+                                <Collapse
+                                    style={{ marginTop: 20 }}
+                                    items={[
+                                        {
+                                            key: 'settings',
+                                            label: localize(
+                                                'monitoring.advanced_settings',
+                                                'Advanced Settings'
+                                            ),
+                                            children: (
+                                                <div>
+                                                    <GoAccessSettingsForm
+                                                        goAccessInfo={
+                                                            goAccessInfo
+                                                        }
+                                                        saveSettings={(
+                                                            goAccessInfo
+                                                        ) => {
+                                                            self.onUpdateGoAccessClicked(
+                                                                goAccessInfo
+                                                            )
+                                                        }}
+                                                    />
+                                                </div>
+                                            ),
+                                        },
+                                    ]}
                                 />
                             </div>
                         </Card>

@@ -12,11 +12,11 @@ export default class Cluster extends Component {
                     <Col lg={{ span: 20 }} xs={{ span: 23 }}>
                         <Card
                             title={localize(
-                                'cluster.docker_registry_title',
-                                'Docker Registry Configuration'
+                                'cluster.nodes_section_title',
+                                'Nodes'
                             )}
                         >
-                            <DockerRegistries />
+                            <Nodes />
                         </Card>
                     </Col>
                 </Row>
@@ -24,12 +24,13 @@ export default class Cluster extends Component {
                 <Row justify="center">
                     <Col lg={{ span: 20 }} xs={{ span: 23 }}>
                         <Card
+                            id="docker-registries"
                             title={localize(
-                                'cluster.nodes_section_title',
-                                'Nodes'
+                                'cluster.docker_registries',
+                                'Docker Registries'
                             )}
                         >
-                            <Nodes />
+                            <DockerRegistries />
                         </Card>
                     </Col>
                 </Row>
