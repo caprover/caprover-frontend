@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { createMemoryHistory } from 'history'
 import { Router } from 'react-router-dom'
+import { SetupStatus } from '../models/SetupStatus'
 import StorageHelper from '../utils/StorageHelper'
 import Utils from '../utils/Utils'
-import { SetupStatus } from '../models/SetupStatus'
 import { PageRoot } from './PageRoot'
 
 jest.mock('../utils/Language', () => ({
@@ -24,6 +24,7 @@ jest.mock('../api/ApiManager', () => ({
     },
 }))
 jest.mock('./settings/Settings', () => () => <div>Settings page</div>)
+jest.mock('./maintenance/Maintenance', () => () => <div />)
 jest.mock('./apps/oneclick/variables/OneClickAppConfigPage', () => () => (
     <div />
 ))

@@ -1,5 +1,7 @@
 import { CloudDownloadOutlined } from '@ant-design/icons'
 import { Alert, Button, Row } from 'antd'
+import ReactMarkdown from 'react-markdown'
+import gfm from 'remark-gfm'
 import { IVersionInfo } from '../../models/IVersionInfo'
 import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
@@ -74,7 +76,7 @@ export default class CheckUpdate extends ApiComponent<
                 <p>
                     {localize(
                         'check_update.in_place_updates',
-                        'CapRover allows in-place updates to be installed. However, always read the change logs before updating your CapRover. There might be breaking changes that you need to be aware of. The update usually takes around 60 seconds and your CapRover may become unresponsive until the update process is finished. Your apps will stay functional and responsive during this time, except for a very short period of 10 seconds or less.'
+                        'Review the changelog before updating; releases may include breaking changes. An update usually takes about 60 seconds, during which the dashboard may be unavailable. Apps remain available, except for a brief interruption of up to 10 seconds.'
                     )}
                 </p>
                 <br />
@@ -99,15 +101,17 @@ export default class CheckUpdate extends ApiComponent<
                     {versionInfo.latestVersion}
                 </p>
                 <div>
-                    <p
+                    <div
                         className={
                             versionInfo.changeLogMessage
-                                ? 'pre-line-content'
+                                ? 'check-update-changelog'
                                 : 'hide-on-demand'
                         }
                     >
-                        {versionInfo.changeLogMessage}
-                    </p>
+                        <ReactMarkdown remarkPlugins={[gfm]}>
+                            {versionInfo.changeLogMessage || ''}
+                        </ReactMarkdown>
+                    </div>
                 </div>
                 <div className={versionInfo.canUpdate ? '' : 'hide-on-demand'}>
                     <Row justify="end">

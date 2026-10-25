@@ -766,6 +766,37 @@ hr {
     white-space: pre-wrap;
 }
 
+.check-update-changelog {
+    font-size: var(--ant-font-size-sm, 12px);
+    line-height: 1.5;
+}
+
+.check-update-changelog h1,
+.check-update-changelog h2,
+.check-update-changelog h3 {
+    line-height: 1.4;
+    margin-block: 0 8px;
+}
+
+.check-update-changelog h1 {
+    font-size: var(--ant-font-size-lg, 16px);
+}
+
+.check-update-changelog h2 {
+    font-size: var(--ant-font-size, 14px);
+}
+
+.check-update-changelog h3 {
+    font-size: var(--ant-font-size, 14px);
+}
+
+.check-update-changelog p,
+.check-update-changelog ul,
+.check-update-changelog ol,
+.check-update-changelog blockquote {
+    margin-block: 0 8px;
+}
+
 .slow-fadein-slow {
     animation: fadeIn 0.5s ease-in;
 }

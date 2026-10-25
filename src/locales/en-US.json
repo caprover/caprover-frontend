@@ -220,7 +220,7 @@
     "change_password.password_changed_successfully": "Password changed successfully!",
     "check_update.caprover_unresponsive": "Your CapRover dashboard is not functional during the update. Please wait until this page is refreshed automatically.",
     "check_update.current_version": "Current Version",
-    "check_update.in_place_updates": "CapRover allows in-place updates to be installed. However, always read the change logs before updating your CapRover. There might be breaking changes that you need to be aware of. The update usually takes around 60 seconds and your CapRover may become unresponsive until the update process is finished. Your apps will stay functional and responsive during this time, except for a very short period of 10 seconds or less.",
+    "check_update.in_place_updates": "Review the changelog before updating; releases may include breaking changes. An update usually takes about 60 seconds, during which the dashboard may be unavailable. Apps remain available, except for a brief interruption of up to 10 seconds.",
     "check_update.install_update": "Install Update",
     "check_update.latest_stable_version": "Latest Stable Version",
     "check_update.latest_version_message": "Your CapRover is the latest version.",
