@@ -76,6 +76,93 @@ function renderStatus(
     )
 }
 
+it('shows healthy instance counts as clickable tags', () => {
+    const runtime = {
+        ...createRuntime(),
+        runningInstances: 3,
+        desiredInstances: 3,
+    }
+    const { container } = renderStatus(runtime, { showInstances: true })
+
+    const countButton = screen.getByRole('button', {
+        name: 'website, Healthy, 3/3 running',
+    })
+    expect(countButton).toHaveTextContent('3')
+    expect(countButton.querySelector('.ant-tag-success')).toBeTruthy()
+    expect(container.querySelector('.ant-badge-status-dot')).toBeNull()
+
+    fireEvent.click(countButton)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(screen.getAllByText('3/3 running')).not.toHaveLength(0)
+})
+
+it('shows a red running/desired count when instances are missing', () => {
+    const runtime = {
+        ...createRuntime(CapRoverModels.AppRuntimeStatus.Degraded),
+        runningInstances: 1,
+        desiredInstances: 3,
+    }
+    renderStatus(runtime, { showInstances: true })
+
+    const countButton = screen.getByRole('button', {
+        name: 'website, Needs attention, 1/3 running',
+    })
+    expect(countButton).toHaveTextContent('1/3')
+    expect(countButton.querySelector('.ant-tag-error')).toBeTruthy()
+})
+
+it('shows zero for stopped apps and the actual count when overprovisioned', () => {
+    const stopped = {
+        ...createRuntime(CapRoverModels.AppRuntimeStatus.Stopped),
+        runningInstances: 0,
+        desiredInstances: 0,
+    }
+    const { rerender } = renderStatus(stopped, { showInstances: true })
+
+    const stoppedButton = screen.getByRole('button', {
+        name: 'website, Stopped, 0/0 running',
+    })
+    expect(stoppedButton).toHaveTextContent('0')
+    expect(stoppedButton.querySelector('.ant-tag-default')).toBeTruthy()
+
+    rerender(
+        <MemoryRouter>
+            <AppRuntimeStatus
+                appName="website"
+                runtime={{
+                    ...createRuntime(),
+                    runningInstances: 2,
+                    desiredInstances: 1,
+                }}
+                runtimeDataStatus={RuntimeDataStatus.Ready}
+                isMobile={false}
+                showInstances
+            />
+        </MemoryRouter>
+    )
+    const overprovisionedButton = screen.getByRole('button', {
+        name: 'website, Healthy, 2/1 running',
+    })
+    expect(overprovisionedButton).toHaveTextContent('2/1')
+    expect(overprovisionedButton.querySelector('.ant-tag-success')).toBeTruthy()
+})
+
+it('shows a neutral unknown count when runtime data is unavailable', () => {
+    renderStatus(undefined, {
+        runtimeDataStatus: RuntimeDataStatus.Failed,
+        showInstances: true,
+    })
+
+    const countButton = screen.getByRole('button', {
+        name: 'website, Runtime status unavailable',
+    })
+    expect(countButton).toHaveTextContent('–')
+    expect(countButton.querySelector('.ant-tag-default')).toBeTruthy()
+
+    fireEvent.click(countButton)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+})
+
 it('renders a quiet healthy indicator and opens current task details', () => {
     const runtime = createRuntime()
     const { container } = renderStatus(runtime)
