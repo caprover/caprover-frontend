@@ -592,5 +592,19 @@
   "app_runtime.running_duration": "قيد التشغيل لمدة %s1",
   "app_runtime.past_duration": "%s1 منذ %s2",
   "overview.app_count": "%s1 تطبيقات",
-  "overview.missing_runtime_count": "%s1 تطبيقات لا تتوفر لها بيانات حالة التشغيل"
+  "overview.missing_runtime_count": "%s1 تطبيقات لا تتوفر لها بيانات حالة التشغيل",
+  "app_runtime.state_running": "قيد التشغيل",
+  "app_runtime.state_failed": "فشل",
+  "app_runtime.state_rejected": "مرفوض",
+  "app_runtime.state_orphaned": "يتيم",
+  "app_runtime.state_starting": "جارٍ البدء",
+  "app_runtime.state_preparing": "جارٍ التجهيز",
+  "app_runtime.state_ready": "جاهز",
+  "app_runtime.state_pending": "قيد الانتظار",
+  "app_runtime.state_new": "جديد",
+  "app_runtime.state_allocated": "تم تخصيص الموارد",
+  "app_runtime.state_assigned": "تم التعيين",
+  "app_runtime.state_accepted": "مقبول",
+  "app_runtime.state_complete": "مكتمل",
+  "app_runtime.state_shutdown": "متوقف"
 }
