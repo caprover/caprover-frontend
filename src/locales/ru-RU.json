@@ -592,5 +592,19 @@
   "app_runtime.running_duration": "Работает уже %s1",
   "app_runtime.past_duration": "%s1 %s2 назад",
   "overview.app_count": "%s1 приложений",
-  "overview.missing_runtime_count": "%s1 приложений с недоступными данными о выполнении"
+  "overview.missing_runtime_count": "%s1 приложений с недоступными данными о выполнении",
+  "app_runtime.state_running": "Работает",
+  "app_runtime.state_failed": "Ошибка",
+  "app_runtime.state_rejected": "Отклонено",
+  "app_runtime.state_orphaned": "Осиротевшая",
+  "app_runtime.state_starting": "Запускается",
+  "app_runtime.state_preparing": "Подготавливается",
+  "app_runtime.state_ready": "Готово",
+  "app_runtime.state_pending": "Ожидает",
+  "app_runtime.state_new": "Новая",
+  "app_runtime.state_allocated": "Ресурсы выделены",
+  "app_runtime.state_assigned": "Назначена",
+  "app_runtime.state_accepted": "Принята",
+  "app_runtime.state_complete": "Завершена",
+  "app_runtime.state_shutdown": "Выключена"
 }
