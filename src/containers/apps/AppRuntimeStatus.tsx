@@ -23,6 +23,7 @@ interface AppRuntimeStatusProps {
     appDetailsPath?: string
     isMobile: boolean
     showInstances?: boolean
+    configuredInstances?: number
 }
 
 export enum RuntimeDataStatus {
@@ -480,6 +481,16 @@ export default class AppRuntimeStatus extends Component<
             this.props.runtimeDataStatus === RuntimeDataStatus.Loading &&
             !this.props.runtime
         ) {
+            if (
+                this.props.showInstances &&
+                this.props.configuredInstances !== undefined
+            ) {
+                return (
+                    <Tag color="default" style={{ marginInlineEnd: 0 }}>
+                        {this.props.configuredInstances}
+                    </Tag>
+                )
+            }
             return <></>
         }
 
