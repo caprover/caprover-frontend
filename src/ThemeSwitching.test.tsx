@@ -78,11 +78,11 @@ beforeEach(() => {
 })
 afterEach(() => jest.restoreAllMocks())
 
-it('loads the selected theme and cleans up only its own elements through A → B → A → Default', async () => {
+it('cleans up only its own elements through A → B → A → Default', async () => {
     const unrelated = document.createElement('style')
     document.head.appendChild(unrelated)
     const { unmount } = render(<App />)
-    await screen.findByRole('button', { name: 'Use A' })
+    fireEvent.click(await screen.findByRole('button', { name: 'Use A' }))
     await waitFor(() =>
         expect(document.documentElement).toHaveAttribute(
             'data-caprover-theme',

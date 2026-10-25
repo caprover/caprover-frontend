@@ -447,7 +447,7 @@ body {
     font-size: var(--ant-font-size, 14px);
     font-weight: var(--caprover-heading-weight, 550);
     margin: 0 0 8px;
-    letter-spacing: -0.02em;
+    letter-spacing: var(--caprover-heading-tracking, -0.02em);
 }
 .settings-control-row {
     align-items: center;
