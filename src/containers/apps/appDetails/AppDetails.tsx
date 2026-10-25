@@ -23,7 +23,7 @@ import {
 import classnames from 'classnames'
 import { CapRoverModels } from 'caprover-api'
 import { History } from 'history'
-import { RefObject } from 'react'
+import { Fragment, RefObject } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import ApiManager from '../../../api/ApiManager'
@@ -184,20 +184,19 @@ export class AppDetails extends ApiComponent<
                     }}
                 />
                 {projectsBreadCrumbs.map((project, index) => (
-                    <>
+                    <Fragment key={project.id}>
                         <span
                             style={{
                                 marginInlineStart: 5,
                                 marginInlineEnd: 5,
                             }}
-                            key={project.id}
                         >
                             {project.name}
                         </span>
                         {index < projectsBreadCrumbs.length - 1 && (
                             <CaretRightOutlined />
                         )}
-                    </>
+                    </Fragment>
                 ))}
             </div>
         )
@@ -247,7 +246,7 @@ export class AppDetails extends ApiComponent<
         ]
 
         return (
-            <div style={{ marginTop: 20, marginBottom: 10, width: '100%' }}>
+            <div className="app-details-heading">
                 <div
                     style={{
                         position: 'absolute',
@@ -321,7 +320,7 @@ export class AppDetails extends ApiComponent<
         if (!app.description) return <div />
 
         return (
-            <div style={{ marginTop: 28 }}>
+            <div className="app-details-description">
                 <Typography.Paragraph
                     style={{
                         fontSize: 14,
@@ -377,10 +376,13 @@ export class AppDetails extends ApiComponent<
         }
 
         return (
-            <Row>
+            <Row className="app-details-page">
                 {self.createEditAppModal()}
-                <Col span={20} offset={2}>
-                    <Card title={self.createAppHeader()}>
+                <Col span={24}>
+                    <Card
+                        className="app-details-card"
+                        title={self.createAppHeader()}
+                    >
                         {this.state.isLoading && (
                             <div
                                 style={{
@@ -458,7 +460,7 @@ export class AppDetails extends ApiComponent<
                                 },
                             ]}
                         ></Tabs>
-                        <div style={{ height: 70 }} />
+                        <div className="app-actions-spacer" />
 
                         <Affix
                             offsetBottom={10}
@@ -471,22 +473,17 @@ export class AppDetails extends ApiComponent<
                         >
                             <div
                                 className={classnames({
+                                    'app-details-actions': true,
                                     'hide-on-demand':
                                         self.state.activeTabKey ===
                                             DEPLOYMENT ||
                                         self.state.activeTabKey === LOGS,
                                     disabled: this.state.isLoading,
                                 })}
-                                style={{
-                                    borderRadius: 8,
-                                    background: 'rgba(51,73,90,0.9)',
-                                    paddingTop: 20,
-                                    paddingBottom: 20,
-                                }}
                             >
                                 <Row justify="center" gutter={20}>
                                     <Col span={8}>
-                                        <div style={{ textAlign: 'center' }}>
+                                        <div className="app-delete-action">
                                             <Button
                                                 style={{
                                                     minWidth: self.props
@@ -526,7 +523,7 @@ export class AppDetails extends ApiComponent<
                                         </div>
                                     </Col>
                                     <Col span={8}>
-                                        <div style={{ textAlign: 'center' }}>
+                                        <div className="app-save-action">
                                             <Button
                                                 style={{
                                                     minWidth: self.props

@@ -84,13 +84,8 @@ export default class Apps extends ApiComponent<
         }
 
         return (
-            <div className="slow-fadein-fast">
-                <div
-                    style={{
-                        padding: '0 20px',
-                        margin: '0 auto 50px',
-                    }}
-                >
+            <div className="slow-fadein-fast applications-page">
+                <div>
                     <Row justify="center">
                         <Col lg={{ span: 24 }}>
                             <AppsTable

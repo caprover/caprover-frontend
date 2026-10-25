@@ -11,6 +11,8 @@ import DarkModeContext from './contexts/DarkModeContext'
 import LanguageContext from './contexts/LanguageContext'
 import reducers from './redux/reducers'
 import './styles/style.css'
+import '@fontsource-variable/inter'
+import createModernTheme from './styles/theme/ModernTheme'
 import CapRoverTheme from './styles/theme/CapRoverTheme'
 import ThemeParser from './styles/theme/ThemeParser'
 import { ThemeProvider } from './styles/theme/ThemeProvider'
@@ -54,22 +56,7 @@ function App() {
     const [refreshCounter, setRefreshCounter] = useState(0)
     const [currentLang, setCurrentLang] = useState(getCurrentLanguageOption())
 
-    const defaultTheme = {
-        algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
-        components: {
-            Menu: {},
-            Layout: {
-                headerBg: '#161729',
-            },
-        },
-        token: {
-            colorPrimary: '#4f5bff',
-            colorLink: '#2672c9',
-            fontFamily: `'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-                'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
-                'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
-        },
-    }
+    const modernTheme = createModernTheme(isDarkMode)
 
     if (
         currTheme &&
@@ -95,7 +82,12 @@ function App() {
           )
         : undefined
 
-    const themeToUse: ThemeConfig = customTheme || defaultTheme
+    const themeToUse: ThemeConfig = customTheme
+        ? { ...customTheme, cssVar: { key: 'caprover' } }
+        : {
+              ...modernTheme,
+              algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
+          }
 
     if (!themeState) {
         themeState = 'LOADING'

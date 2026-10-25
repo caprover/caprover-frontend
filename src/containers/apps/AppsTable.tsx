@@ -1,7 +1,6 @@
 import {
     CaretRightOutlined,
     CheckOutlined,
-    CodeOutlined,
     DeleteOutlined,
     DisconnectOutlined,
     FolderAddOutlined,
@@ -15,17 +14,19 @@ import type { TreeDataNode, TreeProps } from 'antd'
 import {
     Button,
     Card,
+    Drawer,
     Empty,
     Input,
     Row,
     Space,
-    Splitter,
     Table,
     Tag,
     Tooltip,
     Tree,
+    TreeSelect,
 } from 'antd'
 import { CapRoverModels } from 'caprover-api'
+import { Search } from 'lucide-react'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component, Fragment, Key } from 'react'
@@ -36,7 +37,6 @@ import { IMobileComponent } from '../../models/ContainerProps'
 import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
 import Logger from '../../utils/Logger'
-import StorageHelper from '../../utils/StorageHelper'
 import Utils from '../../utils/Utils'
 import NewTabLink from '../global/NewTabLink'
 import Timestamp from '../global/Timestamp'
@@ -79,6 +79,7 @@ class AppsTable extends Component<
     },
     {
         searchTerm: string
+        showProjects: boolean
         isBulkEditMode: boolean
         checkedAppKeys: React.Key[]
         checkedProjectKeys: React.Key[]
@@ -90,6 +91,7 @@ class AppsTable extends Component<
         const urlsQuery = new URLSearchParams(props.search || '').get('q') || ''
         this.state = {
             searchTerm: urlsQuery,
+            showProjects: false,
             isBulkEditMode: false,
             checkedAppKeys: [],
             checkedProjectKeys: [],
@@ -112,12 +114,12 @@ class AppsTable extends Component<
         const ALIGN: 'center' = 'center'
         const columns: ColumnProps<TableData>[] = [
             {
-                title: localize('apps_table.app_name', 'App Name'),
+                title: localize('apps_table.application', 'Application'),
                 dataIndex: 'appName',
                 key: 'appName',
-                width: '25%',
+                width: '32%',
                 render: (appName: string) => (
-                    <Space size={4}>
+                    <Space size={10}>
                         <AppRuntimeStatus
                             appName={appName}
                             runtime={self.getAppRuntime(appName)}
@@ -125,7 +127,13 @@ class AppsTable extends Component<
                             appDetailsPath={self.appDetailPath(appName)}
                             isMobile={self.props.isMobile}
                         />
-                        <Link to={this.appDetailPath(appName)}>{appName}</Link>
+                        <Link
+                            className="app-name-link"
+                            title={appName}
+                            to={this.appDetailPath(appName)}
+                        >
+                            {appName}
+                        </Link>
                     </Space>
                 ),
                 sorter: (a, b) => {
@@ -136,10 +144,7 @@ class AppsTable extends Component<
                 sortDirections: ['descend', 'ascend'],
             },
             {
-                title: localize(
-                    'apps_table.persistent_data',
-                    'Persistent Data'
-                ),
+                title: localize('apps_table.storage', 'Storage'),
                 dataIndex: 'hasPersistentData',
                 width: '10%',
                 key: 'hasPersistentData',
@@ -157,7 +162,7 @@ class AppsTable extends Component<
                 },
             },
             {
-                title: localize('apps_table.instance_count', 'Instance Count'),
+                title: localize('apps_table.instances', 'Instances'),
                 dataIndex: 'instanceCount',
                 key: 'instanceCount',
                 width: '10%',
@@ -198,7 +203,7 @@ class AppsTable extends Component<
                 },
             },
             {
-                title: localize('apps_table.last_deployed', 'Last Deployed'),
+                title: localize('apps_table.deployed', 'Deployed'),
                 dataIndex: 'lastDeployTime',
                 key: 'lastDeployTime',
                 width: '20%',
@@ -341,6 +346,11 @@ class AppsTable extends Component<
 
         const searchAppInput = (
             <Input
+                prefix={<Search size={14} />}
+                aria-label={localize(
+                    'apps_table.search_input_placeholder',
+                    'Search by Name'
+                )}
                 placeholder={localize(
                     'apps_table.search_input_placeholder',
                     'Search by Name'
@@ -360,6 +370,7 @@ class AppsTable extends Component<
 
         return (
             <Card
+                className="apps-page"
                 extra={
                     <div
                         style={{
@@ -424,6 +435,11 @@ class AppsTable extends Component<
                         )}
                         <Button
                             type="text"
+                            aria-label={localize(
+                                'apps_table.bulk_edit',
+                                'Select apps and projects'
+                            )}
+                            aria-pressed={self.state.isBulkEditMode}
                             onClick={() => {
                                 const newState = !self.state.isBulkEditMode
                                 self.setState({
@@ -442,33 +458,61 @@ class AppsTable extends Component<
                     </div>
                 }
                 title={
-                    <div
-                        style={{
-                            paddingTop: 18,
-                            paddingBottom: 18,
-                        }}
-                    >
-                        <div>
-                            <div style={{ maxWidth: 250 }}>
-                                <CodeOutlined />
-                                <span
-                                    style={{
-                                        marginInlineEnd: 20,
-                                        marginInlineStart: 5,
-                                    }}
-                                >
-                                    {localize('apps_table.title', 'Your Apps')}
-                                </span>
-                                {!self.props.isMobile && searchAppInput}
-                            </div>
-                        </div>
-
-                        {self.props.isMobile && (
-                            <div style={{ marginTop: 8 }}>{searchAppInput}</div>
-                        )}
+                    <div className="page-heading">
+                        <h1>
+                            {localize('apps_table.title', 'Your Apps')}{' '}
+                            <span className="count-badge">
+                                {self.props.apps.length}
+                            </span>
+                        </h1>
+                        <p>
+                            {localize(
+                                'apps_table.subtitle',
+                                'Deploy, organize, and manage your applications.'
+                            )}
+                        </p>
                     </div>
                 }
             >
+                <div className="apps-toolbar">
+                    {searchAppInput}
+                    <TreeSelect
+                        className="project-filter"
+                        aria-label={localize(
+                            'apps_table.project_filter',
+                            'Filter by project'
+                        )}
+                        value={self.state.selectedProjectId}
+                        fieldNames={{ value: 'key' }}
+                        treeData={self.createProjectTreeData(
+                            self.props.projects
+                        )}
+                        treeDefaultExpandAll
+                        onChange={(value: string) => {
+                            self.setState({ selectedProjectId: value })
+                            LastSelectedKeyMemoryCache.selectedKey = value
+                        }}
+                    />
+                    <Button
+                        icon={<FolderOpenOutlined />}
+                        onClick={() => self.setState({ showProjects: true })}
+                    >
+                        {localize('apps.delete_app_projects_list', 'Projects')}
+                    </Button>
+                </div>
+                <Drawer
+                    title={localize(
+                        'apps.delete_app_projects_list',
+                        'Projects'
+                    )}
+                    open={self.state.showProjects}
+                    onClose={() => self.setState({ showProjects: false })}
+                    width={360}
+                >
+                    {self.createProjectTreeView()}
+                </Drawer>
+                {self.state.selectedProjectId !== ALL_APPS &&
+                    self.createAppTableHeader()}
                 <Row justify="center">
                     {self.props.apps.length === 0 &&
                     (self.props.isMobile ||
@@ -490,9 +534,9 @@ class AppsTable extends Component<
                                 hasDefaultSubDomainSsl,
                             }) => (
                                 <Card
-                                    type="inner"
+                                    className="mobile-app-card"
                                     title={
-                                        <Space size={4}>
+                                        <Space size={10}>
                                             <AppRuntimeStatus
                                                 appName={appName}
                                                 runtime={self.getAppRuntime(
@@ -506,7 +550,13 @@ class AppsTable extends Component<
                                                 )}
                                                 isMobile={self.props.isMobile}
                                             />
-                                            <span>{appName}</span>
+                                            <Link
+                                                className="app-name-link"
+                                                title={appName}
+                                                to={self.appDetailPath(appName)}
+                                            >
+                                                {appName}
+                                            </Link>
                                         </Space>
                                     }
                                     key={appName}
@@ -521,7 +571,11 @@ class AppsTable extends Component<
                                     }}
                                 >
                                     <p>
-                                        Persistent Data:{' '}
+                                        {localize(
+                                            'apps_table.persistent_data',
+                                            'Persistent Data'
+                                        )}
+                                        :{' '}
                                         {!hasPersistentData ? undefined : (
                                             <span>
                                                 <CheckOutlined />
@@ -529,16 +583,30 @@ class AppsTable extends Component<
                                         )}
                                     </p>
                                     <p>
-                                        Exposed Webapp:{' '}
+                                        {localize(
+                                            'apps_table.exposed_webapp',
+                                            'Exposed Webapp'
+                                        )}
+                                        :{' '}
                                         {!!notExposeAsWebApp ? undefined : (
                                             <span>
                                                 <CheckOutlined />
                                             </span>
                                         )}
                                     </p>
-                                    <p>Instance Count: {instanceCount}</p>
                                     <p>
-                                        Open in Browser:{' '}
+                                        {localize(
+                                            'apps_table.instance_count',
+                                            'Instance Count'
+                                        )}
+                                        : {instanceCount}
+                                    </p>
+                                    <p>
+                                        {localize(
+                                            'apps_table.open_in_browser',
+                                            'Open in Browser'
+                                        )}
+                                        :{' '}
                                         {!!notExposeAsWebApp ? undefined : (
                                             <NewTabLink
                                                 url={`http${
@@ -562,74 +630,41 @@ class AppsTable extends Component<
                                 width: '100%',
                             }}
                         >
-                            <Splitter
-                                onResizeEnd={(numbers) => {
-                                    const initialPercent =
-                                        numbers[0] / (numbers[0] + numbers[1])
-                                    StorageHelper.setAppProjectSplitRatioInLocalStorage(
-                                        initialPercent
-                                    )
+                            <Table<TableData>
+                                rowKey="appName"
+                                columns={self.createColumns()}
+                                dataSource={appsToRender}
+                                pagination={false}
+                                scroll={{ x: 760 }}
+                                size="middle"
+                                rowSelection={
+                                    self.state.isBulkEditMode
+                                        ? {
+                                              selectedRowKeys:
+                                                  self.state.checkedAppKeys,
+                                              onChange: (
+                                                  newSelectedRowKeys: React.Key[]
+                                              ) => {
+                                                  self.setState({
+                                                      checkedAppKeys:
+                                                          newSelectedRowKeys,
+                                                  })
+                                              },
+                                          }
+                                        : undefined
+                                }
+                                onChange={(pagination, filters, sorter) => {
+                                    // Persist sorter state
+                                    if (!Array.isArray(sorter)) {
+                                        window.localStorage.appsSortKey =
+                                            sorter.columnKey
+                                        window.localStorage.appsSortOrder =
+                                            sorter.order
+                                    }
                                 }}
-                                style={{
-                                    marginBottom: 16,
-                                }}
-                            >
-                                <Splitter.Panel
-                                    style={{ marginInlineEnd: 10 }}
-                                    defaultSize={`${Math.floor(
-                                        StorageHelper.getAppProjectSplitRatioFromLocalStorage() *
-                                            100
-                                    )}%`}
-                                    min="10%"
-                                    max="60%"
-                                >
-                                    {self.createProjectTreeView()}
-                                </Splitter.Panel>
-                                <Splitter.Panel
-                                    style={{ marginInlineStart: 10 }}
-                                >
-                                    {self.createAppTableHeader()}
-                                    <Table<TableData>
-                                        rowKey="appName"
-                                        columns={self.createColumns()}
-                                        dataSource={appsToRender}
-                                        pagination={false}
-                                        size="middle"
-                                        rowSelection={
-                                            self.state.isBulkEditMode
-                                                ? {
-                                                      selectedRowKeys:
-                                                          self.state
-                                                              .checkedAppKeys,
-                                                      onChange: (
-                                                          newSelectedRowKeys: React.Key[]
-                                                      ) => {
-                                                          self.setState({
-                                                              checkedAppKeys:
-                                                                  newSelectedRowKeys,
-                                                          })
-                                                      },
-                                                  }
-                                                : undefined
-                                        }
-                                        onChange={(
-                                            pagination,
-                                            filters,
-                                            sorter
-                                        ) => {
-                                            // Persist sorter state
-                                            if (!Array.isArray(sorter)) {
-                                                window.localStorage.appsSortKey =
-                                                    sorter.columnKey
-                                                window.localStorage.appsSortOrder =
-                                                    sorter.order
-                                            }
-                                        }}
-                                    />
+                            />
 
-                                    {self.createDescriptionPanel()}
-                                </Splitter.Panel>
-                            </Splitter>
+                            {self.createDescriptionPanel()}
                         </div>
                     )}
                 </Row>
@@ -784,7 +819,7 @@ class AppsTable extends Component<
 
         root = [
             {
-                title: '<view all>',
+                title: localize('apps_table.all_projects', 'All projects'),
                 key: ALL_APPS,
                 children: undefined,
                 checkable: false,
@@ -858,15 +893,8 @@ class AppsTable extends Component<
         }
 
         return (
-            <Card style={{ height: '100%' }}>
-                <Row
-                    justify={'space-between'}
-                    align={'middle'}
-                    style={{
-                        marginInlineStart: -18,
-                        marginTop: -10,
-                    }}
-                >
+            <div className="project-manager">
+                <Row justify={'space-between'} align={'middle'}>
                     <h4 style={{ margin: 0 }}>
                         {localize('apps.delete_app_projects_list', 'Projects')}
                     </h4>
@@ -879,6 +907,10 @@ class AppsTable extends Component<
                         <Button
                             type="default"
                             shape="circle"
+                            aria-label={localize(
+                                'projects.new_project',
+                                'Create a New Project'
+                            )}
                             onClick={() => {
                                 self.props.history.push('/apps/projects/new')
                             }}
@@ -887,16 +919,9 @@ class AppsTable extends Component<
                         </Button>
                     </Tooltip>
                 </Row>
-                <hr
-                    style={{
-                        marginInlineStart: -18,
-                        marginBottom: 20,
-                        marginInlineEnd: 0,
-                    }}
-                />
+                <div className="section-divider" />
                 <Tree.DirectoryTree
-                    style={{ marginInlineStart: -22, position: 'absolute' }}
-                    showLine
+                    blockNode
                     checkStrictly={true}
                     showIcon={false}
                     checkable={!!self.state.isBulkEditMode}
@@ -931,7 +956,7 @@ class AppsTable extends Component<
                         return <span>{title}</span>
                     }}
                 />
-            </Card>
+            </div>
         )
     }
 }

@@ -47,6 +47,14 @@ Your app is ready to be deployed!
 
 ## Theming
 
+The default appearance uses locally bundled Inter, compact Ant Design tokens in
+`src/styles/theme/ModernTheme.ts`, and shared layouts in `src/styles/style.css`.
+Custom themes continue to provide their own tokens. CSS variable mode stays
+enabled so shared layouts can use semantic colors such as `--ant-color-text`,
+`--ant-color-bg-container`, and `--ant-color-border-secondary` in both modes.
+Keep page structure and responsive behavior in the frontend; theme definitions
+should control appearance without depending on nested component markup.
+
 CapRover's fronted supports dark and light modes. It is based on `antd` colour schemes. Therefore, all used `antd` components within the project support both modes by default. However if we implement a custom component or want to change some global colors some steps needs to be considered.
 
 ### Implement Dark Mode in custom component

@@ -132,6 +132,17 @@ it.each([false, true])(
     }
 )
 
+it('keeps project management accessible from the compact toolbar', async () => {
+    const { history } = await renderApps(projects)
+    fireEvent.click(screen.getByRole('button', { name: /Projects/ }))
+    const drawer = await screen.findByRole('dialog')
+    expect(within(drawer).getByText('Production')).toBeInTheDocument()
+    fireEvent.click(
+        within(drawer).getByRole('button', { name: 'Create a New Project' })
+    )
+    expect(history.location.pathname).toBe('/apps/projects/new')
+})
+
 it.each([
     ['One-Click App', '/apps/oneclick'],
     ['Docker Compose', '/apps/dockercompose'],

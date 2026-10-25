@@ -1,7 +1,8 @@
-import { SunFilled, SunOutlined } from '@ant-design/icons'
+import { Moon, Sun } from 'lucide-react'
 import { Button } from 'antd'
 import { useContext } from 'react'
 import DarkModeContext from '../../contexts/DarkModeContext'
+import { localize } from '../../utils/Language'
 
 const DarkModeSwitch = () => {
     const { isDarkMode, setIsDarkMode } = useContext(DarkModeContext)
@@ -11,8 +12,12 @@ const DarkModeSwitch = () => {
             onClick={() => {
                 setIsDarkMode(!isDarkMode)
             }}
-            shape="circle"
-            icon={isDarkMode ? <SunOutlined /> : <SunFilled />}
+            type="text"
+            aria-label={localize(
+                'appearance.toggle_color_mode',
+                'Toggle color mode'
+            )}
+            icon={isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
         />
     )
 }

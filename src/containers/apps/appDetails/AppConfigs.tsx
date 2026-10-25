@@ -688,7 +688,7 @@ export default class AppConfigs extends Component<
                         </div>
                     </Col>
                 </Row>
-                <div style={{ height: 50 }} />
+                <div className="form-section-gap" />
                 <Row>
                     <Col span={24}>
                         <h4>
@@ -719,7 +719,7 @@ export default class AppConfigs extends Component<
                         />
                     </Col>
                 </Row>
-                <div style={{ height: 30 }} />
+                <div className="form-section-gap" />
                 <Row>
                     <Col span={24}>
                         <h4>
@@ -758,7 +758,7 @@ export default class AppConfigs extends Component<
                     </Col>
                 </Row>
 
-                <div style={{ height: 30 }} />
+                <div className="form-section-gap" />
                 <h4>
                     {localize('apps.app_config_tags', 'Service Tags')}
                     &nbsp;

@@ -1,27 +1,43 @@
 import {
-    ClusterOutlined,
-    CodeOutlined,
-    ControlOutlined,
-    DashboardOutlined,
-    LaptopOutlined,
-    LogoutOutlined,
-    SettingOutlined,
-} from '@ant-design/icons'
-import { Layout, Menu, MenuProps } from 'antd'
-import React, { useContext } from 'react'
+    Button,
+    Drawer,
+    Dropdown,
+    Layout,
+    Menu,
+    MenuProps,
+    Modal,
+    Tooltip,
+} from 'antd'
+import {
+    Activity,
+    BookOpen,
+    Boxes,
+    ChevronDown,
+    ExternalLink,
+    Github,
+    Globe,
+    HelpCircle,
+    LayoutDashboard,
+    LogOut,
+    Server,
+    Settings,
+    Wrench,
+} from 'lucide-react'
+import React, { useContext, useState } from 'react'
 import CapRoverThemeContext from '../contexts/CapRoverThemeContext'
+import LanguageContext from '../contexts/LanguageContext'
 import ThemeParser from '../styles/theme/ThemeParser'
 import { localize } from '../utils/Language'
-
-const { Sider } = Layout
+import DarkModeSwitch from './global/DarkModeSwitch'
+import LanguageSelector from './global/LanguageSelector'
 
 interface SidebarProps {
     isMobile: boolean
     collapsed: boolean
     toggleSider: () => void
     onLogoutClicked: () => void
-    location: any
-    history: any
+    location: { pathname: string }
+    history: { push: (path: string) => void }
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -33,81 +49,211 @@ const Sidebar: React.FC<SidebarProps> = ({
     history,
 }) => {
     const { currentTheme } = useContext(CapRoverThemeContext)
-
-    let siderTheme = (ThemeParser.parseExtra(currentTheme)?.siderTheme ||
-        'light') as 'light' | 'dark'
-
-    const MENU_ITEMS: MenuProps['items'] = [
+    const { currentLanguage } = useContext(LanguageContext)
+    const [showLanguageSelector, setShowLanguageSelector] = useState(false)
+    const siderTheme =
+        ThemeParser.parseExtra(currentTheme)?.siderTheme === 'dark'
+            ? 'dark'
+            : 'light'
+    const compact = collapsed && !isMobile
+    const items: MenuProps['items'] = [
         {
             key: 'dashboard',
             label: localize('menu_item.dashboard', 'Dashboard'),
-            icon: <LaptopOutlined />,
+            icon: <LayoutDashboard size={16} />,
         },
         {
             key: 'apps',
             label: localize('menu_item.app', 'Apps'),
-            icon: <CodeOutlined />,
+            icon: <Boxes size={16} />,
         },
         {
             key: 'monitoring',
             label: localize('menu_item.monitoring', 'Monitoring'),
-            icon: <DashboardOutlined />,
+            icon: <Activity size={16} />,
         },
         {
-            key: 'cluster',
-            label: localize('menu_item.cluster', 'Cluster'),
-            icon: <ClusterOutlined />,
-        },
-        {
-            key: 'maintenance',
-            label: localize('menu_item.maintenance', 'Maintenance'),
-            icon: <ControlOutlined />,
-        },
-        {
-            key: 'settings',
-            label: localize('menu_item.settings', 'Settings'),
-            icon: <SettingOutlined />,
+            type: 'group',
+            label: compact
+                ? ''
+                : localize('navigation.infrastructure', 'Infrastructure'),
+            children: [
+                {
+                    key: 'cluster',
+                    label: localize('menu_item.cluster', 'Cluster'),
+                    icon: <Server size={16} />,
+                },
+                {
+                    key: 'maintenance',
+                    label: localize('menu_item.maintenance', 'Maintenance'),
+                    icon: <Wrench size={16} />,
+                },
+                {
+                    key: 'settings',
+                    label: localize('menu_item.settings', 'Settings'),
+                    icon: <Settings size={16} />,
+                },
+            ],
         },
     ]
-
-    const LOGOUT = 'logout'
-
-    if (isMobile) {
-        MENU_ITEMS.push({
-            key: LOGOUT,
-            label: localize('page_root.logout', 'Logout'),
-            icon: <LogoutOutlined />,
-        })
-    }
-
-    return (
-        <Sider
-            breakpoint="lg"
-            theme={siderTheme}
-            trigger={isMobile && undefined}
-            collapsible
-            collapsed={collapsed}
-            width={200}
-            collapsedWidth={isMobile ? 0 : 80}
-            style={{ zIndex: 2 }}
-            onCollapse={toggleSider}
-        >
+    const navigation = (
+        <div className="sidebar-content">
+            <a
+                className="sidebar-brand"
+                href="#/dashboard/"
+                aria-label="CapRover"
+            >
+                <img src="/icon-512x512.png" alt="" />
+                {!compact && (
+                    <span>
+                        CapRover
+                        <span className="sidebar-caption">
+                            {localize('navigation.workspace', 'Workspace')}
+                        </span>
+                    </span>
+                )}
+            </a>
+            {!compact && (
+                <div className="sidebar-section-label">
+                    {localize('navigation.platform', 'Platform')}
+                </div>
+            )}
             <Menu
-                selectedKeys={[location.pathname.substring(1)]}
+                selectedKeys={[location.pathname.split('/')[1]]}
                 theme={siderTheme}
                 mode="inline"
-                defaultSelectedKeys={['dashboard']}
-                style={{ height: '100%', borderRight: 0 }}
-                items={MENU_ITEMS}
-                onClick={(e) => {
-                    if (e.key === LOGOUT) {
-                        onLogoutClicked()
-                    } else {
-                        history.push(`/${e.key}`)
-                    }
-                }}
-            ></Menu>
-        </Sider>
+                inlineCollapsed={compact}
+                items={items}
+                onClick={(e) => history.push('/' + e.key)}
+            />
+            <div className="sidebar-footer">
+                <div className="sidebar-tools">
+                    <Tooltip
+                        title={localize('navigation.language', 'Language')}
+                    >
+                        <Button
+                            type="text"
+                            icon={<Globe size={16} />}
+                            aria-label={localize(
+                                'navigation.language',
+                                'Language'
+                            )}
+                            onClick={() => setShowLanguageSelector(true)}
+                        />
+                    </Tooltip>
+                    <DarkModeSwitch />
+                    <Dropdown
+                        trigger={['click']}
+                        menu={{
+                            items: [
+                                {
+                                    key: 'docs',
+                                    icon: <BookOpen size={14} />,
+                                    label: (
+                                        <a
+                                            href="https://caprover.com"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            {localize(
+                                                'page_root.docs_link',
+                                                'Docs'
+                                            )}{' '}
+                                            <ExternalLink size={12} />
+                                        </a>
+                                    ),
+                                },
+                                {
+                                    key: 'github',
+                                    icon: <Github size={14} />,
+                                    label: (
+                                        <a
+                                            href="https://github.com/caprover/caprover"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            GitHub <ExternalLink size={12} />
+                                        </a>
+                                    ),
+                                },
+                            ],
+                        }}
+                    >
+                        <Button
+                            type="text"
+                            icon={<HelpCircle size={16} />}
+                            aria-label={localize('navigation.help', 'Help')}
+                        />
+                    </Dropdown>
+                </div>
+                <Dropdown
+                    trigger={['click']}
+                    menu={{
+                        items: [
+                            {
+                                key: 'logout',
+                                icon: <LogOut size={14} />,
+                                label: localize('page_root.logout', 'Logout'),
+                                onClick: onLogoutClicked,
+                            },
+                        ],
+                    }}
+                >
+                    <Button
+                        className="sidebar-account"
+                        type="text"
+                        icon={<Server size={16} />}
+                    >
+                        {!compact && (
+                            <>
+                                <span>
+                                    {localize(
+                                        'navigation.administrator',
+                                        'Administrator'
+                                    )}
+                                </span>
+                                <ChevronDown size={14} />
+                            </>
+                        )}
+                    </Button>
+                </Dropdown>
+            </div>
+        </div>
+    )
+    return (
+        <>
+            {isMobile ? (
+                <Drawer
+                    className="navigation-drawer"
+                    placement={currentLanguage.rtl ? 'right' : 'left'}
+                    width={248}
+                    open={!collapsed}
+                    onClose={toggleSider}
+                    title={localize('navigation.title', 'Navigation')}
+                >
+                    {navigation}
+                </Drawer>
+            ) : (
+                <Layout.Sider
+                    className="app-sidebar"
+                    theme={siderTheme}
+                    width={232}
+                    collapsedWidth={64}
+                    collapsed={collapsed}
+                >
+                    {navigation}
+                </Layout.Sider>
+            )}
+            <Modal
+                title={localize('navigation.language', 'Language')}
+                open={showLanguageSelector}
+                onCancel={() => setShowLanguageSelector(false)}
+                footer={<div />}
+                width={320}
+            >
+                <LanguageSelector />
+            </Modal>
+        </>
     )
 }
 

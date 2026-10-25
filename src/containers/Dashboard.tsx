@@ -1,4 +1,5 @@
 import { Button, Card, Col, Input, Modal, Row, Tooltip } from 'antd'
+import { ArrowUpRight, Globe, LockKeyhole, ShieldCheck } from 'lucide-react'
 import { Redirect, RouteComponentProps } from 'react-router'
 import { Fragment } from 'react/jsx-runtime'
 import AppConstants from '../utils/AppConstants'
@@ -324,11 +325,86 @@ export default class Dashboard extends ApiComponent<
         }
 
         return (
-            <div>
+            <div className="dashboard-page">
+                <div className="page-heading">
+                    <h1>{localize('dashboard.overview', 'Overview')}</h1>
+                    <p>
+                        {localize(
+                            'dashboard.overview_subtitle',
+                            'Your deployment platform at a glance.'
+                        )}
+                    </p>
+                </div>
+                <div className="overview-grid">
+                    <Card>
+                        <div className="metric-heading">
+                            <span>
+                                {localize(
+                                    'dashboard.root_domain',
+                                    'Root domain'
+                                )}
+                            </span>
+                            <Globe size={16} />
+                        </div>
+                        <div className="overview-value">
+                            {self.state.apiData.rootDomain ||
+                                localize(
+                                    'dashboard.not_configured',
+                                    'Not configured'
+                                )}
+                        </div>
+                        <div className="overview-caption">
+                            {localize(
+                                'dashboard.root_domain_hint',
+                                'Default domain for your applications'
+                            )}
+                        </div>
+                    </Card>
+                    <Card>
+                        <div className="metric-heading">
+                            <span>HTTPS</span>
+                            <LockKeyhole size={16} />
+                        </div>
+                        <div className="overview-value">
+                            {self.state.apiData.hasRootSsl
+                                ? localize('dashboard.enabled', 'Enabled')
+                                : localize(
+                                      'dashboard.not_configured',
+                                      'Not configured'
+                                  )}
+                        </div>
+                        <div className="overview-caption">
+                            {localize(
+                                'dashboard.root_certificate',
+                                'Root domain certificate'
+                            )}
+                        </div>
+                    </Card>
+                    <Card>
+                        <div className="metric-heading">
+                            <span>
+                                {localize(
+                                    'dashboard.enforce_https',
+                                    'Enforce HTTPS'
+                                )}
+                            </span>
+                            <ShieldCheck size={16} />
+                        </div>
+                        <div className="overview-value">
+                            {self.state.apiData.forceSsl
+                                ? localize('dashboard.enabled', 'Enabled')
+                                : localize('dashboard.disabled', 'Disabled')}
+                        </div>
+                        <div className="overview-caption">
+                            {localize(
+                                'dashboard.https_redirect',
+                                'Automatic secure redirects'
+                            )}
+                        </div>
+                    </Card>
+                </div>
                 {self.createInitialSetupIfNoRootSsl()}
-                <br />
                 {self.createPostFullSetupIfHasForceSsl()}
-                <br />
                 {self.createSetupPanelIfNoForceSsl()}
             </div>
         )
@@ -378,7 +454,7 @@ export default class Dashboard extends ApiComponent<
 
         return (
             <Row justify="center">
-                <Col xs={{ span: 23 }} lg={{ span: 16 }}>
+                <Col span={24}>
                     <Card
                         title={localize(
                             'dashboard.root_domain_configurations',
@@ -483,7 +559,7 @@ export default class Dashboard extends ApiComponent<
 
         return (
             <Row justify="center">
-                <Col xs={{ span: 23 }} lg={{ span: 16 }}>
+                <Col span={24}>
                     <Card
                         title={localize(
                             'dashboard.setup_panel_title',
@@ -570,68 +646,51 @@ export default class Dashboard extends ApiComponent<
 
         return (
             <Row justify="center">
-                <Col xs={{ span: 23 }} lg={{ span: 16 }}>
-                    <Card title="CapRover">
-                        <div>
-                            <h3>
+                <Col span={24}>
+                    <Card
+                        title={localize(
+                            'dashboard.workspace_ready',
+                            'Ready to deploy'
+                        )}
+                        extra={
+                            <Button
+                                type="primary"
+                                onClick={() => self.props.history.push('/apps')}
+                                icon={<ArrowUpRight size={14} />}
+                            >
                                 {localize(
-                                    'dashboard.congratulations',
-                                    'Congratulations!'
-                                )}{' '}
-                                <span aria-label="Congrats" role="img">
-                                    🎉🎉
-                                </span>
-                            </h3>
-                            <p>
-                                {localize(
-                                    'dashboard.caprover_setup_success',
-                                    'You have installed and set CapRover up successfully! You can now deploy your apps! Remember, with CapRover, you can deploy applications from source code (such as Node.js, PHP, Java, Ruby, Python etc), and you can also deploy ready to go applications such as MySQL, MongoDB, WordPress, Redis, and many more!'
+                                    'dashboard.open_apps',
+                                    'Open applications'
                                 )}
-                            </p>
-
-                            <p>
+                            </Button>
+                        }
+                    >
+                        <p className="muted-description">
+                            {localize(
+                                'dashboard.ready_description',
+                                'Deploy code, connect a repository, or launch a ready-to-use app. Your domain and HTTPS are configured.'
+                            )}
+                        </p>
+                        <div className="dashboard-links">
+                            <NewTabLink url="https://caprover.com/docs/sample-apps.html">
                                 {localize(
-                                    'dashboard.deploy_source_code_info',
-                                    'For more information on how to deploy applications from source code, make sure to have a look at this: '
+                                    'dashboard.sample_apps',
+                                    'Sample apps'
                                 )}
-                                <a
-                                    href="https://caprover.com/docs/sample-apps.html"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {' '}
-                                    {localize(
-                                        'dashboard.sample_apps',
-                                        'sample apps.'
-                                    )}
-                                </a>
-                            </p>
-
-                            <p>
-                                <i>
-                                    {localize(
-                                        'dashboard.update_root_domain_caution',
-                                        'You can always update your root domain, but be careful! Your SSL certificates will get revoked because of this domain change.'
-                                    )}
-                                </i>
-                            </p>
-
-                            <Row justify="end">
-                                <Button
-                                    disabled={this.state.isForceChangingDomain}
-                                    type="dashed"
-                                    onClick={() => {
-                                        self.setState({
-                                            isForceChangingDomain: true,
-                                        })
-                                    }}
-                                >
-                                    {localize(
-                                        'dashboard.change_root_domain_anyways',
-                                        'Change Root Domain Anyways'
-                                    )}
-                                </Button>
-                            </Row>
+                            </NewTabLink>
+                            <Button
+                                disabled={this.state.isForceChangingDomain}
+                                onClick={() =>
+                                    self.setState({
+                                        isForceChangingDomain: true,
+                                    })
+                                }
+                            >
+                                {localize(
+                                    'dashboard.change_root_domain_anyways',
+                                    'Change Root Domain Anyways'
+                                )}
+                            </Button>
                         </div>
                     </Card>
                 </Col>

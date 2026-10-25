@@ -83,7 +83,7 @@ class GoAccessInfo extends ApiComponent<
         return (
             <div>
                 <Row justify="center">
-                    <Col xs={{ span: 23 }} lg={{ span: 18 }}>
+                    <Col xs={{ span: 24 }}>
                         <Card
                             title={localize(
                                 'goaccess.log_analyzer',
