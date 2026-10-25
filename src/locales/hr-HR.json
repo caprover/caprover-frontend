@@ -586,5 +586,11 @@
   "themes.edit_name": "Naziv teme",
   "themes.head_embed": "Ugradi elemente u <head>",
   "themes.see_here": "Pogledaj ovdje za detalje.",
-  "themes.theme_custom_help": "Možete prilagoditi CapRover temu pružanjem prilagođene teme i umetanjem elemenata (font, CSS, JS itd.) u <head> odjeljak."
+  "themes.theme_custom_help": "Možete prilagoditi CapRover temu pružanjem prilagođene teme i umetanjem elemenata (font, CSS, JS itd.) u <head> odjeljak.",
+  "disk_usage.capacity_summary": "%s1 dostupno od %s2 na %s3",
+  "disk_usage.alert_summary": "%s1 na %s2. Dostupno %s3 (%s4% kapaciteta).",
+  "app_runtime.running_duration": "Radi već %s1",
+  "app_runtime.past_duration": "%s1 prije %s2",
+  "overview.app_count": "%s1 aplikacija",
+  "overview.missing_runtime_count": "%s1 s nedostupnim podacima o izvođenju"
 }
