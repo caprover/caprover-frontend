@@ -586,5 +586,11 @@
   "themes.edit_name": "نام تم",
   "themes.head_embed": "قرار دادن عناصر در <head>",
   "themes.see_here": "برای جزئیات اینجا را ببینید.",
-  "themes.theme_custom_help": "می‌توانید با ارائه‌ی یک تم سفارشی و تزریق عناصر (فونت، CSS، JS و غیره) به بخش <head>، تم کپ‌روور را شخصی‌سازی کنید."
+  "themes.theme_custom_help": "می‌توانید با ارائه‌ی یک تم سفارشی و تزریق عناصر (فونت، CSS، JS و غیره) به بخش <head>، تم کپ‌روور را شخصی‌سازی کنید.",
+  "disk_usage.capacity_summary": "در %s3، از مجموع %s2، مقدار %s1 در دسترس است",
+  "disk_usage.alert_summary": "%s1 در %s2. فضای در دسترس: %s3 (٪%s4 از ظرفیت کل).",
+  "app_runtime.running_duration": "مدت‌زمان اجرا: %s1",
+  "app_runtime.past_duration": "%s2 پیش: %s1",
+  "overview.app_count": "%s1 برنامه",
+  "overview.missing_runtime_count": "داده‌های وضعیت اجرای %s1 برنامه در دسترس نیست"
 }
