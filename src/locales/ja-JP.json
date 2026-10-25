@@ -592,5 +592,19 @@
   "app_runtime.running_duration": "稼働時間：%s1",
   "app_runtime.past_duration": "%s2 前：%s1",
   "overview.app_count": "アプリ %s1 件",
-  "overview.missing_runtime_count": "実行状態データを取得できないアプリ %s1 件"
+  "overview.missing_runtime_count": "実行状態データを取得できないアプリ %s1 件",
+  "app_runtime.state_running": "実行中",
+  "app_runtime.state_failed": "失敗",
+  "app_runtime.state_rejected": "拒否",
+  "app_runtime.state_orphaned": "孤立",
+  "app_runtime.state_starting": "起動中",
+  "app_runtime.state_preparing": "準備中",
+  "app_runtime.state_ready": "準備完了",
+  "app_runtime.state_pending": "保留中",
+  "app_runtime.state_new": "新規",
+  "app_runtime.state_allocated": "リソース割り当て済み",
+  "app_runtime.state_assigned": "割り当て済み",
+  "app_runtime.state_accepted": "受理済み",
+  "app_runtime.state_complete": "完了",
+  "app_runtime.state_shutdown": "シャットダウン"
 }
