@@ -7,6 +7,7 @@ import {
     dismissSetup,
     emitSetupStatusChanged,
     refreshSetup,
+    SETUP_STATUS_CHANGED,
     SetupAction,
 } from './SetupActions'
 
@@ -76,7 +77,9 @@ it.each(['resolves', 'rejects'])(
         )
         let setupStatus = SetupStatus.Required
         const dispatch = jest.fn((action: SetupAction) => {
-            setupStatus = action.payload
+            if (action.type === SETUP_STATUS_CHANGED) {
+                setupStatus = action.payload
+            }
         })
         const getState = (): ReduxState => ({
             globalReducer: {
