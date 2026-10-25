@@ -22,6 +22,7 @@ interface AppRuntimeStatusProps {
     runtimeDataStatus: RuntimeDataStatus
     appDetailsPath?: string
     isMobile: boolean
+    showInstances?: boolean
 }
 
 export enum RuntimeDataStatus {
@@ -64,6 +65,22 @@ function getRuntimeSummary(
         'app_runtime.running',
         'running'
     )}`
+}
+
+function getInstanceCount(
+    runtime: CapRoverModels.AppRuntime | undefined
+): string {
+    if (
+        !runtime ||
+        runtime.runningInstances === null ||
+        runtime.desiredInstances === null
+    ) {
+        return '–'
+    }
+
+    return runtime.runningInstances === runtime.desiredInstances
+        ? String(runtime.runningInstances)
+        : `${runtime.runningInstances}/${runtime.desiredInstances}`
 }
 
 function getStatusLabel(
@@ -478,12 +495,25 @@ export default class AppRuntimeStatus extends Component<
                 <Tooltip title={this.renderTooltip()}>
                     <Button
                         type="text"
-                        shape="circle"
+                        shape={
+                            this.props.showInstances ? undefined : 'circle'
+                        }
                         size={this.props.isMobile ? 'large' : 'small'}
+                        className={
+                            this.props.showInstances
+                                ? 'app-runtime-instances'
+                                : undefined
+                        }
                         aria-label={accessibleStatus}
                         onClick={() => this.setState({ isDrawerOpen: true })}
                     >
-                        <Badge status={getStatusBadge(runtime)} />
+                        {this.props.showInstances ? (
+                            <Tag color={getStatusBadge(runtime)}>
+                                {getInstanceCount(runtime)}
+                            </Tag>
+                        ) : (
+                            <Badge status={getStatusBadge(runtime)} />
+                        )}
                     </Button>
                 </Tooltip>
                 {this.renderDrawer()}
