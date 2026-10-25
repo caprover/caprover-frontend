@@ -586,5 +586,11 @@
   "themes.edit_name": "Themanaam",
   "themes.head_embed": "Elementen insluiten in <head>",
   "themes.see_here": "Zie hier voor details.",
-  "themes.theme_custom_help": "Je kunt het CapRover-thema aanpassen door een aangepast thema te leveren en elementen (font, CSS, JS, etc.) in te voegen in de <head>-sectie."
+  "themes.theme_custom_help": "Je kunt het CapRover-thema aanpassen door een aangepast thema te leveren en elementen (font, CSS, JS, etc.) in te voegen in de <head>-sectie.",
+  "disk_usage.capacity_summary": "%s1 beschikbaar van %s2 op %s3",
+  "disk_usage.alert_summary": "%s1 op %s2. %s3 beschikbaar (%s4% van de capaciteit).",
+  "app_runtime.running_duration": "Draait al %s1",
+  "app_runtime.past_duration": "%s1 %s2 geleden",
+  "overview.app_count": "%s1 apps",
+  "overview.missing_runtime_count": "%s1 met niet-beschikbare runtimegegevens"
 }
