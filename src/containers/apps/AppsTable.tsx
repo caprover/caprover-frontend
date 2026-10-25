@@ -559,7 +559,6 @@ class AppsTable extends Component<
                                 appName = '',
                                 hasPersistentData,
                                 notExposeAsWebApp,
-                                instanceCount,
                                 hasDefaultSubDomainSsl,
                             }) => (
                                 <Card
