@@ -62,7 +62,12 @@ it.each(['resolves', 'rejects'])(
                 new Promise((resolve, reject) => {
                     finishRequest = () => {
                         if (outcome === 'resolves') {
-                            resolve({ forceSsl: false })
+                            resolve({
+                                forceSsl: false,
+                                hasRootSsl: true,
+                                rootDomain: 'example.com',
+                                captainSubDomain: 'captain',
+                            })
                         } else {
                             reject(new Error('Unavailable'))
                         }
