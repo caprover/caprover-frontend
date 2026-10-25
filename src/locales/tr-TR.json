@@ -586,5 +586,11 @@
   "themes.edit_name": "Tema adını düzenle",
   "themes.head_embed": "<head> içine elemanlar göm",
   "themes.see_here": "Detaylar için buraya bakın.",
-  "themes.theme_custom_help": "Özel tema sağlayarak ve öğeleri (yazı tipi, CSS, JS vb.) <head> bölümüne enjekte ederek CapRover temasını özelleştirebilirsiniz."
+  "themes.theme_custom_help": "Özel tema sağlayarak ve öğeleri (yazı tipi, CSS, JS vb.) <head> bölümüne enjekte ederek CapRover temasını özelleştirebilirsiniz.",
+  "disk_usage.capacity_summary": "%s3 üzerinde toplam %s2 alanın %s1 kadarı kullanılabilir",
+  "disk_usage.alert_summary": "%s2 üzerinde %s1. Kullanılabilir alan: %s3 (kapasitenin %s4%).",
+  "app_runtime.running_duration": "%s1 süredir çalışıyor",
+  "app_runtime.past_duration": "%s2 önce: %s1",
+  "overview.app_count": "%s1 uygulama",
+  "overview.missing_runtime_count": "çalışma verileri kullanılamayan %s1 uygulama"
 }
