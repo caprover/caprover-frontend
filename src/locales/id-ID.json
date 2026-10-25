@@ -592,5 +592,19 @@
   "app_runtime.running_duration": "Berjalan selama %s1",
   "app_runtime.past_duration": "%s1 %s2 yang lalu",
   "overview.app_count": "%s1 aplikasi",
-  "overview.missing_runtime_count": "%s1 dengan data runtime tidak tersedia"
+  "overview.missing_runtime_count": "%s1 dengan data runtime tidak tersedia",
+  "app_runtime.state_running": "Berjalan",
+  "app_runtime.state_failed": "Gagal",
+  "app_runtime.state_rejected": "Ditolak",
+  "app_runtime.state_orphaned": "Terisolasi",
+  "app_runtime.state_starting": "Memulai",
+  "app_runtime.state_preparing": "Menyiapkan",
+  "app_runtime.state_ready": "Siap",
+  "app_runtime.state_pending": "Tertunda",
+  "app_runtime.state_new": "Baru",
+  "app_runtime.state_allocated": "Dialokasikan",
+  "app_runtime.state_assigned": "Ditugaskan",
+  "app_runtime.state_accepted": "Diterima",
+  "app_runtime.state_complete": "Selesai",
+  "app_runtime.state_shutdown": "Dimatikan"
 }
