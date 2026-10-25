@@ -592,5 +592,19 @@
   "app_runtime.running_duration": "مدت‌زمان اجرا: %s1",
   "app_runtime.past_duration": "%s2 پیش: %s1",
   "overview.app_count": "%s1 برنامه",
-  "overview.missing_runtime_count": "داده‌های وضعیت اجرای %s1 برنامه در دسترس نیست"
+  "overview.missing_runtime_count": "داده‌های وضعیت اجرای %s1 برنامه در دسترس نیست",
+  "app_runtime.state_running": "در حال اجرا",
+  "app_runtime.state_failed": "ناموفق",
+  "app_runtime.state_rejected": "ردشده",
+  "app_runtime.state_orphaned": "یتیم",
+  "app_runtime.state_starting": "در حال راه‌اندازی",
+  "app_runtime.state_preparing": "در حال آماده‌سازی",
+  "app_runtime.state_ready": "آماده",
+  "app_runtime.state_pending": "در انتظار",
+  "app_runtime.state_new": "جدید",
+  "app_runtime.state_allocated": "منابع تخصیص‌یافته",
+  "app_runtime.state_assigned": "واگذارشده",
+  "app_runtime.state_accepted": "پذیرفته‌شده",
+  "app_runtime.state_complete": "تکمیل‌شده",
+  "app_runtime.state_shutdown": "خاموش‌شده"
 }
