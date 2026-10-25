@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { Modal } from 'antd'
-import { createMemoryHistory } from 'history'
 import ApiManager from '../../api/ApiManager'
 import { DomainsHttps } from './DomainsHttps'
 
@@ -18,19 +17,8 @@ const captainInfo = {
 }
 function showDomains(guided: boolean, info = captainInfo) {
     jest.spyOn(ApiManager.prototype, 'getCaptainInfo').mockResolvedValue(info)
-    const history = createMemoryHistory({ initialEntries: ['/settings'] })
     return render(
-        <DomainsHttps
-            guided={guided}
-            history={history}
-            location={history.location}
-            match={{
-                path: '/settings',
-                url: '/settings',
-                isExact: true,
-                params: {},
-            }}
-        />
+        <DomainsHttps guided={guided} emitSetupStatusChanged={jest.fn()} />
     )
 }
 beforeEach(() => {
@@ -56,12 +44,12 @@ it.each([false, true])(
         const update = jest
             .spyOn(ApiManager.prototype, 'updateRootDomain')
             .mockResolvedValue()
-        showDomains(guided)
-        fireEvent.click(
-            await screen.findByText(
-                guided ? 'Change Root Domain Anyways' : 'Change Root Domain'
-            )
-        )
+        showDomains(guided, { ...captainInfo, forceSsl: !guided })
+        if (guided) {
+            await screen.findByPlaceholderText('my-root.example.com')
+        } else {
+            fireEvent.click(await screen.findByText('Change Root Domain'))
+        }
         fireEvent.change(screen.getByPlaceholderText('my-root.example.com'), {
             target: { value: 'new.example.com' },
         })
@@ -104,14 +92,7 @@ it('shows the existing retry UI when captain configuration cannot be loaded', as
     jest.spyOn(ApiManager.prototype, 'getCaptainInfo').mockRejectedValue(
         new Error('Unavailable')
     )
-    const history = createMemoryHistory()
-    render(
-        <DomainsHttps
-            history={history}
-            location={history.location}
-            match={{ path: '/', url: '/', isExact: true, params: {} }}
-        />
-    )
+    render(<DomainsHttps emitSetupStatusChanged={jest.fn()} />)
     expect(await screen.findByText('Request failed')).toBeInTheDocument()
     expect(screen.queryByText('Enable HTTPS')).not.toBeInTheDocument()
 })
