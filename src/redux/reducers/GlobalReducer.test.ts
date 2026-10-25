@@ -1,3 +1,4 @@
+import { SetupStatus } from '../../models/SetupStatus'
 import { DISK_USAGE_UPDATED } from '../actions/DiskUsageActions'
 import GlobalReducer from './GlobalReducer'
 
@@ -35,6 +36,8 @@ describe('disk usage state', () => {
 
     it('preserves the previous reading when a refresh fails', () => {
         const previousState = {
+            setupStatus: SetupStatus.Loading,
+            setupDismissed: false,
             diskUsage: {
                 data: diskUsageData,
                 isLoading: true,

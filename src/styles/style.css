@@ -797,3 +797,15 @@ hr {
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
+@media (max-width: 767px) {
+    .setup-dismissal {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    .setup-dismissal .ant-alert-action {
+        width: 100%;
+        margin: 12px 0 0;
+        padding-inline-start: 36px;
+    }
+}

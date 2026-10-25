@@ -4,6 +4,7 @@ import { CapRoverModels } from 'caprover-api'
 import { createMemoryHistory } from 'history'
 import { Router } from 'react-router-dom'
 import ApiManager from '../../api/ApiManager'
+import { SetupStatus } from '../../models/SetupStatus'
 import { getRecentDeployments, Overview } from './Overview'
 
 jest.mock('../../utils/Language', () => ({
@@ -89,6 +90,8 @@ function showOverview() {
                     params: {},
                 }}
                 isMobile={false}
+                setupStatus={SetupStatus.Complete}
+                setupDismissed={false}
                 diskUsage={{
                     data: undefined,
                     isLoading: false,

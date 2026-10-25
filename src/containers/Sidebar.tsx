@@ -17,6 +17,7 @@ import {
     Globe,
     HelpCircle,
     LayoutDashboard,
+    ListChecks,
     LogOut,
     Server,
     Settings,
@@ -31,6 +32,7 @@ import DarkModeSwitch from './global/DarkModeSwitch'
 import LanguageSelector from './global/LanguageSelector'
 
 interface SidebarProps {
+    showSetup: boolean
     isMobile: boolean
     collapsed: boolean
     toggleSider: () => void
@@ -41,6 +43,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({
     isMobile,
+    showSetup,
     collapsed,
     toggleSider,
     onLogoutClicked,
@@ -56,9 +59,18 @@ const Sidebar: React.FC<SidebarProps> = ({
             : 'light'
     const compact = collapsed && !isMobile
     const items: MenuProps['items'] = [
+        ...(showSetup
+            ? [
+                  {
+                      key: 'setup',
+                      label: localize('menu_item.setup', 'Setup'),
+                      icon: <ListChecks size={16} />,
+                  },
+              ]
+            : []),
         {
-            key: 'dashboard',
-            label: localize('menu_item.dashboard', 'Dashboard'),
+            key: 'overview',
+            label: localize('menu_item.overview', 'Overview'),
             icon: <LayoutDashboard size={16} />,
         },
         {

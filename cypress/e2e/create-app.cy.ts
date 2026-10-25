@@ -9,6 +9,18 @@ const projectOptions = [false, true]
 projectOptions.forEach((withProjects) => {
     describe(`Create App (projects: ${withProjects})`, () => {
         beforeEach(() => {
+            cy.intercept('GET', '**/api/v2/user/system/info', {
+                statusCode: 200,
+                body: {
+                    status: 100,
+                    data: {
+                        hasRootSsl: true,
+                        forceSsl: true,
+                        rootDomain: 'example.com',
+                        captainSubDomain: 'captain',
+                    },
+                },
+            })
             cy.intercept('GET', '**/api/v2/theme/current', {
                 statusCode: 200,
                 body: { status: 100, data: { theme: null } },

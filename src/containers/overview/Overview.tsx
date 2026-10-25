@@ -5,6 +5,7 @@ import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 import DiskUsageViewState from '../../models/DiskUsageViewState'
 import ReduxState from '../../models/ReduxState'
+import { SetupStatus } from '../../models/SetupStatus'
 import { refreshDiskUsage } from '../../redux/actions/DiskUsageActions'
 import { localize } from '../../utils/Language'
 import ApiComponent from '../global/ApiComponent'
@@ -17,6 +18,8 @@ interface OverviewProps extends RouteComponentProps<any> {
     diskUsage: DiskUsageViewState
     refreshDiskUsage: () => void
     isMobile: boolean
+    setupStatus: SetupStatus
+    setupDismissed: boolean
 }
 
 interface OverviewData {
@@ -24,7 +27,6 @@ interface OverviewData {
     runtime: CapRoverModels.AppRuntime[] | undefined
     nodes: CapRoverModels.ServerDockerInfo[] | undefined
     version: CapRoverModels.IVersionInfo | undefined
-    needsSetup: boolean | undefined
 }
 
 export function getRecentDeployments(apps: CapRoverModels.IAppDef[]) {
@@ -79,7 +81,6 @@ export class Overview extends ApiComponent<
             self.apiManager.getAppsRuntime().catch(() => undefined),
             self.apiManager.getAllNodes().catch(() => undefined),
             self.apiManager.getVersionInfo().catch(() => undefined),
-            self.apiManager.getCaptainInfo().catch(() => undefined),
         ]).then(function (results) {
             if (self.willUnmountSoon) return
             self.setState({
@@ -88,10 +89,6 @@ export class Overview extends ApiComponent<
                     runtime: results[1]?.apps,
                     nodes: results[2]?.nodes,
                     version: results[3],
-                    needsSetup:
-                        typeof results[4]?.forceSsl === 'boolean'
-                            ? !results[4].forceSsl
-                            : undefined,
                 },
             })
         })
@@ -167,25 +164,26 @@ export class Overview extends ApiComponent<
                         {localize('overview.refresh', 'Refresh')}
                     </Button>
                 </Space>
-                {apiData.needsSetup && (
-                    <Alert
-                        showIcon
-                        type="info"
-                        style={{ marginBottom: 24 }}
-                        message={localize(
-                            'overview.setup_incomplete',
-                            'Initial setup is incomplete.'
-                        )}
-                        action={
-                            <Link to="/dashboard">
-                                {localize(
-                                    'overview.continue_setup',
-                                    'Continue Setup'
-                                )}
-                            </Link>
-                        }
-                    />
-                )}
+                {!self.props.setupDismissed &&
+                    self.props.setupStatus === SetupStatus.Required && (
+                        <Alert
+                            showIcon
+                            type="info"
+                            style={{ marginBottom: 24 }}
+                            message={localize(
+                                'overview.setup_incomplete',
+                                'Initial setup is incomplete.'
+                            )}
+                            action={
+                                <Link to="/setup">
+                                    {localize(
+                                        'overview.continue_setup',
+                                        'Continue Setup'
+                                    )}
+                                </Link>
+                            }
+                        />
+                    )}
                 <div className="server-overview-grid">
                     <Card title={localize('overview.app_health', 'App Health')}>
                         {!apps ? (
@@ -513,6 +511,8 @@ export class Overview extends ApiComponent<
 function mapStateToProps(state: ReduxState) {
     return {
         diskUsage: state.globalReducer.diskUsage,
+        setupStatus: state.globalReducer.setupStatus,
+        setupDismissed: state.globalReducer.setupDismissed,
         isMobile: !!state.globalReducer.isMobile,
     }
 }
