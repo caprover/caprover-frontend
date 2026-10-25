@@ -592,5 +592,19 @@
   "app_runtime.running_duration": "%s1 동안 실행 중",
   "app_runtime.past_duration": "%s2 전: %s1",
   "overview.app_count": "앱 %s1개",
-  "overview.missing_runtime_count": "실행 상태 데이터를 확인할 수 없는 앱 %s1개"
+  "overview.missing_runtime_count": "실행 상태 데이터를 확인할 수 없는 앱 %s1개",
+  "app_runtime.state_running": "실행 중",
+  "app_runtime.state_failed": "실패",
+  "app_runtime.state_rejected": "거부됨",
+  "app_runtime.state_orphaned": "고립됨",
+  "app_runtime.state_starting": "시작 중",
+  "app_runtime.state_preparing": "준비 중",
+  "app_runtime.state_ready": "준비됨",
+  "app_runtime.state_pending": "대기 중",
+  "app_runtime.state_new": "새 작업",
+  "app_runtime.state_allocated": "리소스 할당됨",
+  "app_runtime.state_assigned": "배정됨",
+  "app_runtime.state_accepted": "수락됨",
+  "app_runtime.state_complete": "완료됨",
+  "app_runtime.state_shutdown": "종료됨"
 }
