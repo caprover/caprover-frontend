@@ -586,5 +586,11 @@
   "themes.edit_name": "테마 이름",
   "themes.head_embed": "<head>에 요소 삽입",
   "themes.see_here": "자세한 내용은 여기를 참고하세요.",
-  "themes.theme_custom_help": "사용자 지정 테마를 제공하고 <head> 섹션에 요소(폰트, CSS, JS 등)를 삽입하여 CapRover 테마를 사용자 지정할 수 있습니다."
+  "themes.theme_custom_help": "사용자 지정 테마를 제공하고 <head> 섹션에 요소(폰트, CSS, JS 등)를 삽입하여 CapRover 테마를 사용자 지정할 수 있습니다.",
+  "disk_usage.capacity_summary": "%s3의 전체 용량 %s2 중 %s1 사용 가능",
+  "disk_usage.alert_summary": "%s2의 %s1. 사용 가능한 공간 %s3(전체 용량의 %s4%).",
+  "app_runtime.running_duration": "%s1 동안 실행 중",
+  "app_runtime.past_duration": "%s2 전: %s1",
+  "overview.app_count": "앱 %s1개",
+  "overview.missing_runtime_count": "실행 상태 데이터를 확인할 수 없는 앱 %s1개"
 }
