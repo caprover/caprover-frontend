@@ -91,8 +91,7 @@ export function DiskUsageAlert({ diskUsage, history }: DiskUsageAlertProps) {
             type={isCritical ? 'error' : 'warning'}
             message={
                 <span>
-                    <strong>{title}</strong>
-                    {' '}
+                    
                     {localize('disk_usage.alert_summary', '%s1 on %s2. %s3 available (%s4% of capacity).').replace(/%s([1-4])/g, (_, index) => [title, reading.node.hostname, formatBytes(reading.disk.availableBytes), String(getAvailablePercent(reading.disk))][Number(index) - 1])}
                     {' '}
                     {localize('disk_usage.failure_warning', 'Builds and deployments may fail.')}
