@@ -1,5 +1,5 @@
 import { Button, Layout } from 'antd'
-import { Gift, PanelLeft } from 'lucide-react'
+import { PanelLeft } from 'lucide-react'
 import React, { RefObject } from 'react'
 import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
@@ -166,8 +166,10 @@ export class PageRoot extends ApiComponent<
                         </div>
                         {self.state.versionInfo?.canUpdate && (
                             <Button
+                                className="update-available-button"
+                                type="primary"
                                 size="small"
-                                icon={<Gift size={14} />}
+                                icon={<span aria-hidden="true">🚀</span>}
                                 onClick={() =>
                                     self.props.history.push('/maintenance')
                                 }
