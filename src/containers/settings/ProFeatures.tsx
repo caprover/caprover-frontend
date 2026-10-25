@@ -11,14 +11,13 @@ import ProFeaturesConfigs from './ProFeaturesConfigs'
 export default class ProFeatures extends ApiComponent<
     {
         isMobile: boolean
+        apiData: IProFeatures | undefined
+        onRefreshRequested: () => void
     },
     {
-        isLoading: boolean
         apiKeyConnecting: boolean
-        apiData: IProFeatures | undefined
         apiKeyModalVisible: boolean
         enteredApiKey: string
-        rootDomain: string
     }
 > {
     constructor(props: any) {
@@ -26,46 +25,14 @@ export default class ProFeatures extends ApiComponent<
         this.state = {
             apiKeyModalVisible: false,
             apiKeyConnecting: false,
-            isLoading: false,
-            apiData: undefined,
             enteredApiKey: '',
-            rootDomain: '',
         }
-    }
-
-    componentDidMount() {
-        this.fetchContent()
-    }
-
-    fetchContent() {
-        const self = this
-        self.setState({ isLoading: true })
-
-        Promise.resolve()
-            .then(function () {
-                const captainInfoPromise = self.apiManager.getCaptainInfo()
-                const proFeaturesRequest = self.apiManager.getProFeaturesState()
-                return Promise.all([captainInfoPromise, proFeaturesRequest])
-            })
-
-            .then(function (result) {
-                const resultTypeChecked: IProFeatures =
-                    result[1].proFeaturesState
-                self.setState({
-                    apiData: resultTypeChecked,
-                    rootDomain: result[0].rootDomain,
-                })
-            })
-            .catch(Toaster.createCatcher())
-            .then(function () {
-                self.setState({ isLoading: false })
-            })
     }
 
     render() {
         const self = this
 
-        const apiData = self.state.apiData
+        const apiData = self.props.apiData
         if (!apiData || !apiData.isFeatureFlagEnabled) return <></>
 
         return (
@@ -87,9 +54,8 @@ export default class ProFeatures extends ApiComponent<
                 >
                     {apiData.isSubscribed ? (
                         <ProFeaturesConfigs
-                            rootDomain={self.state.rootDomain}
                             onRefreshRequested={() => {
-                                self.fetchContent()
+                                self.props.onRefreshRequested()
                             }}
                         />
                     ) : (
@@ -228,7 +194,7 @@ export default class ProFeatures extends ApiComponent<
                             .catch(Toaster.createCatcher())
                             .then(function () {
                                 self.setState({ apiKeyConnecting: false })
-                                self.fetchContent()
+                                self.props.onRefreshRequested()
                             })
                     }}
                     confirmLoading={self.state.apiKeyConnecting}

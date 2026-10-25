@@ -11,10 +11,9 @@ import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
-import OtpSettings from './OtpSettings'
 
 export default class ProFeaturesConfigs extends ApiComponent<
-    { rootDomain: string; onRefreshRequested: () => void },
+    { onRefreshRequested: () => void },
     {
         proConfigs: IProConfig | undefined
     }
@@ -124,8 +123,6 @@ export default class ProFeaturesConfigs extends ApiComponent<
                         {localize('pro_features.save', 'Save')}
                     </Button>
                 </Row>
-                <hr style={{ margin: 30 }} />
-                <OtpSettings rootDomain={self.props.rootDomain} />
             </div>
         )
     }

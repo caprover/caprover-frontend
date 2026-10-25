@@ -540,5 +540,9 @@
     "monitoring.system_health": "System Health",
     "monitoring.tools": "Monitoring Tools",
     "monitoring.advanced_settings": "Advanced Settings",
-    "nodes.configure_registries": "Configure Docker Registries"
+    "nodes.configure_registries": "Configure Docker Registries",
+    "settings.domains_https": "Domains & HTTPS",
+    "settings.change_root_domain": "Change Root Domain",
+    "settings.security": "Security",
+    "settings.advanced": "Advanced"
 }
