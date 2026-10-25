@@ -495,9 +495,7 @@ export default class AppRuntimeStatus extends Component<
                 <Tooltip title={this.renderTooltip()}>
                     <Button
                         type="text"
-                        shape={
-                            this.props.showInstances ? undefined : 'circle'
-                        }
+                        shape={this.props.showInstances ? undefined : 'circle'}
                         size={this.props.isMobile ? 'large' : 'small'}
                         className={
                             this.props.showInstances
