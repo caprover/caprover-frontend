@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
+import { localize } from '../../utils/Language'
 import DiskUsageViewState from '../../models/DiskUsageViewState'
 import ReduxState from '../../models/ReduxState'
 import { refreshDiskUsage } from '../../redux/actions/DiskUsageActions'
@@ -21,13 +22,16 @@ export class Monitoring extends Component<MonitoringProps> {
 
     render() {
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '50px',
-                }}
-            >
+            <div className="monitoring-page">
+                <div className="page-heading">
+                    <h1>{localize('menu_item.monitoring', 'Monitoring')}</h1>
+                    <p>
+                        {localize(
+                            'monitoring.subtitle',
+                            'Resource usage, traffic, and system health.'
+                        )}
+                    </p>
+                </div>
                 <DiskUsage
                     diskUsage={this.props.diskUsage}
                     history={this.props.history}

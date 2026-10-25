@@ -14,6 +14,7 @@ import { createStore } from 'redux'
 import ApiManager from '../../api/ApiManager'
 import ProjectDefinition from '../../models/ProjectDefinition'
 import Toaster from '../../utils/Toaster'
+import { IAppDef } from './AppDefinition'
 import Apps from './Apps'
 
 jest.mock('../../utils/Language', () => ({
@@ -45,13 +46,14 @@ const projects: ProjectDefinition[] = [
 
 const renderApps = async (
     availableProjects: ProjectDefinition[] = [],
-    isMobile = false
+    isMobile = false,
+    appDefinitions: IAppDef[] = []
 ) => {
     const history = createMemoryHistory({ initialEntries: ['/apps/'] })
     const getAllApps = jest
         .spyOn(ApiManager.prototype, 'getAllApps')
         .mockResolvedValue({
-            appDefinitions: [],
+            appDefinitions,
             defaultNginxConfig: '',
             rootDomain: 'example.com',
             captainSubDomain: 'captain',
@@ -131,6 +133,56 @@ it.each([false, true])(
         )
     }
 )
+
+it.each([false, true])(
+    'keeps project management accessible (mobile: %s)',
+    async (isMobile) => {
+        const { history } = await renderApps(projects, isMobile)
+        if (isMobile) {
+            fireEvent.click(screen.getByRole('button', { name: /Projects/ }))
+            expect(await screen.findByRole('dialog')).toHaveTextContent(
+                'Production'
+            )
+        } else {
+            expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+            expect(screen.getByRole('tree')).toHaveTextContent('Production')
+        }
+        fireEvent.click(
+            screen.getByRole('button', { name: 'Create a New Project' })
+        )
+        expect(history.location.pathname).toBe('/apps/projects/new')
+    }
+)
+
+it('exposes persistent storage to assistive technology and keyboard focus', async () => {
+    await renderApps(projects, false, [
+        {
+            appName: 'api',
+            projectId: 'production',
+            deployedVersion: 0,
+            notExposeAsWebApp: false,
+            hasPersistentData: true,
+            hasDefaultSubDomainSsl: false,
+            containerHttpPort: 3000,
+            captainDefinitionRelativeFilePath: './captain-definition',
+            forceSsl: false,
+            websocketSupport: true,
+            instanceCount: 1,
+            networks: [],
+            customDomain: [],
+            ports: [],
+            volumes: [],
+            envVars: [],
+            versions: [],
+        },
+    ])
+    const storage = screen.getByRole('img', { name: 'Persistent Data' })
+    expect(storage).toHaveAttribute('tabIndex', '0')
+    fireEvent.focus(storage)
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+        'Persistent Data'
+    )
+})
 
 it.each([
     ['One-Click App', '/apps/oneclick'],

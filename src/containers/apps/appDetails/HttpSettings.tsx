@@ -39,7 +39,11 @@ export default class HttpSettings extends Component<
     }
 
     render() {
-        return <div>{this.createHttpSettingsContent()}</div>
+        return (
+            <div className="http-settings">
+                {this.createHttpSettingsContent()}
+            </div>
+        )
     }
 
     reFetchData() {
@@ -316,7 +320,10 @@ export default class HttpSettings extends Component<
 
         return (
             <div>
-                <p>
+                <h3 className="form-section-title">
+                    {localize('apps.domains_and_routing', 'Domains & routing')}
+                </h3>
+                <p className="muted-description">
                     {' '}
                     {localize(
                         'apps.app_public_urls',
@@ -324,7 +331,7 @@ export default class HttpSettings extends Component<
                     )}
                     :
                 </p>
-                <Row>
+                <Row className="settings-control-row">
                     <Button.Group size="small">
                         <Tooltip
                             title={
@@ -373,7 +380,7 @@ export default class HttpSettings extends Component<
                 {this.createCustomDomainRows()}
                 <br />
                 {this.createRedirectDropdownIfNeeded(app, rootDomain)}
-                <Row>
+                <Row className="settings-control-row">
                     <Col xs={{ span: 24 }} lg={{ span: 15 }}>
                         {this.props.isMobile ? (
                             <Fragment>
@@ -427,13 +434,11 @@ export default class HttpSettings extends Component<
                     </Tooltip>
                 </Row>
 
-                <br />
-                <br />
+                <div className="form-section-gap" />
                 {this.createCustomNginx()}
-                <br />
-                <br />
+                <div className="form-section-gap" />
 
-                <Row>
+                <Row className="settings-control-row">
                     <Col
                         xs={{ span: 24 }}
                         lg={{ span: 6 }}
@@ -469,10 +474,9 @@ export default class HttpSettings extends Component<
                     </Col>
                 </Row>
 
-                <br />
-                <br />
+                <div className="form-section-gap" />
 
-                <Row>
+                <Row className="settings-control-row">
                     <Checkbox
                         defaultChecked={
                             !!this.props.apiData.appDefinition.forceSsl
@@ -500,10 +504,9 @@ export default class HttpSettings extends Component<
                         <InfoCircleOutlined />
                     </Tooltip>
                 </Row>
-                <br />
-                <br />
+                <div className="form-section-gap" />
 
-                <Row>
+                <Row className="settings-control-row">
                     <Checkbox
                         defaultChecked={
                             !!this.props.apiData.appDefinition.websocketSupport
@@ -531,9 +534,8 @@ export default class HttpSettings extends Component<
                         <InfoCircleOutlined />
                     </Tooltip>
                 </Row>
-                <br />
-                <br />
-                <Row>
+                <div className="form-section-gap" />
+                <Row className="settings-control-row">
                     <Button
                         style={{ marginInlineEnd: 20 }}
                         type="default"
@@ -729,7 +731,7 @@ export default class HttpSettings extends Component<
                     <InfoCircleOutlined />
                 </Tooltip>
 
-                <div style={{ height: 35 }} />
+                <div className="form-section-gap" />
                 {app.notExposeAsWebApp ? (
                     <div />
                 ) : (

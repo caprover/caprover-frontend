@@ -89,7 +89,7 @@ class NetDataInfo extends ApiComponent<
         return (
             <div>
                 <Row justify="center">
-                    <Col xs={{ span: 23 }} lg={{ span: 18 }}>
+                    <Col xs={{ span: 24 }}>
                         <Card
                             title={localize(
                                 'netdata.net_data_monitoring_tool',

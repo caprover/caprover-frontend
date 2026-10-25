@@ -85,6 +85,7 @@ export function DiskUsageAlert({ diskUsage, history }: DiskUsageAlertProps) {
 
     return (
         <Alert
+            className="disk-usage-alert"
             showIcon
             type={isCritical ? 'error' : 'warning'}
             message={
@@ -120,7 +121,6 @@ export function DiskUsageAlert({ diskUsage, history }: DiskUsageAlertProps) {
                     {localize('disk_usage.view_disk_usage', 'View disk usage')}
                 </Button>
             }
-            style={{ margin: '12px 16px 0' }}
         />
     )
 }
@@ -254,7 +254,7 @@ export default function DiskUsage({
 
     return (
         <Row justify="center">
-            <Col xs={{ span: 23 }} lg={{ span: 22 }}>
+            <Col xs={{ span: 24 }}>
                 <Card
                     title={localize('disk_usage.title', 'Disk Usage')}
                     extra={cardExtra}

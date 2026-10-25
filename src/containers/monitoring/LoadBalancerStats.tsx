@@ -1,42 +1,31 @@
 import * as Icons from '@ant-design/icons'
-import { Avatar, Card, Col, Row, Tooltip } from 'antd'
-import { Component } from 'react'
+import { Card, Col, Row, Tooltip } from 'antd'
+import { Component, ReactNode } from 'react'
 import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 import ErrorRetry from '../global/ErrorRetry'
 
-class LoadBalancerStatsCard extends Component<any, any> {
+interface LoadBalancerStatsCardProps {
+    icon: ReactNode
+    titleText: string
+    titleNumber: string
+    text1: string
+    text2: string
+}
+
+class LoadBalancerStatsCard extends Component<LoadBalancerStatsCardProps> {
     render() {
         return (
-            <div
-                className="inner-card"
-                style={{
-                    height: 240,
-                    overflow: 'hidden',
-                    borderRadius: 5,
-                    marginBottom: 8,
-                }}
-            >
-                <div style={{ textAlign: 'center', margin: 16 }}>
-                    <Avatar
-                        style={{ backgroundColor: this.props.color }}
-                        size={64}
-                        icon={this.props.icon}
-                    />
+            <div className="load-balancer-metric">
+                <div className="metric-heading">
+                    <span>{this.props.titleText}</span>
+                    {this.props.icon}
                 </div>
-                <div style={{ textAlign: 'center' }}>
-                    <h4>
-                        {this.props.titleText}
-                        <br />
-                        {this.props.titleNumber}
-                    </h4>
-                    <p>
-                        {this.props.text1}
-                        <br />
-                        {this.props.text2}
-                    </p>
+                <div className="metric-value">{this.props.titleNumber}</div>
+                <div className="metric-description">
+                    {this.props.text1} {this.props.text2}
                 </div>
             </div>
         )
@@ -101,15 +90,15 @@ export default class LoadBalancerStats extends ApiComponent<
         return (
             <div>
                 <Row justify="center">
-                    <Col xs={{ span: 23 }} lg={{ span: 22 }}>
+                    <Col xs={{ span: 24 }}>
                         <Card
                             title={localize(
                                 'load_balancer_stats.title',
                                 'Load Balancer Stats'
                             )}
                         >
-                            <Row gutter={10} justify="center">
-                                <Col xs={{ span: 24 }} lg={{ span: 6 }}>
+                            <Row gutter={[16, 16]} justify="center">
+                                <Col xs={{ span: 12 }} lg={{ span: 6 }}>
                                     <Tooltip
                                         title={localize(
                                             'load_balancer_stats.total_requests_tooltip',
@@ -119,7 +108,6 @@ export default class LoadBalancerStats extends ApiComponent<
                                         <div>
                                             <LoadBalancerStatsCard
                                                 icon={<Icons.GlobalOutlined />}
-                                                color="#2361ae"
                                                 titleText={localize(
                                                     'load_balancer_stats.total_requests',
                                                     'Total Requests'
@@ -131,10 +119,9 @@ export default class LoadBalancerStats extends ApiComponent<
                                         </div>
                                     </Tooltip>
                                 </Col>
-                                <Col xs={{ span: 24 }} lg={{ span: 6 }}>
+                                <Col xs={{ span: 12 }} lg={{ span: 6 }}>
                                     <LoadBalancerStatsCard
                                         icon={<Icons.ClusterOutlined />}
-                                        color="#23ae89"
                                         titleText={localize(
                                             'load_balancer_stats.active_connections',
                                             'Active Connections'
@@ -144,10 +131,9 @@ export default class LoadBalancerStats extends ApiComponent<
                                         text2={`${this.state.apiData.accepted} accepted`}
                                     />
                                 </Col>
-                                <Col xs={{ span: 24 }} lg={{ span: 6 }}>
+                                <Col xs={{ span: 12 }} lg={{ span: 6 }}>
                                     <LoadBalancerStatsCard
                                         icon={<Icons.SyncOutlined />}
-                                        color="#d3a938"
                                         titleText={localize(
                                             'load_balancer_stats.active_requests',
                                             'Active Requests'
@@ -172,10 +158,9 @@ export default class LoadBalancerStats extends ApiComponent<
                                         }
                                     />
                                 </Col>
-                                <Col xs={{ span: 24 }} lg={{ span: 6 }}>
+                                <Col xs={{ span: 12 }} lg={{ span: 6 }}>
                                     <LoadBalancerStatsCard
                                         icon={<Icons.ClockCircleOutlined />}
-                                        color="#ae2323"
                                         titleText={localize(
                                             'load_balancer_stats.waiting_requests',
                                             'Waiting Requests'

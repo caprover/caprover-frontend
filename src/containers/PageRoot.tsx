@@ -1,11 +1,6 @@
-import {
-    BarsOutlined,
-    GiftTwoTone,
-    GlobalOutlined,
-    LogoutOutlined,
-} from '@ant-design/icons'
-import { Button, Col, Layout, Row } from 'antd'
-import React, { Fragment, RefObject } from 'react'
+import { Button, Layout } from 'antd'
+import { Gift, PanelLeft } from 'lucide-react'
+import React, { RefObject } from 'react'
 import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
 import ApiManager from '../api/ApiManager'
@@ -13,6 +8,7 @@ import { IVersionInfo } from '../models/IVersionInfo'
 import * as GlobalActions from '../redux/actions/GlobalActions'
 import { localize } from '../utils/Language'
 import StorageHelper from '../utils/StorageHelper'
+import Utils from '../utils/Utils'
 import Dashboard from './Dashboard'
 import LoggedInCatchAll from './LoggedInCatchAll'
 import Sidebar from './Sidebar'
@@ -25,10 +21,6 @@ import TemplateInputPage from './apps/oneclick/template/TemplateInputPage'
 import OneClickAppConfigPage from './apps/oneclick/variables/OneClickAppConfigPage'
 import OneClickDeploymentPage from './apps/oneclick/variables/OneClickDeploymentPage'
 import ApiComponent from './global/ApiComponent'
-import ClickableLink from './global/ClickableLink'
-import DarkModeSwitch from './global/DarkModeSwitch'
-import LanguageSelector from './global/LanguageSelector'
-import NewTabLink from './global/NewTabLink'
 import Maintenance from './maintenance/Maintenance'
 import DiskUsageAlertContainer from './monitoring/DiskUsageAlertContainer'
 import Monitoring from './monitoring/Monitoring'
@@ -43,12 +35,11 @@ interface RootPageInterface extends RouteComponentProps<any> {
     isMobile: boolean
 }
 
-class PageRoot extends ApiComponent<
+export class PageRoot extends ApiComponent<
     RootPageInterface,
     {
         versionInfo: IVersionInfo | undefined
         collapsed: boolean
-        showLanguageSelector: boolean
     }
 > {
     private mainContainer: RefObject<HTMLDivElement>
@@ -56,11 +47,7 @@ class PageRoot extends ApiComponent<
     constructor(props: any) {
         super(props)
         this.mainContainer = React.createRef()
-        this.state = {
-            versionInfo: undefined,
-            collapsed: false,
-            showLanguageSelector: false,
-        }
+        this.state = { versionInfo: undefined, collapsed: Utils.isMobile() }
     }
 
     updateDimensions = () => this.props.emitSizeChanged()
@@ -68,26 +55,28 @@ class PageRoot extends ApiComponent<
     componentWillUnmount() {
         // @ts-ignore
         if (super.componentWillUnmount) super.componentWillUnmount()
-        this.updateDimensions()
         window.removeEventListener('resize', this.updateDimensions)
     }
 
-    componentDidUpdate(prevProps: any) {
-        // Typical usage (don't forget to compare props):
+    componentDidUpdate(prevProps: RootPageInterface) {
         if (
-            this.props.location.pathname !== prevProps.location.pathname &&
-            this.props.isMobile
+            this.props.isMobile &&
+            (!prevProps.isMobile ||
+                this.props.location.pathname !== prevProps.location.pathname)
         ) {
             this.setState({ collapsed: true })
+        } else if (prevProps.isMobile && !this.props.isMobile) {
+            this.setState({
+                collapsed:
+                    StorageHelper.getSiderCollapsedStateFromLocalStorage(),
+            })
         }
     }
 
     componentDidMount() {
         const self = this
         this.updateDimensions()
-
         window.addEventListener('resize', this.updateDimensions)
-
         if (!ApiManager.isLoggedIn()) {
             this.goToLogin()
         } else {
@@ -96,11 +85,12 @@ class PageRoot extends ApiComponent<
                 .then(function (data) {
                     self.setState({ versionInfo: data })
                 })
-                .catch((err) => {
-                    // ignore error
+                .catch(() => {
+                    /* Version checks do not block navigation. */
                 })
             this.setState({
                 collapsed:
+                    Utils.isMobile() ||
                     StorageHelper.getSiderCollapsedStateFromLocalStorage(),
             })
         }
@@ -110,191 +100,75 @@ class PageRoot extends ApiComponent<
         this.props.history.push('/login')
     }
 
-    createUpdateAvailableIfNeeded() {
-        const self = this
-
-        if (!self.state.versionInfo || !self.state.versionInfo.canUpdate) {
-            return undefined
-        }
-
-        return (
-            <Fragment>
-                <ClickableLink
-                    onLinkClicked={() =>
-                        self.props.history.push('/maintenance')
-                    }
-                >
-                    <GiftTwoTone
-                        style={{
-                            marginInlineStart: 50,
-                        }}
-                    />
-                    <GiftTwoTone
-                        style={{
-                            marginInlineEnd: 10,
-                            marginInlineStart: 3,
-                        }}
-                    />
-                    Update Available!
-                    <GiftTwoTone
-                        style={{
-                            marginInlineStart: 10,
-                        }}
-                    />
-                    <GiftTwoTone
-                        style={{
-                            marginInlineStart: 3,
-                        }}
-                    />
-                </ClickableLink>
-            </Fragment>
-        )
-    }
-
     toggleSider = () => {
-        StorageHelper.setSiderCollapsedStateInLocalStorage(
-            !this.state.collapsed
-        )
+        if (!this.props.isMobile) {
+            StorageHelper.setSiderCollapsedStateInLocalStorage(
+                !this.state.collapsed
+            )
+        }
         this.setState({ collapsed: !this.state.collapsed })
     }
 
     render() {
         const self = this
-
+        const section = this.props.location.pathname.split('/')[1]
+        const titles: { [key: string]: string } = {
+            dashboard: localize('menu_item.dashboard', 'Dashboard'),
+            apps: localize('menu_item.app', 'Apps'),
+            monitoring: localize('menu_item.monitoring', 'Monitoring'),
+            cluster: localize('menu_item.cluster', 'Cluster'),
+            maintenance: localize('menu_item.maintenance', 'Maintenance'),
+            settings: localize('menu_item.settings', 'Settings'),
+        }
         return (
-            <Layout className="full-screen" key={self.props.rootElementKey}>
-                <Header
-                    className="header"
-                    style={{
-                        padding: `0 ${this.props.isMobile ? 15 : 50}px`,
+            <Layout
+                className="full-screen app-shell"
+                key={self.props.rootElementKey}
+            >
+                <Sidebar
+                    isMobile={this.props.isMobile}
+                    collapsed={this.state.collapsed}
+                    toggleSider={this.toggleSider}
+                    location={this.props.location}
+                    history={this.props.history}
+                    onLogoutClicked={() => {
+                        ApiManager.clearAuthKeys()
+                        self.goToLogin()
                     }}
-                >
-                    <Row>
-                        {this.props.isMobile && (
-                            <Col span={4}>
-                                <Button
-                                    ghost
-                                    icon={<BarsOutlined />}
-                                    onClick={this.toggleSider}
-                                />
-                            </Col>
+                />
+                <Layout className="workspace-layout">
+                    <Header className="workspace-header">
+                        <div className="workspace-breadcrumb">
+                            <Button
+                                type="text"
+                                icon={<PanelLeft size={16} />}
+                                onClick={this.toggleSider}
+                                aria-label={localize(
+                                    'navigation.toggle',
+                                    'Toggle navigation'
+                                )}
+                            />
+                            <span className="header-separator" />
+                            <span>{titles[section] || 'CapRover'}</span>
+                        </div>
+                        {self.state.versionInfo?.canUpdate && (
+                            <Button
+                                size="small"
+                                icon={<Gift size={14} />}
+                                onClick={() =>
+                                    self.props.history.push('/maintenance')
+                                }
+                            >
+                                {localize(
+                                    'navigation.update_available',
+                                    'Update available'
+                                )}
+                            </Button>
                         )}
-                        {(this.props.isMobile &&
-                            self.createUpdateAvailableIfNeeded()) || (
-                            <Col lg={{ span: 12 }} xs={{ span: 12 }}>
-                                <Row align="middle">
-                                    <img
-                                        alt="logo"
-                                        src="/icon-512x512.png"
-                                        style={{
-                                            height: 45,
-                                            marginInlineEnd: 10,
-                                        }}
-                                    />
-                                    <h3 style={{ color: '#fff', margin: 0 }}>
-                                        CapRover
-                                    </h3>
-                                    {self.createUpdateAvailableIfNeeded()}
-                                </Row>
-                            </Col>
-                        )}
-                        {!self.props.isMobile && (
-                            <Col span={12}>
-                                <Row justify="end">
-                                    <NewTabLink url="https://github.com/caprover/caprover">
-                                        <span style={{ marginInlineEnd: 20 }}>
-                                            {localize(
-                                                'page_root.github_link',
-                                                'Github'
-                                            )}
-                                        </span>
-                                    </NewTabLink>
-
-                                    <span
-                                        style={{
-                                            marginInlineEnd: 30,
-                                        }}
-                                    >
-                                        <NewTabLink url="https://caprover.com">
-                                            {localize(
-                                                'page_root.docs_link',
-                                                'Docs'
-                                            )}
-                                        </NewTabLink>
-                                    </span>
-                                    <span
-                                        style={{
-                                            marginInlineEnd: 20,
-                                        }}
-                                    >
-                                        <DarkModeSwitch />
-                                    </span>
-                                    <span
-                                        style={{
-                                            marginInlineEnd: 50,
-                                        }}
-                                    >
-                                        {self.createLanguageSelector()}
-                                    </span>
-                                    <span>
-                                        <Button
-                                            type="primary"
-                                            ghost
-                                            onClick={() => {
-                                                ApiManager.clearAuthKeys()
-                                                self.goToLogin()
-                                            }}
-                                        >
-                                            {localize(
-                                                'page_root.logout',
-                                                'Logout'
-                                            )}
-                                            <LogoutOutlined />
-                                        </Button>
-                                    </span>
-                                </Row>
-                            </Col>
-                        )}
-                    </Row>
-                </Header>
-
-                <Layout>
-                    <Sidebar
-                        isMobile={this.props.isMobile}
-                        collapsed={this.state.collapsed}
-                        toggleSider={this.toggleSider}
-                        location={this.props.location}
-                        history={this.props.history}
-                        onLogoutClicked={() => {
-                            ApiManager.clearAuthKeys()
-                            self.goToLogin()
-                        }}
-                    />
-                    <Content
-                        style={{
-                            minWidth: 0,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            marginInlineEnd: self.state.collapsed
-                                ? 0
-                                : self.props.isMobile
-                                  ? -200
-                                  : 0,
-                            transition: 'margin-right 0.3s ease',
-                        }}
-                    >
+                    </Header>
+                    <Content className="workspace-content">
                         <DiskUsageAlertContainer history={self.props.history} />
-                        <div
-                            ref={self.mainContainer}
-                            style={{
-                                paddingTop: 12,
-                                paddingBottom: 36,
-                                flex: 1,
-                                minHeight: 0,
-                                overflowY: 'scroll',
-                            }}
-                            id="main-content-layout"
-                        >
+                        <div ref={self.mainContainer} id="main-content-layout">
                             <Switch>
                                 <Route
                                     path="/dashboard/"
@@ -368,18 +242,6 @@ class PageRoot extends ApiComponent<
                     </Content>
                 </Layout>
             </Layout>
-        )
-    }
-    createLanguageSelector(): React.ReactNode {
-        const self = this
-        return self.state.showLanguageSelector ? (
-            <LanguageSelector />
-        ) : (
-            <Button
-                onClick={() => self.setState({ showLanguageSelector: true })}
-                shape="circle"
-                icon={<GlobalOutlined />}
-            />
         )
     }
 }
