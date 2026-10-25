@@ -151,3 +151,16 @@ Thank you to all our backers! 🙏
 ![Contributors](https://contrib.rocks/image?repo=caprover/caprover-frontend)
 
 [![Donate](https://opencollective.com/caprover/donate/button.png?color=blue)](https://opencollective.com/caprover#backer)
+
+## Setup and Overview
+
+New installations open Setup until Force HTTPS is enabled. Overview and all other
+pages remain accessible during setup. HTTP-only installations can select
+**Dismiss Setup** to hide the sidebar item and use Overview as the default landing
+page. Dismissal is stored in local browser storage for the current CapRover
+origin. It applies only to that browser/profile and origin, and clearing site data
+resets it. It does not change server configuration.
+
+Domains & HTTPS remain available in Settings after setup is completed or dismissed.
+The legacy `/dashboard` route resolves to Setup when needed and Overview otherwise.
+Existing `/cluster` and `/maintenance#disk-cleanup` links remain valid.

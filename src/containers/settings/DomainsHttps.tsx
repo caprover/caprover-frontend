@@ -1,8 +1,9 @@
 import { Button, Card, Col, Input, Modal, Row, Space, Tag, Tooltip } from 'antd'
-import { ArrowUpRight, Globe, LockKeyhole, ShieldCheck } from 'lucide-react'
-import { Redirect, RouteComponentProps, withRouter } from 'react-router'
+import { Globe, LockKeyhole, ShieldCheck } from 'lucide-react'
 import { Fragment } from 'react/jsx-runtime'
-import AppConstants from '../../utils/AppConstants'
+import { connect } from 'react-redux'
+import { SetupStatus } from '../../models/SetupStatus'
+import { emitSetupStatusChanged } from '../../redux/actions/SetupActions'
 import { localize } from '../../utils/Language'
 import Toaster from '../../utils/Toaster'
 import Utils from '../../utils/Utils'
@@ -12,8 +13,9 @@ import ErrorRetry from '../global/ErrorRetry'
 import NewTabLink from '../global/NewTabLink'
 const Search = Input.Search
 
-interface DomainsHttpsProps extends RouteComponentProps<any> {
+interface DomainsHttpsProps {
     guided?: boolean
+    emitSetupStatusChanged: (status: SetupStatus) => void
 }
 
 export class DomainsHttps extends ApiComponent<
@@ -46,6 +48,9 @@ export class DomainsHttps extends ApiComponent<
             .getCaptainInfo()
             .then(function (data: any) {
                 self.setState({ apiData: data })
+                self.props.emitSetupStatusChanged(
+                    data.forceSsl ? SetupStatus.Complete : SetupStatus.Required
+                )
             })
             .catch(Toaster.createCatcher())
             .then(function () {
@@ -86,6 +91,7 @@ export class DomainsHttps extends ApiComponent<
                         self.setState({
                             apiData: { ...self.state.apiData, forceSsl: true },
                         })
+                        self.props.emitSetupStatusChanged(SetupStatus.Complete)
                         Modal.success({
                             title: localize(
                                 'dashboard.force_https_activated',
@@ -326,23 +332,14 @@ export class DomainsHttps extends ApiComponent<
             return this.createSetupPanelIfNoForceSsl()
         }
 
-        const qs = new URLSearchParams(self.props.location.search)
-
-        if (
-            !!this.state.apiData.forceSsl &&
-            !!qs.get(AppConstants.REDIRECT_TO_APPS_IF_READY_REQ_PARAM)
-        ) {
-            return <Redirect to="/apps" />
-        }
-
         return (
             <div className="dashboard-page">
                 <div className="page-heading">
-                    <h1>{localize('dashboard.overview', 'Overview')}</h1>
+                    <h1>{localize('menu_item.setup', 'Setup')}</h1>
                     <p>
                         {localize(
-                            'dashboard.overview_subtitle',
-                            'Your deployment platform at a glance.'
+                            'setup.subtitle',
+                            'Configure your root domain and HTTPS.'
                         )}
                     </p>
                 </div>
@@ -415,7 +412,6 @@ export class DomainsHttps extends ApiComponent<
                     </Card>
                 </div>
                 {self.createInitialSetupIfNoRootSsl()}
-                {self.createPostFullSetupIfHasForceSsl()}
                 {self.createSetupPanelIfNoForceSsl()}
             </div>
         )
@@ -752,73 +748,6 @@ export class DomainsHttps extends ApiComponent<
             </Row>
         )
     }
-
-    createPostFullSetupIfHasForceSsl() {
-        const self = this
-        if (!this.state.apiData.forceSsl) {
-            // User has not fully set up the machine, do not show the post installation message
-            return undefined
-        }
-
-        return (
-            <Row justify="center">
-                <Col span={24}>
-                    <Card
-                        title={localize(
-                            'dashboard.workspace_ready',
-                            'Ready to deploy'
-                        )}
-                        extra={
-                            <Button
-                                type="primary"
-                                onClick={() => self.props.history.push('/apps')}
-                                icon={<ArrowUpRight size={14} />}
-                            >
-                                {localize(
-                                    'dashboard.open_apps',
-                                    'Open applications'
-                                )}
-                            </Button>
-                        }
-                    >
-                        <p className="muted-description">
-                            {localize(
-                                'dashboard.ready_description',
-                                'Deploy code, connect a repository, or launch a ready-to-use app. Your domain and HTTPS are configured.'
-                            )}
-                        </p>
-                        <div className="dashboard-links">
-                            <NewTabLink url="https://caprover.com/docs/sample-apps.html">
-                                {localize(
-                                    'dashboard.sample_apps',
-                                    'Sample apps'
-                                )}
-                            </NewTabLink>
-                            <Button
-                                disabled={this.state.isForceChangingDomain}
-                                onClick={() =>
-                                    self.setState({
-                                        isForceChangingDomain: true,
-                                    })
-                                }
-                            >
-                                {localize(
-                                    'dashboard.change_root_domain_anyways',
-                                    'Change Root Domain Anyways'
-                                )}
-                            </Button>
-                        </div>
-                        <p className="domain-change-warning">
-                            {localize(
-                                'dashboard.update_root_domain_caution',
-                                'You can always update your root domain, but be careful! Your SSL certificates will get revoked because of this domain change.'
-                            )}
-                        </p>
-                    </Card>
-                </Col>
-            </Row>
-        )
-    }
 }
 
-export default withRouter(DomainsHttps)
+export default connect(undefined, { emitSetupStatusChanged })(DomainsHttps)

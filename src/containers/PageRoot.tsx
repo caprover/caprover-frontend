@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
 import ApiManager from '../api/ApiManager'
 import { IVersionInfo } from '../models/IVersionInfo'
+import { SetupStatus } from '../models/SetupStatus'
+import { refreshSetup } from '../redux/actions/SetupActions'
 import * as GlobalActions from '../redux/actions/GlobalActions'
 import { localize } from '../utils/Language'
 import StorageHelper from '../utils/StorageHelper'
@@ -12,6 +14,7 @@ import Utils from '../utils/Utils'
 import Dashboard from './Dashboard'
 import LoggedInCatchAll from './LoggedInCatchAll'
 import Sidebar from './Sidebar'
+import Setup from './Setup'
 import Apps from './apps/Apps'
 import ProjectDetailsEdit from './apps/ProjectDetailsEdit'
 import AppDetails from './apps/appDetails/AppDetails'
@@ -25,12 +28,16 @@ import Maintenance from './maintenance/Maintenance'
 import DiskUsageAlertContainer from './monitoring/DiskUsageAlertContainer'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
+import Overview from './overview/Overview'
 import Settings from './settings/Settings'
 
 const { Header, Content } = Layout
 
 interface RootPageInterface extends RouteComponentProps<any> {
     rootElementKey: string
+    setupStatus: SetupStatus
+    setupDismissed: boolean
+    refreshSetup: () => void
     emitSizeChanged: () => void
     isMobile: boolean
 }
@@ -80,6 +87,7 @@ export class PageRoot extends ApiComponent<
         if (!ApiManager.isLoggedIn()) {
             this.goToLogin()
         } else {
+            this.props.refreshSetup()
             this.apiManager
                 .getVersionInfo()
                 .then(function (data) {
@@ -113,7 +121,8 @@ export class PageRoot extends ApiComponent<
         const self = this
         const section = this.props.location.pathname.split('/')[1]
         const titles: { [key: string]: string } = {
-            dashboard: localize('menu_item.dashboard', 'Dashboard'),
+            overview: localize('menu_item.overview', 'Overview'),
+            setup: localize('menu_item.setup', 'Setup'),
             apps: localize('menu_item.app', 'Apps'),
             monitoring: localize('menu_item.monitoring', 'Monitoring'),
             cluster: localize('menu_item.infrastructure', 'Infrastructure'),
@@ -126,6 +135,10 @@ export class PageRoot extends ApiComponent<
                 key={self.props.rootElementKey}
             >
                 <Sidebar
+                    showSetup={
+                        !this.props.setupDismissed &&
+                        this.props.setupStatus !== SetupStatus.Complete
+                    }
                     isMobile={this.props.isMobile}
                     collapsed={this.state.collapsed}
                     toggleSider={this.toggleSider}
@@ -170,6 +183,8 @@ export class PageRoot extends ApiComponent<
                         <DiskUsageAlertContainer history={self.props.history} />
                         <div ref={self.mainContainer} id="main-content-layout">
                             <Switch>
+                                <Route path="/overview/" component={Overview} />
+                                <Route path="/setup/" component={Setup} />
                                 <Route
                                     path="/dashboard/"
                                     component={Dashboard}
@@ -249,10 +264,13 @@ export class PageRoot extends ApiComponent<
 function mapStateToProps(state: any) {
     return {
         rootElementKey: state.globalReducer.rootElementKey,
+        setupStatus: state.globalReducer.setupStatus,
+        setupDismissed: state.globalReducer.setupDismissed,
         isMobile: state.globalReducer.isMobile,
     }
 }
 
 export default connect(mapStateToProps, {
     emitSizeChanged: GlobalActions.emitSizeChanged,
+    refreshSetup,
 })(PageRoot)

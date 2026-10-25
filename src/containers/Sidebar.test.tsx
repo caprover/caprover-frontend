@@ -9,13 +9,18 @@ jest.mock('../utils/Language', () => ({
 jest.mock('./global/LanguageSelector', () => () => <div>Language selector</div>)
 jest.mock('./global/DarkModeSwitch', () => () => <button>Color mode</button>)
 
-const renderSidebar = (isMobile = false, collapsed = false) => {
+const renderSidebar = (
+    isMobile = false,
+    collapsed = false,
+    showSetup = true
+) => {
     const history = { push: jest.fn() }
     const toggleSider = jest.fn()
     const onLogoutClicked = jest.fn()
     render(
         <Sidebar
             isMobile={isMobile}
+            showSetup={showSetup}
             collapsed={collapsed}
             toggleSider={toggleSider}
             onLogoutClicked={onLogoutClicked}
@@ -73,3 +78,25 @@ it.each([false, true])(
         expect(history.push).toHaveBeenCalledWith('/cluster')
     }
 )
+
+it.each([false, true])(
+    'shows Overview first after Setup is hidden (mobile: %s)',
+    (isMobile) => {
+        renderSidebar(isMobile, false, false)
+        expect(
+            screen.queryByRole('menuitem', { name: 'Setup' })
+        ).not.toBeInTheDocument()
+        expect(screen.getAllByRole('menuitem')[0]).toHaveTextContent('Overview')
+    }
+)
+
+it('keeps Overview and administration accessible during setup', () => {
+    renderSidebar()
+    expect(screen.getAllByRole('menuitem')[0]).toHaveTextContent('Setup')
+    expect(
+        screen.getByRole('menuitem', { name: 'Overview' })
+    ).toBeInTheDocument()
+    expect(
+        screen.getByRole('menuitem', { name: 'Settings' })
+    ).toBeInTheDocument()
+})
