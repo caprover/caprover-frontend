@@ -592,5 +592,19 @@
   "app_runtime.running_duration": "Har körts i %s1",
   "app_runtime.past_duration": "%s1 för %s2 sedan",
   "overview.app_count": "%s1 appar",
-  "overview.missing_runtime_count": "%s1 med otillgängliga körningsdata"
+  "overview.missing_runtime_count": "%s1 med otillgängliga körningsdata",
+  "app_runtime.state_running": "Körs",
+  "app_runtime.state_failed": "Misslyckades",
+  "app_runtime.state_rejected": "Avvisad",
+  "app_runtime.state_orphaned": "Föräldralös",
+  "app_runtime.state_starting": "Startar",
+  "app_runtime.state_preparing": "Förbereder",
+  "app_runtime.state_ready": "Redo",
+  "app_runtime.state_pending": "Väntar",
+  "app_runtime.state_new": "Ny",
+  "app_runtime.state_allocated": "Resurser tilldelade",
+  "app_runtime.state_assigned": "Tilldelad",
+  "app_runtime.state_accepted": "Accepterad",
+  "app_runtime.state_complete": "Slutförd",
+  "app_runtime.state_shutdown": "Avstängd"
 }
