@@ -112,13 +112,12 @@ function getStateDuration(task: CapRoverModels.RuntimeTask): string {
 
     const duration = moment(task.stateChangedAt).fromNow(true)
     if (task.state === CapRoverModels.TaskState.Running) {
-        return `${localize(
-            'app_runtime.running_for',
-            'Running for'
-        )} ${duration}`
+        return localize('app_runtime.running_duration', 'Running for %s1').replace('%s1', duration)
     }
 
-    return `${task.state} ${duration} ${localize('app_runtime.ago', 'ago')}`
+    return localize('app_runtime.past_duration', '%s1 %s2 ago')
+        .replace('%s1', task.state)
+        .replace('%s2', duration)
 }
 
 function getTaskTagColor(task: CapRoverModels.RuntimeTask): string {
