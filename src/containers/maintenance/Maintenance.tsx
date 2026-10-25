@@ -32,8 +32,8 @@ class Maintenance extends Component<
                         <Card
                             style={{ height: '100%' }}
                             title={localize(
-                                'settings.check_for_updates',
-                                'Check for Updates'
+                                'maintenance.caprover_updates',
+                                'CapRover Updates'
                             )}
                         >
                             <CheckUpdate isMobile={this.props.isMobile} />
@@ -46,7 +46,10 @@ class Maintenance extends Component<
                     >
                         <Card
                             style={{ height: '100%' }}
-                            title={localize('settings.backup', 'Backup')}
+                            title={localize(
+                                'maintenance.configuration_backup',
+                                'Configuration Backup'
+                            )}
                         >
                             <BackupCreator isMobile={this.props.isMobile} />
                         </Card>
@@ -61,10 +64,16 @@ class Maintenance extends Component<
                         <Card
                             style={{ height: '100%' }}
                             title={localize(
-                                'settings.disk_cleanup',
-                                'Disk Cleanup'
+                                'maintenance.docker_image_cleanup',
+                                'Docker Image Cleanup'
                             )}
                         >
+                            <h3>
+                                {localize(
+                                    'maintenance.automatic_cleanup',
+                                    'Automatic Cleanup'
+                                )}
+                            </h3>
                             <AutomaticDiskCleanup
                                 isMobile={this.props.isMobile}
                             />
@@ -77,8 +86,8 @@ class Maintenance extends Component<
                                     {
                                         key: '1',
                                         label: localize(
-                                            'settings.one_off_cleanup',
-                                            'One off cleanup'
+                                            'maintenance.manual_cleanup',
+                                            'Manual Cleanup'
                                         ),
                                         children: (
                                             <DiskCleanup

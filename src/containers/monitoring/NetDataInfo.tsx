@@ -1,5 +1,5 @@
 import { AreaChartOutlined, PoweroffOutlined } from '@ant-design/icons'
-import { Button, Card, Col, message, Row } from 'antd'
+import { Button, Card, Col, Collapse, message, Row } from 'antd'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
 import { localize } from '../../utils/Language'
@@ -184,35 +184,57 @@ class NetDataInfo extends ApiComponent<
                                         </Button>
                                     </a>
                                 </Row>
-                                <div style={{ height: 30 }} />
-                                <hr />
-                                <div style={{ height: 30 }} />
-                                <NetDataSettingsForm
-                                    updateModel={(netDataInfo) => {
-                                        self.setState({ apiData: netDataInfo })
-                                    }}
-                                    netDataInfo={netDataInfo}
+                                <Collapse
+                                    style={{ marginTop: 20 }}
+                                    items={[
+                                        {
+                                            key: 'settings',
+                                            label: localize(
+                                                'monitoring.advanced_settings',
+                                                'Advanced Settings'
+                                            ),
+                                            children: (
+                                                <div>
+                                                    <NetDataSettingsForm
+                                                        updateModel={(
+                                                            netDataInfo
+                                                        ) => {
+                                                            self.setState({
+                                                                apiData:
+                                                                    netDataInfo,
+                                                            })
+                                                        }}
+                                                        netDataInfo={
+                                                            netDataInfo
+                                                        }
+                                                    />
+
+                                                    <br />
+
+                                                    <Row justify="end">
+                                                        <Button
+                                                            type="primary"
+                                                            onClick={() =>
+                                                                self.onUpdateNetDataClicked(
+                                                                    Utils.copyObject(
+                                                                        self
+                                                                            .state
+                                                                            .apiData
+                                                                    )
+                                                                )
+                                                            }
+                                                        >
+                                                            {localize(
+                                                                'netdata.update_net_data',
+                                                                'Update NetData'
+                                                            )}
+                                                        </Button>
+                                                    </Row>
+                                                </div>
+                                            ),
+                                        },
+                                    ]}
                                 />
-
-                                <br />
-
-                                <Row justify="end">
-                                    <Button
-                                        type="primary"
-                                        onClick={() =>
-                                            self.onUpdateNetDataClicked(
-                                                Utils.copyObject(
-                                                    self.state.apiData
-                                                )
-                                            )
-                                        }
-                                    >
-                                        {localize(
-                                            'netdata.update_net_data',
-                                            'Update NetData'
-                                        )}
-                                    </Button>
-                                </Row>
                             </div>
                         </Card>
                     </Col>

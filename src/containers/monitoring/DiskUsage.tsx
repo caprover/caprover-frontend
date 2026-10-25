@@ -16,6 +16,7 @@ import DiskUsageViewState from '../../models/DiskUsageViewState'
 import { localize } from '../../utils/Language'
 
 interface DiskUsageProps {
+    compact?: boolean
     diskUsage: DiskUsageViewState
     history: RouteComponentProps<any>['history']
     refreshDiskUsage: () => void
@@ -129,6 +130,7 @@ export default function DiskUsage({
     diskUsage,
     history,
     refreshDiskUsage,
+    compact,
 }: DiskUsageProps) {
     const { token } = theme.useToken()
     const reading = getReading(diskUsage.data)
@@ -222,19 +224,22 @@ export default function DiskUsage({
                     }
                 />
 
-                <div style={{ marginTop: 14 }}>
-                    {localize(
-                        'disk_usage.scope_description',
-                        "This is the filesystem that backs CapRover's data directory. Its capacity includes all usage on that filesystem."
-                    )}
-                </div>
-                <div>
-                    {localize(
-                        'disk_usage.severity_description',
-                        'Status is based on available capacity; filesystem-reserved space is not shown as used.'
-                    )}
-                </div>
-
+                {!compact && (
+                    <>
+                        <div style={{ marginTop: 14 }}>
+                            {localize(
+                                'disk_usage.scope_description',
+                                "This is the filesystem that backs CapRover's data directory. Its capacity includes all usage on that filesystem."
+                            )}
+                        </div>
+                        <div>
+                            {localize(
+                                'disk_usage.severity_description',
+                                'Status is based on available capacity; filesystem-reserved space is not shown as used.'
+                            )}
+                        </div>
+                    </>
+                )}
                 <div style={{ marginTop: 10 }}>
                     <Button
                         type="link"

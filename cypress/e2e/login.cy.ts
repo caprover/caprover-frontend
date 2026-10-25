@@ -13,13 +13,26 @@ const REAL_PASSWORD_RESPONSE = {"status": 100, "description": "Login succeeded",
 
 let interceptFlag: boolean = true
 
-const visitLoginPage = () =>
-  cy.visit(BASE_URL, {
+const visitLoginPage = (forceSsl = false) => {
+  cy.intercept('GET', '**/api/v2/user/system/info', {
+    statusCode: 200,
+    body: {
+      status: 100,
+      data: {
+        hasRootSsl: forceSsl,
+        forceSsl,
+        rootDomain: forceSsl ? 'example.com' : '',
+        captainSubDomain: 'captain',
+      },
+    },
+  })
+  return cy.visit(BASE_URL, {
     onBeforeLoad: (win) => {
       win.localStorage.clear()
       win.sessionStorage.clear()
     },
   })
+}
 
 describe('login page', () => {
   describe('without any password', () => {
@@ -111,14 +124,14 @@ describe('login page', () => {
         })
       }).as('logUser')
     })
-    it('should send the request to the server and redirect into the dashboard', () => {
+    it('should send the request to the server and redirect into setup', () => {
       visitLoginPage()
       cy.get('input[type=password]').type(REAL_PASSWORD, { force: true })
       cy.get('button[type=submit]').click()
       cy.wait('@logUser').then(() => {
         expect(interceptFlag).to.equal(true)
         cy.url()
-            .should('be.contain', 'dashboard')
+            .should('be.contain', '/setup')
       })
     })
   })
@@ -138,14 +151,33 @@ describe('login page', () => {
         })
       }).as('logUser')
     })
-    it('should send the request to the server and redirect into the dashboard', () => {
+    it('should send the request to the server and redirect into setup', () => {
       visitLoginPage()
       cy.get('input[type=password]').type(REAL_PASSWORD + "{enter}", { force: true })
       cy.wait('@logUser').then(() => {
         expect(interceptFlag).to.equal(true)
         cy.url()
-            .should('be.contain', 'dashboard')
+            .should('be.contain', '/setup')
       })
+    })
+  })
+
+  describe('with a fully configured server', () => {
+    beforeEach(() => {
+      cy.intercept({
+        method: 'POST',
+        url: API_URL
+      }, {
+        statusCode: 200,
+        body: REAL_PASSWORD_RESPONSE
+      }).as('logUser')
+    })
+    it('redirects to Apps after login', () => {
+      visitLoginPage(true)
+      cy.get('input[type=password]').type(REAL_PASSWORD, { force: true })
+      cy.get('button[type=submit]').click()
+      cy.wait('@logUser')
+      cy.url().should('be.contain', '/apps')
     })
   })
 

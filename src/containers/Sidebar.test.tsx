@@ -9,13 +9,18 @@ jest.mock('../utils/Language', () => ({
 jest.mock('./global/LanguageSelector', () => () => <div>Language selector</div>)
 jest.mock('./global/DarkModeSwitch', () => () => <button>Color mode</button>)
 
-const renderSidebar = (isMobile = false, collapsed = false) => {
+const renderSidebar = (
+    isMobile = false,
+    collapsed = false,
+    showSetup = true
+) => {
     const history = { push: jest.fn() }
     const toggleSider = jest.fn()
     const onLogoutClicked = jest.fn()
     render(
         <Sidebar
             isMobile={isMobile}
+            showSetup={showSetup}
             collapsed={collapsed}
             toggleSider={toggleSider}
             onLogoutClicked={onLogoutClicked}
@@ -60,4 +65,38 @@ it('opens mobile navigation in a dismissible drawer', () => {
     expect(history.push).toHaveBeenCalledWith('/settings')
     fireEvent.click(screen.getByRole('button', { name: 'Close' }))
     expect(toggleSider).toHaveBeenCalledTimes(1)
+})
+
+it.each([false, true])(
+    'uses Administration and Infrastructure while retaining the cluster route (mobile: %s)',
+    (isMobile) => {
+        const { history } = renderSidebar(isMobile)
+        expect(screen.getByText('Administration')).toBeInTheDocument()
+        fireEvent.click(
+            screen.getByRole('menuitem', { name: 'Infrastructure' })
+        )
+        expect(history.push).toHaveBeenCalledWith('/cluster')
+    }
+)
+
+it.each([false, true])(
+    'shows Overview first after Setup is hidden (mobile: %s)',
+    (isMobile) => {
+        renderSidebar(isMobile, false, false)
+        expect(
+            screen.queryByRole('menuitem', { name: 'Setup' })
+        ).not.toBeInTheDocument()
+        expect(screen.getAllByRole('menuitem')[0]).toHaveTextContent('Overview')
+    }
+)
+
+it('keeps Overview and administration accessible during setup', () => {
+    renderSidebar()
+    expect(screen.getAllByRole('menuitem')[0]).toHaveTextContent('Setup')
+    expect(
+        screen.getByRole('menuitem', { name: 'Overview' })
+    ).toBeInTheDocument()
+    expect(
+        screen.getByRole('menuitem', { name: 'Settings' })
+    ).toBeInTheDocument()
 })

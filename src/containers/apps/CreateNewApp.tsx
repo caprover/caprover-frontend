@@ -48,10 +48,21 @@ export default class CreateNewApp extends Component<
         super(props)
         this.createAppButton = createRef()
         this.state = {
-            isModalOpen: false,
+            isModalOpen:
+                new URLSearchParams(props.history.location.search).get(
+                    'create'
+                ) === 'true',
             hasPersistency: false,
             selectedProjectId: '',
         }
+    }
+
+    componentDidMount() {
+        const location = this.props.history.location
+        const query = new URLSearchParams(location.search)
+        if (query.get('create') !== 'true') return
+        query.delete('create')
+        this.props.history.replace({ ...location, search: query.toString() })
     }
 
     render() {

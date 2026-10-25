@@ -106,7 +106,7 @@ export default class AutomaticDiskCleanup extends ApiComponent<
                     </p>
                     <Row>
                         {' '}
-                        <Col span={12}>
+                        <Col xs={24} md={12}>
                             {' '}
                             <Tooltip
                                 title={localize(
@@ -144,10 +144,15 @@ export default class AutomaticDiskCleanup extends ApiComponent<
                                 />
                             </Tooltip>
                         </Col>
-                        <Col span={12}>
+                        <Col xs={24} md={12}>
                             <Row justify="end">
                                 <Select
-                                    style={{ minWidth: 300 }}
+                                    style={{
+                                        minWidth: this.props.isMobile ? 0 : 300,
+                                        width: this.props.isMobile
+                                            ? '100%'
+                                            : undefined,
+                                    }}
                                     showSearch
                                     placeholder={localize(
                                         'automatic_disk_cleanup.timezone',
@@ -193,7 +198,7 @@ export default class AutomaticDiskCleanup extends ApiComponent<
                     </Row>
 
                     <Row style={{ marginTop: 10 }}>
-                        <Col span={12}>
+                        <Col xs={24} md={12}>
                             <Tooltip
                                 title={localize(
                                     'automatic_disk_cleanup.for_example_enter_2',
@@ -226,7 +231,7 @@ export default class AutomaticDiskCleanup extends ApiComponent<
                             </Tooltip>
                         </Col>
 
-                        <Col span={12}>
+                        <Col xs={24} md={12}>
                             <Row justify="end">
                                 <Button
                                     type="default"

@@ -32,12 +32,14 @@ export class Monitoring extends Component<MonitoringProps> {
                         )}
                     </p>
                 </div>
+                <h2>{localize('monitoring.system_health', 'System Health')}</h2>
                 <DiskUsage
                     diskUsage={this.props.diskUsage}
                     history={this.props.history}
                     refreshDiskUsage={this.props.refreshDiskUsage}
                 />
                 <LoadBalancerStats />
+                <h2>{localize('monitoring.tools', 'Monitoring Tools')}</h2>
                 <NetDataInfo />
                 <GoAccessInfo />
             </div>
