@@ -782,3 +782,18 @@ hr {
         opacity: 1;
     }
 }
+
+.server-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.server-overview-page .ant-list-item {
+    overflow-wrap: anywhere;
+}
+@media (max-width: 767px) {
+    .server-overview-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

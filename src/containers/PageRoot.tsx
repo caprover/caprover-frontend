@@ -25,6 +25,7 @@ import Maintenance from './maintenance/Maintenance'
 import DiskUsageAlertContainer from './monitoring/DiskUsageAlertContainer'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
+import Overview from './overview/Overview'
 import Settings from './settings/Settings'
 
 const { Header, Content } = Layout
@@ -113,6 +114,7 @@ export class PageRoot extends ApiComponent<
         const self = this
         const section = this.props.location.pathname.split('/')[1]
         const titles: { [key: string]: string } = {
+            overview: localize('menu_item.overview', 'Overview'),
             dashboard: localize('menu_item.dashboard', 'Dashboard'),
             apps: localize('menu_item.app', 'Apps'),
             monitoring: localize('menu_item.monitoring', 'Monitoring'),
@@ -170,6 +172,7 @@ export class PageRoot extends ApiComponent<
                         <DiskUsageAlertContainer history={self.props.history} />
                         <div ref={self.mainContainer} id="main-content-layout">
                             <Switch>
+                                <Route path="/overview/" component={Overview} />
                                 <Route
                                     path="/dashboard/"
                                     component={Dashboard}
