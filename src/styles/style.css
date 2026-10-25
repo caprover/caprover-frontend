@@ -136,6 +136,24 @@ body {
     background: var(--ant-color-bg-container);
     color: var(--ant-color-text);
 }
+@media (prefers-reduced-motion: no-preference) {
+    .update-available-button {
+        animation: updateAvailablePulse 1.8s ease-in-out;
+    }
+}
+@keyframes updateAvailablePulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    25%,
+    75% {
+        transform: scale(1.06);
+    }
+    50% {
+        transform: scale(1);
+    }
+}
 .app-sidebar.ant-layout-sider-dark .sidebar-brand,
 .app-sidebar.ant-layout-sider-dark .sidebar-footer .ant-btn {
     color: var(--ant-color-text-light-solid);

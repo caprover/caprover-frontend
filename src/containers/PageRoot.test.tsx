@@ -18,7 +18,7 @@ jest.mock('../api/ApiManager', () => ({
             return true
         }
         getVersionInfo() {
-            return Promise.resolve({ canUpdate: false })
+            return Promise.resolve({ canUpdate: true })
         }
         destroy() {}
     },
@@ -67,6 +67,14 @@ beforeEach(() => {
     jest.spyOn(Utils, 'isMobile').mockReturnValue(false)
 })
 afterEach(() => jest.restoreAllMocks())
+
+it('shows a prominent update action when an update is available', async () => {
+    renderPage()
+
+    expect(
+        await screen.findByRole('button', { name: 'Update available' })
+    ).toHaveClass('update-available-button')
+})
 
 it.each([false, true])(
     'preserves the desktop sidebar preference through mobile mode (collapsed: %s)',
