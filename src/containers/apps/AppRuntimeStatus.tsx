@@ -116,7 +116,10 @@ function getStateDuration(task: CapRoverModels.RuntimeTask): string {
 
     const duration = moment(task.stateChangedAt).fromNow(true)
     if (task.state === CapRoverModels.TaskState.Running) {
-        return localize('app_runtime.running_duration', 'Running for %s1').replace('%s1', duration)
+        return localize(
+            'app_runtime.running_duration',
+            'Running for %s1'
+        ).replace('%s1', duration)
     }
 
     return localize('app_runtime.past_duration', '%s1 %s2 ago')
@@ -213,7 +216,9 @@ function renderTask(
                 title={
                     <Space>
                         <span>{getTaskTitle(task)}</span>
-                        <Tag color={getTaskTagColor(task)}>{getTaskStateLabel(task.state)}</Tag>
+                        <Tag color={getTaskTagColor(task)}>
+                            {getTaskStateLabel(task.state)}
+                        </Tag>
                     </Space>
                 }
                 description={

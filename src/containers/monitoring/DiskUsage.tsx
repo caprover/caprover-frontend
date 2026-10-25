@@ -91,19 +91,19 @@ export function DiskUsageAlert({ diskUsage, history }: DiskUsageAlertProps) {
             type={isCritical ? 'error' : 'warning'}
             message={
                 <span>
-                    
                     {localize(
                         'disk_usage.alert_summary',
                         '%s1 on %s2. %s3 available (%s4% of capacity).'
-                    ).replace(/%s([1-4])/g, (_, index) =>
-                        [
-                            title,
-                            reading.node.hostname,
-                            formatBytes(reading.disk.availableBytes),
-                            String(getAvailablePercent(reading.disk)),
-                        ][Number(index) - 1]
-                    )}
-                    {' '}
+                    ).replace(
+                        /%s([1-4])/g,
+                        (_, index) =>
+                            [
+                                title,
+                                reading.node.hostname,
+                                formatBytes(reading.disk.availableBytes),
+                                String(getAvailablePercent(reading.disk)),
+                            ][Number(index) - 1]
+                    )}{' '}
                     {localize(
                         'disk_usage.failure_warning',
                         'Builds and deployments may fail.'
@@ -214,12 +214,14 @@ export default function DiskUsage({
                     {localize(
                         'disk_usage.capacity_summary',
                         '%s1 available of %s2 on %s3'
-                    ).replace(/%s([1-3])/g, (_, index) =>
-                        [
-                            formatBytes(reading.disk.availableBytes),
-                            formatBytes(reading.disk.totalBytes),
-                            reading.node.hostname,
-                        ][Number(index) - 1]
+                    ).replace(
+                        /%s([1-3])/g,
+                        (_, index) =>
+                            [
+                                formatBytes(reading.disk.availableBytes),
+                                formatBytes(reading.disk.totalBytes),
+                                reading.node.hostname,
+                            ][Number(index) - 1]
                     )}
                 </div>
 
