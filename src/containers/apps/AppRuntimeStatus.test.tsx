@@ -147,6 +147,17 @@ it('shows zero for stopped apps and the actual count when overprovisioned', () =
     expect(overprovisionedButton.querySelector('.ant-tag-success')).toBeTruthy()
 })
 
+it('keeps the configured count visible while runtime data loads', () => {
+    renderStatus(undefined, {
+        runtimeDataStatus: RuntimeDataStatus.Loading,
+        showInstances: true,
+        configuredInstances: 0,
+    })
+
+    expect(screen.getByText('0')).toBeInTheDocument()
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+})
+
 it('shows a neutral unknown count when runtime data is unavailable', () => {
     renderStatus(undefined, {
         runtimeDataStatus: RuntimeDataStatus.Failed,
