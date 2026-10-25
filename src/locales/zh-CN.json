@@ -586,5 +586,11 @@
   "themes.edit_name": "主题名称",
   "themes.head_embed": "将元素嵌入<head>",
   "themes.see_here": "查看这里了解详情。",
-  "themes.theme_custom_help": "您可以通过提供自定义主题并将元素（字体、CSS、JS等）注入<head>部分来自定义CapRover主题。"
+  "themes.theme_custom_help": "您可以通过提供自定义主题并将元素（字体、CSS、JS等）注入<head>部分来自定义CapRover主题。",
+  "disk_usage.capacity_summary": "%s3 上总容量 %s2，可用 %s1",
+  "disk_usage.alert_summary": "%s2 上的%s1。可用空间 %s3（占总容量的 %s4%）。",
+  "app_runtime.running_duration": "已运行 %s1",
+  "app_runtime.past_duration": "%s2 前：%s1",
+  "overview.app_count": "%s1 个应用",
+  "overview.missing_runtime_count": "%s1 个应用的运行状态数据不可用"
 }
