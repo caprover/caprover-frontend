@@ -169,7 +169,7 @@
   "apps.edit_app_config": "保存并重启",
   "apps.edit_app_title": "编辑应用：",
   "apps.edit_nginx_config_button": "编辑默认 Nginx 配置",
-  "apps.edit_nginx_description": "模板使用 EJS 模板模式构建。除非您真正了解自己在做什么，否则请勿更改 <% .... > 之间的区域！要恢复默认设置，只需删除所有内容。",
+  "apps.edit_nginx_description": "模板使用 EJS 模板模式构建。除非您真正了解自己在做什么，否则请勿更改 %s 之间的区域！要恢复默认设置，只需删除所有内容。",
   "apps.enable_auth_dialog_body": "HTTP 基本认证是用于对 web 资源实施访问控制的最简单技术。您可以使用此技术限制对 HTTP 应用的访问，特别是您通过一键式应用生成器（例如 phpMyAdmin 等）创建的应用。",
   "apps.enable_auth_dialog_title": "编辑 HTTP 基本认证",
   "apps.env_vars_title": "环境变量",
