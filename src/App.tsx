@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { App as AntdApp, ConfigProvider, theme, ThemeConfig } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import CenteredSpinner from './containers/global/CenteredSpinner'
@@ -42,8 +42,6 @@ const MainComponent = () => {
 
 let themeState: undefined | 'LOADING' | 'LOADED' | 'TIMED_OUT' = undefined
 
-const contentPushedToHead = [] as string[]
-
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme
 
@@ -58,20 +56,34 @@ function App() {
 
     const modernTheme = createModernTheme(isDarkMode)
 
-    if (
-        currTheme &&
-        currTheme.headEmbed &&
-        !contentPushedToHead.some((it) => it === currTheme.headEmbed)
-    ) {
-        contentPushedToHead.push(currTheme.headEmbed)
-
-        const headElement = document.head
+    useEffect(() => {
+        document.documentElement.setAttribute(
+            'data-caprover-theme',
+            currTheme?.name.trim().toLowerCase().replace(/\s+/g, '-') ||
+                'default'
+        )
         const injectionElement = document.createElement('div')
-        injectionElement.innerHTML = currTheme.headEmbed
-        Array.from(injectionElement.childNodes).forEach((node) => {
-            headElement.appendChild(node)
+        injectionElement.innerHTML = currTheme?.headEmbed || ''
+        const nodes = Array.from(injectionElement.childNodes)
+        nodes.forEach((node) => {
+            document.head.appendChild(node)
         })
-    }
+
+        return () => {
+            nodes.forEach((node) => node.remove())
+            document.documentElement.removeAttribute('data-caprover-theme')
+        }
+    }, [currTheme?.name, currTheme?.headEmbed])
+
+    useEffect(() => {
+        document.documentElement.setAttribute(
+            'data-caprover-dark',
+            isDarkMode ? 'true' : 'false'
+        )
+        return () => {
+            document.documentElement.removeAttribute('data-caprover-dark')
+        }
+    }, [isDarkMode])
 
     const customTheme = currTheme
         ? ThemeParser.parseTheme(

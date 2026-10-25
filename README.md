@@ -55,6 +55,48 @@ enabled so shared layouts can use semantic colors such as `--ant-color-text`,
 Keep page structure and responsive behavior in the frontend; theme definitions
 should control appearance without depending on nested component markup.
 
+The document's `html` element exposes `data-caprover-theme`, containing the
+trimmed, lowercased theme name with whitespace replaced by hyphens (for example,
+`Candy Lab` becomes `candy-lab`), or `default` when no custom theme is selected.
+It also exposes `data-caprover-dark="true"` or `"false"` for the current mode. Scope
+optional `headEmbed` styles to that attribute. This also covers dropdowns and
+dialogs rendered outside the application container. Injected styles, font
+links, and other head elements are removed when the theme changes or App
+unmounts. Changing color mode keeps the active theme's head elements in place.
+
+Shared text sizes follow Ant Design's `fontSize`, `fontSizeSM`, and heading
+tokens. Custom workspace surfaces also accept these optional CSS properties:
+
+| Property                      | Controls                                                                    |
+| ----------------------------- | --------------------------------------------------------------------------- |
+| `--caprover-shell-radius`     | Desktop workspace frame corners                                             |
+| `--caprover-surface-radius`   | Application tables, mobile cards, metrics, alerts, and action bars          |
+| `--caprover-control-radius`   | Count badges, tags, and icon action targets                                 |
+| `--caprover-border-width`     | Shared workspace borders and separators                                     |
+| `--caprover-surface-shadow`   | Workspace frame, application tables, mobile cards, metrics, and action bars |
+| `--caprover-heading-tracking` | Heading and metric letter spacing                                           |
+| `--caprover-heading-weight`   | Heading and selected navigation font weight                                 |
+
+Unset properties retain the current appearance. Use Ant Design tokens for
+component styling, fonts, and semantic colors; use these properties for the
+shared workspace surfaces. For example, a theme named `Glacier` can include:
+
+```html
+<style>
+    html[data-caprover-theme='glacier'] {
+        --caprover-shell-radius: 16px;
+        --caprover-surface-radius: 10px;
+        --caprover-control-radius: 6px;
+        --caprover-heading-tracking: 0;
+    }
+</style>
+```
+
+For gradients or translucent surfaces, target the existing semantic classes
+such as `.workspace-header` and `.workspace-layout` under the same theme
+attribute. Use semantic color variables for light/dark adaptation and keep
+text, warning messages, and keyboard focus indicators readable.
+
 CapRover's fronted supports dark and light modes. It is based on `antd` colour schemes. Therefore, all used `antd` components within the project support both modes by default. However if we implement a custom component or want to change some global colors some steps needs to be considered.
 
 ### Implement Dark Mode in custom component
