@@ -17,8 +17,10 @@ body {
     margin: 8px;
     padding: 0;
     gap: 0;
-    border: 1px solid var(--ant-color-border-secondary);
-    border-radius: 12px;
+    border: var(--caprover-border-width, 1px) solid
+        var(--ant-color-border-secondary);
+    border-radius: var(--caprover-shell-radius, 12px);
+    box-shadow: var(--caprover-surface-shadow, none);
     overflow: hidden;
 }
 
@@ -40,12 +42,13 @@ body {
     gap: 10px;
     height: 48px;
     flex-shrink: 0;
-    border-bottom: 1px solid var(--ant-color-border-secondary);
+    border-bottom: var(--caprover-border-width, 1px) solid
+        var(--ant-color-border-secondary);
     padding-inline: 16px;
     color: var(--ant-color-text);
-    font-size: 15px;
-    font-weight: 650;
-    letter-spacing: -0.035em;
+    font-size: calc(var(--ant-font-size, 14px) + 1px);
+    font-weight: var(--caprover-heading-weight, 650);
+    letter-spacing: var(--caprover-heading-tracking, -0.035em);
 }
 
 .sidebar-brand img {
@@ -55,7 +58,7 @@ body {
 }
 .sidebar-section-label {
     padding: 16px 20px 8px;
-    font-size: 12px;
+    font-size: var(--ant-font-size-sm, 12px);
     font-weight: 500;
     color: var(--ant-color-text-secondary);
 }
@@ -68,14 +71,14 @@ body {
 }
 .sidebar-content .ant-menu-item-group-title {
     padding: 24px 20px 8px;
-    font-size: 12px;
+    font-size: var(--ant-font-size-sm, 12px);
     color: var(--ant-color-text-secondary);
 }
 .sidebar-content .ant-menu-item {
     font-weight: 450;
 }
 .sidebar-content .ant-menu-item-selected {
-    font-weight: 550;
+    font-weight: var(--caprover-heading-weight, 550);
 }
 .sidebar-content .ant-menu-item .ant-menu-item-icon {
     vertical-align: middle;
@@ -88,7 +91,8 @@ body {
     display: flex;
     gap: 2px;
     padding: 8px 4px;
-    border-bottom: 1px solid var(--ant-color-border-secondary);
+    border-bottom: var(--caprover-border-width, 1px) solid
+        var(--ant-color-border-secondary);
     margin-bottom: 8px;
 }
 .sidebar-logout.ant-btn {
@@ -97,7 +101,7 @@ body {
     gap: 10px;
     width: 100%;
     text-align: start;
-    font-size: 12px;
+    font-size: var(--ant-font-size-sm, 12px);
 }
 .sidebar-logout > span {
     flex: 1;
@@ -113,7 +117,8 @@ body {
     padding-inline: 18px;
 }
 .workspace-layout {
-    border-inline-start: 1px solid var(--ant-color-border-secondary);
+    border-inline-start: var(--caprover-border-width, 1px) solid
+        var(--ant-color-border-secondary);
     border-radius: 0;
     overflow: hidden;
     background: var(--ant-color-bg-container);
@@ -126,7 +131,8 @@ body {
     height: 48px;
     padding: 0 20px;
     line-height: normal;
-    border-bottom: 1px solid var(--ant-color-border-secondary);
+    border-bottom: var(--caprover-border-width, 1px) solid
+        var(--ant-color-border-secondary);
     background: var(--ant-color-bg-container);
     color: var(--ant-color-text);
 }
@@ -138,12 +144,13 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-size: 14px;
+    font-size: var(--ant-font-size, 14px);
     font-weight: 500;
 }
 .header-separator {
     height: 16px;
-    border-inline-start: 1px solid var(--ant-color-border-secondary);
+    border-inline-start: var(--caprover-border-width, 1px) solid
+        var(--ant-color-border-secondary);
 }
 .workspace-content {
     display: flex;
@@ -153,11 +160,11 @@ body {
 .workspace-content > .ant-alert {
     margin: 12px 24px 0;
     padding: 8px 12px;
-    font-size: 13px;
-    border-radius: 7px;
+    font-size: calc(var(--ant-font-size, 14px) - 1px);
+    border-radius: var(--caprover-surface-radius, 7px);
 }
 .workspace-content > .ant-alert .ant-alert-message {
-    font-size: 13px;
+    font-size: calc(var(--ant-font-size, 14px) - 1px);
 }
 #main-content-layout {
     flex: 1;
@@ -178,14 +185,14 @@ body {
     align-items: center;
     gap: 10px;
     margin: 0 0 6px;
-    font-size: 23px;
-    font-weight: 600;
+    font-size: calc(var(--ant-font-size-heading-3, 24px) - 1px);
+    font-weight: var(--caprover-heading-weight, 600);
     line-height: 1.3;
-    letter-spacing: -0.03em;
+    letter-spacing: var(--caprover-heading-tracking, -0.03em);
 }
 .page-heading p {
     margin: 0;
-    font-size: 13px;
+    font-size: calc(var(--ant-font-size, 14px) - 1px);
     color: var(--ant-color-text-secondary);
     font-weight: 400;
 }
@@ -196,10 +203,11 @@ body {
     min-width: 24px;
     height: 22px;
     padding: 0 6px;
-    border: 1px solid var(--ant-color-border-secondary);
-    border-radius: 6px;
+    border: var(--caprover-border-width, 1px) solid
+        var(--ant-color-border-secondary);
+    border-radius: var(--caprover-control-radius, 6px);
     color: var(--ant-color-text-secondary);
-    font-size: 12px;
+    font-size: var(--ant-font-size-sm, 12px);
     letter-spacing: 0;
     font-weight: 500;
 }
@@ -213,18 +221,18 @@ body {
     flex-shrink: 0;
 }
 .ant-card-head-title {
-    font-weight: 550;
-    letter-spacing: -0.025em;
+    font-weight: var(--caprover-heading-weight, 550);
+    letter-spacing: var(--caprover-heading-tracking, -0.025em);
 }
 .ant-tag {
-    font-size: 12px;
+    font-size: var(--ant-font-size-sm, 12px);
     line-height: 20px;
-    border-radius: 6px;
+    border-radius: var(--caprover-control-radius, 6px);
     padding-inline: 7px;
     border-color: var(--ant-color-border-secondary);
 }
 .section-divider {
-    height: 1px;
+    height: var(--caprover-border-width, 1px);
     background: var(--ant-color-border-secondary);
     margin-block: 20px;
 }
@@ -256,9 +264,9 @@ body {
     align-items: center;
     gap: 8px;
     margin: 0 8px 0 0;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: -0.03em;
+    font-size: var(--ant-font-size-heading-4, 20px);
+    font-weight: var(--caprover-heading-weight, 600);
+    letter-spacing: var(--caprover-heading-tracking, -0.03em);
     white-space: nowrap;
 }
 .apps-heading > .ant-input-affix-wrapper {
@@ -297,7 +305,7 @@ body {
     height: 30px;
     margin-block: -5px;
     color: var(--ant-color-text-secondary);
-    border-radius: 6px;
+    border-radius: var(--caprover-control-radius, 6px);
 }
 .table-icon-action:hover {
     background: var(--ant-color-fill-secondary);
@@ -325,12 +333,14 @@ body {
     color: inherit;
 }
 .apps-page .ant-table-wrapper {
-    border: 1px solid var(--ant-color-border-secondary);
-    border-radius: 8px;
+    box-shadow: var(--caprover-surface-shadow, none);
+    border: var(--caprover-border-width, 1px) solid
+        var(--ant-color-border-secondary);
+    border-radius: var(--caprover-surface-radius, 8px);
     overflow: hidden;
 }
 .apps-page .ant-table-thead > tr > th {
-    font-size: 13px;
+    font-size: calc(var(--ant-font-size, 14px) - 1px);
     font-weight: 500;
     white-space: nowrap;
 }
@@ -361,7 +371,8 @@ body {
     background: transparent;
 }
 .mobile-app-card.ant-card {
-    border-radius: 8px;
+    box-shadow: var(--caprover-surface-shadow, none);
+    border-radius: var(--caprover-surface-radius, 8px);
 }
 .mobile-app-card .ant-card-head {
     padding: 0 16px;
@@ -380,7 +391,7 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     padding: 4px 16px 16px;
-    font-size: 12px;
+    font-size: var(--ant-font-size-sm, 12px);
     color: var(--ant-color-text-secondary);
 }
 .mobile-app-card p {
@@ -409,9 +420,9 @@ body {
     padding-block: 0 16px;
 }
 .app-details-heading h2 {
-    font-size: 25px;
-    font-weight: 600;
-    letter-spacing: -0.04em;
+    font-size: calc(var(--ant-font-size-heading-3, 24px) + 1px);
+    font-weight: var(--caprover-heading-weight, 600);
+    letter-spacing: var(--caprover-heading-tracking, -0.04em);
 }
 .app-details-heading .ant-typography {
     color: var(--ant-color-text-secondary);
@@ -433,8 +444,8 @@ body {
     height: 24px;
 }
 .form-section-title {
-    font-size: 14px;
-    font-weight: 550;
+    font-size: var(--ant-font-size, 14px);
+    font-weight: var(--caprover-heading-weight, 550);
     margin: 0 0 8px;
     letter-spacing: -0.02em;
 }
@@ -443,11 +454,12 @@ body {
     row-gap: 10px;
 }
 .app-details-actions {
-    border: 1px solid var(--ant-color-border-secondary);
+    border: var(--caprover-border-width, 1px) solid
+        var(--ant-color-border-secondary);
     background: var(--ant-color-bg-container);
-    border-radius: 8px;
+    border-radius: var(--caprover-surface-radius, 8px);
     padding: 12px 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--caprover-surface-shadow, 0 4px 16px rgba(0, 0, 0, 0.06));
 }
 .app-details-actions > .ant-row {
     justify-content: space-between;
@@ -459,7 +471,7 @@ body {
     text-align: end;
 }
 .app-details-actions .ant-btn-lg {
-    font-size: 13px;
+    font-size: calc(var(--ant-font-size, 14px) - 1px);
     height: 34px;
 }
 .settings-page,
@@ -497,14 +509,14 @@ body {
     gap: 16px;
 }
 .overview-label {
-    font-size: 12px;
+    font-size: var(--ant-font-size-sm, 12px);
     color: var(--ant-color-text-secondary);
     margin-bottom: 12px;
 }
 .overview-value {
-    font-size: 20px;
-    font-weight: 550;
-    letter-spacing: -0.04em;
+    font-size: var(--ant-font-size-heading-4, 20px);
+    font-weight: var(--caprover-heading-weight, 550);
+    letter-spacing: var(--caprover-heading-tracking, -0.04em);
     overflow-wrap: anywhere;
 }
 .overview-grid .metric-heading {
@@ -524,18 +536,20 @@ body {
 .domain-change-warning {
     margin: 12px 0 0;
     color: var(--ant-color-text-secondary);
-    font-size: 13px;
+    font-size: calc(var(--ant-font-size, 14px) - 1px);
 }
 .overview-caption {
     margin-top: 12px;
-    font-size: 12px;
+    font-size: var(--ant-font-size-sm, 12px);
     color: var(--ant-color-text-secondary);
 }
 .load-balancer-metric {
+    box-shadow: var(--caprover-surface-shadow, none);
     padding: 20px;
     height: 100%;
-    border: 1px solid var(--ant-color-border-secondary);
-    border-radius: 8px;
+    border: var(--caprover-border-width, 1px) solid
+        var(--ant-color-border-secondary);
+    border-radius: var(--caprover-surface-radius, 8px);
 }
 .metric-heading {
     display: flex;
@@ -543,18 +557,18 @@ body {
     justify-content: space-between;
     gap: 8px;
     color: var(--ant-color-text-secondary);
-    font-size: 12px;
+    font-size: var(--ant-font-size-sm, 12px);
 }
 .metric-value {
-    font-size: 27px;
-    font-weight: 550;
-    letter-spacing: -0.05em;
+    font-size: calc(var(--ant-font-size-heading-2, 30px) - 3px);
+    font-weight: var(--caprover-heading-weight, 550);
+    letter-spacing: var(--caprover-heading-tracking, -0.05em);
     margin-block: 12px;
     font-variant-numeric: tabular-nums;
 }
 .metric-description {
     color: var(--ant-color-text-secondary);
-    font-size: 12px;
+    font-size: var(--ant-font-size-sm, 12px);
     min-height: 16px;
 }
 .navigation-drawer .ant-drawer-body {
@@ -609,7 +623,7 @@ body {
         padding-inline: 0;
     }
     .page-heading h1 {
-        font-size: 21px;
+        font-size: calc(var(--ant-font-size-heading-3, 24px) - 3px);
     }
     .apps-page > .ant-card-head .ant-card-head-wrapper {
         flex-wrap: wrap;
@@ -637,7 +651,7 @@ body {
         width: 150px;
     }
     .mobile-app-card .ant-card-body {
-        font-size: 12px;
+        font-size: var(--ant-font-size-sm, 12px);
     }
     .settings-grid,
     .overview-grid {
@@ -651,7 +665,7 @@ body {
         padding-inline: 12px;
     }
     .app-details-heading h2 {
-        font-size: 23px;
+        font-size: calc(var(--ant-font-size-heading-3, 24px) - 1px);
     }
 }
 
