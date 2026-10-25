@@ -592,5 +592,19 @@
   "app_runtime.running_duration": "已运行 %s1",
   "app_runtime.past_duration": "%s2 前：%s1",
   "overview.app_count": "%s1 个应用",
-  "overview.missing_runtime_count": "%s1 个应用的运行状态数据不可用"
+  "overview.missing_runtime_count": "%s1 个应用的运行状态数据不可用",
+  "app_runtime.state_running": "运行中",
+  "app_runtime.state_failed": "失败",
+  "app_runtime.state_rejected": "已拒绝",
+  "app_runtime.state_orphaned": "孤立",
+  "app_runtime.state_starting": "启动中",
+  "app_runtime.state_preparing": "准备中",
+  "app_runtime.state_ready": "就绪",
+  "app_runtime.state_pending": "待处理",
+  "app_runtime.state_new": "新建",
+  "app_runtime.state_allocated": "已分配资源",
+  "app_runtime.state_assigned": "已指派",
+  "app_runtime.state_accepted": "已接受",
+  "app_runtime.state_complete": "已完成",
+  "app_runtime.state_shutdown": "已关闭"
 }
