@@ -586,5 +586,11 @@
   "themes.edit_name": "اسم الثيم",
   "themes.head_embed": "تضمين العناصر في <head>",
   "themes.see_here": "انظر هنا للتفاصيل.",
-  "themes.theme_custom_help": "يمكنك تخصيص ثيم كابروفر عن طريق توفير ثيم مخصص وحقن العناصر (خط، CSS، JS، إلخ) في قسم <head>."
+  "themes.theme_custom_help": "يمكنك تخصيص ثيم كابروفر عن طريق توفير ثيم مخصص وحقن العناصر (خط، CSS، JS، إلخ) في قسم <head>.",
+  "disk_usage.capacity_summary": "المتاح على %s3: ‏%s1 من إجمالي %s2",
+  "disk_usage.alert_summary": "%s1 على %s2. المساحة المتاحة: %s3 (%s4% من السعة).",
+  "app_runtime.running_duration": "قيد التشغيل لمدة %s1",
+  "app_runtime.past_duration": "%s1 منذ %s2",
+  "overview.app_count": "%s1 تطبيقات",
+  "overview.missing_runtime_count": "%s1 تطبيقات لا تتوفر لها بيانات حالة التشغيل"
 }
