@@ -586,5 +586,11 @@
   "themes.edit_name": "Nome do tema",
   "themes.head_embed": "Embutir elementos em <head>",
   "themes.see_here": "Veja aqui para detalhes.",
-  "themes.theme_custom_help": "Você pode personalizar o tema do CapRover fornecendo um tema personalizado e injetando elementos (fonte, CSS, JS, etc) na seção <head>."
+  "themes.theme_custom_help": "Você pode personalizar o tema do CapRover fornecendo um tema personalizado e injetando elementos (fonte, CSS, JS, etc) na seção <head>.",
+  "disk_usage.capacity_summary": "%s1 disponíveis de %s2 em %s3",
+  "disk_usage.alert_summary": "%s1 em %s2. %s3 disponíveis (%s4% da capacidade).",
+  "app_runtime.running_duration": "Em execução há %s1",
+  "app_runtime.past_duration": "%s1 há %s2",
+  "overview.app_count": "%s1 aplicativos",
+  "overview.missing_runtime_count": "%s1 com dados de execução indisponíveis"
 }
