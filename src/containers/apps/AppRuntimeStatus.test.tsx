@@ -221,7 +221,7 @@ it('shows degraded tasks and the latest failure', () => {
     expect(screen.getByText('Needs attention')).toBeInTheDocument()
     expect(screen.getByText('Instance 2')).toBeInTheDocument()
     expect(screen.getByText('Latest failure')).toBeInTheDocument()
-    expect(screen.getByText('Starting')).toBeInTheDocument()
+    expect(screen.getByText('starting')).toBeInTheDocument()
     expect(screen.getByText(/task: non-zero exit/)).toBeInTheDocument()
 })
 
@@ -251,7 +251,7 @@ it('describes the current transition before an older failure', async () => {
     )
 
     await waitFor(() => {
-        expect(screen.getByText(/Starting .* ago/)).toBeInTheDocument()
+        expect(screen.getByText(/starting .* ago/)).toBeInTheDocument()
     })
     expect(screen.queryByText(/Latest failure:/)).not.toBeInTheDocument()
 })

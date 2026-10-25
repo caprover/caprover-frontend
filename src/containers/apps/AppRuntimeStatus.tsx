@@ -102,41 +102,6 @@ function getStatusLabel(
     )
 }
 
-function getTaskStateLabel(task: CapRoverModels.RuntimeTask): string {
-    switch (task.state) {
-        case CapRoverModels.TaskState.New:
-            return localize('app_runtime.task_state.new', 'New')
-        case CapRoverModels.TaskState.Allocated:
-            return localize('app_runtime.task_state.allocated', 'Allocated')
-        case CapRoverModels.TaskState.Pending:
-            return localize('app_runtime.task_state.pending', 'Pending')
-        case CapRoverModels.TaskState.Assigned:
-            return localize('app_runtime.task_state.assigned', 'Assigned')
-        case CapRoverModels.TaskState.Accepted:
-            return localize('app_runtime.task_state.accepted', 'Accepted')
-        case CapRoverModels.TaskState.Ready:
-            return localize('app_runtime.task_state.ready', 'Ready')
-        case CapRoverModels.TaskState.Preparing:
-            return localize('app_runtime.task_state.preparing', 'Preparing')
-        case CapRoverModels.TaskState.Starting:
-            return localize('app_runtime.task_state.starting', 'Starting')
-        case CapRoverModels.TaskState.Running:
-            return localize('app_runtime.task_state.running', 'Running')
-        case CapRoverModels.TaskState.Complete:
-            return localize('app_runtime.task_state.complete', 'Complete')
-        case CapRoverModels.TaskState.Shutdown:
-            return localize('app_runtime.task_state.shutdown', 'Shutdown')
-        case CapRoverModels.TaskState.Failed:
-            return localize('app_runtime.task_state.failed', 'Failed')
-        case CapRoverModels.TaskState.Rejected:
-            return localize('app_runtime.task_state.rejected', 'Rejected')
-        case CapRoverModels.TaskState.Orphaned:
-            return localize('app_runtime.task_state.orphaned', 'Orphaned')
-        case CapRoverModels.TaskState.Remove:
-            return localize('app_runtime.task_state.remove', 'Remove')
-    }
-}
-
 function getStateDuration(task: CapRoverModels.RuntimeTask): string {
     if (!task.stateChangedAt) {
         return localize(
@@ -153,10 +118,7 @@ function getStateDuration(task: CapRoverModels.RuntimeTask): string {
         )} ${duration}`
     }
 
-    return `${getTaskStateLabel(task)} ${duration} ${localize(
-        'app_runtime.ago',
-        'ago'
-    )}`
+    return `${task.state} ${duration} ${localize('app_runtime.ago', 'ago')}`
 }
 
 function getTaskTagColor(task: CapRoverModels.RuntimeTask): string {
@@ -248,9 +210,7 @@ function renderTask(
                 title={
                     <Space>
                         <span>{getTaskTitle(task)}</span>
-                        <Tag color={getTaskTagColor(task)}>
-                            {getTaskStateLabel(task)}
-                        </Tag>
+                        <Tag color={getTaskTagColor(task)}>{task.state}</Tag>
                     </Space>
                 }
                 description={

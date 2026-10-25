@@ -1,7 +1,7 @@
 import { Button, Card, Col, Input, Modal, Row, Space, Tag, Tooltip } from 'antd'
 import { Globe, LockKeyhole, ShieldCheck } from 'lucide-react'
-import { Fragment } from 'react/jsx-runtime'
 import { connect } from 'react-redux'
+import { Fragment } from 'react/jsx-runtime'
 import { SetupStatus } from '../../models/SetupStatus'
 import { emitSetupStatusChanged } from '../../redux/actions/SetupActions'
 import { localize } from '../../utils/Language'
@@ -721,13 +721,7 @@ export class DomainsHttps extends ApiComponent<
                                     <br />
                                     <code>npm i -g caprover</code>
                                     <br />
-                                    <code>
-                                        {localize(
-                                            'dashboard.caprover_serversetup',
-                                            'caprover serversetup'
-                                        )}
-                                    </code>
-                                    .{' '}
+                                    <code>caprover serversetup</code>.{' '}
                                 </li>
                                 <li>
                                     <b>

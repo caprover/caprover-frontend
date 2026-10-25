@@ -209,13 +209,7 @@ export default class CreateNewApp extends Component<
                                 },
                             ]}
                         >
-                            <Input
-                                autoFocus
-                                placeholder={localize(
-                                    'create_new_app.placeholder',
-                                    'my-amazing-app'
-                                )}
-                            />
+                            <Input autoFocus placeholder="my-amazing-app" />
                         </Form.Item>
                         {self.props.projects.length > 0 && (
                             <Form.Item

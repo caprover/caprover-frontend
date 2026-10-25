@@ -130,6 +130,8 @@ export default class Deployment extends ApiComponent<
 
         const webhookPushUrlFullPath = `${window.location.protocol}//${this.props.apiData.captainSubDomain}.${this.props.apiData.rootDomain}/api/v2${webhookPushUrlRelativePath}`
 
+        const captainDefinitionFileName = <code>captain-definition</code>
+
         const cliDescription = (
             <div>
                 {Utils.formatText(
@@ -417,9 +419,13 @@ export default class Deployment extends ApiComponent<
                 <div style={{ height: 20 }} />
                 <h4>
                     <RocketOutlined />
-                    {localize(
-                        'apps.deploy_method_captain_definition',
-                        'Method 5: Deploy captain-definition file'
+                    {Utils.formatText(
+                        localize(
+                            'apps.deploy_method_captain_definition',
+                            'Method 5: Deploy %s file'
+                        ),
+                        ['%s'],
+                        [captainDefinitionFileName]
                     )}
                 </h4>
                 <UploaderPlainTextCaptainDefinition
@@ -446,23 +452,35 @@ export default class Deployment extends ApiComponent<
                         style={{ minWidth: this.props.isMobile ? '100%' : 400 }}
                     >
                         {this.props.isMobile &&
-                            localize(
-                                'apps.deploy_captain_definition_relative_path_hint',
-                                'captain-definition path'
+                            Utils.formatText(
+                                localize(
+                                    'apps.deploy_captain_definition_relative_path_hint',
+                                    '%s path'
+                                ),
+                                ['%s'],
+                                [captainDefinitionFileName]
                             )}
 
                         <Tooltip
-                            title={localize(
-                                'apps.deploy_captain_definition_relative_path_hint_tooltip',
-                                'Edit only if you have placed your captain-definition file in a subdirectory of your project'
+                            title={Utils.formatText(
+                                localize(
+                                    'apps.deploy_captain_definition_relative_path_hint_tooltip',
+                                    'Edit only if you have placed your %s file in a subdirectory of your project'
+                                ),
+                                ['%s'],
+                                [captainDefinitionFileName]
                             )}
                         >
                             <Input
                                 addonBefore={
                                     !this.props.isMobile &&
-                                    localize(
-                                        'apps.deploy_captain_definition_relative_path_hint',
-                                        'captain-definition path'
+                                    Utils.formatText(
+                                        localize(
+                                            'apps.deploy_captain_definition_relative_path_hint',
+                                            '%s path'
+                                        ),
+                                        ['%s'],
+                                        [captainDefinitionFileName]
                                     )
                                 }
                                 type="text"
@@ -492,9 +510,13 @@ export default class Deployment extends ApiComponent<
                             }}
                         >
                             <Tooltip
-                                title={localize(
-                                    'apps.deploy_captain_definition_path_hint',
-                                    "You shouldn't need to change this path unless you have a repository with multiple captain-definition files (mono repos). Read docs for captain definition before editing this"
+                                title={Utils.formatText(
+                                    localize(
+                                        'apps.deploy_captain_definition_path_hint',
+                                        "You shouldn't need to change this path unless you have a repository with multiple %s files (mono repos). Read docs for %s before editing this"
+                                    ),
+                                    ['%s'],
+                                    [captainDefinitionFileName]
                                 )}
                             >
                                 <Button

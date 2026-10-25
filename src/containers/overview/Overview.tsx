@@ -8,10 +8,10 @@ import ReduxState from '../../models/ReduxState'
 import { SetupStatus } from '../../models/SetupStatus'
 import { refreshDiskUsage } from '../../redux/actions/DiskUsageActions'
 import { localize } from '../../utils/Language'
+import AppRuntimeStatus, { RuntimeDataStatus } from '../apps/AppRuntimeStatus'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 import Timestamp from '../global/Timestamp'
-import AppRuntimeStatus, { RuntimeDataStatus } from '../apps/AppRuntimeStatus'
 import DiskUsage from '../monitoring/DiskUsage'
 
 interface OverviewProps extends RouteComponentProps<any> {
@@ -331,15 +331,8 @@ export class Overview extends ApiComponent<
                                                         : 'warning'
                                                 }
                                             >
-                                                {localize(
-                                                    `overview.node_state.${node.state}`,
-                                                    node.state || unavailable
-                                                )}{' '}
-                                                /{' '}
-                                                {localize(
-                                                    `overview.node_availability.${node.status}`,
-                                                    node.status || unavailable
-                                                )}
+                                                {node.state || unavailable} /{' '}
+                                                {node.status || unavailable}
                                             </Tag>
                                         </div>
                                     ))}
