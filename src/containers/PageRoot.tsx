@@ -35,7 +35,7 @@ interface RootPageInterface extends RouteComponentProps<any> {
     isMobile: boolean
 }
 
-class PageRoot extends ApiComponent<
+export class PageRoot extends ApiComponent<
     RootPageInterface,
     {
         versionInfo: IVersionInfo | undefined
@@ -65,6 +65,11 @@ class PageRoot extends ApiComponent<
                 this.props.location.pathname !== prevProps.location.pathname)
         ) {
             this.setState({ collapsed: true })
+        } else if (prevProps.isMobile && !this.props.isMobile) {
+            this.setState({
+                collapsed:
+                    StorageHelper.getSiderCollapsedStateFromLocalStorage(),
+            })
         }
     }
 
@@ -96,9 +101,11 @@ class PageRoot extends ApiComponent<
     }
 
     toggleSider = () => {
-        StorageHelper.setSiderCollapsedStateInLocalStorage(
-            !this.state.collapsed
-        )
+        if (!this.props.isMobile) {
+            StorageHelper.setSiderCollapsedStateInLocalStorage(
+                !this.state.collapsed
+            )
+        }
         this.setState({ collapsed: !this.state.collapsed })
     }
 

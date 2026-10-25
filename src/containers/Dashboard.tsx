@@ -692,6 +692,12 @@ export default class Dashboard extends ApiComponent<
                                 )}
                             </Button>
                         </div>
+                        <p className="domain-change-warning">
+                            {localize(
+                                'dashboard.update_root_domain_caution',
+                                'You can always update your root domain, but be careful! Your SSL certificates will get revoked because of this domain change.'
+                            )}
+                        </p>
                     </Card>
                 </Col>
             </Row>

@@ -43,6 +43,16 @@ it('keeps language selection accessible from the sidebar', async () => {
     )
 })
 
+it.each([false, true])(
+    'keeps Logout directly accessible (compact: %s)',
+    (compact) => {
+        const { onLogoutClicked } = renderSidebar(false, compact)
+        fireEvent.click(screen.getByRole('button', { name: 'Logout' }))
+        expect(onLogoutClicked).toHaveBeenCalledTimes(1)
+        expect(screen.queryByText('Administrator')).not.toBeInTheDocument()
+    }
+)
+
 it('opens mobile navigation in a dismissible drawer', () => {
     const { toggleSider, history } = renderSidebar(true)
     expect(screen.getByRole('dialog')).toHaveTextContent('Navigation')

@@ -39,6 +39,10 @@ export default function createModernTheme(isDarkMode: boolean): ThemeConfig {
                 itemMarginBlock: 2,
                 itemBorderRadius: 6,
             },
+            Tree: {
+                directoryNodeSelectedBg: isDarkMode ? '#272430' : '#edeaf8',
+                directoryNodeSelectedColor: isDarkMode ? '#c4b8ff' : '#5e45c1',
+            },
             Button: {
                 fontWeight: 500,
                 primaryShadow: 'none',

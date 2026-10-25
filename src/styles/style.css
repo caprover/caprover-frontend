@@ -91,7 +91,7 @@ body {
     border-bottom: 1px solid var(--ant-color-border-secondary);
     margin-bottom: 8px;
 }
-.sidebar-account.ant-btn {
+.sidebar-logout.ant-btn {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -99,10 +99,10 @@ body {
     text-align: start;
     font-size: 12px;
 }
-.sidebar-account > span {
+.sidebar-logout > span {
     flex: 1;
 }
-.sidebar-account > .ant-btn-icon {
+.sidebar-logout > .ant-btn-icon {
     flex: none;
 }
 .ant-layout-sider-collapsed .sidebar-tools {
@@ -312,6 +312,11 @@ body {
     color: var(--ant-color-text-secondary);
     vertical-align: middle;
 }
+.storage-icon:focus-visible {
+    outline: 2px solid var(--ant-color-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
 .app-tag.ant-tag {
     margin: 2px 0;
     margin-inline-end: 6px;
@@ -339,6 +344,18 @@ body {
 }
 .project-manager {
     min-height: 240px;
+}
+.apps-splitter .ant-splitter-panel.apps-project-pane {
+    padding-inline-end: 16px;
+}
+.apps-splitter .ant-splitter-panel.apps-table-pane {
+    padding-inline-start: 16px;
+}
+.apps-project-pane .project-manager > .ant-row {
+    min-height: 48px;
+}
+.apps-project-pane .section-divider {
+    margin-block: 0 12px;
 }
 .project-manager .ant-tree {
     background: transparent;
@@ -503,6 +520,11 @@ body {
     flex-wrap: wrap;
     gap: 16px;
     margin-top: 24px;
+}
+.domain-change-warning {
+    margin: 12px 0 0;
+    color: var(--ant-color-text-secondary);
+    font-size: 13px;
 }
 .overview-caption {
     margin-top: 12px;

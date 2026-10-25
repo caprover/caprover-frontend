@@ -77,6 +77,9 @@ describe('DiskUsageAlert', () => {
         expect(screen.getByText(/captain-01/)).toHaveTextContent(
             '3.2 GB available (8% of capacity)'
         )
+        expect(screen.getByText(/captain-01/)).toHaveTextContent(
+            'Builds and deployments may fail.'
+        )
 
         fireEvent.click(screen.getByRole('button', { name: 'View disk usage' }))
         expect(history.push).toHaveBeenCalledWith('/monitoring')
@@ -93,6 +96,9 @@ describe('DiskUsageAlert', () => {
         expect(
             screen.getByText('Disk space is critically low')
         ).toBeInTheDocument()
+        expect(screen.getByText(/captain-01/)).toHaveTextContent(
+            'Builds and deployments may fail.'
+        )
     })
 
     it('marks a previous warning reading as outdated after refresh fails', () => {

@@ -12,7 +12,6 @@ import {
     Activity,
     BookOpen,
     Boxes,
-    ChevronDown,
     ExternalLink,
     Github,
     Globe,
@@ -179,37 +178,17 @@ const Sidebar: React.FC<SidebarProps> = ({
                         />
                     </Dropdown>
                 </div>
-                <Dropdown
-                    trigger={['click']}
-                    menu={{
-                        items: [
-                            {
-                                key: 'logout',
-                                icon: <LogOut size={14} />,
-                                label: localize('page_root.logout', 'Logout'),
-                                onClick: onLogoutClicked,
-                            },
-                        ],
-                    }}
-                >
+                <Tooltip title={localize('page_root.logout', 'Logout')}>
                     <Button
-                        className="sidebar-account"
+                        className="sidebar-logout"
                         type="text"
-                        icon={<Server size={16} />}
+                        icon={<LogOut size={16} />}
+                        aria-label={localize('page_root.logout', 'Logout')}
+                        onClick={onLogoutClicked}
                     >
-                        {!compact && (
-                            <>
-                                <span>
-                                    {localize(
-                                        'navigation.administrator',
-                                        'Administrator'
-                                    )}
-                                </span>
-                                <ChevronDown size={14} />
-                            </>
-                        )}
+                        {!compact && localize('page_root.logout', 'Logout')}
                     </Button>
-                </Dropdown>
+                </Tooltip>
             </div>
         </div>
     )
