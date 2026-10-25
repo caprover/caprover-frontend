@@ -586,5 +586,11 @@
   "themes.edit_name": "Nama Tema",
   "themes.head_embed": "Menyematkan elemen ke dalam <head>",
   "themes.see_here": "Lihat di sini untuk detailnya.",
-  "themes.theme_custom_help": "Anda dapat menyesuaikan tema CapRover dengan menyediakan tema khusus dan menyuntikkan elemen (font, CSS, JS, dll) ke dalam bagian <head>."
+  "themes.theme_custom_help": "Anda dapat menyesuaikan tema CapRover dengan menyediakan tema khusus dan menyuntikkan elemen (font, CSS, JS, dll) ke dalam bagian <head>.",
+  "disk_usage.capacity_summary": "%s1 tersedia dari %s2 di %s3",
+  "disk_usage.alert_summary": "%s1 di %s2. %s3 tersedia (%s4% dari kapasitas).",
+  "app_runtime.running_duration": "Berjalan selama %s1",
+  "app_runtime.past_duration": "%s1 %s2 yang lalu",
+  "overview.app_count": "%s1 aplikasi",
+  "overview.missing_runtime_count": "%s1 dengan data runtime tidak tersedia"
 }
