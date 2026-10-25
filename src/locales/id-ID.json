@@ -591,12 +591,12 @@
   "disk_usage.alert_summary": "%s1 di %s2. %s3 tersedia (%s4% dari kapasitas).",
   "app_runtime.running_duration": "Berjalan selama %s1",
   "app_runtime.past_duration": "%s1 %s2 yang lalu",
-  "overview.app_count": "%s1 aplikasi",
-  "overview.missing_runtime_count": "%s1 dengan data runtime tidak tersedia",
+  "overview.app_count": "Aplikasi: %s1",
+  "overview.missing_runtime_count": "Tanpa data runtime: %s1",
   "app_runtime.state_running": "Berjalan",
   "app_runtime.state_failed": "Gagal",
   "app_runtime.state_rejected": "Ditolak",
-  "app_runtime.state_orphaned": "Terisolasi",
+  "app_runtime.state_orphaned": "Node terlalu lama tidak aktif",
   "app_runtime.state_starting": "Memulai",
   "app_runtime.state_preparing": "Menyiapkan",
   "app_runtime.state_ready": "Siap",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "Ditugaskan",
   "app_runtime.state_accepted": "Diterima",
   "app_runtime.state_complete": "Selesai",
-  "app_runtime.state_shutdown": "Dimatikan"
+  "app_runtime.state_shutdown": "Dimatikan",
+  "app_runtime.state_remove": "Sedang dihapus"
 }

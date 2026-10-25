@@ -480,7 +480,7 @@
   "nodes.status": "Durum: ",
   "nodes.type": "Tür: ",
   "one_click_app_selector.deploy_button": "Dağıt",
-  "one_click_app_selector.description": "Docker Compose YAML dosyanızı aşağıya yapıştırın. %s1 belgesini mutlaka okuyun.",
+  "one_click_app_selector.description": "Docker Compose YAML dosyanızı aşağıya yapıştırın. Devam etmeden önce şu kaynağı inceleyin: %s1.",
   "one_click_app_selector.documentation_link": "Docker Compose uyumluluk belgeleri",
   "one_click_app_selector.invalid_compose_json_toast": "Girdiğiniz Docker Compose JSON geçerli değil. Devam etmeden önce düzeltin.",
   "oneclick_app_selector.app_selection_info": "Aşağıdaki listeden bir uygulama, bir veritabanı veya bir paket (uygulama+veritabanı) seçin. Geri kalanı sihir, yani... Sihirbaz!",
@@ -591,8 +591,8 @@
   "disk_usage.alert_summary": "%s2 üzerinde %s1. Kullanılabilir alan: %s3 (kapasitenin %s4%).",
   "app_runtime.running_duration": "%s1 süredir çalışıyor",
   "app_runtime.past_duration": "%s2 önce: %s1",
-  "overview.app_count": "%s1 uygulama",
-  "overview.missing_runtime_count": "çalışma verileri kullanılamayan %s1 uygulama",
+  "overview.app_count": "Uygulamalar: %s1",
+  "overview.missing_runtime_count": "Çalışma verisi olmayanlar: %s1",
   "app_runtime.state_running": "Çalışıyor",
   "app_runtime.state_failed": "Başarısız",
   "app_runtime.state_rejected": "Reddedildi",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "Atandı",
   "app_runtime.state_accepted": "Kabul edildi",
   "app_runtime.state_complete": "Tamamlandı",
-  "app_runtime.state_shutdown": "Kapatıldı"
+  "app_runtime.state_shutdown": "Kapatıldı",
+  "app_runtime.state_remove": "Kaldırılıyor"
 }

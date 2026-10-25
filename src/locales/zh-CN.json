@@ -591,8 +591,8 @@
   "disk_usage.alert_summary": "%s2 上的%s1。可用空间 %s3（占总容量的 %s4%）。",
   "app_runtime.running_duration": "已运行 %s1",
   "app_runtime.past_duration": "%s2 前：%s1",
-  "overview.app_count": "%s1 个应用",
-  "overview.missing_runtime_count": "%s1 个应用的运行状态数据不可用",
+  "overview.app_count": "应用数：%s1",
+  "overview.missing_runtime_count": "无运行状态数据：%s1",
   "app_runtime.state_running": "运行中",
   "app_runtime.state_failed": "失败",
   "app_runtime.state_rejected": "已拒绝",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "已指派",
   "app_runtime.state_accepted": "已接受",
   "app_runtime.state_complete": "已完成",
-  "app_runtime.state_shutdown": "已关闭"
+  "app_runtime.state_shutdown": "已关闭",
+  "app_runtime.state_remove": "移除中"
 }

@@ -591,8 +591,8 @@
   "disk_usage.alert_summary": "%s1 sur %s2. %s3 disponibles (%s4% de la capacité).",
   "app_runtime.running_duration": "En cours d’exécution depuis %s1",
   "app_runtime.past_duration": "%s1 il y a %s2",
-  "overview.app_count": "%s1 applications",
-  "overview.missing_runtime_count": "%s1 avec des données d’exécution indisponibles",
+  "overview.app_count": "Applications : %s1",
+  "overview.missing_runtime_count": "Sans données d’exécution : %s1",
   "app_runtime.state_running": "En cours",
   "app_runtime.state_failed": "Échec",
   "app_runtime.state_rejected": "Rejeté",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "Assigné",
   "app_runtime.state_accepted": "Accepté",
   "app_runtime.state_complete": "Terminé",
-  "app_runtime.state_shutdown": "Arrêté"
+  "app_runtime.state_shutdown": "Arrêté",
+  "app_runtime.state_remove": "Suppression en cours"
 }

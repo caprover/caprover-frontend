@@ -591,12 +591,12 @@
   "disk_usage.alert_summary": "%s1 na %s2. Dostupno %s3 (%s4% kapaciteta).",
   "app_runtime.running_duration": "Radi već %s1",
   "app_runtime.past_duration": "%s1 prije %s2",
-  "overview.app_count": "%s1 aplikacija",
-  "overview.missing_runtime_count": "%s1 s nedostupnim podacima o izvođenju",
+  "overview.app_count": "Aplikacije: %s1",
+  "overview.missing_runtime_count": "Bez podataka o izvođenju: %s1",
   "app_runtime.state_running": "Pokrenuto",
   "app_runtime.state_failed": "Neuspješno",
   "app_runtime.state_rejected": "Odbijeno",
-  "app_runtime.state_orphaned": "Bez nadzora",
+  "app_runtime.state_orphaned": "Osirotjelo",
   "app_runtime.state_starting": "Pokretanje",
   "app_runtime.state_preparing": "Priprema",
   "app_runtime.state_ready": "Spremno",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "Dodijeljeno",
   "app_runtime.state_accepted": "Prihvaćeno",
   "app_runtime.state_complete": "Dovršeno",
-  "app_runtime.state_shutdown": "Isključeno"
+  "app_runtime.state_shutdown": "Isključeno",
+  "app_runtime.state_remove": "Uklanjanje"
 }

@@ -589,10 +589,10 @@
   "themes.theme_custom_help": "Вы можете настроить тему CapRover, предоставив пользовательскую тему и внедрив элементы (шрифты, CSS, JS и т.д.) в раздел.",
   "disk_usage.capacity_summary": "На %s3 доступно %s1 из %s2",
   "disk_usage.alert_summary": "%s1 на %s2. Доступно %s3 (%s4% ёмкости).",
-  "app_runtime.running_duration": "Работает уже %s1",
-  "app_runtime.past_duration": "%s1 %s2 назад",
-  "overview.app_count": "%s1 приложений",
-  "overview.missing_runtime_count": "%s1 приложений с недоступными данными о выполнении",
+  "app_runtime.running_duration": "Время работы: %s1",
+  "app_runtime.past_duration": "%s1 · Время в этом состоянии: %s2",
+  "overview.app_count": "Приложения: %s1",
+  "overview.missing_runtime_count": "Без данных о выполнении: %s1",
   "app_runtime.state_running": "Работает",
   "app_runtime.state_failed": "Ошибка",
   "app_runtime.state_rejected": "Отклонено",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "Назначена",
   "app_runtime.state_accepted": "Принята",
   "app_runtime.state_complete": "Завершена",
-  "app_runtime.state_shutdown": "Выключена"
+  "app_runtime.state_shutdown": "Выключена",
+  "app_runtime.state_remove": "Удаляется"
 }

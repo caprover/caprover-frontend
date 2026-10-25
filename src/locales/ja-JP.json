@@ -591,8 +591,8 @@
   "disk_usage.alert_summary": "%s2 の%s1。空き容量 %s3（全容量の %s4%）。",
   "app_runtime.running_duration": "稼働時間：%s1",
   "app_runtime.past_duration": "%s2 前：%s1",
-  "overview.app_count": "アプリ %s1 件",
-  "overview.missing_runtime_count": "実行状態データを取得できないアプリ %s1 件",
+  "overview.app_count": "アプリ数: %s1",
+  "overview.missing_runtime_count": "実行状態データなし: %s1",
   "app_runtime.state_running": "実行中",
   "app_runtime.state_failed": "失敗",
   "app_runtime.state_rejected": "拒否",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "割り当て済み",
   "app_runtime.state_accepted": "受理済み",
   "app_runtime.state_complete": "完了",
-  "app_runtime.state_shutdown": "シャットダウン"
+  "app_runtime.state_shutdown": "シャットダウン",
+  "app_runtime.state_remove": "削除中"
 }

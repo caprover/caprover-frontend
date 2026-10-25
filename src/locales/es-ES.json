@@ -34,11 +34,11 @@
   "app_runtime.no_history": "No hay historial reciente de tareas",
   "app_runtime.open_app_details": "Abrir detalles de la aplicación",
   "app_runtime.recent_history": "Historial reciente de tareas",
-  "app_runtime.refresh_failed": "No se pudo actualizar el estado de la aplicación. Los valores pueden estar desactualizados.",
+  "app_runtime.refresh_failed": "No se pudo actualizar el estado de ejecución. Los valores pueden estar desactualizados.",
   "app_runtime.refresh_failed_short": "Error al actualizar; este estado puede estar desactualizado",
   "app_runtime.running": "en ejecución",
   "app_runtime.running_for": "En ejecución durante",
-  "app_runtime.status_unavailable": "Estado de la aplicación no disponible",
+  "app_runtime.status_unavailable": "Estado de ejecución no disponible",
   "app_runtime.stopped": "Detenido",
   "app_runtime.task": "Tarea",
   "appearance.toggle_color_mode": "Cambiar el modo de color",
@@ -591,8 +591,8 @@
   "disk_usage.alert_summary": "%s1 en %s2. %s3 disponibles (%s4% de capacidad).",
   "app_runtime.running_duration": "En ejecución durante %s1",
   "app_runtime.past_duration": "%s1 hace %s2",
-  "overview.app_count": "%s1 aplicaciones",
-  "overview.missing_runtime_count": "%s1 con datos de ejecución no disponibles",
+  "overview.app_count": "Aplicaciones: %s1",
+  "overview.missing_runtime_count": "Sin datos del estado de ejecución: %s1",
   "app_runtime.state_running": "En ejecución",
   "app_runtime.state_failed": "Fallido",
   "app_runtime.state_rejected": "Rechazado",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "Asignado",
   "app_runtime.state_accepted": "Aceptado",
   "app_runtime.state_complete": "Completado",
-  "app_runtime.state_shutdown": "Apagado"
+  "app_runtime.state_shutdown": "Apagado",
+  "app_runtime.state_remove": "Eliminando"
 }

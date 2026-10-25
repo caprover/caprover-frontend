@@ -591,8 +591,8 @@
   "disk_usage.alert_summary": "%s1 على %s2. المساحة المتاحة: %s3 (%s4% من السعة).",
   "app_runtime.running_duration": "قيد التشغيل لمدة %s1",
   "app_runtime.past_duration": "%s1 منذ %s2",
-  "overview.app_count": "%s1 تطبيقات",
-  "overview.missing_runtime_count": "%s1 تطبيقات لا تتوفر لها بيانات حالة التشغيل",
+  "overview.app_count": "التطبيقات: %s1",
+  "overview.missing_runtime_count": "بدون بيانات حالة التشغيل: %s1",
   "app_runtime.state_running": "قيد التشغيل",
   "app_runtime.state_failed": "فشل",
   "app_runtime.state_rejected": "مرفوض",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "تم التعيين",
   "app_runtime.state_accepted": "مقبول",
   "app_runtime.state_complete": "مكتمل",
-  "app_runtime.state_shutdown": "متوقف"
+  "app_runtime.state_shutdown": "متوقف",
+  "app_runtime.state_remove": "جارٍ الإزالة"
 }

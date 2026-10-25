@@ -591,8 +591,8 @@
   "disk_usage.alert_summary": "%s1 op %s2. %s3 beschikbaar (%s4% van de capaciteit).",
   "app_runtime.running_duration": "Draait al %s1",
   "app_runtime.past_duration": "%s1 %s2 geleden",
-  "overview.app_count": "%s1 apps",
-  "overview.missing_runtime_count": "%s1 met niet-beschikbare runtimegegevens",
+  "overview.app_count": "Apps: %s1",
+  "overview.missing_runtime_count": "Zonder runtimegegevens: %s1",
   "app_runtime.state_running": "Actief",
   "app_runtime.state_failed": "Mislukt",
   "app_runtime.state_rejected": "Geweigerd",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "Toegewezen",
   "app_runtime.state_accepted": "Geaccepteerd",
   "app_runtime.state_complete": "Voltooid",
-  "app_runtime.state_shutdown": "Afgesloten"
+  "app_runtime.state_shutdown": "Afgesloten",
+  "app_runtime.state_remove": "Wordt verwijderd"
 }

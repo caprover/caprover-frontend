@@ -591,8 +591,8 @@
   "disk_usage.alert_summary": "%s1 på %s2. %s3 tillgängligt (%s4% av kapaciteten).",
   "app_runtime.running_duration": "Har körts i %s1",
   "app_runtime.past_duration": "%s1 för %s2 sedan",
-  "overview.app_count": "%s1 appar",
-  "overview.missing_runtime_count": "%s1 med otillgängliga körningsdata",
+  "overview.app_count": "Appar: %s1",
+  "overview.missing_runtime_count": "Utan körningsdata: %s1",
   "app_runtime.state_running": "Körs",
   "app_runtime.state_failed": "Misslyckades",
   "app_runtime.state_rejected": "Avvisad",
@@ -606,5 +606,6 @@
   "app_runtime.state_assigned": "Tilldelad",
   "app_runtime.state_accepted": "Accepterad",
   "app_runtime.state_complete": "Slutförd",
-  "app_runtime.state_shutdown": "Avstängd"
+  "app_runtime.state_shutdown": "Avstängd",
+  "app_runtime.state_remove": "Tas bort"
 }
