@@ -617,7 +617,9 @@ class AppsTable extends Component<
                                         :{' '}
                                         <AppRuntimeStatus
                                             appName={appName}
-                                            runtime={self.getAppRuntime(appName)}
+                                            runtime={self.getAppRuntime(
+                                                appName
+                                            )}
                                             runtimeDataStatus={
                                                 self.props.runtimeDataStatus
                                             }
