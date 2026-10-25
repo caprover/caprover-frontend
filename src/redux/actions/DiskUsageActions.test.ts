@@ -1,3 +1,4 @@
+import { SetupStatus } from '../../models/SetupStatus'
 import ApiManager from '../../api/ApiManager'
 import ReduxState from '../../models/ReduxState'
 import { DISK_USAGE_UPDATED, refreshDiskUsage } from './DiskUsageActions'
@@ -25,6 +26,8 @@ const diskUsageData = {
 function createState(isLoading: boolean): ReduxState {
     return {
         globalReducer: {
+            setupStatus: SetupStatus.Loading,
+            setupDismissed: false,
             diskUsage: {
                 data: undefined,
                 isLoading,

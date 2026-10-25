@@ -1,16 +1,47 @@
 import { Card } from 'antd'
-import { Component } from 'react'
 import { connect } from 'react-redux'
 import { IMobileComponent } from '../../models/ContainerProps'
+import { IProFeatures } from '../../models/IProFeatures'
 import { localize } from '../../utils/Language'
+import Toaster from '../../utils/Toaster'
+import ApiComponent from '../global/ApiComponent'
 import DarkModeSwitch from '../global/DarkModeSwitch'
 import LanguageSelector from '../global/LanguageSelector'
 import ChangePass from './ChangePass'
+import DomainsHttps from './DomainsHttps'
 import NginxConfig from './NginxConfig'
+import OtpSettings from './OtpSettings'
 import ProFeatures from './ProFeatures'
 import ThemeSettings from './ThemeSettings'
 
-class Settings extends Component<{ isMobile: boolean }, {}> {
+export class Settings extends ApiComponent<
+    { isMobile: boolean },
+    { apiData: IProFeatures | undefined; rootDomain: string }
+> {
+    constructor(props: any) {
+        super(props)
+        this.state = { apiData: undefined, rootDomain: '' }
+    }
+
+    componentDidMount() {
+        this.fetchProFeatures()
+    }
+
+    fetchProFeatures() {
+        const self = this
+        return Promise.all([
+            this.apiManager.getCaptainInfo(),
+            this.apiManager.getProFeaturesState(),
+        ])
+            .then(function (result) {
+                self.setState({
+                    apiData: result[1].proFeaturesState,
+                    rootDomain: result[0].rootDomain,
+                })
+            })
+            .catch(Toaster.createCatcher())
+    }
+
     render() {
         return (
             <div className="settings-page">
@@ -23,7 +54,20 @@ class Settings extends Component<{ isMobile: boolean }, {}> {
                         )}
                     </p>
                 </div>
+                <DomainsHttps />
                 <div className="settings-grid">
+                    <Card title={localize('settings.security', 'Security')}>
+                        <ChangePass isMobile={this.props.isMobile} />
+                        {this.state.apiData?.isFeatureFlagEnabled &&
+                            this.state.apiData.isSubscribed && (
+                                <>
+                                    <div className="section-divider" />
+                                    <OtpSettings
+                                        rootDomain={this.state.rootDomain}
+                                    />
+                                </>
+                            )}
+                    </Card>
                     <Card title={localize('settings.appearance', 'Appearance')}>
                         <div className="settings-preference">
                             <span>
@@ -40,22 +84,19 @@ class Settings extends Component<{ isMobile: boolean }, {}> {
                         <div className="section-divider" />
                         <ThemeSettings />
                     </Card>
-                    <Card
-                        title={localize(
-                            'settings.change_password',
-                            'Change Password'
-                        )}
-                    >
-                        <ChangePass isMobile={this.props.isMobile} />
-                    </Card>
                 </div>
-                <ProFeatures isMobile={this.props.isMobile} />
-                <Card
-                    title={localize(
-                        'settings.nginx_configurations',
-                        'NGINX Configurations'
-                    )}
-                >
+                <ProFeatures
+                    isMobile={this.props.isMobile}
+                    apiData={this.state.apiData}
+                    onRefreshRequested={() => this.fetchProFeatures()}
+                />
+                <Card title={localize('settings.advanced', 'Advanced')}>
+                    <h3>
+                        {localize(
+                            'settings.nginx_configurations',
+                            'NGINX Configurations'
+                        )}
+                    </h3>
                     <NginxConfig isMobile={this.props.isMobile} />
                 </Card>
             </div>

@@ -40,3 +40,16 @@ describe('Remember Me option storage', () => {
         expect(window.localStorage.getItem(REMEMBER_ME_OPTION)).not.toBeTruthy()
     })
 })
+
+describe('Setup dismissal storage', () => {
+    beforeEach(() => localStorage.clear())
+    it('persists dismissal across reads in the current origin', () => {
+        expect(StorageHelper.getSetupDismissedFromLocalStorage()).toBe(false)
+        StorageHelper.setSetupDismissedInLocalStorage()
+        expect(StorageHelper.getSetupDismissedFromLocalStorage()).toBe(true)
+    })
+    it('treats unrelated or malformed stored values as unfinished', () => {
+        localStorage.setItem('CAPROVER_SETUP_DISMISSED', 'not-a-boolean')
+        expect(StorageHelper.getSetupDismissedFromLocalStorage()).toBe(false)
+    })
+})

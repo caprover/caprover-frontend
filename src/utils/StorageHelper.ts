@@ -13,6 +13,7 @@ const sessionStorage = window.sessionStorage
 
 const AUTH_KEY = 'CAPROVER_AUTH_KEY'
 const SIDER_COLLAPSED_STATE = 'CAPROVER_SIDER_COLLAPSED_STATE'
+const SETUP_DISMISSED = 'CAPROVER_SETUP_DISMISSED'
 const DARK_MODE = 'CAPROVER_DARK_MODE'
 const LANGUAGE = 'CAPROVER_LANGUAGE'
 const APP_PROJECT_SPLIT_RATIO = 'APP_PROJECT_SPLIT_RATIO'
@@ -83,6 +84,23 @@ class StorageHelper {
     getSiderCollapsedStateFromLocalStorage(): boolean {
         const storageValue = localStorage.getItem(SIDER_COLLAPSED_STATE)
         return storageValue && JSON.parse(storageValue)
+    }
+
+    getSetupDismissedFromLocalStorage(): boolean {
+        try {
+            return localStorage.getItem(SETUP_DISMISSED) === 'true'
+        } catch (error) {
+            Logger.dev('Unable to read setup dismissal')
+            return false
+        }
+    }
+
+    setSetupDismissedInLocalStorage() {
+        try {
+            localStorage.setItem(SETUP_DISMISSED, 'true')
+        } catch (error) {
+            Logger.dev('Unable to persist setup dismissal')
+        }
     }
 
     setDarkModeInLocalStorage(isDarkMode: boolean) {

@@ -4,6 +4,7 @@ import { createMemoryHistory } from 'history'
 import { Router } from 'react-router-dom'
 import StorageHelper from '../utils/StorageHelper'
 import Utils from '../utils/Utils'
+import { SetupStatus } from '../models/SetupStatus'
 import { PageRoot } from './PageRoot'
 
 jest.mock('../utils/Language', () => ({
@@ -45,6 +46,9 @@ const renderPage = () => {
                     params: {},
                 }}
                 rootElementKey="root"
+                setupStatus={SetupStatus.Required}
+                setupDismissed={false}
+                refreshSetup={jest.fn()}
                 emitSizeChanged={jest.fn()}
                 isMobile={isMobile}
             />
