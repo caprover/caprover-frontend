@@ -592,5 +592,19 @@
   "app_runtime.running_duration": "%s1 süredir çalışıyor",
   "app_runtime.past_duration": "%s2 önce: %s1",
   "overview.app_count": "%s1 uygulama",
-  "overview.missing_runtime_count": "çalışma verileri kullanılamayan %s1 uygulama"
+  "overview.missing_runtime_count": "çalışma verileri kullanılamayan %s1 uygulama",
+  "app_runtime.state_running": "Çalışıyor",
+  "app_runtime.state_failed": "Başarısız",
+  "app_runtime.state_rejected": "Reddedildi",
+  "app_runtime.state_orphaned": "Sahipsiz",
+  "app_runtime.state_starting": "Başlatılıyor",
+  "app_runtime.state_preparing": "Hazırlanıyor",
+  "app_runtime.state_ready": "Hazır",
+  "app_runtime.state_pending": "Beklemede",
+  "app_runtime.state_new": "Yeni",
+  "app_runtime.state_allocated": "Kaynak ayrıldı",
+  "app_runtime.state_assigned": "Atandı",
+  "app_runtime.state_accepted": "Kabul edildi",
+  "app_runtime.state_complete": "Tamamlandı",
+  "app_runtime.state_shutdown": "Kapatıldı"
 }
