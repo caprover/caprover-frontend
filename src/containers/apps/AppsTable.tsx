@@ -177,7 +177,10 @@ class AppsTable extends Component<
                 key: 'instanceCount',
                 width: 88,
                 align: 'center',
-                render: (_: number, { appName = '' }: TableData) => (
+                render: (
+                    instanceCount: number,
+                    { appName = '' }: TableData
+                ) => (
                     <AppRuntimeStatus
                         appName={appName}
                         runtime={self.getAppRuntime(appName)}
@@ -185,6 +188,7 @@ class AppsTable extends Component<
                         appDetailsPath={self.appDetailPath(appName)}
                         isMobile={self.props.isMobile}
                         showInstances
+                        configuredInstances={instanceCount}
                     />
                 ),
             },
@@ -559,6 +563,7 @@ class AppsTable extends Component<
                                 appName = '',
                                 hasPersistentData,
                                 notExposeAsWebApp,
+                                instanceCount,
                                 hasDefaultSubDomainSsl,
                             }) => (
                                 <Card
@@ -628,6 +633,7 @@ class AppsTable extends Component<
                                             )}
                                             isMobile={self.props.isMobile}
                                             showInstances
+                                            configuredInstances={instanceCount}
                                         />
                                     </p>
                                     <p>
