@@ -99,10 +99,7 @@ export function DiskUsageAlert({ diskUsage, history }: DiskUsageAlertProps) {
                     )} (${getAvailablePercent(reading.disk)}% ${localize(
                         'disk_usage.of_capacity',
                         'of capacity'
-                    )}). ${localize(
-                        'disk_usage.failure_warning',
-                        'Builds and deployments may fail.'
-                    )}${
+                    )}).${
                         diskUsage.refreshFailed
                             ? ` ${localize(
                                   'disk_usage.refresh_failed',
@@ -116,6 +113,10 @@ export function DiskUsageAlert({ diskUsage, history }: DiskUsageAlertProps) {
                 <Button
                     size="small"
                     type="link"
+                    title={localize(
+                        'disk_usage.failure_warning',
+                        'Builds and deployments may fail.'
+                    )}
                     onClick={() => history.push('/monitoring')}
                 >
                     {localize('disk_usage.view_disk_usage', 'View disk usage')}

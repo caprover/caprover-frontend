@@ -11,9 +11,15 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-.app-shell {
-    padding: 8px;
-    gap: 8px;
+.app-shell.full-screen {
+    width: calc(100% - 16px);
+    height: calc(100% - 16px);
+    margin: 8px;
+    padding: 0;
+    gap: 0;
+    border: 1px solid var(--ant-color-border-secondary);
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .app-sidebar,
@@ -32,7 +38,9 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    height: 64px;
+    height: 48px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--ant-color-border-secondary);
     padding-inline: 16px;
     color: var(--ant-color-text);
     font-size: 15px;
@@ -41,20 +49,13 @@ body {
 }
 
 .sidebar-brand img {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
 }
-.sidebar-caption {
-    display: block;
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--ant-color-text-secondary);
-    letter-spacing: 0;
-}
 .sidebar-section-label {
-    padding: 20px 20px 8px;
-    font-size: 11px;
+    padding: 16px 20px 8px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--ant-color-text-secondary);
 }
@@ -67,7 +68,7 @@ body {
 }
 .sidebar-content .ant-menu-item-group-title {
     padding: 24px 20px 8px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--ant-color-text-secondary);
 }
 .sidebar-content .ant-menu-item {
@@ -112,8 +113,8 @@ body {
     padding-inline: 18px;
 }
 .workspace-layout {
-    border: 1px solid var(--ant-color-border-secondary);
-    border-radius: 12px;
+    border-inline-start: 1px solid var(--ant-color-border-secondary);
+    border-radius: 0;
     overflow: hidden;
     background: var(--ant-color-bg-container);
 }
@@ -137,7 +138,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
 }
 .header-separator {
@@ -150,18 +151,18 @@ body {
     background: var(--ant-color-bg-container);
 }
 .workspace-content > .ant-alert {
-    margin: 12px 28px 0;
+    margin: 12px 24px 0;
     padding: 8px 12px;
-    font-size: 12px;
+    font-size: 13px;
     border-radius: 7px;
 }
 .workspace-content > .ant-alert .ant-alert-message {
-    font-size: 12px;
+    font-size: 13px;
 }
 #main-content-layout {
     flex: 1;
     min-height: 0;
-    padding: 28px;
+    padding: 24px;
     overflow-y: auto;
     scrollbar-gutter: stable;
 }
@@ -180,7 +181,7 @@ body {
     font-size: 23px;
     font-weight: 600;
     line-height: 1.3;
-    letter-spacing: -0.055em;
+    letter-spacing: -0.03em;
 }
 .page-heading p {
     margin: 0;
@@ -198,7 +199,7 @@ body {
     border: 1px solid var(--ant-color-border-secondary);
     border-radius: 6px;
     color: var(--ant-color-text-secondary);
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0;
     font-weight: 500;
 }
@@ -216,8 +217,10 @@ body {
     letter-spacing: -0.025em;
 }
 .ant-tag {
-    font-size: 11px;
-    line-height: 19px;
+    font-size: 12px;
+    line-height: 20px;
+    border-radius: 6px;
+    padding-inline: 7px;
     border-color: var(--ant-color-border-secondary);
 }
 .section-divider {
@@ -235,9 +238,6 @@ body {
     border: 0;
     margin-bottom: 24px;
 }
-.apps-page > .ant-card-head .page-heading {
-    margin-bottom: 0;
-}
 .apps-page > .ant-card-head .ant-card-head-title {
     overflow: visible;
     white-space: normal;
@@ -245,21 +245,79 @@ body {
 .apps-page > .ant-card-body {
     padding: 0;
 }
-.apps-toolbar {
+.apps-heading {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 12px;
+    min-width: 0;
+}
+.apps-heading h1 {
+    display: flex;
+    align-items: center;
     gap: 8px;
-    margin-bottom: 20px;
+    margin: 0 8px 0 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
 }
-.apps-toolbar > .ant-input-affix-wrapper {
-    width: 280px;
+.apps-heading > .ant-input-affix-wrapper {
+    width: 220px;
+    min-width: 160px;
 }
-.apps-toolbar .project-filter {
-    width: 200px;
+.apps-heading .project-filter {
+    width: 170px;
 }
-.apps-toolbar > .ant-btn {
-    margin-inline-start: auto;
+.apps-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.app-identity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+.app-identity > :first-child {
+    flex-shrink: 0;
+}
+.ant-table-cell .app-identity .app-name-link {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+.table-icon-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    margin-block: -5px;
+    color: var(--ant-color-text-secondary);
+    border-radius: 6px;
+}
+.table-icon-action:hover {
+    background: var(--ant-color-fill-secondary);
+    color: var(--ant-color-text);
+}
+.table-icon-action:focus-visible {
+    outline: 2px solid var(--ant-color-primary);
+    outline-offset: 2px;
+}
+.storage-icon {
+    display: inline-flex;
+    color: var(--ant-color-text-secondary);
+    vertical-align: middle;
+}
+.app-tag.ant-tag {
+    margin: 2px 0;
+    margin-inline-end: 6px;
+}
+.app-tag a {
+    color: inherit;
 }
 .apps-page .ant-table-wrapper {
     border: 1px solid var(--ant-color-border-secondary);
@@ -267,8 +325,9 @@ body {
     overflow: hidden;
 }
 .apps-page .ant-table-thead > tr > th {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
+    white-space: nowrap;
 }
 .apps-page .ant-table-row:last-child > td {
     border-bottom: 0;
@@ -277,12 +336,6 @@ body {
     color: var(--ant-color-text);
     font-weight: 500;
     overflow-wrap: anywhere;
-}
-.apps-page .ant-table-cell .ant-space {
-    align-items: center;
-}
-.apps-page .ant-table-cell .ant-space-item {
-    min-width: 0;
 }
 .project-manager {
     min-height: 240px;
@@ -310,7 +363,7 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     padding: 4px 16px 16px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--ant-color-text-secondary);
 }
 .mobile-app-card p {
@@ -479,17 +532,36 @@ body {
 }
 .metric-description {
     color: var(--ant-color-text-secondary);
-    font-size: 11px;
+    font-size: 12px;
     min-height: 16px;
 }
 .navigation-drawer .ant-drawer-body {
     padding: 0;
 }
 
+@media (min-width: 768px) and (max-width: 1100px) {
+    .apps-heading {
+        flex-wrap: wrap;
+    }
+    .apps-page > .ant-card-head .ant-card-head-wrapper {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .apps-page > .ant-card-head .ant-card-head-title {
+        flex-basis: 100%;
+    }
+    .apps-page > .ant-card-head .ant-card-extra {
+        margin-inline-start: 0;
+    }
+}
+
 @media (max-width: 767px) {
-    .app-shell {
-        padding: 0;
-        gap: 0;
+    .app-shell.full-screen {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
     }
     .workspace-layout {
         border: 0;
@@ -527,12 +599,23 @@ body {
     .apps-page > .ant-card-head .ant-card-extra {
         margin-inline-start: 0;
     }
-    .apps-toolbar > .ant-input-affix-wrapper {
-        width: 100%;
+    .apps-heading {
+        flex-wrap: wrap;
     }
-    .apps-toolbar .project-filter {
+    .apps-heading h1 {
+        flex-basis: 100%;
+        margin-bottom: 4px;
+    }
+    .apps-heading > .ant-input-affix-wrapper {
+        width: auto;
         flex: 1;
-        min-width: 0;
+        min-width: 120px;
+    }
+    .apps-heading .project-filter {
+        width: 150px;
+    }
+    .mobile-app-card .ant-card-body {
+        font-size: 12px;
     }
     .settings-grid,
     .overview-grid {

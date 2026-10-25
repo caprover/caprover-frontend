@@ -104,14 +104,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 aria-label="CapRover"
             >
                 <img src="/icon-512x512.png" alt="" />
-                {!compact && (
-                    <span>
-                        CapRover
-                        <span className="sidebar-caption">
-                            {localize('navigation.workspace', 'Workspace')}
-                        </span>
-                    </span>
-                )}
+                {!compact && <span>CapRover</span>}
             </a>
             {!compact && (
                 <div className="sidebar-section-label">
@@ -237,7 +230,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <Layout.Sider
                     className="app-sidebar"
                     theme={siderTheme}
-                    width={232}
+                    width={248}
                     collapsedWidth={64}
                     collapsed={collapsed}
                 >

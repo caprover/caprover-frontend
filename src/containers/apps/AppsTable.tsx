@@ -18,7 +18,6 @@ import {
     Empty,
     Input,
     Row,
-    Space,
     Table,
     Tag,
     Tooltip,
@@ -26,7 +25,7 @@ import {
     TreeSelect,
 } from 'antd'
 import { CapRoverModels } from 'caprover-api'
-import { Search } from 'lucide-react'
+import { ExternalLink, HardDrive, Search } from 'lucide-react'
 import { ColumnProps } from 'antd/lib/table'
 import { History } from 'history'
 import React, { Component, Fragment, Key } from 'react'
@@ -111,15 +110,15 @@ class AppsTable extends Component<
 
     createColumns() {
         const self = this
-        const ALIGN: 'center' = 'center'
         const columns: ColumnProps<TableData>[] = [
             {
                 title: localize('apps_table.application', 'Application'),
                 dataIndex: 'appName',
                 key: 'appName',
                 width: '32%',
+                ellipsis: true,
                 render: (appName: string) => (
-                    <Space size={10}>
+                    <div className="app-identity">
                         <AppRuntimeStatus
                             appName={appName}
                             runtime={self.getAppRuntime(appName)}
@@ -134,7 +133,7 @@ class AppsTable extends Component<
                         >
                             {appName}
                         </Link>
-                    </Space>
+                    </div>
                 ),
                 sorter: (a, b) => {
                     return a.appName
@@ -146,18 +145,25 @@ class AppsTable extends Component<
             {
                 title: localize('apps_table.storage', 'Storage'),
                 dataIndex: 'hasPersistentData',
-                width: '10%',
+                width: 104,
                 key: 'hasPersistentData',
-                align: ALIGN,
+                align: 'left',
                 render: (hasPersistentData: boolean) => {
                     if (!hasPersistentData) {
                         return <span />
                     }
 
                     return (
-                        <span>
-                            <CheckOutlined />
-                        </span>
+                        <Tooltip
+                            title={localize(
+                                'apps_table.persistent_data',
+                                'Persistent Data'
+                            )}
+                        >
+                            <span className="storage-icon">
+                                <HardDrive size={16} />
+                            </span>
+                        </Tooltip>
                     )
                 },
             },
@@ -165,20 +171,20 @@ class AppsTable extends Component<
                 title: localize('apps_table.instances', 'Instances'),
                 dataIndex: 'instanceCount',
                 key: 'instanceCount',
-                width: '10%',
-                align: ALIGN,
+                width: 112,
+                align: 'right',
             },
             {
                 title: localize('apps_table.tags', 'Tags'),
                 dataIndex: 'tags',
                 key: 'tags',
-                align: ALIGN,
+                align: 'left',
                 render: (_: any, app: TableData) => {
                     return (
                         <Fragment>
                             {app.tags && app.tags.length > 0 ? (
                                 app.tags.map((it) => (
-                                    <Tag key={it.tagName} style={{ margin: 2 }}>
+                                    <Tag key={it.tagName} className="app-tag">
                                         <a
                                             href="/"
                                             onClick={(e) => {
@@ -206,8 +212,8 @@ class AppsTable extends Component<
                 title: localize('apps_table.deployed', 'Deployed'),
                 dataIndex: 'lastDeployTime',
                 key: 'lastDeployTime',
-                width: '20%',
-                align: ALIGN,
+                width: 180,
+                align: 'left',
                 sorter: (a, b) => {
                     return (
                         Date.parse(a.lastDeployTime) -
@@ -222,7 +228,7 @@ class AppsTable extends Component<
 
                     return (
                         <span>
-                            <Timestamp timestamp={lastDeployTime} />
+                            <Timestamp timestamp={lastDeployTime} relative />
                             {!!app.isAppBuilding ? (
                                 <LoadingOutlined
                                     style={{
@@ -239,8 +245,8 @@ class AppsTable extends Component<
                 title: localize('apps_table.open', 'Open'),
                 dataIndex: 'notExposeAsWebApp',
                 key: 'openInBrowser',
-                width: '60px',
-                align: ALIGN,
+                width: 72,
+                align: 'center',
                 render: (notExposeAsWebApp: boolean, app) => {
                     if (notExposeAsWebApp) {
                         return (
@@ -257,11 +263,16 @@ class AppsTable extends Component<
 
                     return (
                         <NewTabLink
+                            className="table-icon-action"
+                            title={localize(
+                                'apps_table.open_application',
+                                'Open application'
+                            )}
                             url={`http${
                                 app.hasDefaultSubDomainSsl ? 's' : ''
                             }://${app.appName}.${self.props.rootDomain}`}
                         >
-                            <LinkOutlined />{' '}
+                            <ExternalLink size={16} />
                         </NewTabLink>
                     )
                 },
@@ -372,13 +383,19 @@ class AppsTable extends Component<
             <Card
                 className="apps-page"
                 extra={
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5em',
-                        }}
-                    >
+                    <div className="apps-actions">
+                        <Button
+                            icon={<FolderOpenOutlined />}
+                            onClick={() =>
+                                self.setState({ showProjects: true })
+                            }
+                        >
+                            {localize(
+                                'apps.delete_app_projects_list',
+                                'Projects'
+                            )}
+                        </Button>
+
                         <CreateNewApp
                             projects={self.props.projects}
                             history={self.props.history}
@@ -435,6 +452,10 @@ class AppsTable extends Component<
                         )}
                         <Button
                             type="text"
+                            title={localize(
+                                'apps_table.bulk_edit',
+                                'Select apps and projects'
+                            )}
                             aria-label={localize(
                                 'apps_table.bulk_edit',
                                 'Select apps and projects'
@@ -458,48 +479,34 @@ class AppsTable extends Component<
                     </div>
                 }
                 title={
-                    <div className="page-heading">
+                    <div className="apps-heading">
                         <h1>
                             {localize('apps_table.title', 'Your Apps')}{' '}
                             <span className="count-badge">
                                 {self.props.apps.length}
                             </span>
                         </h1>
-                        <p>
-                            {localize(
-                                'apps_table.subtitle',
-                                'Deploy, organize, and manage your applications.'
+                        {searchAppInput}
+                        <TreeSelect
+                            className="project-filter"
+                            aria-label={localize(
+                                'apps_table.project_filter',
+                                'Filter by project'
                             )}
-                        </p>
+                            value={self.state.selectedProjectId}
+                            fieldNames={{ value: 'key' }}
+                            treeData={self.createProjectTreeData(
+                                self.props.projects
+                            )}
+                            treeDefaultExpandAll
+                            onChange={(value: string) => {
+                                self.setState({ selectedProjectId: value })
+                                LastSelectedKeyMemoryCache.selectedKey = value
+                            }}
+                        />
                     </div>
                 }
             >
-                <div className="apps-toolbar">
-                    {searchAppInput}
-                    <TreeSelect
-                        className="project-filter"
-                        aria-label={localize(
-                            'apps_table.project_filter',
-                            'Filter by project'
-                        )}
-                        value={self.state.selectedProjectId}
-                        fieldNames={{ value: 'key' }}
-                        treeData={self.createProjectTreeData(
-                            self.props.projects
-                        )}
-                        treeDefaultExpandAll
-                        onChange={(value: string) => {
-                            self.setState({ selectedProjectId: value })
-                            LastSelectedKeyMemoryCache.selectedKey = value
-                        }}
-                    />
-                    <Button
-                        icon={<FolderOpenOutlined />}
-                        onClick={() => self.setState({ showProjects: true })}
-                    >
-                        {localize('apps.delete_app_projects_list', 'Projects')}
-                    </Button>
-                </div>
                 <Drawer
                     title={localize(
                         'apps.delete_app_projects_list',
@@ -536,7 +543,7 @@ class AppsTable extends Component<
                                 <Card
                                     className="mobile-app-card"
                                     title={
-                                        <Space size={10}>
+                                        <div className="app-identity">
                                             <AppRuntimeStatus
                                                 appName={appName}
                                                 runtime={self.getAppRuntime(
@@ -557,7 +564,7 @@ class AppsTable extends Component<
                                             >
                                                 {appName}
                                             </Link>
-                                        </Space>
+                                        </div>
                                     }
                                     key={appName}
                                     extra={
@@ -635,7 +642,7 @@ class AppsTable extends Component<
                                 columns={self.createColumns()}
                                 dataSource={appsToRender}
                                 pagination={false}
-                                scroll={{ x: 760 }}
+                                scroll={{ x: 900 }}
                                 size="middle"
                                 rowSelection={
                                     self.state.isBulkEditMode
