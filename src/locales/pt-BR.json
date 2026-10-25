@@ -592,5 +592,19 @@
   "app_runtime.running_duration": "Em execução há %s1",
   "app_runtime.past_duration": "%s1 há %s2",
   "overview.app_count": "%s1 aplicativos",
-  "overview.missing_runtime_count": "%s1 com dados de execução indisponíveis"
+  "overview.missing_runtime_count": "%s1 com dados de execução indisponíveis",
+  "app_runtime.state_running": "Em execução",
+  "app_runtime.state_failed": "Falhou",
+  "app_runtime.state_rejected": "Rejeitado",
+  "app_runtime.state_orphaned": "Órfão",
+  "app_runtime.state_starting": "Iniciando",
+  "app_runtime.state_preparing": "Preparando",
+  "app_runtime.state_ready": "Pronto",
+  "app_runtime.state_pending": "Pendente",
+  "app_runtime.state_new": "Novo",
+  "app_runtime.state_allocated": "Recursos alocados",
+  "app_runtime.state_assigned": "Atribuído",
+  "app_runtime.state_accepted": "Aceito",
+  "app_runtime.state_complete": "Concluído",
+  "app_runtime.state_shutdown": "Desligado"
 }
