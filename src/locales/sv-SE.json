@@ -586,5 +586,11 @@
   "themes.edit_name": "Temannamn",
   "themes.head_embed": "Bädda in element i <head>",
   "themes.see_here": "Se här för detaljer.",
-  "themes.theme_custom_help": "Du kan anpassa CapRover-temat genom att tillhandahålla ett anpassat tema och injicera element (typsnitt, CSS, JS osv.) i <head>-avsnittet."
+  "themes.theme_custom_help": "Du kan anpassa CapRover-temat genom att tillhandahålla ett anpassat tema och injicera element (typsnitt, CSS, JS osv.) i <head>-avsnittet.",
+  "disk_usage.capacity_summary": "%s1 tillgängligt av %s2 på %s3",
+  "disk_usage.alert_summary": "%s1 på %s2. %s3 tillgängligt (%s4% av kapaciteten).",
+  "app_runtime.running_duration": "Har körts i %s1",
+  "app_runtime.past_duration": "%s1 för %s2 sedan",
+  "overview.app_count": "%s1 appar",
+  "overview.missing_runtime_count": "%s1 med otillgängliga körningsdata"
 }
