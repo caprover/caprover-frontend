@@ -216,10 +216,9 @@ export class Overview extends ApiComponent<
                                     )}
                                 </p>
                                 <p>
-                                    {apps.length}{' '}
-                                    {localize('overview.apps', 'apps')}
+                                    {localize('overview.app_count', '%s1 apps').replace('%s1', String(apps.length))}
                                     {missingRuntimes > 0 &&
-                                        ` · ${missingRuntimes} ${localize('overview.runtime_missing', 'with unavailable runtime data')}`}
+                                        ` · ${localize('overview.missing_runtime_count', '%s1 with unavailable runtime data').replace('%s1', String(missingRuntimes))}`}
                                 </p>
                                 {attentionApps.length > 0 && (
                                     <List
