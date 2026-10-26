@@ -117,9 +117,12 @@ it('updates an unsecured domain without a risk confirmation', async () => {
         hasRootSsl: false,
         forceSsl: false,
     })
-    fireEvent.change(await screen.findByPlaceholderText('my-root.example.com'), {
-        target: { value: 'new.example.com' },
-    })
+    fireEvent.change(
+        await screen.findByPlaceholderText('my-root.example.com'),
+        {
+            target: { value: 'new.example.com' },
+        }
+    )
     fireEvent.click(screen.getByText('Update Domain'))
     expect(confirm).not.toHaveBeenCalled()
     expect(update).toHaveBeenCalledWith('new.example.com', false)

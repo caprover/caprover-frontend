@@ -251,7 +251,10 @@ export class DomainsHttps extends ApiComponent<
 
     confirmRootDomainChange(onConfirmed: () => void) {
         Modal.confirm({
-            title: localize('settings.change_root_domain', 'Change Root Domain'),
+            title: localize(
+                'settings.change_root_domain',
+                'Change Root Domain'
+            ),
             content: (
                 <p>
                     {Utils.formatText(
