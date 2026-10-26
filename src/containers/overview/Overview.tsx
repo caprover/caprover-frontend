@@ -161,7 +161,8 @@ export class Overview extends ApiComponent<
                           'app_runtime.instance_mismatch',
                           'Fewer instances are running than expected.'
                       )
-                    : runtime?.status === CapRoverModels.AppRuntimeStatus.Stopped
+                    : runtime?.status ===
+                        CapRoverModels.AppRuntimeStatus.Stopped
                       ? localize('app_runtime.stopped', 'Stopped')
                       : localize(
                             'app_runtime.status_unavailable',
@@ -305,7 +306,10 @@ export class Overview extends ApiComponent<
                                         </strong>
                                         <List
                                             size="small"
-                                            dataSource={attentionApps.slice(0, 2)}
+                                            dataSource={attentionApps.slice(
+                                                0,
+                                                2
+                                            )}
                                             renderItem={(app) =>
                                                 renderApp(app, true)
                                             }
@@ -318,8 +322,7 @@ export class Overview extends ApiComponent<
                                                 ).replace(
                                                     '%s1',
                                                     String(
-                                                        attentionApps.length -
-                                                            2
+                                                        attentionApps.length - 2
                                                     )
                                                 )}
                                             </Link>
