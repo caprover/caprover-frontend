@@ -171,6 +171,7 @@ function getVisibleLatestFailure(
 ) {
     if (
         !runtime ||
+        runtime.status === CapRoverModels.AppRuntimeStatus.Running ||
         (typeof runtime.runningInstances === 'number' &&
             typeof runtime.desiredInstances === 'number' &&
             runtime.runningInstances === runtime.desiredInstances) ||
