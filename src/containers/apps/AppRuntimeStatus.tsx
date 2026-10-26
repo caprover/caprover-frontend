@@ -166,22 +166,6 @@ function getNewestRunningTask(
         })[0]
 }
 
-function getVisibleLatestFailure(
-    runtime: CapRoverModels.AppRuntime | undefined
-) {
-    if (
-        !runtime ||
-        (typeof runtime.runningInstances === 'number' &&
-            typeof runtime.desiredInstances === 'number' &&
-            runtime.runningInstances >= runtime.desiredInstances) ||
-        runtime.latestFailure?.error.startsWith('No such container:')
-    ) {
-        return undefined
-    }
-
-    return runtime.latestFailure || undefined
-}
-
 function getTooltipDetail(
     runtime: CapRoverModels.AppRuntime | undefined
 ): string | undefined {
@@ -206,12 +190,11 @@ function getTooltipDetail(
     )
     if (nonRunningTask) return getStateDuration(nonRunningTask)
 
-    const latestFailure = getVisibleLatestFailure(runtime)
-    if (latestFailure?.occurredAt) {
+    if (runtime.latestFailure?.occurredAt) {
         return `${localize(
             'app_runtime.latest_failure',
             'Latest failure'
-        )}: ${Utils.getRelativeDateTime(latestFailure.occurredAt)}`
+        )}: ${Utils.getRelativeDateTime(runtime.latestFailure.occurredAt)}`
     }
 
     return localize('app_runtime.needs_attention', 'Needs attention')
@@ -306,7 +289,13 @@ export default class AppRuntimeStatus extends Component<
     renderDrawer() {
         const runtime = this.props.runtime
         const currentTasks = runtime?.currentTasks || []
-        const latestFailure = getVisibleLatestFailure(runtime)
+        const hasEnoughInstances =
+            typeof runtime?.runningInstances === 'number' &&
+            typeof runtime?.desiredInstances === 'number' &&
+            runtime.runningInstances >= runtime.desiredInstances
+        const latestFailure = hasEnoughInstances
+            ? undefined
+            : runtime?.latestFailure
         const taskHistory =
             runtime && 'taskHistory' in runtime
                 ? (runtime as CapRoverModels.AppRuntimeDetails).taskHistory
