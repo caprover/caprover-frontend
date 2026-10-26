@@ -245,6 +245,7 @@ it('does not highlight an old missing-container error during degraded health', (
                 ...createTask(CapRoverModels.TaskState.Failed),
                 taskId: 'old-task',
                 error,
+                exitCode: nullValue,
             },
         ],
     }
