@@ -80,6 +80,25 @@ it.each(['/', '/dashboard?redirectToAppsIfFullySetup=true'])(
         expect(screen.getByText('Apps')).toBeInTheDocument()
     }
 )
+it.each(['/', '/dashboard?redirectToAppsIfFullySetup=true'])(
+    'waits for setup status before routing completed installations to Apps from %s',
+    (path) => {
+        const { history, store } = showRoute(path, SetupStatus.Loading)
+        expect(history.location.pathname).toBe('/dashboard')
+        act(() => {
+            store.dispatch(emitSetupStatusChanged(SetupStatus.Complete))
+        })
+        expect(history.location.pathname).toBe('/apps')
+    }
+)
+it('waits for setup status before routing an incomplete installation', () => {
+    const { history, store } = showRoute('/', SetupStatus.Loading)
+    expect(history.location.pathname).toBe('/dashboard')
+    act(() => {
+        store.dispatch(emitSetupStatusChanged(SetupStatus.Required))
+    })
+    expect(history.location.pathname).toBe('/setup')
+})
 it('dismisses an HTTP-only installation immediately and preserves the required server state', () => {
     const { history, store } = showRoute('/setup', SetupStatus.Required)
     fireEvent.click(screen.getByRole('button', { name: 'Dismiss Setup' }))
