@@ -406,8 +406,7 @@ export default class AppRuntimeStatus extends Component<
                                     message={
                                         latestFailure.occurredAt
                                             ? Utils.getRelativeDateTime(
-                                                  latestFailure
-                                                      .occurredAt
+                                                  latestFailure.occurredAt
                                               )
                                             : localize(
                                                   'app_runtime.failure_time_unknown',
