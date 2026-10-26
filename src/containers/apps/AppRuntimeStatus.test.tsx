@@ -176,6 +176,11 @@ it('shows a neutral unknown count when runtime data is unavailable', () => {
 
 it('renders a quiet healthy indicator and opens current task details', () => {
     const runtime = createRuntime()
+    runtime.latestFailure = {
+        taskId: 'old-task',
+        occurredAt: nullValue,
+        error: 'Previous container crash',
+    }
     const { container } = renderStatus(runtime)
 
     expect(container.querySelector('.ant-badge-status-success')).toBeTruthy()
@@ -190,6 +195,7 @@ it('renders a quiet healthy indicator and opens current task details', () => {
     expect(screen.getByText('Current tasks')).toBeInTheDocument()
     expect(screen.getByText('Instance 1')).toBeInTheDocument()
     expect(screen.getByText('nginx:alpine')).toBeInTheDocument()
+    expect(screen.queryByText('Latest failure')).not.toBeInTheDocument()
 })
 
 it('shows degraded tasks and the latest failure', () => {
@@ -223,6 +229,30 @@ it('shows degraded tasks and the latest failure', () => {
     expect(screen.getByText('Latest failure')).toBeInTheDocument()
     expect(screen.getByText('starting')).toBeInTheDocument()
     expect(screen.getByText(/task: non-zero exit/)).toBeInTheDocument()
+})
+
+it('shows a missing-container error for a degraded app without task history', () => {
+    const error = 'No such container: srv-captain--wordpress-db.1.old-task'
+    const runtime: CapRoverModels.AppRuntime = {
+        ...createRuntime(CapRoverModels.AppRuntimeStatus.Degraded),
+        latestFailure: {
+            taskId: 'old-task',
+            occurredAt: new Date(Date.now() - 30000).toISOString(),
+            error,
+        },
+    }
+    renderStatus(runtime)
+
+    fireEvent.click(
+        screen.getByRole('button', {
+            name: 'website, Needs attention, 1/2 running',
+        })
+    )
+
+    expect(screen.getByText('Needs attention')).toBeInTheDocument()
+    expect(screen.getByText('Latest failure')).toBeInTheDocument()
+    expect(screen.getByText(error)).toBeInTheDocument()
+    expect(screen.queryByText('Recent task history')).not.toBeInTheDocument()
 })
 
 it('describes the current transition before an older failure', async () => {

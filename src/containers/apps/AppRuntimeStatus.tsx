@@ -289,6 +289,13 @@ export default class AppRuntimeStatus extends Component<
     renderDrawer() {
         const runtime = this.props.runtime
         const currentTasks = runtime?.currentTasks || []
+        const hasEnoughInstances =
+            typeof runtime?.runningInstances === 'number' &&
+            typeof runtime?.desiredInstances === 'number' &&
+            runtime.runningInstances >= runtime.desiredInstances
+        const latestFailure = hasEnoughInstances
+            ? undefined
+            : runtime?.latestFailure
         const taskHistory =
             runtime && 'taskHistory' in runtime
                 ? (runtime as CapRoverModels.AppRuntimeDetails).taskHistory
@@ -374,7 +381,7 @@ export default class AppRuntimeStatus extends Component<
                             </Typography.Text>
                         )}
 
-                        {!!runtime.latestFailure && (
+                        {!!latestFailure && (
                             <>
                                 <Typography.Title level={5}>
                                     {localize(
@@ -386,17 +393,16 @@ export default class AppRuntimeStatus extends Component<
                                     showIcon
                                     type="error"
                                     message={
-                                        runtime.latestFailure.occurredAt
+                                        latestFailure.occurredAt
                                             ? Utils.getRelativeDateTime(
-                                                  runtime.latestFailure
-                                                      .occurredAt
+                                                  latestFailure.occurredAt
                                               )
                                             : localize(
                                                   'app_runtime.failure_time_unknown',
                                                   'Failure time unavailable'
                                               )
                                     }
-                                    description={runtime.latestFailure.error}
+                                    description={latestFailure.error}
                                 />
                             </>
                         )}
