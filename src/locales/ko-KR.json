@@ -504,6 +504,7 @@
   "overview.image_available": "이미지 사용 가능",
   "overview.installed_version": "설치된 버전",
   "overview.manage_infrastructure": "인프라 관리",
+  "overview.more_apps": "외 %s1개",
   "overview.no_apps": "아직 앱이 없습니다. 첫 번째 앱을 생성하여 시작하세요.",
   "overview.no_deployments": "아직 배포 기록이 없습니다.",
   "overview.no_update": "사용 가능한 업데이트가 없습니다.",

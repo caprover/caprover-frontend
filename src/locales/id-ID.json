@@ -504,6 +504,7 @@
   "overview.image_available": "Image tersedia",
   "overview.installed_version": "Versi terpasang",
   "overview.manage_infrastructure": "Kelola infrastruktur",
+  "overview.more_apps": "+ %s1 lainnya",
   "overview.no_apps": "Belum ada aplikasi. Buat aplikasi pertama Anda untuk memulai.",
   "overview.no_deployments": "Belum ada riwayat deployment.",
   "overview.no_update": "Tidak ada pembaruan yang tersedia.",

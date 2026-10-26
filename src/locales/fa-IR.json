@@ -504,6 +504,7 @@
   "overview.image_available": "ایمیج موجود است",
   "overview.installed_version": "نسخهٔ نصب‌شده",
   "overview.manage_infrastructure": "مدیریت زیرساخت",
+  "overview.more_apps": "+ %s1 مورد دیگر",
   "overview.no_apps": "هنوز برنامه‌ای وجود ندارد. برای شروع اولین برنامهٔ خود را بسازید.",
   "overview.no_deployments": "هنوز سابقه‌ای از استقرار وجود ندارد.",
   "overview.no_update": "به‌روزرسانی جدیدی موجود نیست.",

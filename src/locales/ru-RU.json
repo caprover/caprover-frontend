@@ -504,6 +504,7 @@
   "overview.image_available": "Образ доступен",
   "overview.installed_version": "Установленная версия",
   "overview.manage_infrastructure": "Управление инфраструктурой",
+  "overview.more_apps": "+ ещё %s1",
   "overview.no_apps": "Приложений пока нет. Создайте первое приложение, чтобы начать.",
   "overview.no_deployments": "История развёртываний пока отсутствует.",
   "overview.no_update": "Доступных обновлений нет.",

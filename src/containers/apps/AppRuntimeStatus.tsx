@@ -23,6 +23,7 @@ interface AppRuntimeStatusProps {
     appDetailsPath?: string
     isMobile: boolean
     showInstances?: boolean
+    showRatio?: boolean
     configuredInstances?: number
 }
 
@@ -69,7 +70,8 @@ function getRuntimeSummary(
 }
 
 function getInstanceCount(
-    runtime: CapRoverModels.AppRuntime | undefined
+    runtime: CapRoverModels.AppRuntime | undefined,
+    showRatio = false
 ): string {
     if (
         !runtime ||
@@ -79,7 +81,7 @@ function getInstanceCount(
         return '–'
     }
 
-    return runtime.runningInstances === runtime.desiredInstances
+    return !showRatio && runtime.runningInstances === runtime.desiredInstances
         ? String(runtime.runningInstances)
         : `${runtime.runningInstances}/${runtime.desiredInstances}`
 }
@@ -486,7 +488,10 @@ export default class AppRuntimeStatus extends Component<
                     >
                         {this.props.showInstances ? (
                             <Tag color={getStatusBadge(runtime)}>
-                                {getInstanceCount(runtime)}
+                                {getInstanceCount(
+                                    runtime,
+                                    this.props.showRatio
+                                )}
                             </Tag>
                         ) : (
                             <Badge status={getStatusBadge(runtime)} />

@@ -139,7 +139,7 @@ it('preserves node/version sections when the app-list request fails and retries 
         screen.queryByText('No apps yet. Create your first app to get started.')
     ).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
-    expect(await screen.findByText('1/1')).toBeInTheDocument()
+    expect(await screen.findAllByText('1/1')).toHaveLength(2)
     expect(refreshDiskUsage).toHaveBeenCalledTimes(2)
 })
 
@@ -151,10 +151,8 @@ it('reports missing runtime data without including it in the running/desired tot
         defaultNginxConfig: '',
     })
     showOverview()
-    expect(await screen.findByText('1/1')).toBeInTheDocument()
-    expect(
-        screen.getByText(/1 with unavailable runtime data/)
-    ).toBeInTheDocument()
+    expect(await screen.findAllByText('1/1')).toHaveLength(2)
+    expect(screen.getByText(/Without runtime data: 1/)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'worker' })).toHaveAttribute(
         'href',
         '/apps/details/worker'
@@ -168,9 +166,7 @@ it('surfaces failed runtime collection without claiming a healthy zero', async (
     showOverview()
     expect(await screen.findByText('Unavailable')).toBeInTheDocument()
     expect(screen.queryByText('0/0')).not.toBeInTheDocument()
-    expect(
-        screen.getByText(/1 with unavailable runtime data/)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/Without runtime data: 1/)).toBeInTheDocument()
 })
 
 it('shows explicit empty states and routes the Create App action to the existing Apps flow', async () => {
@@ -195,7 +191,7 @@ it('shows explicit empty states and routes the Create App action to the existing
     )
 })
 
-it('surfaces degraded counts and historical failures using the existing runtime control', async () => {
+it('shows the current degradation reason ahead of historical failures', async () => {
     jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
         apps: [
             runtime('api', {
@@ -213,6 +209,109 @@ it('surfaces degraded counts and historical failures using the existing runtime 
     showOverview()
     expect(await screen.findAllByText('1/3')).toHaveLength(2)
     expect(
-        screen.getByText('Previous task failure: Container exited')
+        screen.getByText('Fewer instances are running than expected.')
     ).toBeInTheDocument()
+    expect(screen.queryByText(/Previous task failure/)).not.toBeInTheDocument()
+})
+
+it('shows historical failures for recovered apps', async () => {
+    jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
+        apps: [
+            runtime('api', {
+                latestFailure: {
+                    taskId: 'failed',
+                    occurredAt: nullValue,
+                    error: 'Previous container crash',
+                },
+            }),
+        ],
+    })
+    showOverview()
+    expect(await screen.findByText('Needs attention (1)')).toBeInTheDocument()
+    expect(
+        screen.getByText('Previous task failure: Previous container crash')
+    ).toBeInTheDocument()
+})
+
+it('keeps app health compact and prioritizes current issues over historical failures', async () => {
+    const appNames = [
+        'recovered',
+        'healthy-a',
+        'degraded-a',
+        'healthy-b',
+        'stopped',
+        'healthy-c',
+        'degraded-b',
+    ]
+    jest.spyOn(ApiManager.prototype, 'getAllApps').mockResolvedValue({
+        appDefinitions: appNames.map((name) => app(name)),
+        rootDomain: 'example.com',
+        captainSubDomain: 'captain',
+        defaultNginxConfig: '',
+    })
+    jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
+        apps: [
+            runtime('recovered', {
+                latestFailure: {
+                    taskId: 'previous',
+                    occurredAt: nullValue,
+                    error: 'Old failure',
+                },
+            }),
+            runtime('healthy-a'),
+            runtime('degraded-a', {
+                status: CapRoverModels.AppRuntimeStatus.Degraded,
+                runningInstances: 0,
+                latestFailure: {
+                    taskId: 'failed',
+                    occurredAt: nullValue,
+                    error: 'Container exited',
+                },
+            }),
+            runtime('healthy-b', {
+                runningInstances: 3,
+                desiredInstances: 3,
+            }),
+            runtime('stopped', {
+                status: CapRoverModels.AppRuntimeStatus.Stopped,
+                runningInstances: 0,
+                desiredInstances: 0,
+            }),
+            runtime('healthy-c'),
+            runtime('degraded-b', {
+                status: CapRoverModels.AppRuntimeStatus.Degraded,
+                runningInstances: 0,
+            }),
+        ],
+    })
+    showOverview()
+
+    expect(await screen.findByText('Needs attention (4)')).toBeInTheDocument()
+    expect(screen.getByText('Healthy (3)')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'degraded-a' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'stopped' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'healthy-a' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'healthy-b' })).toBeInTheDocument()
+    expect(screen.getByText('3/3')).toBeInTheDocument()
+    expect(
+        screen.queryByRole('link', { name: 'recovered' })
+    ).not.toBeInTheDocument()
+    expect(
+        screen.queryByRole('link', { name: 'degraded-b' })
+    ).not.toBeInTheDocument()
+    expect(
+        screen.queryByRole('link', { name: 'healthy-c' })
+    ).not.toBeInTheDocument()
+    expect(screen.getByText('+ 2 more')).toHaveAttribute('href', '/apps')
+    expect(screen.getByText('+ 1 more')).toHaveAttribute('href', '/apps')
+    expect(
+        screen.getByText('Fewer instances are running than expected.')
+    ).toBeInTheDocument()
+})
+
+it('omits the attention section when every app is healthy', async () => {
+    showOverview()
+    expect(await screen.findByText('Healthy (1)')).toBeInTheDocument()
+    expect(screen.queryByText(/Needs attention \(/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Previous task failure/)).not.toBeInTheDocument()
 })

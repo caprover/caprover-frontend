@@ -841,6 +841,32 @@ hr {
 .server-overview-page .ant-list-item {
     overflow-wrap: anywhere;
 }
+.overview-app-section {
+    margin-top: 12px;
+}
+.overview-app-section .ant-list-item {
+    padding-block: 2px;
+}
+.overview-app-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+}
+.overview-app-row > a,
+.overview-app-reason {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.overview-app-row > a {
+    flex-shrink: 1;
+}
+.overview-app-reason {
+    flex: 1;
+}
 @media (max-width: 767px) {
     .server-overview-grid {
         grid-template-columns: minmax(0, 1fr);

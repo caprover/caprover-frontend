@@ -504,6 +504,7 @@
   "overview.image_available": "İmaj mevcut",
   "overview.installed_version": "Yüklü sürüm",
   "overview.manage_infrastructure": "Altyapıyı yönet",
+  "overview.more_apps": "+ %s1 tane daha",
   "overview.no_apps": "Henüz uygulama yok. Başlamak için ilk uygulamanızı oluşturun.",
   "overview.no_deployments": "Henüz dağıtım geçmişi yok.",
   "overview.no_update": "Güncelleme mevcut değil.",

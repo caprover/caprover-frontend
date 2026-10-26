@@ -504,6 +504,7 @@
   "overview.image_available": "Slika je dostupna",
   "overview.installed_version": "Instalirana verzija",
   "overview.manage_infrastructure": "Upravljaj infrastrukturom",
+  "overview.more_apps": "+ još %s1",
   "overview.no_apps": "Još nema aplikacija. Izradite prvu aplikaciju za početak.",
   "overview.no_deployments": "Još nema povijesti postavljanja.",
   "overview.no_update": "Nema dostupnih ažuriranja.",

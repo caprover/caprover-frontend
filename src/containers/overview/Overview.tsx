@@ -121,15 +121,87 @@ export class Overview extends ApiComponent<
             (sum, runtime) => sum + runtime.desiredInstances!,
             0
         )
-        const attentionApps = (apps || []).filter(
+        const currentIssues = (apps || []).filter(
             (app, index) =>
                 runtimes[index]?.status !==
                     CapRoverModels.AppRuntimeStatus.Running ||
-                !!runtimes[index]?.latestFailure ||
                 !!runtimes[index]?.error
+        )
+        const previousFailures = (apps || []).filter(
+            (app, index) =>
+                runtimes[index]?.status ===
+                    CapRoverModels.AppRuntimeStatus.Running &&
+                !runtimes[index]?.error &&
+                !!runtimes[index]?.latestFailure
+        )
+        const attentionApps = [...currentIssues, ...previousFailures]
+        const healthyApps = (apps || []).filter(
+            (app, index) =>
+                runtimes[index]?.status ===
+                    CapRoverModels.AppRuntimeStatus.Running &&
+                !runtimes[index]?.error &&
+                !runtimes[index]?.latestFailure
         )
         const recentDeployments = getRecentDeployments(apps || [])
         const unavailable = localize('overview.unavailable', 'Unavailable')
+
+        const renderApp = (
+            app: CapRoverModels.IAppDef,
+            showFailure: boolean
+        ) => {
+            const runtime = apiData.runtime?.find(
+                (it) => it.appName === app.appName
+            )
+            const reason = runtime?.error
+                ? runtime.error
+                : runtime?.status === CapRoverModels.AppRuntimeStatus.Degraded
+                  ? localize(
+                        'app_runtime.instance_mismatch',
+                        'Fewer instances are running than expected.'
+                    )
+                  : runtime?.status === CapRoverModels.AppRuntimeStatus.Stopped
+                    ? localize('app_runtime.stopped', 'Stopped')
+                    : runtime?.latestFailure?.error
+                      ? `${localize('overview.previous_task_failure', 'Previous task failure')}: ${runtime.latestFailure.error}`
+                      : localize(
+                            'app_runtime.status_unavailable',
+                            'Runtime status unavailable'
+                        )
+
+            return (
+                <List.Item key={app.appName}>
+                    <div className="overview-app-row">
+                        <Link
+                            to={`/apps/details/${encodeURIComponent(app.appName!)}`}
+                            title={app.appName}
+                        >
+                            {app.appName}
+                        </Link>
+                        <AppRuntimeStatus
+                            appName={app.appName!}
+                            runtime={runtime}
+                            runtimeDataStatus={
+                                apiData.runtime
+                                    ? RuntimeDataStatus.Ready
+                                    : RuntimeDataStatus.Failed
+                            }
+                            isMobile={self.props.isMobile}
+                            showInstances
+                            showRatio
+                        />
+                        {showFailure && reason && (
+                            <Typography.Text
+                                type="secondary"
+                                className="overview-app-reason"
+                                title={reason}
+                            >
+                                {reason}
+                            </Typography.Text>
+                        )}
+                    </div>
+                </List.Item>
+            )
+        }
 
         return (
             <div className="server-overview-page">
@@ -224,76 +296,69 @@ export class Overview extends ApiComponent<
                                         ` · ${localize('overview.missing_runtime_count', 'Without runtime data: %s1').replace('%s1', String(missingRuntimes))}`}
                                 </p>
                                 {attentionApps.length > 0 && (
-                                    <List
-                                        size="small"
-                                        dataSource={attentionApps.slice(0, 5)}
-                                        renderItem={(app) => {
-                                            const runtime =
-                                                apiData.runtime?.find(
-                                                    (it) =>
-                                                        it.appName ===
-                                                        app.appName
-                                                )
-                                            return (
-                                                <List.Item>
-                                                    <Space
-                                                        direction="vertical"
-                                                        style={{
-                                                            width: '100%',
-                                                        }}
-                                                    >
-                                                        <Space wrap>
-                                                            <Link
-                                                                to={`/apps/details/${encodeURIComponent(app.appName!)}`}
-                                                            >
-                                                                {app.appName}
-                                                            </Link>
-                                                            <AppRuntimeStatus
-                                                                appName={
-                                                                    app.appName!
-                                                                }
-                                                                runtime={
-                                                                    runtime
-                                                                }
-                                                                runtimeDataStatus={
-                                                                    apiData.runtime
-                                                                        ? RuntimeDataStatus.Ready
-                                                                        : RuntimeDataStatus.Failed
-                                                                }
-                                                                isMobile={
-                                                                    self.props
-                                                                        .isMobile
-                                                                }
-                                                                showInstances
-                                                            />
-                                                        </Space>
-                                                        {runtime?.latestFailure && (
-                                                            <Typography.Text type="secondary">
-                                                                {localize(
-                                                                    'overview.previous_task_failure',
-                                                                    'Previous task failure'
-                                                                )}
-                                                                :{' '}
-                                                                {
-                                                                    runtime
-                                                                        .latestFailure
-                                                                        .error
-                                                                }
-                                                            </Typography.Text>
-                                                        )}
-                                                    </Space>
-                                                </List.Item>
-                                            )
-                                        }}
-                                    />
-                                )}
-                                {attentionApps.length > 5 && (
-                                    <Link to="/apps">
-                                        {localize(
-                                            'overview.view_all_apps',
-                                            'View all apps'
+                                    <div className="overview-app-section">
+                                        <strong>
+                                            {localize(
+                                                'app_runtime.needs_attention',
+                                                'Needs attention'
+                                            )}{' '}
+                                            ({attentionApps.length})
+                                        </strong>
+                                        <List
+                                            size="small"
+                                            dataSource={attentionApps.slice(
+                                                0,
+                                                2
+                                            )}
+                                            renderItem={(app) =>
+                                                renderApp(app, true)
+                                            }
+                                        />
+                                        {attentionApps.length > 2 && (
+                                            <Link to="/apps">
+                                                {localize(
+                                                    'overview.more_apps',
+                                                    '+ %s1 more'
+                                                ).replace(
+                                                    '%s1',
+                                                    String(
+                                                        attentionApps.length - 2
+                                                    )
+                                                )}
+                                            </Link>
                                         )}
-                                    </Link>
+                                    </div>
+                                )}
+                                {healthyApps.length > 0 && (
+                                    <div className="overview-app-section">
+                                        <strong>
+                                            {localize(
+                                                'app_runtime.healthy',
+                                                'Healthy'
+                                            )}{' '}
+                                            ({healthyApps.length})
+                                        </strong>
+                                        <List
+                                            size="small"
+                                            dataSource={healthyApps.slice(0, 2)}
+                                            renderItem={(app) =>
+                                                renderApp(app, false)
+                                            }
+                                        />
+                                        {healthyApps.length > 2 && (
+                                            <Link to="/apps">
+                                                {localize(
+                                                    'overview.more_apps',
+                                                    '+ %s1 more'
+                                                ).replace(
+                                                    '%s1',
+                                                    String(
+                                                        healthyApps.length - 2
+                                                    )
+                                                )}
+                                            </Link>
+                                        )}
+                                    </div>
                                 )}
                             </>
                         )}

@@ -504,6 +504,7 @@
   "overview.image_available": "イメージを利用できます",
   "overview.installed_version": "インストール済みバージョン",
   "overview.manage_infrastructure": "インフラストラクチャを管理",
+  "overview.more_apps": "ほか %s1 件",
   "overview.no_apps": "アプリはまだありません。最初のアプリを作成してください。",
   "overview.no_deployments": "デプロイ履歴はまだありません。",
   "overview.no_update": "利用可能なアップデートはありません。",

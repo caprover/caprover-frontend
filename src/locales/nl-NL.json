@@ -504,6 +504,7 @@
   "overview.image_available": "Image beschikbaar",
   "overview.installed_version": "Geïnstalleerde versie",
   "overview.manage_infrastructure": "Infrastructuur beheren",
+  "overview.more_apps": "+ %s1 meer",
   "overview.no_apps": "Nog geen apps. Maak je eerste app om te beginnen.",
   "overview.no_deployments": "Nog geen deploymentgeschiedenis beschikbaar.",
   "overview.no_update": "Geen update beschikbaar.",

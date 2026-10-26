@@ -504,6 +504,7 @@
   "overview.image_available": "الصورة متاحة",
   "overview.installed_version": "الإصدار المثبّت",
   "overview.manage_infrastructure": "إدارة البنية التحتية",
+  "overview.more_apps": "+ %s1 أخرى",
   "overview.no_apps": "لا توجد تطبيقات بعد. أنشئ تطبيقك الأول للبدء.",
   "overview.no_deployments": "لا يوجد سجل نشر حتى الآن.",
   "overview.no_update": "لا يتوفر تحديث.",

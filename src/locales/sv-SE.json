@@ -504,6 +504,7 @@
   "overview.image_available": "Avbildning tillgänglig",
   "overview.installed_version": "Installerad version",
   "overview.manage_infrastructure": "Hantera infrastruktur",
+  "overview.more_apps": "+ %s1 till",
   "overview.no_apps": "Inga appar ännu. Skapa din första app för att komma igång.",
   "overview.no_deployments": "Ingen driftsättningshistorik finns ännu.",
   "overview.no_update": "Ingen uppdatering tillgänglig.",
