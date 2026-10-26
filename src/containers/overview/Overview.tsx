@@ -188,6 +188,7 @@ export class Overview extends ApiComponent<
                             }
                             isMobile={self.props.isMobile}
                             showInstances
+                            showRatio
                         />
                         {showFailure && reason && (
                             <Typography.Text

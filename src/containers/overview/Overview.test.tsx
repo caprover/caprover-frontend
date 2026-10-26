@@ -139,7 +139,7 @@ it('preserves node/version sections when the app-list request fails and retries 
         screen.queryByText('No apps yet. Create your first app to get started.')
     ).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
-    expect(await screen.findByText('1/1')).toBeInTheDocument()
+    expect(await screen.findAllByText('1/1')).toHaveLength(2)
     expect(refreshDiskUsage).toHaveBeenCalledTimes(2)
 })
 
@@ -151,10 +151,8 @@ it('reports missing runtime data without including it in the running/desired tot
         defaultNginxConfig: '',
     })
     showOverview()
-    expect(await screen.findByText('1/1')).toBeInTheDocument()
-    expect(
-        screen.getByText(/1 with unavailable runtime data/)
-    ).toBeInTheDocument()
+    expect(await screen.findAllByText('1/1')).toHaveLength(2)
+    expect(screen.getByText(/Without runtime data: 1/)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'worker' })).toHaveAttribute(
         'href',
         '/apps/details/worker'
@@ -168,9 +166,7 @@ it('surfaces failed runtime collection without claiming a healthy zero', async (
     showOverview()
     expect(await screen.findByText('Unavailable')).toBeInTheDocument()
     expect(screen.queryByText('0/0')).not.toBeInTheDocument()
-    expect(
-        screen.getByText(/1 with unavailable runtime data/)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/Without runtime data: 1/)).toBeInTheDocument()
 })
 
 it('shows explicit empty states and routes the Create App action to the existing Apps flow', async () => {
@@ -252,7 +248,10 @@ it('keeps app health compact and prioritizes current issues over historical fail
                     error: 'Container exited',
                 },
             }),
-            runtime('healthy-b'),
+            runtime('healthy-b', {
+                runningInstances: 3,
+                desiredInstances: 3,
+            }),
             runtime('stopped', {
                 status: CapRoverModels.AppRuntimeStatus.Stopped,
                 runningInstances: 0,
@@ -273,6 +272,7 @@ it('keeps app health compact and prioritizes current issues over historical fail
     expect(screen.getByRole('link', { name: 'stopped' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'healthy-a' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'healthy-b' })).toBeInTheDocument()
+    expect(screen.getByText('3/3')).toBeInTheDocument()
     expect(
         screen.queryByRole('link', { name: 'recovered' })
     ).not.toBeInTheDocument()
