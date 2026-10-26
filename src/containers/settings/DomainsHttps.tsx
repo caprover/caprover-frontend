@@ -249,41 +249,47 @@ export class DomainsHttps extends ApiComponent<
             })
     }
 
-    updateRootDomainClicked(rootDomain: string) {
-        const self = this
-        if (!self.state.apiData.hasRootSsl) {
-            self.performUpdateRootDomain(rootDomain, false)
-            return
-        }
-
+    confirmRootDomainChange(onConfirmed: () => void) {
         Modal.confirm({
-            title: localize(
-                'dashboard.force_change_root_domain',
-                'Force Change Root Domain'
-            ),
+            title: localize('settings.change_root_domain', 'Change Root Domain'),
             content: (
-                <div>
-                    <p>
-                        {localize(
-                            'dashboard.force_change_root_domain_info',
-                            'You have already enabled SSL for your root domain. Changing the root domain URL will invalidate HTTPS on root domain and all default subdomains for apps if you have any apps.'
-                        )}
-                    </p>
-                    <p>
-                        {localize(
-                            'dashboard.force_change_root_domain_reenable',
-                            'You can still re-enable HTTPS after changing the root domain.'
-                        )}
-                    </p>
-                </div>
+                <p>
+                    {Utils.formatText(
+                        localize(
+                            'dashboard.update_root_domain_caution',
+                            'You can always update your root domain, but this is not recommended if you have a production system! Your SSL certificates for %s1 will get revoked if you change your root domain. You have to manually enable them later.'
+                        ),
+                        ['%s1'],
+                        [
+                            <strong>
+                                {localize(
+                                    'dashboard.root_domain_ssl_scope',
+                                    'all your apps default domain and your root domain'
+                                )}
+                            </strong>,
+                        ]
+                    )}
+                </p>
             ),
-            onOk() {
-                self.performUpdateRootDomain(rootDomain, true)
-            },
-            onCancel() {
-                // do nothing
-            },
+            okText: localize(
+                'dashboard.understand_root_domain_risk',
+                'I Understand the Risk'
+            ),
+            okButtonProps: { danger: true },
+            onOk: onConfirmed,
         })
+    }
+
+    updateRootDomainClicked(rootDomain: string) {
+        if (!this.state.apiData.hasRootSsl) {
+            this.performUpdateRootDomain(rootDomain, false)
+        } else if (this.state.isForceChangingDomain) {
+            this.performUpdateRootDomain(rootDomain, true)
+        } else {
+            this.confirmRootDomainChange(() =>
+                this.performUpdateRootDomain(rootDomain, true)
+            )
+        }
     }
 
     performUpdateRootDomain(rootDomain: string, force: boolean) {
@@ -540,9 +546,11 @@ export class DomainsHttps extends ApiComponent<
                             <div>
                                 <Button
                                     onClick={() =>
-                                        self.setState({
-                                            isForceChangingDomain: true,
-                                        })
+                                        self.confirmRootDomainChange(() =>
+                                            self.setState({
+                                                isForceChangingDomain: true,
+                                            })
+                                        )
                                     }
                                 >
                                     {localize(
@@ -550,12 +558,6 @@ export class DomainsHttps extends ApiComponent<
                                         'Change Root Domain'
                                     )}
                                 </Button>
-                                <p className="domain-change-warning">
-                                    {localize(
-                                        'dashboard.update_root_domain_caution',
-                                        'You can always update your root domain, but be careful! Your SSL certificates will get revoked because of this domain change.'
-                                    )}
-                                </p>
                             </div>
                         ) : (
                             <>

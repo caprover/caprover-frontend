@@ -556,11 +556,6 @@ body {
     gap: 16px;
     margin-top: 24px;
 }
-.domain-change-warning {
-    margin: 12px 0 0;
-    color: var(--ant-color-text-secondary);
-    font-size: calc(var(--ant-font-size, 14px) - 1px);
-}
 .overview-caption {
     margin-top: 12px;
     font-size: var(--ant-font-size-sm, 12px);

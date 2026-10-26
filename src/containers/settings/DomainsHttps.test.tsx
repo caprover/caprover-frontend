@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { Modal } from 'antd'
 import ApiManager from '../../api/ApiManager'
 import { DomainsHttps } from './DomainsHttps'
@@ -34,8 +34,58 @@ afterEach(() => {
     Modal.destroyAll()
 })
 
+it('warns before unlocking domain editing when root HTTPS is enforced', async () => {
+    const confirm = jest.spyOn(Modal, 'confirm').mockImplementation(() => ({
+        destroy: jest.fn(),
+        update: jest.fn(),
+    }))
+    const update = jest
+        .spyOn(ApiManager.prototype, 'updateRootDomain')
+        .mockResolvedValue()
+    showDomains(false)
+
+    fireEvent.click(
+        await screen.findByRole('button', { name: 'Change Root Domain' })
+    )
+    expect(screen.queryByPlaceholderText('my-root.example.com')).toBeNull()
+    expect(confirm).toHaveBeenCalledTimes(1)
+    expect(update).not.toHaveBeenCalled()
+
+    const confirmation = confirm.mock.calls[0][0]
+    expect(confirmation.okText).toBe('I Understand the Risk')
+    expect(confirmation.okButtonProps).toEqual({ danger: true })
+    const { container } = render(confirmation.content as JSX.Element)
+    expect(
+        screen.getByText(/You can always update your root domain/)
+    ).toBeInTheDocument()
+    expect(container.querySelector('strong')).toHaveTextContent(
+        'all your apps default domain and your root domain'
+    )
+
+    act(() => confirmation.onOk!())
+    fireEvent.change(screen.getByPlaceholderText('my-root.example.com'), {
+        target: { value: 'new.example.com' },
+    })
+    fireEvent.click(screen.getByText('Update Domain'))
+    expect(confirm).toHaveBeenCalledTimes(1)
+    expect(update).toHaveBeenCalledWith('new.example.com', true)
+})
+
+it('keeps domain editing locked until the risk is acknowledged', async () => {
+    const confirm = jest.spyOn(Modal, 'confirm').mockImplementation(() => ({
+        destroy: jest.fn(),
+        update: jest.fn(),
+    }))
+    showDomains(false)
+    fireEvent.click(
+        await screen.findByRole('button', { name: 'Change Root Domain' })
+    )
+    expect(confirm).toHaveBeenCalledTimes(1)
+    expect(screen.queryByPlaceholderText('my-root.example.com')).toBeNull()
+})
+
 it.each([false, true])(
-    'retains the certificate-revocation confirmation before changing a secured domain (guided: %s)',
+    'still confirms secured domain updates during partial setup (guided: %s)',
     async (guided) => {
         const confirm = jest.spyOn(Modal, 'confirm').mockImplementation(() => ({
             destroy: jest.fn(),
@@ -44,22 +94,36 @@ it.each([false, true])(
         const update = jest
             .spyOn(ApiManager.prototype, 'updateRootDomain')
             .mockResolvedValue()
-        showDomains(guided, { ...captainInfo, forceSsl: !guided })
-        if (guided) {
-            await screen.findByPlaceholderText('my-root.example.com')
-        } else {
-            fireEvent.click(await screen.findByText('Change Root Domain'))
-        }
-        fireEvent.change(screen.getByPlaceholderText('my-root.example.com'), {
-            target: { value: 'new.example.com' },
-        })
+        showDomains(guided, { ...captainInfo, forceSsl: false })
+        fireEvent.change(
+            await screen.findByPlaceholderText('my-root.example.com'),
+            { target: { value: 'new.example.com' } }
+        )
         fireEvent.click(screen.getByText('Update Domain'))
-        expect(confirm).toHaveBeenCalledTimes(1)
         expect(update).not.toHaveBeenCalled()
+        expect(confirm).toHaveBeenCalledTimes(1)
         confirm.mock.calls[0][0].onOk!()
         expect(update).toHaveBeenCalledWith('new.example.com', true)
     }
 )
+
+it('updates an unsecured domain without a risk confirmation', async () => {
+    const confirm = jest.spyOn(Modal, 'confirm')
+    const update = jest
+        .spyOn(ApiManager.prototype, 'updateRootDomain')
+        .mockResolvedValue()
+    showDomains(false, {
+        ...captainInfo,
+        hasRootSsl: false,
+        forceSsl: false,
+    })
+    fireEvent.change(await screen.findByPlaceholderText('my-root.example.com'), {
+        target: { value: 'new.example.com' },
+    })
+    fireEvent.click(screen.getByText('Update Domain'))
+    expect(confirm).not.toHaveBeenCalled()
+    expect(update).toHaveBeenCalledWith('new.example.com', false)
+})
 
 it.each([false, true])(
     'keeps HTTPS actions available in partial setup (guided: %s)',
