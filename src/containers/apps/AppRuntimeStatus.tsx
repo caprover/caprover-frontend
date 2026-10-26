@@ -102,6 +102,10 @@ function getStatusLabel(
     )
 }
 
+function getTaskStateLabel(state: CapRoverModels.TaskState): string {
+    return localize(`app_runtime.state_${state.toLowerCase()}`, state)
+}
+
 function getStateDuration(task: CapRoverModels.RuntimeTask): string {
     if (!task.stateChangedAt) {
         return localize(
@@ -112,13 +116,15 @@ function getStateDuration(task: CapRoverModels.RuntimeTask): string {
 
     const duration = moment(task.stateChangedAt).fromNow(true)
     if (task.state === CapRoverModels.TaskState.Running) {
-        return `${localize(
-            'app_runtime.running_for',
-            'Running for'
-        )} ${duration}`
+        return localize(
+            'app_runtime.running_duration',
+            'Running for %s1'
+        ).replace('%s1', duration)
     }
 
-    return `${task.state} ${duration} ${localize('app_runtime.ago', 'ago')}`
+    return localize('app_runtime.past_duration', '%s1 %s2 ago')
+        .replace('%s1', getTaskStateLabel(task.state))
+        .replace('%s2', duration)
 }
 
 function getTaskTagColor(task: CapRoverModels.RuntimeTask): string {
@@ -210,7 +216,9 @@ function renderTask(
                 title={
                     <Space>
                         <span>{getTaskTitle(task)}</span>
-                        <Tag color={getTaskTagColor(task)}>{task.state}</Tag>
+                        <Tag color={getTaskTagColor(task)}>
+                            {getTaskStateLabel(task.state)}
+                        </Tag>
                     </Space>
                 }
                 description={

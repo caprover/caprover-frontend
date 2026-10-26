@@ -91,26 +91,28 @@ export function DiskUsageAlert({ diskUsage, history }: DiskUsageAlertProps) {
             type={isCritical ? 'error' : 'warning'}
             message={
                 <span>
-                    <strong>{title}</strong>
-                    {` ${localize('disk_usage.on_host', 'on')} ${
-                        reading.node.hostname
-                    }. ${formatBytes(reading.disk.availableBytes)} ${localize(
-                        'disk_usage.available',
-                        'available'
-                    )} (${getAvailablePercent(reading.disk)}% ${localize(
-                        'disk_usage.of_capacity',
-                        'of capacity'
-                    )}). ${localize(
+                    {localize(
+                        'disk_usage.alert_summary',
+                        '%s1 on %s2. %s3 available (%s4% of capacity).'
+                    ).replace(
+                        /%s([1-4])/g,
+                        (_, index) =>
+                            [
+                                title,
+                                reading.node.hostname,
+                                formatBytes(reading.disk.availableBytes),
+                                String(getAvailablePercent(reading.disk)),
+                            ][Number(index) - 1]
+                    )}{' '}
+                    {localize(
                         'disk_usage.failure_warning',
                         'Builds and deployments may fail.'
-                    )}${
-                        diskUsage.refreshFailed
-                            ? ` ${localize(
-                                  'disk_usage.refresh_failed',
-                                  'Could not refresh disk usage. These values may be outdated.'
-                              )}`
-                            : ''
-                    }`}
+                    )}
+                    {diskUsage.refreshFailed &&
+                        ` ${localize(
+                            'disk_usage.refresh_failed',
+                            'Could not refresh disk usage. These values may be outdated.'
+                        )}`}
                 </span>
             }
             action={
@@ -209,10 +211,18 @@ export default function DiskUsage({
                     {formatBytes(reading.disk.availableBytes)}
                 </div>
                 <div style={{ marginBottom: 18 }}>
-                    {localize('disk_usage.available_of', 'available of')}{' '}
-                    {formatBytes(reading.disk.totalBytes)}{' '}
-                    {localize('disk_usage.on_host', 'on')}{' '}
-                    <strong>{reading.node.hostname}</strong>
+                    {localize(
+                        'disk_usage.capacity_summary',
+                        '%s1 available of %s2 on %s3'
+                    ).replace(
+                        /%s([1-3])/g,
+                        (_, index) =>
+                            [
+                                formatBytes(reading.disk.availableBytes),
+                                formatBytes(reading.disk.totalBytes),
+                                reading.node.hostname,
+                            ][Number(index) - 1]
+                    )}
                 </div>
 
                 <Progress
