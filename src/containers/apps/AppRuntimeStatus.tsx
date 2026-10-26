@@ -171,10 +171,9 @@ function getVisibleLatestFailure(
 ) {
     if (
         !runtime ||
-        runtime.status === CapRoverModels.AppRuntimeStatus.Running ||
         (typeof runtime.runningInstances === 'number' &&
             typeof runtime.desiredInstances === 'number' &&
-            runtime.runningInstances === runtime.desiredInstances) ||
+            runtime.runningInstances >= runtime.desiredInstances) ||
         runtime.latestFailure?.error.startsWith('No such container:')
     ) {
         return undefined
