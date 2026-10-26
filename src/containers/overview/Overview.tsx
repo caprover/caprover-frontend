@@ -154,16 +154,15 @@ export class Overview extends ApiComponent<
             )
             const reason = runtime?.error
                 ? runtime.error
-                : runtime?.latestFailure?.error
-                  ? `${localize('overview.previous_task_failure', 'Previous task failure')}: ${runtime.latestFailure.error}`
-                  : runtime?.status === CapRoverModels.AppRuntimeStatus.Degraded
-                    ? localize(
-                          'app_runtime.instance_mismatch',
-                          'Fewer instances are running than expected.'
-                      )
-                    : runtime?.status ===
-                        CapRoverModels.AppRuntimeStatus.Stopped
-                      ? localize('app_runtime.stopped', 'Stopped')
+                : runtime?.status === CapRoverModels.AppRuntimeStatus.Degraded
+                  ? localize(
+                        'app_runtime.instance_mismatch',
+                        'Fewer instances are running than expected.'
+                    )
+                  : runtime?.status === CapRoverModels.AppRuntimeStatus.Stopped
+                    ? localize('app_runtime.stopped', 'Stopped')
+                    : runtime?.latestFailure?.error
+                      ? `${localize('overview.previous_task_failure', 'Previous task failure')}: ${runtime.latestFailure.error}`
                       : localize(
                             'app_runtime.status_unavailable',
                             'Runtime status unavailable'

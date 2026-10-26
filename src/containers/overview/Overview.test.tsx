@@ -191,7 +191,7 @@ it('shows explicit empty states and routes the Create App action to the existing
     )
 })
 
-it('surfaces degraded counts and historical failures using the existing runtime control', async () => {
+it('shows the current degradation reason ahead of historical failures', async () => {
     jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
         apps: [
             runtime('api', {
@@ -209,7 +209,27 @@ it('surfaces degraded counts and historical failures using the existing runtime 
     showOverview()
     expect(await screen.findAllByText('1/3')).toHaveLength(2)
     expect(
-        screen.getByText('Previous task failure: Container exited')
+        screen.getByText('Fewer instances are running than expected.')
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/Previous task failure/)).not.toBeInTheDocument()
+})
+
+it('shows historical failures for recovered apps', async () => {
+    jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
+        apps: [
+            runtime('api', {
+                latestFailure: {
+                    taskId: 'failed',
+                    occurredAt: nullValue,
+                    error: 'Previous container crash',
+                },
+            }),
+        ],
+    })
+    showOverview()
+    expect(await screen.findByText('Needs attention (1)')).toBeInTheDocument()
+    expect(
+        screen.getByText('Previous task failure: Previous container crash')
     ).toBeInTheDocument()
 })
 
@@ -285,7 +305,7 @@ it('keeps app health compact and prioritizes current issues over historical fail
     expect(screen.getByText('+ 2 more')).toHaveAttribute('href', '/apps')
     expect(screen.getByText('+ 1 more')).toHaveAttribute('href', '/apps')
     expect(
-        screen.getByText('Previous task failure: Container exited')
+        screen.getByText('Fewer instances are running than expected.')
     ).toBeInTheDocument()
 })
 
