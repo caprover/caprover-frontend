@@ -54,6 +54,11 @@ export class Settings extends ApiComponent<
                         )}
                     </p>
                 </div>
+                <ProFeatures
+                    isMobile={this.props.isMobile}
+                    apiData={this.state.apiData}
+                    onRefreshRequested={() => this.fetchProFeatures()}
+                />
                 <DomainsHttps />
                 <div className="settings-grid">
                     <Card title={localize('settings.security', 'Security')}>
@@ -85,11 +90,6 @@ export class Settings extends ApiComponent<
                         <ThemeSettings />
                     </Card>
                 </div>
-                <ProFeatures
-                    isMobile={this.props.isMobile}
-                    apiData={this.state.apiData}
-                    onRefreshRequested={() => this.fetchProFeatures()}
-                />
                 <Card title={localize('settings.advanced', 'Advanced')}>
                     <h3>
                         {localize(
