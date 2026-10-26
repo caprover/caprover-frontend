@@ -504,6 +504,7 @@
   "overview.image_available": "Imagem disponível",
   "overview.installed_version": "Versão instalada",
   "overview.manage_infrastructure": "Gerenciar infraestrutura",
+  "overview.more_apps": "+ mais %s1",
   "overview.no_apps": "Ainda não há aplicativos. Crie seu primeiro aplicativo para começar.",
   "overview.no_deployments": "Ainda não há histórico de implantações.",
   "overview.no_update": "Nenhuma atualização disponível.",

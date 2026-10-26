@@ -216,3 +216,82 @@ it('surfaces degraded counts and historical failures using the existing runtime 
         screen.getByText('Previous task failure: Container exited')
     ).toBeInTheDocument()
 })
+
+it('keeps app health compact and prioritizes current issues over historical failures', async () => {
+    const appNames = [
+        'recovered',
+        'healthy-a',
+        'degraded-a',
+        'healthy-b',
+        'stopped',
+        'healthy-c',
+        'degraded-b',
+    ]
+    jest.spyOn(ApiManager.prototype, 'getAllApps').mockResolvedValue({
+        appDefinitions: appNames.map((name) => app(name)),
+        rootDomain: 'example.com',
+        captainSubDomain: 'captain',
+        defaultNginxConfig: '',
+    })
+    jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
+        apps: [
+            runtime('recovered', {
+                latestFailure: {
+                    taskId: 'previous',
+                    occurredAt: nullValue,
+                    error: 'Old failure',
+                },
+            }),
+            runtime('healthy-a'),
+            runtime('degraded-a', {
+                status: CapRoverModels.AppRuntimeStatus.Degraded,
+                runningInstances: 0,
+                latestFailure: {
+                    taskId: 'failed',
+                    occurredAt: nullValue,
+                    error: 'Container exited',
+                },
+            }),
+            runtime('healthy-b'),
+            runtime('stopped', {
+                status: CapRoverModels.AppRuntimeStatus.Stopped,
+                runningInstances: 0,
+                desiredInstances: 0,
+            }),
+            runtime('healthy-c'),
+            runtime('degraded-b', {
+                status: CapRoverModels.AppRuntimeStatus.Degraded,
+                runningInstances: 0,
+            }),
+        ],
+    })
+    showOverview()
+
+    expect(await screen.findByText('Needs attention (4)')).toBeInTheDocument()
+    expect(screen.getByText('Healthy (3)')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'degraded-a' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'stopped' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'healthy-a' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'healthy-b' })).toBeInTheDocument()
+    expect(
+        screen.queryByRole('link', { name: 'recovered' })
+    ).not.toBeInTheDocument()
+    expect(
+        screen.queryByRole('link', { name: 'degraded-b' })
+    ).not.toBeInTheDocument()
+    expect(
+        screen.queryByRole('link', { name: 'healthy-c' })
+    ).not.toBeInTheDocument()
+    expect(screen.getByText('+ 2 more')).toHaveAttribute('href', '/apps')
+    expect(screen.getByText('+ 1 more')).toHaveAttribute('href', '/apps')
+    expect(
+        screen.getByText('Previous task failure: Container exited')
+    ).toBeInTheDocument()
+})
+
+it('omits the attention section when every app is healthy', async () => {
+    showOverview()
+    expect(await screen.findByText('Healthy (1)')).toBeInTheDocument()
+    expect(screen.queryByText(/Needs attention \(/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Previous task failure/)).not.toBeInTheDocument()
+})
