@@ -1,4 +1,4 @@
-import { Alert, Button, Card, List, Space, Tag, Typography } from 'antd'
+import { Alert, Card, List, Space, Tag, Typography } from 'antd'
 import { CapRoverModels } from 'caprover-api'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
@@ -214,28 +214,6 @@ export class Overview extends ApiComponent<
                         )}
                     </p>
                 </div>
-                <Space wrap style={{ marginBottom: 24 }}>
-                    <Button
-                        type="primary"
-                        onClick={() =>
-                            self.props.history.push('/apps?create=true')
-                        }
-                    >
-                        {localize('create_new_app.create_app', 'Create App')}
-                    </Button>
-                    <Link to="/apps">{localize('menu_item.app', 'Apps')}</Link>
-                    <Link to="/monitoring">
-                        {localize('menu_item.monitoring', 'Monitoring')}
-                    </Link>
-                    {apiData.version?.canUpdate && (
-                        <Link to="/maintenance">
-                            {localize('menu_item.maintenance', 'Maintenance')}
-                        </Link>
-                    )}
-                    <Button onClick={() => self.reFetchData()}>
-                        {localize('overview.refresh', 'Refresh')}
-                    </Button>
-                </Space>
                 {!self.props.setupDismissed &&
                     self.props.setupStatus === SetupStatus.Required && (
                         <Alert
