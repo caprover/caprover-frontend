@@ -214,7 +214,7 @@ it('shows the current degradation reason ahead of historical failures', async ()
     expect(screen.queryByText(/Previous task failure/)).not.toBeInTheDocument()
 })
 
-it('shows historical failures for recovered apps', async () => {
+it('classifies matching instances as healthy despite historical failures', async () => {
     jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
         apps: [
             runtime('api', {
@@ -227,13 +227,12 @@ it('shows historical failures for recovered apps', async () => {
         ],
     })
     showOverview()
-    expect(await screen.findByText('Needs attention (1)')).toBeInTheDocument()
-    expect(
-        screen.getByText('Previous task failure: Previous container crash')
-    ).toBeInTheDocument()
+    expect(await screen.findByText('Healthy (1)')).toBeInTheDocument()
+    expect(screen.queryByText(/Needs attention \(/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Previous task failure/)).not.toBeInTheDocument()
 })
 
-it('keeps app health compact and prioritizes current issues over historical failures', async () => {
+it('limits matching and mismatched app lists to two rows each', async () => {
     const appNames = [
         'recovered',
         'healthy-a',
@@ -252,6 +251,8 @@ it('keeps app health compact and prioritizes current issues over historical fail
     jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
         apps: [
             runtime('recovered', {
+                runningInstances: 3,
+                desiredInstances: 3,
                 latestFailure: {
                     taskId: 'previous',
                     occurredAt: nullValue,
@@ -286,27 +287,42 @@ it('keeps app health compact and prioritizes current issues over historical fail
     })
     showOverview()
 
-    expect(await screen.findByText('Needs attention (4)')).toBeInTheDocument()
-    expect(screen.getByText('Healthy (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Needs attention (2)')).toBeInTheDocument()
+    expect(screen.getByText('Healthy (5)')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'degraded-a' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'stopped' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'degraded-b' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'recovered' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'healthy-a' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'healthy-b' })).toBeInTheDocument()
     expect(screen.getByText('3/3')).toBeInTheDocument()
     expect(
-        screen.queryByRole('link', { name: 'recovered' })
+        screen.queryByRole('link', { name: 'stopped' })
     ).not.toBeInTheDocument()
     expect(
-        screen.queryByRole('link', { name: 'degraded-b' })
+        screen.queryByRole('link', { name: 'healthy-b' })
     ).not.toBeInTheDocument()
     expect(
         screen.queryByRole('link', { name: 'healthy-c' })
     ).not.toBeInTheDocument()
-    expect(screen.getByText('+ 2 more')).toHaveAttribute('href', '/apps')
-    expect(screen.getByText('+ 1 more')).toHaveAttribute('href', '/apps')
+    expect(screen.getByText('+ 3 more')).toHaveAttribute('href', '/apps')
+    expect(screen.queryByText('+ 1 more')).not.toBeInTheDocument()
     expect(
         screen.getByText('Fewer instances are running than expected.')
     ).toBeInTheDocument()
+})
+
+it('counts stopped apps with matching zero instances as healthy', async () => {
+    jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
+        apps: [
+            runtime('api', {
+                status: CapRoverModels.AppRuntimeStatus.Stopped,
+                runningInstances: 0,
+                desiredInstances: 0,
+            }),
+        ],
+    })
+    showOverview()
+    expect(await screen.findByText('Healthy (1)')).toBeInTheDocument()
+    expect(screen.queryByText(/Needs attention \(/)).not.toBeInTheDocument()
 })
 
 it('omits the attention section when every app is healthy', async () => {

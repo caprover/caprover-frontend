@@ -121,26 +121,16 @@ export class Overview extends ApiComponent<
             (sum, runtime) => sum + runtime.desiredInstances!,
             0
         )
-        const currentIssues = (apps || []).filter(
-            (app, index) =>
-                runtimes[index]?.status !==
-                    CapRoverModels.AppRuntimeStatus.Running ||
-                !!runtimes[index]?.error
-        )
-        const previousFailures = (apps || []).filter(
-            (app, index) =>
-                runtimes[index]?.status ===
-                    CapRoverModels.AppRuntimeStatus.Running &&
-                !runtimes[index]?.error &&
-                !!runtimes[index]?.latestFailure
-        )
-        const attentionApps = [...currentIssues, ...previousFailures]
-        const healthyApps = (apps || []).filter(
-            (app, index) =>
-                runtimes[index]?.status ===
-                    CapRoverModels.AppRuntimeStatus.Running &&
-                !runtimes[index]?.error &&
-                !runtimes[index]?.latestFailure
+        const healthyApps = (apps || []).filter((_, index) => {
+            const runtime = runtimes[index]
+            return (
+                !!runtime &&
+                knownRuntimes.includes(runtime) &&
+                runtime.runningInstances === runtime.desiredInstances
+            )
+        })
+        const attentionApps = (apps || []).filter(
+            (app) => !healthyApps.includes(app)
         )
         const recentDeployments = getRecentDeployments(apps || [])
         const unavailable = localize('overview.unavailable', 'Unavailable')
