@@ -231,23 +231,15 @@ it('shows degraded tasks and the latest failure', () => {
     expect(screen.getByText(/task: non-zero exit/)).toBeInTheDocument()
 })
 
-it('does not highlight an old missing-container error during degraded health', () => {
+it('shows a missing-container error for a degraded app without task history', () => {
     const error = 'No such container: srv-captain--wordpress-db.1.old-task'
-    const runtime: CapRoverModels.AppRuntimeDetails = {
+    const runtime: CapRoverModels.AppRuntime = {
         ...createRuntime(CapRoverModels.AppRuntimeStatus.Degraded),
         latestFailure: {
             taskId: 'old-task',
             occurredAt: new Date(Date.now() - 30000).toISOString(),
             error,
         },
-        taskHistory: [
-            {
-                ...createTask(CapRoverModels.TaskState.Failed),
-                taskId: 'old-task',
-                error,
-                exitCode: nullValue,
-            },
-        ],
     }
     renderStatus(runtime)
 
@@ -258,9 +250,9 @@ it('does not highlight an old missing-container error during degraded health', (
     )
 
     expect(screen.getByText('Needs attention')).toBeInTheDocument()
-    expect(screen.queryByText('Latest failure')).not.toBeInTheDocument()
-    expect(screen.getByText('Recent task history')).toBeInTheDocument()
+    expect(screen.getByText('Latest failure')).toBeInTheDocument()
     expect(screen.getByText(error)).toBeInTheDocument()
+    expect(screen.queryByText('Recent task history')).not.toBeInTheDocument()
 })
 
 it('describes the current transition before an older failure', async () => {
