@@ -8,6 +8,7 @@ jest.mock('../../utils/Language', () => ({
 }))
 jest.mock('./DomainsHttps', () => () => <div>Domains</div>)
 jest.mock('./ChangePass', () => () => <div>Password</div>)
+jest.mock('./PasskeySettings', () => () => <div>Passkeys</div>)
 jest.mock('./ThemeSettings', () => () => <div>Themes</div>)
 jest.mock('./NginxConfig', () => () => <div>Templates</div>)
 jest.mock('../global/DarkModeSwitch', () => () => <div />)
