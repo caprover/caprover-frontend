@@ -1,8 +1,20 @@
 import { EditFilled, EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
-import { Alert, Button, Col, Input, Row, Switch, Tag, Tooltip } from 'antd'
+import {
+    Alert,
+    Button,
+    Col,
+    Input,
+    Modal,
+    Row,
+    Switch,
+    Tag,
+    Tooltip,
+} from 'antd'
 import { Component, Fragment } from 'react'
+import ApiManager from '../../../api/ApiManager'
 import { IHashMapGeneric } from '../../../models/IHashMapGeneric'
 import { localize } from '../../../utils/Language'
+import Toaster from '../../../utils/Toaster'
 import Utils from '../../../utils/Utils'
 import {
     formatLocalized,
@@ -422,11 +434,89 @@ export default class AppConfigs extends Component<
         })
     }
 
+    onPersistentDataToggleClicked(hasPersistentData: boolean) {
+        const self = this
+        const appName = self.props.apiData!.appDefinition.appName!
+
+        Modal.confirm({
+            title: hasPersistentData
+                ? localize(
+                      'apps.app_config_persistent_enable_title',
+                      'Enable persistent data?'
+                  )
+                : localize(
+                      'apps.app_config_persistent_disable_title',
+                      'Disable persistent data?'
+                  ),
+            content: hasPersistentData
+                ? localize(
+                      'apps.app_config_persistent_enable_body',
+                      'The app will be pinned to the node it is running on now and limited to 1 instance, because persistent directories live on that node disk. The app will restart. Unsaved changes on this page will be discarded.'
+                  )
+                : localize(
+                      'apps.app_config_persistent_disable_body',
+                      'The app will no longer be pinned to a node. This is only possible when the app has no persistent directories. The app will restart. Unsaved changes on this page will be discarded.'
+                  ),
+            onOk() {
+                self.props.setLoading(true)
+                // hasPersistentData is accepted by the backend update endpoint; caprover-api types do not list it yet.
+                const patch: Parameters<ApiManager['patchAppDefinition']>[1] & {
+                    hasPersistentData: boolean
+                } = { hasPersistentData }
+
+                return self.props.apiManager
+                    .patchAppDefinition(appName, patch)
+                    .then(function () {
+                        self.props.reFetchData()
+                    })
+                    .catch(
+                        Toaster.createCatcher(function () {
+                            self.props.setLoading(false)
+                        })
+                    )
+            },
+        })
+    }
+
     createVolSection() {
         const self = this
         const app = this.props.apiData!.appDefinition
 
-        if (!app.hasPersistentData) return <div />
+        if (!app.hasPersistentData) {
+            return (
+                <div>
+                    <h4>
+                        {localize(
+                            'apps.app_config_vol_directories',
+                            'Persistent Directories'
+                        )}{' '}
+                        &nbsp;
+                        <NewTabLink url="https://caprover.com/docs/app-configuration.html#persistent-or-not">
+                            <InfoCircleOutlined />
+                        </NewTabLink>
+                    </h4>
+                    <i>
+                        {localize(
+                            'apps.app_config_persistent_disabled_hint',
+                            'This app does not have persistent data. Enable it to add persistent directories.'
+                        )}
+                    </i>
+                    <br />
+                    <br />
+                    <Button
+                        type="default"
+                        onClick={() => this.onPersistentDataToggleClicked(true)}
+                    >
+                        {localize(
+                            'apps.app_config_persistent_enable_button',
+                            'Enable Persistent Data'
+                        )}
+                    </Button>
+                    <br />
+                    <br />
+                </div>
+            )
+        }
 
         return (
             <div>
@@ -463,6 +553,20 @@ export default class AppConfigs extends Component<
                         'Add Persistent Directory'
                     )}
                 </Button>
+                {app.volumes && app.volumes.length ? undefined : (
+                    <Button
+                        type="default"
+                        style={{ marginLeft: 12 }}
+                        onClick={() =>
+                            this.onPersistentDataToggleClicked(false)
+                        }
+                    >
+                        {localize(
+                            'apps.app_config_persistent_disable_button',
+                            'Disable Persistent Data'
+                        )}
+                    </Button>
+                )}
                 <br />
                 <br />
                 <br />
