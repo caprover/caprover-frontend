@@ -11,6 +11,7 @@ import ChangePass from './ChangePass'
 import DomainsHttps from './DomainsHttps'
 import NginxConfig from './NginxConfig'
 import OtpSettings from './OtpSettings'
+import PasskeySettings from './PasskeySettings'
 import ProFeatures from './ProFeatures'
 import ThemeSettings from './ThemeSettings'
 
@@ -63,6 +64,8 @@ export class Settings extends ApiComponent<
                 <div className="settings-grid">
                     <Card title={localize('settings.security', 'Security')}>
                         <ChangePass isMobile={this.props.isMobile} />
+                        <div className="section-divider" />
+                        <PasskeySettings isMobile={this.props.isMobile} />
                         {this.state.apiData?.isFeatureFlagEnabled &&
                             this.state.apiData.isSubscribed && (
                                 <>
