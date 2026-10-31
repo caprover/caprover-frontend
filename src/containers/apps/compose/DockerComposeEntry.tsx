@@ -1,5 +1,6 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Alert, Button, Card, Col, Row, Space, Tag, Typography } from 'antd'
+import { Input } from 'antd'
 import { RouteComponentProps } from 'react-router'
 import { getIgnoredDockerComposeFields } from '../../../utils/dockerComposeFields'
 import { localize } from '../../../utils/Language'
@@ -12,6 +13,7 @@ import {
     DEPLOYMENT_QUERY_PARAM_TEMPLATE,
     DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME,
     DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY,
+    ONE_CLICK_APP_NAME_VAR_NAME,
 } from '../oneclick/OneClickDeploymentConstants'
 
 export const TEMPLATE_ONE_CLICK_APP = 'TEMPLATE_ONE_CLICK_APP'
@@ -62,12 +64,14 @@ export default class OneClickAppSelector extends ApiComponent<
     RouteComponentProps<any>,
     {
         stringifiedJsonComposeContent: string
+        projectName: string
     }
 > {
     constructor(props: any) {
         super(props)
         this.state = {
             stringifiedJsonComposeContent: '',
+            projectName: '',
         }
     }
 
@@ -138,6 +142,21 @@ export default class OneClickAppSelector extends ApiComponent<
                                         ]
                                     )}
                                 </Typography.Paragraph>
+                                <Input
+                                    addonBefore={localize(
+                                        'projects.project_name',
+                                        'Project Name'
+                                    )}
+                                    placeholder="my-compose-project"
+                                    required
+                                    value={self.state.projectName}
+                                    onChange={(e) =>
+                                        self.setState({
+                                            projectName: e.target.value,
+                                        })
+                                    }
+                                    style={{ marginBottom: 16 }}
+                                />
                                 <InputJsonifier
                                     placeholder={`services:
   mysql:
@@ -172,6 +191,15 @@ volumes:
                                     style={{ minWidth: 150 }}
                                     type="primary"
                                     onClick={() => {
+                                        if (!self.state.projectName.trim()) {
+                                            Toaster.toastError(
+                                                localize(
+                                                    'docker_compose_entry.project_name_required',
+                                                    'Enter a project name.'
+                                                )
+                                            )
+                                            return
+                                        }
                                         if (!parsedJson?.services) {
                                             Toaster.toastError(
                                                 localize(
@@ -181,7 +209,10 @@ volumes:
                                             )
                                             return
                                         }
-                                        self.deploy(parsedJson)
+                                        self.deploy(
+                                            parsedJson,
+                                            self.state.projectName.trim()
+                                        )
                                     }}
                                 >
                                     {' '}
@@ -197,7 +228,7 @@ volumes:
             </div>
         )
     }
-    deploy(template: any) {
+    deploy(template: any, projectName: string) {
         const self = this
         // Navigate to deployment page with template and values
         // TODO move the constants to a common file
@@ -217,7 +248,11 @@ volumes:
         }
 
         const templateStr = encodeURIComponent(JSON.stringify(template))
-        const valuesArrayStr = encodeURIComponent(JSON.stringify([]))
+        const valuesArrayStr = encodeURIComponent(
+            JSON.stringify([
+                { key: ONE_CLICK_APP_NAME_VAR_NAME, value: projectName },
+            ])
+        )
         const appName = 'Docker Compose'
         const templateName = 'DOCKER_COMPOSE'
         const deployUrl = `/apps/oneclick/deployment?${DEPLOYMENT_QUERY_PARAM_TEMPLATE}=${templateStr}&${DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY}=${valuesArrayStr}&${DEPLOYMENT_QUERY_PARAM_APP_NAME}=${appName}&${DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME}=${templateName}`
