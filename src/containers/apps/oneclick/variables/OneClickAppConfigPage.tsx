@@ -13,6 +13,7 @@ import {
     DEPLOYMENT_QUERY_PARAM_TEMPLATE,
     DEPLOYMENT_QUERY_PARAM_TEMPLATE_NAME,
     DEPLOYMENT_QUERY_PARAM_VALUES_ARRAY,
+    ONE_CLICK_APP_NAME_VAR_NAME,
 } from '../OneClickDeploymentConstants'
 import {
     ONE_CLICK_APP_STRINGIFIED_KEY,
@@ -20,7 +21,6 @@ import {
 } from '../selector/OneClickAppSelector'
 import OneClickVariablesSection from './OneClickVariablesSection'
 
-export const ONE_CLICK_APP_NAME_VAR_NAME = '$$cap_appname'
 export const ONE_CLICK_ROOT_DOMAIN_VAR_NAME = '$$cap_root_domain'
 
 export default class OneClickAppConfigPage extends ApiComponent<
