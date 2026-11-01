@@ -463,6 +463,7 @@
   "nginx_config.captain_config_location": "Lokacija CapRover konfiguracije u nginx kontejneru",
   "nginx_config.customization": "CapRover omogućuje postavljanje prilagođenih konfiguracija za vaš nginx router. To omogućuje visoku razinu prilagodbe u pogledu predmemorije, posebnog usmjeravanja, http2 itd.",
   "nginx_config.load_default": "Učitaj zadano i uredi",
+  "nginx_config.revert_to_default": "Za povratak na zadano, jednostavno izbrišite sav sadržaj iz oba polja konfiguracije i kliknite Spremi i ažuriraj.",
   "nginx_config.save_update": "Spremi i ažuriraj",
   "nginx_config.template_pattern": "Imajte na umu da su predlošci izgrađeni koristeći EJS predložak. Nemojte mijenjati područja između <% .... > osim ako ste potpuno sigurni što radite!",
   "nodes.architecture": "Arhitektura: ",

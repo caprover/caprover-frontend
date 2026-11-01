@@ -463,6 +463,7 @@
   "nginx_config.captain_config_location": "موقع تكوين CapRover في حاوية nginx",
   "nginx_config.customization": "يتيح لك CapRover تعيين تكوينات مخصصة لموجه nginx الخاص بك. سيسمح ذلk بمستوى تخصيص عالي من حيث التخزين المؤقت، التوجيه الخاص، http2 وما إلى ذلك.",
   "nginx_config.load_default": "تحميل الافتراضي والتحرير",
+  "nginx_config.revert_to_default": "للعودة إلى الإعدادات الافتراضية، أزل كل المحتوى من حقلي الإعدادات ثم انقر على حفظ وتحديث.",
   "nginx_config.save_update": "حفظ وتحديث",
   "nginx_config.template_pattern": "لاحظ أن النماذج مبنية باستخدام نمط قالب EJS. لا تغير المناطق بين <% .... > ما لم تعرف حقًا ما تفعله!",
   "nodes.architecture": "الهندسة المعمارية: ",

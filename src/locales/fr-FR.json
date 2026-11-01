@@ -463,6 +463,7 @@
   "nginx_config.captain_config_location": "Emplacement de la Configuration CapRover dans le conteneur nginx",
   "nginx_config.customization": "CapRover vous permet de définir des configurations personnalisées pour votre routeur nginx. Cela vous permet d'avoir un haut niveau de personnalisation en termes de mise en cache, de routage spécial, http2, etc.",
   "nginx_config.load_default": "Charger les Paramètres par Défaut et Modifier",
+  "nginx_config.revert_to_default": "Pour revenir aux valeurs par défaut, supprimez simplement tout le contenu des deux champs de configuration et cliquez sur Enregistrer et Mettre à Jour.",
   "nginx_config.save_update": "Enregistrer et Mettre à Jour",
   "nginx_config.template_pattern": "Notez que les modèles sont construits à l'aide du modèle de template EJS. Ne changez pas les zones entre <% .... > à moins de vraiment savoir ce que vous faites !",
   "nodes.architecture": "Architecture : ",

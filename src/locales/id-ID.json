@@ -463,6 +463,7 @@
   "nginx_config.captain_config_location": "Lokasi Konfigurasi CapRover di kontainer nginx",
   "nginx_config.customization": "CapRover memungkinkan Anda menetapkan konfigurasi kustom untuk router nginx Anda. Ini akan memungkinkan tingkat penyesuaian tinggi dalam hal caching, perutean khusus, http2, dan lainnya.",
   "nginx_config.load_default": "Muat Default dan Edit",
+  "nginx_config.revert_to_default": "Untuk kembali ke default, cukup hapus semua konten dari kedua kolom konfigurasi dan klik Simpan dan Perbarui.",
   "nginx_config.save_update": "Simpan dan Perbarui",
   "nginx_config.template_pattern": "Perhatikan bahwa template dibuat menggunakan pola template EJS. Jangan mengubah area di antara <% .... > kecuali Anda benar-benar tahu apa yang Anda lakukan!",
   "nodes.architecture": "Arsitektur: ",
