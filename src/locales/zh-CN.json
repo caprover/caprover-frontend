@@ -463,6 +463,7 @@
   "nginx_config.captain_config_location": "nginx 容器中的 CapRover 配置位置",
   "nginx_config.customization": "CapRover 允许您为您的 nginx 路由器设置自定义配置。这将允许在缓存、特殊路由、http2 等方面进行高级定制。",
   "nginx_config.load_default": "加载默认并编辑",
+  "nginx_config.revert_to_default": "要恢复默认设置，只需删除两个配置字段中的所有内容，然后点击“保存并更新”。",
   "nginx_config.save_update": "保存并更新",
   "nginx_config.template_pattern": "请注意，模板是使用 EJS 模板模式构建的。除非您真正了解自己在做什么，否则请勿更改 <% .... > 之间的区域！",
   "nodes.architecture": "架构：",

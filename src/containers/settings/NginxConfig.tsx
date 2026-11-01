@@ -89,6 +89,12 @@ export default class NginxConfig extends ApiComponent<
                         "Note that templates are built using EJS template pattern. Do not change the areas between <% .... > unless you really know what you're doing!"
                     )}
                 </p>
+                <p>
+                    {localize(
+                        'nginx_config.revert_to_default',
+                        'To revert to default, simply remove all the content from both config fields and click Save and Update.'
+                    )}
+                </p>
                 <br />
                 <p>
                     <b>

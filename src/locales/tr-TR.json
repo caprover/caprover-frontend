@@ -463,6 +463,7 @@
   "nginx_config.captain_config_location": "nginx konteynerinde CapRover Yapılandırma Konumu",
   "nginx_config.customization": "CapRover, nginx yönlendiriciniz için özel yapılandırmalar ayarlamanıza izin verir. Bu, önbellekleme, özel yönlendirme, http2 ve benzeri konularda yüksek düzeyde özelleştirme sağlar.",
   "nginx_config.load_default": "Varsayılanı Yükle ve Düzenle",
+  "nginx_config.revert_to_default": "Varsayılana geri dönmek için her iki yapılandırma alanındaki tüm içeriği kaldırın ve Kaydet ve Güncelle'ye tıklayın.",
   "nginx_config.save_update": "Kaydet ve Güncelle",
   "nginx_config.template_pattern": "Şablonların EJS şablon deseni kullanılarak oluşturulduğunu unutmayın. Gerçekten ne yaptığınızı bilmiyorsanız <% .... > arasındaki alanları değiştirmeyin!",
   "nodes.architecture": "Mimari: ",

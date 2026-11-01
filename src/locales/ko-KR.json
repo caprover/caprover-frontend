@@ -463,6 +463,7 @@
   "nginx_config.captain_config_location": "nginx 컨테이너의 CapRover 구성 위치",
   "nginx_config.customization": "CapRover에서는 nginx 라우터에 사용자 지정 구성을 설정할 수 있습니다. 이를 통해 캐싱, 특수 라우팅, http2 등의 측면에서 높은 수준의 사용자 지정이 가능합니다.",
   "nginx_config.load_default": "기본값 불러와 편집",
+  "nginx_config.revert_to_default": "기본값으로 되돌리려면 두 설정 필드의 내용을 모두 삭제한 후 저장 및 업데이트를 클릭하면 됩니다.",
   "nginx_config.save_update": "저장 및 업데이트",
   "nginx_config.template_pattern": "템플릿은 EJS 템플릿 패턴으로 작성된다는 점에 유의하세요. 무엇을 하는지 정확히 알지 못한다면 <% .... > 사이의 영역을 변경하지 마세요!",
   "nodes.architecture": "아키텍처: ",

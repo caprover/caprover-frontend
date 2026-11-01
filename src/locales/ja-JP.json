@@ -463,6 +463,7 @@
   "nginx_config.captain_config_location": "nginxコンテナ内のCapRover設定ファイルの場所",
   "nginx_config.customization": "CapRoverでは、nginxルーターにカスタム設定を適用できます。これにより、キャッシュ、特殊なルーティング、http2などの面で高いカスタマイズが可能になります。",
   "nginx_config.load_default": "デフォルトをロードして編集",
+  "nginx_config.revert_to_default": "デフォルトに戻すには、両方の設定フィールドの内容をすべて削除して「保存して更新」をクリックします。",
   "nginx_config.save_update": "保存して更新",
   "nginx_config.template_pattern": "テンプレートはEJSテンプレートパターンを使用して構築されることに注意してください。本当に理解している場合を除き、 <% .... > の間の領域を変更しないでください！",
   "nodes.architecture": "アーキテクチャ： ",

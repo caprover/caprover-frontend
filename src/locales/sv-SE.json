@@ -463,6 +463,7 @@
   "nginx_config.captain_config_location": "CapRover Konfigurationsplats i nginx-behållare",
   "nginx_config.customization": "CapRover tillåter dig att ställa in anpassade konfigurationer för din nginx-router. Detta möjliggör en hög anpassningsnivå när det gäller cachning, speciell routing, http2 osv.",
   "nginx_config.load_default": "Läs in standard och redigera",
+  "nginx_config.revert_to_default": "För att återgå till standard, ta bort allt innehåll från båda konfigurationsfälten och klicka på Spara och uppdatera.",
   "nginx_config.save_update": "Spara och uppdatera",
   "nginx_config.template_pattern": "Observera att mallar är byggda med EJS-mallmönster. Ändra inte områdena mellan <% .... > om du inte verkligen vet vad du gör!",
   "nodes.architecture": "Arkitektur: ",
