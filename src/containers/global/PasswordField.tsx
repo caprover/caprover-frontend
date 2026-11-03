@@ -1,3 +1,4 @@
+import { EyeInvisibleOutlined } from '@ant-design/icons'
 import { Button, Input } from 'antd'
 import React, { Component, Fragment } from 'react'
 
@@ -14,6 +15,7 @@ export default class PasswordField extends Component<
         super(props)
         this.state = {
             isShowing: !props.defaultValue,
+            hasValue: !!props.defaultValue,
         }
     }
 
@@ -54,7 +56,27 @@ export default class PasswordField extends Component<
                 placeholder={self.props.placeholder}
                 addonBefore={self.props.addonBefore}
                 defaultValue={self.props.defaultValue}
-                onChange={(e) => self.props.onChange(e)}
+                // keep a suffix element at all times, otherwise antd remounts the input and it loses focus
+                suffix={
+                    self.state.hasValue ? (
+                        <Button
+                            type="text"
+                            size="small"
+                            title="Hide Password"
+                            aria-label="Hide Password"
+                            icon={<EyeInvisibleOutlined />}
+                            onClick={() => {
+                                self.setState({ isShowing: false })
+                            }}
+                        />
+                    ) : (
+                        <span />
+                    )
+                }
+                onChange={(e) => {
+                    self.setState({ hasValue: !!e.target.value })
+                    self.props.onChange(e)
+                }}
             />
         )
     }
