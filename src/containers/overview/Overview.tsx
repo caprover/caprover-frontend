@@ -161,12 +161,6 @@ export class Overview extends ApiComponent<
             return (
                 <List.Item key={app.appName}>
                     <div className="overview-app-row">
-                        <Link
-                            to={`/apps/details/${encodeURIComponent(app.appName!)}`}
-                            title={app.appName}
-                        >
-                            {app.appName}
-                        </Link>
                         <AppRuntimeStatus
                             appName={app.appName!}
                             runtime={runtime}
@@ -179,6 +173,12 @@ export class Overview extends ApiComponent<
                             showInstances
                             showRatio
                         />
+                        <Link
+                            to={`/apps/details/${encodeURIComponent(app.appName!)}`}
+                            title={app.appName}
+                        >
+                            {app.appName}
+                        </Link>
                         {showFailure && reason && (
                             <Typography.Text
                                 type="secondary"
