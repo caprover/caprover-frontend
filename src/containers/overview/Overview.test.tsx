@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { CapRoverModels } from 'caprover-api'
 import { createMemoryHistory } from 'history'
 import { Router } from 'react-router-dom'
@@ -293,6 +293,20 @@ it('limits matching and mismatched app lists to two rows each', async () => {
     expect(screen.getByRole('link', { name: 'degraded-b' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'recovered' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'healthy-a' })).toBeInTheDocument()
+    for (const [name, ratio] of [
+        ['degraded-a', '0/1'],
+        ['healthy-a', '1/1'],
+    ]) {
+        const link = screen.getByRole('link', { name })
+        const row = screen
+            .getAllByRole('listitem')
+            .find((item) => item.contains(link))!
+        expect(
+            within(row)
+                .getByText(ratio)
+                .compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING
+        ).toBeTruthy()
+    }
     expect(screen.getByText('3/3')).toBeInTheDocument()
     expect(
         screen.queryByRole('link', { name: 'stopped' })
