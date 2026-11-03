@@ -302,9 +302,8 @@ it('limits matching and mismatched app lists to two rows each', async () => {
             .getAllByRole('listitem')
             .find((item) => item.contains(link))!
         expect(
-            within(row)
-                .getByText(ratio)
-                .compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING
+            within(row).getByText(ratio).compareDocumentPosition(link) &
+                Node.DOCUMENT_POSITION_FOLLOWING
         ).toBeTruthy()
     }
     expect(screen.getByText('3/3')).toBeInTheDocument()
