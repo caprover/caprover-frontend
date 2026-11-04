@@ -13,6 +13,10 @@ jest.mock('../utils/Language', () => ({
     setCurrentLanguageOption: jest.fn(),
 }))
 
+jest.mock('@simplewebauthn/browser', () => ({
+    browserSupportsWebAuthn: () => true,
+}))
+
 import {
     LOCAL_STORAGE,
     NO_SESSION,
@@ -121,5 +125,37 @@ describe('Remember Me login form', () => {
 
         expect(onLoginRequested).toHaveBeenCalledTimes(1)
         expect(onLoginRequested.mock.calls[0][2]).toBe(SESSION_STORAGE)
+    })
+})
+
+describe('Passkey login button', () => {
+    afterEach(() => {
+        cleanup()
+        jest.useRealTimers()
+    })
+
+    it('starts a passkey login without submitting the password form', () => {
+        jest.useFakeTimers()
+        jest.setSystemTime(new Date('2030-01-01T00:00:00Z'))
+        window.localStorage.clear()
+        const onLoginRequested = jest.fn()
+        const onPasskeyLoginRequested = jest.fn()
+        render(
+            <NormalLoginForm
+                hasOtp={false}
+                onLoginRequested={onLoginRequested}
+                onPasskeyLoginRequested={onPasskeyLoginRequested}
+            />
+        )
+
+        fireEvent.click(screen.getByText('Sign in with passkey'))
+
+        expect(onPasskeyLoginRequested).toHaveBeenCalledWith('', NO_SESSION)
+        expect(onLoginRequested).not.toHaveBeenCalled()
+    })
+
+    it('is hidden when no passkey handler is provided', () => {
+        renderLoginForm()
+        expect(screen.queryByText('Sign in with passkey')).toBeNull()
     })
 })

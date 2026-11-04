@@ -1,4 +1,6 @@
+import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
 import CapRoverAPI from 'caprover-api'
+import { IPasskey } from '../models/IPasskey'
 import Logger from '../utils/Logger'
 import StorageHelper from '../utils/StorageHelper'
 
@@ -67,5 +69,60 @@ export default class ApiManager extends CapRoverAPI {
 
                 return Promise.reject(error)
             })
+    }
+
+    loginWithPasskey(otpToken?: string): Promise<string> {
+        authProvider.hadEnteredOtp = !!otpToken
+        authProvider.lastKnownPassword = ''
+
+        return this.executeGenericApiCommand(
+            'POST',
+            '/login/passkey/options',
+            {}
+        )
+            .then((optionsJSON) => startAuthentication({ optionsJSON }))
+            .then((response) =>
+                this.executeGenericApiCommand('POST', '/login/passkey/verify', {
+                    response,
+                    otpToken,
+                })
+            )
+            .then((data: { token: string }) => {
+                authProvider.onAuthTokenUpdated(data.token)
+                return authProvider.authToken
+            })
+            .catch(function (error) {
+                authProvider.hadEnteredOtp = false
+                return Promise.reject(error)
+            })
+    }
+
+    getPasskeys(): Promise<{ passkeys: IPasskey[] }> {
+        return this.executeGenericApiCommand('GET', '/user/passkeys', {})
+    }
+
+    registerPasskey(
+        name: string,
+        password: string
+    ): Promise<{ passkey: IPasskey }> {
+        return this.executeGenericApiCommand(
+            'POST',
+            '/user/passkeys/register/options',
+            { password }
+        )
+            .then((optionsJSON) => startRegistration({ optionsJSON }))
+            .then((response) =>
+                this.executeGenericApiCommand(
+                    'POST',
+                    '/user/passkeys/register/verify',
+                    { name, password, response }
+                )
+            )
+    }
+
+    deletePasskey(id: string): Promise<void> {
+        return this.executeGenericApiCommand('POST', '/user/passkeys/delete', {
+            id,
+        })
     }
 }
