@@ -11,6 +11,11 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.ant-app.full-screen {
+    background-color: var(--ant-color-bg-layout);
+    display: flow-root;
+}
+
 .app-shell.full-screen {
     width: calc(100% - 16px);
     height: calc(100% - 16px);
