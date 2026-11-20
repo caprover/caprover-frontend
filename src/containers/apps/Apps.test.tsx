@@ -208,7 +208,7 @@ it('sorts apps by desired instances, then running instances', async () => {
         envVars: [],
         versions: [],
     })
-    const runtime = (appName: string, desired: number, running: number) => ({
+    const runtime = (appName: string, desired: number, running?: number) => ({
         appName,
         status: 'running',
         desiredInstances: desired,
@@ -217,29 +217,31 @@ it('sorts apps by desired instances, then running instances', async () => {
         latestFailure: undefined,
         error: undefined,
     })
-    // db has no runtime data, so it counts as fully running
+    // db and cms have no runtime entry and wiki has no running count, so they count as fully running
     jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
-        apps: [runtime('api', 2, 2), runtime('web', 2, 1)],
+        apps: [runtime('api', 2, 2), runtime('web', 2, 1), runtime('wiki', 2)],
     } as any)
     await renderApps([], false, [
         app('ftp', 0),
         app('api', 2),
         app('web', 2),
         app('db', 1),
+        app('cms', 2),
+        app('wiki', 2),
     ])
     await screen.findByText('1/2')
     const shownApps = () =>
         Array.from(document.querySelectorAll('.app-name-link')).map(
             (link) => link.textContent
         )
-    expect(shownApps()).toEqual(['api', 'db', 'ftp', 'web'])
+    expect(shownApps()).toEqual(['api', 'cms', 'db', 'ftp', 'web', 'wiki'])
 
     fireEvent.click(screen.getByText('Instances'))
-    expect(shownApps()).toEqual(['api', 'web', 'db', 'ftp'])
+    expect(shownApps()).toEqual(['api', 'cms', 'wiki', 'web', 'db', 'ftp'])
     expect(window.localStorage.appsSortKey).toBe('instanceCount')
 
     fireEvent.click(screen.getByText('Instances'))
-    expect(shownApps()).toEqual(['ftp', 'db', 'web', 'api'])
+    expect(shownApps()).toEqual(['ftp', 'db', 'web', 'api', 'cms', 'wiki'])
     resetSort()
 })
 
