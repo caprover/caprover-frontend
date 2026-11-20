@@ -184,6 +184,65 @@ it('exposes persistent storage to assistive technology and keyboard focus', asyn
     )
 })
 
+it('sorts apps by desired instances, then running instances', async () => {
+    const resetSort = () => {
+        delete window.localStorage.appsSortKey
+        delete window.localStorage.appsSortOrder
+    }
+    resetSort()
+    const app = (appName: string, instanceCount: number): IAppDef => ({
+        appName,
+        deployedVersion: 0,
+        notExposeAsWebApp: true,
+        hasPersistentData: false,
+        hasDefaultSubDomainSsl: false,
+        containerHttpPort: 80,
+        captainDefinitionRelativeFilePath: './captain-definition',
+        forceSsl: false,
+        websocketSupport: true,
+        instanceCount,
+        networks: [],
+        customDomain: [],
+        ports: [],
+        volumes: [],
+        envVars: [],
+        versions: [],
+    })
+    const runtime = (appName: string, desired: number, running: number) => ({
+        appName,
+        status: 'running',
+        desiredInstances: desired,
+        runningInstances: running,
+        currentTasks: [],
+        latestFailure: undefined,
+        error: undefined,
+    })
+    // db has no runtime data, so it counts as fully running
+    jest.spyOn(ApiManager.prototype, 'getAppsRuntime').mockResolvedValue({
+        apps: [runtime('api', 2, 2), runtime('web', 2, 1)],
+    } as any)
+    await renderApps([], false, [
+        app('ftp', 0),
+        app('api', 2),
+        app('web', 2),
+        app('db', 1),
+    ])
+    await screen.findByText('1/2')
+    const shownApps = () =>
+        Array.from(document.querySelectorAll('.app-name-link')).map(
+            (link) => link.textContent
+        )
+    expect(shownApps()).toEqual(['api', 'db', 'ftp', 'web'])
+
+    fireEvent.click(screen.getByText('Instances'))
+    expect(shownApps()).toEqual(['api', 'web', 'db', 'ftp'])
+    expect(window.localStorage.appsSortKey).toBe('instanceCount')
+
+    fireEvent.click(screen.getByText('Instances'))
+    expect(shownApps()).toEqual(['ftp', 'db', 'web', 'api'])
+    resetSort()
+})
+
 it.each([
     ['One-Click App', '/apps/oneclick'],
     ['Docker Compose', '/apps/dockercompose'],
