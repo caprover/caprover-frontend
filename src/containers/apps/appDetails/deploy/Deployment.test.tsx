@@ -7,6 +7,9 @@ import { IAppDef, IAppVersion } from '../../AppDefinition'
 import { AppDetailsTabProps } from '../AppDetails'
 import Deployment from './Deployment'
 
+// Allow time for Ant Design to render the table in jsdom after async updates.
+jest.setTimeout(15000)
+
 jest.mock('../../../../utils/Language', () => ({
     localize: (_key: string, fallback: string) => fallback,
 }))
