@@ -3,12 +3,11 @@ import {
     LoadingOutlined,
     UpCircleOutlined,
 } from '@ant-design/icons'
-import { Alert, Input, Row, Spin } from 'antd'
+import { Alert, Button, Input, Spin } from 'antd'
 import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
-import ClickableLink from '../../../global/ClickableLink'
 
 export default class BuildLogsView extends ApiComponent<
     {
@@ -27,7 +26,7 @@ export default class BuildLogsView extends ApiComponent<
     constructor(props: any) {
         super(props)
         this.state = {
-            isAppBuilding: false,
+            isAppBuilding: !!props.buildLogRecreationId,
             expandedLogs: !!this.props.buildLogRecreationId,
             buildLogs: '',
             lastLineNumberPrinted: -10000,
@@ -54,6 +53,8 @@ export default class BuildLogsView extends ApiComponent<
                     lines: string[]
                 }
             }) {
+                if (self.willUnmountSoon) return
+
                 if (self.state.isAppBuilding && !logInfo.isAppBuilding) {
                     // App was building but not anymore
                     self.props.onAppBuildFinished()
@@ -124,88 +125,51 @@ export default class BuildLogsView extends ApiComponent<
     }
 
     render() {
-        const self = this
+        const { isAppBuilding, expandedLogs, buildLogs } = this.state
         return (
-            <div>
-                <Row>
-                    <div
-                        style={{
-                            width: '100%',
-                        }}
-                        className={
-                            this.state.isAppBuilding ? '' : 'hide-on-demand'
-                        }
-                    >
-                        <Alert
-                            message={
-                                <span>
-                                    &nbsp;&nbsp;
-                                    <Spin
-                                        indicator={
-                                            <LoadingOutlined
-                                                style={{ fontSize: 24 }}
-                                                spin
-                                            />
-                                        }
-                                        size="default"
-                                    />
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    Building the image. This might take a few
-                                    minutes...
-                                </span>
-                            }
-                            type="info"
-                        />
-                    </div>
-                </Row>
-
-                <div style={{ height: 20 }} />
-
-                <div>
-                    <div>
-                        <ClickableLink
-                            onLinkClicked={() => {
-                                self.onExpandLogClicked()
-                            }}
-                        >
-                            <span className="unselectable-span">
-                                {this.state.expandedLogs ? (
-                                    <UpCircleOutlined />
-                                ) : (
-                                    <DownCircleOutlined />
-                                )}
-                                &nbsp;&nbsp;
-                                {!this.state.expandedLogs
-                                    ? localize(
-                                          'apps.deploy_app_build_logs_view',
-                                          'View Build Logs'
-                                      )
-                                    : localize(
-                                          'apps.deploy_app_build_logs_hide',
-                                          'Hide Build Logs'
-                                      )}
-                            </span>
-                        </ClickableLink>
-                    </div>
-
-                    <div
-                        className={
-                            this.state.isAppBuilding || this.state.expandedLogs
-                                ? ''
-                                : 'hide-on-demand'
-                        }
-                        style={{ padding: 5 }}
-                    >
-                        <Input.TextArea
-                            id="buildlog-text-id"
-                            className="logs-output"
-                            style={{
-                                whiteSpace: 'pre',
-                            }}
-                            readOnly
-                            value={self.state.buildLogs}
-                        />
-                    </div>
+            <div className="deployment-build-logs">
+                {isAppBuilding && (
+                    <Alert
+                        message={localize(
+                            'apps.deploy_build_in_progress',
+                            'Building the image. This might take a few minutes...'
+                        )}
+                        icon={<Spin indicator={<LoadingOutlined spin />} />}
+                        showIcon
+                        type="info"
+                    />
+                )}
+                <Button
+                    aria-expanded={isAppBuilding || expandedLogs}
+                    aria-controls="buildlog-text-id"
+                    disabled={isAppBuilding}
+                    icon={
+                        expandedLogs ? (
+                            <UpCircleOutlined />
+                        ) : (
+                            <DownCircleOutlined />
+                        )
+                    }
+                    onClick={() => this.onExpandLogClicked()}
+                >
+                    {expandedLogs
+                        ? localize(
+                              'apps.deploy_app_build_logs_hide',
+                              'Hide Build Logs'
+                          )
+                        : localize(
+                              'apps.deploy_app_build_logs_view',
+                              'View Build Logs'
+                          )}
+                </Button>
+                <div hidden={!isAppBuilding && !expandedLogs}>
+                    <Input.TextArea
+                        id="buildlog-text-id"
+                        className="logs-output"
+                        style={{ whiteSpace: 'pre' }}
+                        readOnly
+                        value={buildLogs}
+                    />
                 </div>
             </div>
         )
