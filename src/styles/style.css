@@ -884,3 +884,75 @@ hr {
         padding-inline-start: 36px;
     }
 }
+
+.deployment-tab {
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.deployment-tab > .ant-card {
+    min-width: 0;
+}
+
+.deployment-tab .ant-card-head-title {
+    white-space: normal;
+}
+
+.deployment-tab .ant-card-head h3,
+.deployment-active-summary h3,
+.deployment-manual-title.ant-typography {
+    margin: 0;
+    font-size: var(--ant-font-size-lg, 16px);
+    font-weight: 600;
+}
+
+.deployment-tab code {
+    color: var(--ant-color-text);
+}
+
+.deployment-card-collapsed .ant-card-head {
+    border-block-end: 0;
+}
+
+.deployment-card-collapsed .ant-card-body {
+    display: none;
+}
+
+.deployment-settings-row {
+    padding-block: 12px;
+}
+
+.deployment-settings-row + .deployment-settings-row {
+    border-block-start: 1px solid var(--ant-color-border-secondary);
+}
+
+.deployment-settings-editor {
+    margin-block-start: 12px;
+}
+
+.deployment-active-summary {
+    flex: 1 1 27rem;
+    min-width: 0;
+}
+
+.deployment-manual-toggle.ant-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 12px;
+    text-align: start;
+    white-space: normal;
+}
+
+.deployment-manual-toggle > span:first-child {
+    display: grid;
+    gap: 4px;
+}
+
+.deployment-active-icon {
+    color: var(--ant-color-success);
+}

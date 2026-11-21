@@ -66,12 +66,21 @@ export interface SingleAppApiData {
     goAccessInfo: IGoAccessInfo
 }
 
+type DeploymentSettings = Partial<
+    Pick<
+        IAppDef,
+        | 'appPushWebhook'
+        | 'appDeployTokenConfig'
+        | 'captainDefinitionRelativeFilePath'
+    >
+>
+
 export interface AppDetailsTabProps {
     history: History
     apiData: SingleAppApiData
     apiManager: ApiManager
     updateApiData: Function
-    onUpdateConfigAndSave: () => void
+    onUpdateConfigAndSave: (settings?: DeploymentSettings) => Promise<boolean>
     reFetchData: () => void
     setLoading: (value: boolean) => void
     isMobile: boolean
@@ -126,18 +135,22 @@ export class AppDetails extends ApiComponent<
         this.props.history.push('/apps')
     }
 
-    onUpdateConfigAndSave() {
+    onUpdateConfigAndSave(settings?: DeploymentSettings) {
         const self = this
-        const appDef = Utils.copyObject(self.state.apiData!.appDefinition)
+        const appDef = {
+            ...Utils.copyObject(self.state.apiData!.appDefinition),
+            ...settings,
+        }
         self.setState({ isLoading: true })
-        this.apiManager
+        return this.apiManager
             .updateConfigAndSave(appDef.appName!, appDef)
             .then(function () {
                 return self.reFetchData()
             })
             .catch(Toaster.createCatcher())
-            .then(function () {
+            .then(function (refetched) {
                 self.setState({ isLoading: false })
+                return !!refetched
             })
     }
 
@@ -372,7 +385,8 @@ export class AppDetails extends ApiComponent<
                 this.setState({
                     apiData: newData,
                 }),
-            onUpdateConfigAndSave: () => self.onUpdateConfigAndSave(),
+            onUpdateConfigAndSave: (settings) =>
+                self.onUpdateConfigAndSave(settings),
         }
 
         return (
@@ -444,7 +458,15 @@ export class AppDetails extends ApiComponent<
                                             )}
                                         </span>
                                     ),
-                                    children: <Deployment {...tabProps} />,
+                                    children: (
+                                        <Deployment
+                                            key={
+                                                tabProps.apiData.appDefinition
+                                                    .appName
+                                            }
+                                            {...tabProps}
+                                        />
+                                    ),
                                 },
                                 {
                                     key: LOGS,
@@ -771,7 +793,7 @@ export class AppDetails extends ApiComponent<
                             },
                         })
                         self.refreshRuntime()
-                        return
+                        return true
                     }
                 }
 
@@ -779,8 +801,9 @@ export class AppDetails extends ApiComponent<
                 self.goBackToApps()
             })
             .catch(Toaster.createCatcher())
-            .then(function () {
+            .then(function (refetched) {
                 self.setState({ isLoading: false })
+                return !!refetched
             })
     }
 
