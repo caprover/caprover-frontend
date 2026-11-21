@@ -1,3 +1,4 @@
+import { DownOutlined, UpOutlined } from '@ant-design/icons'
 import {
     Alert,
     Button,
@@ -6,7 +7,6 @@ import {
     Input,
     message,
     Radio,
-    Space,
     Typography,
 } from 'antd'
 import deepEqual from 'deep-equal'
@@ -176,70 +176,80 @@ export default class Deployment extends ApiComponent<
         const { appName } = this.props.apiData.appDefinition
 
         return (
-            <Card
-                size="small"
-                title={
-                    <h3>
-                        {localize('apps.deploy_active', 'Active deployment')}
-                    </h3>
-                }
-            >
-                <Space
-                    direction="vertical"
-                    size="middle"
-                    style={{ width: '100%' }}
-                >
-                    {knownVersion && (
-                        <Typography.Text strong>
-                            {localize('apps.deploy_version', 'Version')}{' '}
-                            {deployedVersion}
-                        </Typography.Text>
-                    )}
-                    {active ? (
-                        <Flex wrap gap="middle">
-                            <Typography.Text>
+            <Card size="small">
+                <Flex vertical gap="small">
+                    <BuildLogsView
+                        onAppBuildFinished={() => this.onAppBuildFinished()}
+                        appName={appName!}
+                        buildLogRecreationId={this.state.buildLogRecreationId}
+                        key={this.state.buildLogRecreationId}
+                    >
+                        <Flex
+                            vertical
+                            gap={4}
+                            className="deployment-active-summary"
+                        >
+                            <h3>
                                 {localize(
-                                    'apps.deploy_image_name',
-                                    'Image Name'
-                                )}{' '}
-                                <Typography.Text code>
-                                    {active.deployedImageName}
-                                </Typography.Text>
-                            </Typography.Text>
-                            {active.timeStamp && (
-                                <Typography.Text>
-                                    {localize(
-                                        'apps.deploy_time',
-                                        'Deploy Time'
-                                    )}{' '}
-                                    <Timestamp timestamp={active.timeStamp} />
+                                    'apps.deploy_active',
+                                    'Active deployment'
+                                )}
+                            </h3>
+                            {knownVersion && (
+                                <Typography.Text strong>
+                                    {localize('apps.deploy_version', 'Version')}{' '}
+                                    {deployedVersion}
                                 </Typography.Text>
                             )}
-                            {gitHash && (
-                                <Typography.Text>
-                                    {localize(
-                                        'apps.deploy_git_hash_label',
-                                        'Git Hash'
-                                    )}{' '}
-                                    <Typography.Text code>
-                                        {gitHash}
+                            {active ? (
+                                <Flex wrap gap="4px 12px">
+                                    <Typography.Text>
+                                        {localize(
+                                            'apps.deploy_image_name',
+                                            'Image Name'
+                                        )}{' '}
+                                        <Typography.Text code>
+                                            {active.deployedImageName}
+                                        </Typography.Text>
                                     </Typography.Text>
+                                    {active.timeStamp && (
+                                        <Typography.Text>
+                                            {localize(
+                                                'apps.deploy_time',
+                                                'Deploy Time'
+                                            )}{' '}
+                                            <Timestamp
+                                                timestamp={active.timeStamp}
+                                            />
+                                        </Typography.Text>
+                                    )}
+                                    {gitHash && (
+                                        <Typography.Text>
+                                            {localize(
+                                                'apps.deploy_git_hash_label',
+                                                'Git Hash'
+                                            )}{' '}
+                                            <Typography.Text code>
+                                                {gitHash}
+                                            </Typography.Text>
+                                        </Typography.Text>
+                                    )}
+                                </Flex>
+                            ) : (
+                                <Typography.Text type="secondary">
+                                    {noDeployment
+                                        ? localize(
+                                              'apps.deploy_no_active',
+                                              'No active deployment yet'
+                                          )
+                                        : localize(
+                                              'apps.deploy_history_unavailable',
+                                              'Deployment details unavailable'
+                                          )}
                                 </Typography.Text>
                             )}
                         </Flex>
-                    ) : (
-                        <Typography.Text type="secondary">
-                            {noDeployment
-                                ? localize(
-                                      'apps.deploy_no_active',
-                                      'No active deployment yet'
-                                  )
-                                : localize(
-                                      'apps.deploy_history_unavailable',
-                                      'Deployment details unavailable'
-                                  )}
-                        </Typography.Text>
-                    )}
+                    </BuildLogsView>
                     {this.state.versionRefreshFailed && (
                         <Alert
                             type="warning"
@@ -258,13 +268,7 @@ export default class Deployment extends ApiComponent<
                             }
                         />
                     )}
-                    <BuildLogsView
-                        onAppBuildFinished={() => this.onAppBuildFinished()}
-                        appName={appName!}
-                        buildLogRecreationId={this.state.buildLogRecreationId}
-                        key={this.state.buildLogRecreationId}
-                    />
-                </Space>
+                </Flex>
             </Card>
         )
     }
@@ -646,43 +650,52 @@ export default class Deployment extends ApiComponent<
         return (
             <Card
                 size="small"
+                className={
+                    manualExpanded ? undefined : 'deployment-card-collapsed'
+                }
+                styles={{ header: { padding: 0 } }}
                 title={
                     <h3>
-                        {localize(
-                            'apps.deploy_new_version',
-                            'Deploy a new version'
-                        )}
+                        <Button
+                            type="text"
+                            className="deployment-manual-toggle"
+                            aria-expanded={manualExpanded}
+                            aria-controls="deployment-manual-options"
+                            aria-labelledby="deployment-manual-title"
+                            aria-describedby="deployment-manual-description"
+                            onClick={() =>
+                                this.setState({
+                                    manualExpanded: !manualExpanded,
+                                })
+                            }
+                        >
+                            <span>
+                                <Typography.Text
+                                    strong
+                                    id="deployment-manual-title"
+                                    className="deployment-manual-title"
+                                >
+                                    {localize(
+                                        'apps.deploy_new_version',
+                                        'Deploy a new version'
+                                    )}
+                                </Typography.Text>
+                                <Typography.Text
+                                    type="secondary"
+                                    id="deployment-manual-description"
+                                >
+                                    {localize(
+                                        'apps.deploy_manual_description',
+                                        'Upload a CapRover archive, use a Docker image, or build from a definition.'
+                                    )}
+                                </Typography.Text>
+                            </span>
+                            {manualExpanded ? <UpOutlined /> : <DownOutlined />}
+                        </Button>
                     </h3>
                 }
-                extra={
-                    <Button
-                        aria-expanded={manualExpanded}
-                        onClick={() =>
-                            this.setState({ manualExpanded: !manualExpanded })
-                        }
-                    >
-                        {manualExpanded
-                            ? localize(
-                                  'apps.deploy_hide_manual',
-                                  'Hide options'
-                              )
-                            : localize(
-                                  'apps.deploy_show_manual',
-                                  'Show options'
-                              )}
-                    </Button>
-                }
             >
-                <Typography.Text type="secondary">
-                    {localize(
-                        'apps.deploy_manual_description',
-                        'Upload a CapRover archive, use a Docker image, or build from a definition.'
-                    )}
-                </Typography.Text>
-                <div
-                    hidden={!manualExpanded}
-                    className="deployment-settings-editor"
-                >
+                <div id="deployment-manual-options" hidden={!manualExpanded}>
                     <Radio.Group
                         aria-label={localize(
                             'apps.deploy_method',
@@ -766,7 +779,7 @@ export default class Deployment extends ApiComponent<
                     className={
                         historyExpanded
                             ? undefined
-                            : 'deployment-history-collapsed'
+                            : 'deployment-card-collapsed'
                     }
                     extra={
                         <Button

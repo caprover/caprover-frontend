@@ -3,18 +3,19 @@ import {
     LoadingOutlined,
     UpCircleOutlined,
 } from '@ant-design/icons'
-import { Alert, Button, Input, Spin } from 'antd'
+import { Alert, Button, Flex, Input, Spin } from 'antd'
+import { PropsWithChildren } from 'react'
 import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
 import ApiComponent from '../../../global/ApiComponent'
 
 export default class BuildLogsView extends ApiComponent<
-    {
+    PropsWithChildren<{
         appName: string
         onAppBuildFinished: () => void
         buildLogRecreationId: string
-    },
+    }>,
     {
         isAppBuilding: boolean
         expandedLogs: boolean
@@ -127,7 +128,33 @@ export default class BuildLogsView extends ApiComponent<
     render() {
         const { isAppBuilding, expandedLogs, buildLogs } = this.state
         return (
-            <div className="deployment-build-logs">
+            <Flex vertical gap="small">
+                <Flex align="start" justify="space-between" wrap gap="small">
+                    {this.props.children}
+                    <Button
+                        aria-expanded={isAppBuilding || expandedLogs}
+                        aria-controls="buildlog-text-id"
+                        disabled={isAppBuilding}
+                        icon={
+                            expandedLogs ? (
+                                <UpCircleOutlined />
+                            ) : (
+                                <DownCircleOutlined />
+                            )
+                        }
+                        onClick={() => this.onExpandLogClicked()}
+                    >
+                        {expandedLogs
+                            ? localize(
+                                  'apps.deploy_app_build_logs_hide',
+                                  'Hide Build Logs'
+                              )
+                            : localize(
+                                  'apps.deploy_app_build_logs_view',
+                                  'View Build Logs'
+                              )}
+                    </Button>
+                </Flex>
                 {isAppBuilding && (
                     <Alert
                         message={localize(
@@ -139,29 +166,6 @@ export default class BuildLogsView extends ApiComponent<
                         type="info"
                     />
                 )}
-                <Button
-                    aria-expanded={isAppBuilding || expandedLogs}
-                    aria-controls="buildlog-text-id"
-                    disabled={isAppBuilding}
-                    icon={
-                        expandedLogs ? (
-                            <UpCircleOutlined />
-                        ) : (
-                            <DownCircleOutlined />
-                        )
-                    }
-                    onClick={() => this.onExpandLogClicked()}
-                >
-                    {expandedLogs
-                        ? localize(
-                              'apps.deploy_app_build_logs_hide',
-                              'Hide Build Logs'
-                          )
-                        : localize(
-                              'apps.deploy_app_build_logs_view',
-                              'View Build Logs'
-                          )}
-                </Button>
                 <div hidden={!isAppBuilding && !expandedLogs}>
                     <Input.TextArea
                         id="buildlog-text-id"
@@ -171,7 +175,7 @@ export default class BuildLogsView extends ApiComponent<
                         value={buildLogs}
                     />
                 </div>
-            </div>
+            </Flex>
         )
     }
 }

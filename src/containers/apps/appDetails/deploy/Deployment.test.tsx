@@ -107,7 +107,14 @@ it('opens a fresh app with the archive selected and keeps history independent', 
     fireEvent.click(button('View history'))
     expect(screen.getByText('No deployment history yet')).toBeVisible()
     expect(button('Upload & Deploy')).toBeVisible()
-    fireEvent.click(button('Hide options'))
+    const toggle = screen.getByRole('button', { name: 'Deploy a new version' })
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    fireEvent.click(
+        screen.getByText(
+            'Upload a CapRover archive, use a Docker image, or build from a definition.'
+        )
+    )
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
     expect(screen.getByRole('table')).toBeVisible()
     expect(screen.queryByRole('button', { name: 'Upload & Deploy' })).toBeNull()
 })
@@ -125,7 +132,10 @@ it('shows successful version zero as active after a newer unsuccessful attempt',
     expect(screen.getByText('Version 0')).toBeVisible()
     expect(screen.getByText('nginx:alpine')).toBeVisible()
     expect(screen.getByText('1234567890abcdef')).toBeVisible()
-    expect(button('Show options')).toBeVisible()
+    expect(button('Deploy a new version')).toHaveAttribute(
+        'aria-expanded',
+        'false'
+    )
     expect(button('View history')).toBeVisible()
 
     fireEvent.click(button('View history'))
@@ -227,14 +237,17 @@ it('retains manual input through method switches, collapse and a refresh for the
         target: { value: 'nginx:alpine' },
     })
     fireEvent.click(screen.getByRole('radio', { name: 'Dockerfile' }))
-    fireEvent.click(button('Hide options'))
+    fireEvent.click(button('Deploy a new version'))
     rerender(
         <Deployment
             {...tabProps({ ...app, versions: [version(0, 'nginx:alpine')] })}
         />
     )
-    expect(button('Show options')).toBeVisible()
-    fireEvent.click(button('Show options'))
+    expect(button('Deploy a new version')).toHaveAttribute(
+        'aria-expanded',
+        'false'
+    )
+    fireEvent.click(button('Deploy a new version'))
     expect(screen.getByRole('radio', { name: 'Dockerfile' })).toBeChecked()
     fireEvent.click(screen.getByRole('radio', { name: 'Docker image' }))
     expect(screen.getByPlaceholderText('nginxdemos/hello:latest')).toHaveValue(
@@ -300,7 +313,10 @@ it('refreshes the active summary and history together, keeping prior details if 
     expect(
         screen.queryByText(/information shown may be out of date/)
     ).toBeNull()
-    expect(button('Hide options')).toBeVisible()
+    expect(button('Deploy a new version')).toHaveAttribute(
+        'aria-expanded',
+        'true'
+    )
 })
 
 it('saves only the selected settings row and retains a rejected Git draft', async () => {
