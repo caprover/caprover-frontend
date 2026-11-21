@@ -138,7 +138,7 @@ export default class GitRepoForm extends Component<{
                                     'apps.deploy_git_ssh_key',
                                     'SSH Key'
                                 )}
-                                value={this.props.gitRepoValues.sshKey}
+                                value={this.props.gitRepoValues.sshKey || ''}
                                 placeholder={
                                     '-----BEGIN RSA PRIVATE KEY-----\nAABBBCCC'
                                 }

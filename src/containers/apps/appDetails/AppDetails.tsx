@@ -22,6 +22,7 @@ import {
 } from 'antd'
 import classnames from 'classnames'
 import { CapRoverModels } from 'caprover-api'
+import deepEqual from 'deep-equal'
 import { History } from 'history'
 import { Fragment, RefObject } from 'react'
 import { connect } from 'react-redux'
@@ -75,6 +76,21 @@ type DeploymentSettings = Partial<
     >
 >
 
+function preserveDraftFields<T extends IAppDef>(
+    saved: T,
+    draft: T,
+    refreshed: T
+): T {
+    const appDefinition = { ...refreshed }
+    const fields = { ...saved, ...draft }
+    for (const key in fields) {
+        if (!deepEqual(saved[key], draft[key], { strict: true })) {
+            appDefinition[key] = draft[key]
+        }
+    }
+    return appDefinition
+}
+
 export interface AppDetailsTabProps {
     history: History
     apiData: SingleAppApiData
@@ -115,6 +131,10 @@ export class AppDetails extends ApiComponent<
     private updateRuntimeInterval: any
     private confirmedAppNameToDelete: string = ''
     private volumesToDelete: IHashMapGeneric<boolean> = {}
+    private savedAppDefinition?: {
+        app: IAppDef
+        needsRefresh: boolean
+    }
 
     constructor(props: any) {
         super(props)
@@ -137,19 +157,59 @@ export class AppDetails extends ApiComponent<
 
     onUpdateConfigAndSave(settings?: DeploymentSettings) {
         const self = this
-        const appDef = {
-            ...Utils.copyObject(self.state.apiData!.appDefinition),
-            ...settings,
+        const appName = self.state.apiData?.appDefinition.appName
+        if (!appName || appName !== self.props.match.params.appName) {
+            return Promise.resolve(false)
         }
-        self.setState({ isLoading: true })
-        return this.apiManager
-            .updateConfigAndSave(appDef.appName!, appDef)
-            .then(function () {
-                return self.reFetchData()
+
+        const refreshFirst =
+            self.savedAppDefinition?.needsRefresh ||
+            (settings && self.savedAppDefinition?.app.appName !== appName)
+
+        return (refreshFirst ? self.reFetchData(true) : Promise.resolve(true))
+            .then(function (ready) {
+                const current = self.state.apiData?.appDefinition
+                const saved = self.savedAppDefinition?.app
+                if (
+                    !ready ||
+                    self.willUnmountSoon ||
+                    appName !== self.props.match.params.appName ||
+                    current?.appName !== appName
+                ) {
+                    return false
+                }
+
+                const base = settings ? saved : current
+                if (!base || base.appName !== appName) return false
+
+                const appDef = { ...Utils.copyObject(base), ...settings }
+                self.setState({ isLoading: true })
+                return self.apiManager
+                    .updateConfigAndSave(appName, appDef)
+                    .then(function () {
+                        if (
+                            self.willUnmountSoon ||
+                            appName !== self.props.match.params.appName
+                        ) {
+                            return false
+                        }
+                        // The server can generate credentials or normalize inputs on save.
+                        // Fetch its definition before sending another complete update.
+                        self.savedAppDefinition = {
+                            app: settings ? base : appDef,
+                            needsRefresh: true,
+                        }
+                        return self.reFetchData(!!settings)
+                    })
             })
             .catch(Toaster.createCatcher())
             .then(function (refetched) {
-                self.setState({ isLoading: false })
+                if (
+                    !self.willUnmountSoon &&
+                    appName === self.props.match.params.appName
+                ) {
+                    self.setState({ isLoading: false })
+                }
                 return !!refetched
             })
     }
@@ -465,6 +525,13 @@ export class AppDetails extends ApiComponent<
                                                     .appName
                                             }
                                             {...tabProps}
+                                            settingsNeedRefresh={
+                                                this.savedAppDefinition
+                                                    ?.needsRefresh
+                                            }
+                                            reFetchData={() =>
+                                                this.reFetchData(true)
+                                            }
                                         />
                                     ),
                                 },
@@ -759,50 +826,77 @@ export class AppDetails extends ApiComponent<
         }
     }
 
-    reFetchData() {
+    reFetchData(preserveDraft = false): Promise<boolean> {
         const self = this
+        const appName = self.props.match.params.appName
         self.setState({ isLoading: true })
         return Promise.all([
             self.apiManager.getAllApps(),
             self.apiManager.getAllProjects(),
             self.apiManager.getGoAccessInfo(),
         ])
-            .then(function (dataReturns: any) {
-                const getAppsResp = dataReturns[0]
-                const projects = dataReturns[1].projects || []
-                const goAccessInfo = dataReturns[2]
+            .then(function ([getAppsResp, projectsResp, goAccessInfo]) {
+                if (
+                    self.willUnmountSoon ||
+                    appName !== self.props.match.params.appName
+                ) {
+                    return false
+                }
+                const projects = projectsResp.projects || []
                 const appDefinitions = getAppsResp.appDefinitions || []
 
                 // Build index from FULL list before filtering to current app
                 const volumeUsageIndex = buildVolumeUsageIndex(appDefinitions)
 
-                for (let index = 0; index < appDefinitions.length; index++) {
-                    const element = appDefinitions[index]
-                    if (element.appName === self.props.match.params.appName) {
-                        self.setState({
+                const app = appDefinitions.find(
+                    (definition) => definition.appName === appName
+                )
+                if (!app) {
+                    self.goBackToApps()
+                    return false
+                }
+
+                const saved = self.savedAppDefinition?.app
+                const draft = self.state.apiData?.appDefinition
+                const appDefinition =
+                    preserveDraft &&
+                    saved &&
+                    draft &&
+                    saved.appName === appName &&
+                    draft.appName === appName
+                        ? preserveDraftFields(saved, draft, app)
+                        : app
+                self.savedAppDefinition = { app, needsRefresh: false }
+                return new Promise<boolean>((resolve) => {
+                    self.setState(
+                        {
                             isLoading: false,
                             volumeUsageIndex,
                             apiData: {
-                                projects: projects,
-                                appDefinition: element,
+                                projects,
+                                appDefinition,
                                 rootDomain: getAppsResp.rootDomain,
                                 captainSubDomain: getAppsResp.captainSubDomain,
                                 defaultNginxConfig:
                                     getAppsResp.defaultNginxConfig,
                                 goAccessInfo,
                             },
-                        })
-                        self.refreshRuntime()
-                        return true
-                    }
-                }
-
-                // App Not Found!
-                self.goBackToApps()
+                        },
+                        () => {
+                            self.refreshRuntime()
+                            resolve(true)
+                        }
+                    )
+                })
             })
             .catch(Toaster.createCatcher())
             .then(function (refetched) {
-                self.setState({ isLoading: false })
+                if (
+                    !self.willUnmountSoon &&
+                    appName === self.props.match.params.appName
+                ) {
+                    self.setState({ isLoading: false })
+                }
                 return !!refetched
             })
     }

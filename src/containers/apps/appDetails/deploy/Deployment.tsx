@@ -44,8 +44,10 @@ const EMPTY_REPO: RepoInfo = {
 }
 const definitionFileName = <code>captain-definition</code>
 
+type DeploymentProps = AppDetailsTabProps & { settingsNeedRefresh?: boolean }
+
 export default class Deployment extends ApiComponent<
-    AppDetailsTabProps,
+    DeploymentProps,
     {
         historyExpanded: boolean
         manualExpanded: boolean
@@ -58,7 +60,7 @@ export default class Deployment extends ApiComponent<
         versionRefreshFailed: boolean
     }
 > {
-    constructor(props: AppDetailsTabProps) {
+    constructor(props: DeploymentProps) {
         super(props)
         this.state = {
             historyExpanded: false,
@@ -70,7 +72,7 @@ export default class Deployment extends ApiComponent<
         }
     }
 
-    componentDidUpdate(previousProps: AppDetailsTabProps) {
+    componentDidUpdate(previousProps: DeploymentProps) {
         const previous = previousProps.apiData.appDefinition
         const current = this.props.apiData.appDefinition
         if (
@@ -313,7 +315,11 @@ export default class Deployment extends ApiComponent<
                     <Flex wrap gap="small">
                         {repoInfo.repo && (
                             <Button
-                                disabled={!pushToken || gitDirty}
+                                disabled={
+                                    !pushToken ||
+                                    gitDirty ||
+                                    this.props.settingsNeedRefresh
+                                }
                                 onClick={() => {
                                     self.apiManager
                                         .forceBuild(webhookPath)
@@ -486,6 +492,7 @@ export default class Deployment extends ApiComponent<
                         </p>
                         <Flex wrap gap="small">
                             <Button
+                                disabled={this.props.settingsNeedRefresh}
                                 onClick={() =>
                                     this.props.onUpdateConfigAndSave({
                                         appDeployTokenConfig: {
@@ -833,6 +840,24 @@ export default class Deployment extends ApiComponent<
                         </h3>
                     }
                 >
+                    {this.props.settingsNeedRefresh && (
+                        <Alert
+                            type="warning"
+                            showIcon
+                            message={localize(
+                                'apps.deploy_settings_refresh_failed',
+                                'Settings were saved, but the displayed values may be out of date.'
+                            )}
+                            action={
+                                <Button
+                                    size="small"
+                                    onClick={() => this.props.reFetchData()}
+                                >
+                                    {localize('apps.deploy_retry', 'Retry')}
+                                </Button>
+                            }
+                        />
+                    )}
                     {this.renderGitSettings()}
                     {this.renderCliSettings()}
                     {this.renderDefinitionPath()}
