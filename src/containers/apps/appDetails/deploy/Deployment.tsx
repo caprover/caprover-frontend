@@ -783,6 +783,8 @@ export default class Deployment extends ApiComponent<
                     }
                     extra={
                         <Button
+                            type="link"
+                            size="small"
                             aria-expanded={historyExpanded}
                             onClick={() =>
                                 this.setState({
