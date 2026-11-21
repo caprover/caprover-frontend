@@ -103,6 +103,14 @@ Those existing requirements still apply.
 - For UI changes, inspect the running UI when feasible, including mobile and
   warning/error states. Use actual screenshots for visual evidence; temporary
   mocked endpoints or fixtures must stay out of the PR.
+- For visible UI changes, include screenshots of the running UI under a
+  `Screenshots` heading in the PR description. Include desktop and mobile views
+  when both are affected. Save screenshots outside the checkout and upload them
+  as GitHub attachments. With GitHub CLI 2.99.0 or later, use `gh pr create` or
+  `gh pr edit` with `--body-file` and one `--attach` flag per image. Use
+  Markdown image references in the body file to place the images under the
+  heading. The GitHub web editor also supports uploading screenshots. Verify the
+  images render inline. If screenshots are unavailable, say why in the PR.
 
 ## Review checklist (for authors and reviewers)
 
