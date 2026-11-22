@@ -3,7 +3,7 @@ import {
     LoadingOutlined,
     UpCircleOutlined,
 } from '@ant-design/icons'
-import { Alert, Button, Flex, Input, Spin } from 'antd'
+import { Alert, Button, Flex, Input, Row, Spin } from 'antd'
 import { PropsWithChildren } from 'react'
 import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
@@ -27,7 +27,7 @@ export default class BuildLogsView extends ApiComponent<
     constructor(props: any) {
         super(props)
         this.state = {
-            isAppBuilding: !!props.buildLogRecreationId,
+            isAppBuilding: !!this.props.buildLogRecreationId,
             expandedLogs: !!this.props.buildLogRecreationId,
             buildLogs: '',
             lastLineNumberPrinted: -10000,
@@ -126,56 +126,87 @@ export default class BuildLogsView extends ApiComponent<
     }
 
     render() {
-        const { isAppBuilding, expandedLogs, buildLogs } = this.state
+        const self = this
         return (
-            <Flex vertical gap="small">
+            <div>
                 <Flex align="start" justify="space-between" wrap gap="small">
                     {this.props.children}
                     <Button
-                        aria-expanded={isAppBuilding || expandedLogs}
+                        aria-expanded={
+                            this.state.isAppBuilding || this.state.expandedLogs
+                        }
                         aria-controls="buildlog-text-id"
-                        disabled={isAppBuilding}
                         icon={
-                            expandedLogs ? (
+                            this.state.expandedLogs ? (
                                 <UpCircleOutlined />
                             ) : (
                                 <DownCircleOutlined />
                             )
                         }
-                        onClick={() => this.onExpandLogClicked()}
+                        onClick={() => self.onExpandLogClicked()}
                     >
-                        {expandedLogs
+                        {!this.state.expandedLogs
                             ? localize(
-                                  'apps.deploy_app_build_logs_hide',
-                                  'Hide Build Logs'
-                              )
-                            : localize(
                                   'apps.deploy_app_build_logs_view',
                                   'View Build Logs'
+                              )
+                            : localize(
+                                  'apps.deploy_app_build_logs_hide',
+                                  'Hide Build Logs'
                               )}
                     </Button>
                 </Flex>
-                {isAppBuilding && (
-                    <Alert
-                        message={localize(
-                            'apps.deploy_build_in_progress',
-                            'Building the image. This might take a few minutes...'
-                        )}
-                        icon={<Spin indicator={<LoadingOutlined spin />} />}
-                        showIcon
-                        type="info"
-                    />
-                )}
-                <div hidden={!isAppBuilding && !expandedLogs}>
+                <Row>
+                    <div
+                        style={{
+                            width: '100%',
+                        }}
+                        className={
+                            this.state.isAppBuilding ? '' : 'hide-on-demand'
+                        }
+                    >
+                        <Alert
+                            message={
+                                <span>
+                                    &nbsp;&nbsp;
+                                    <Spin
+                                        indicator={
+                                            <LoadingOutlined
+                                                style={{ fontSize: 24 }}
+                                                spin
+                                            />
+                                        }
+                                        size="default"
+                                    />
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    Building the image. This might take a few
+                                    minutes...
+                                </span>
+                            }
+                            type="info"
+                        />
+                    </div>
+                </Row>
+
+                <div
+                    className={
+                        this.state.isAppBuilding || this.state.expandedLogs
+                            ? ''
+                            : 'hide-on-demand'
+                    }
+                    style={{ padding: 5 }}
+                >
                     <Input.TextArea
                         id="buildlog-text-id"
                         className="logs-output"
-                        style={{ whiteSpace: 'pre' }}
+                        style={{
+                            whiteSpace: 'pre',
+                        }}
                         readOnly
-                        value={buildLogs}
+                        value={self.state.buildLogs}
                     />
                 </div>
-            </Flex>
+            </div>
         )
     }
 }

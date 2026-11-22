@@ -908,10 +908,6 @@ hr {
     font-weight: 600;
 }
 
-.deployment-tab code {
-    color: var(--ant-color-text);
-}
-
 .deployment-card-collapsed .ant-card-head {
     border-block-end: 0;
 }
@@ -951,8 +947,4 @@ hr {
 .deployment-manual-toggle > span:first-child {
     display: grid;
     gap: 4px;
-}
-
-.deployment-active-icon {
-    color: var(--ant-color-success);
 }

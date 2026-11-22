@@ -155,52 +155,45 @@ export class AppDetails extends ApiComponent<
         this.props.history.push('/apps')
     }
 
-    onUpdateConfigAndSave(settings?: DeploymentSettings) {
+    onUpdateConfigAndSave(settings?: DeploymentSettings): Promise<boolean> {
         const self = this
-        const appName = self.state.apiData?.appDefinition.appName
-        if (!appName || appName !== self.props.match.params.appName) {
+        const current = self.state.apiData!.appDefinition
+        const appName = current.appName!
+        const saved = self.savedAppDefinition
+        if (
+            self.willUnmountSoon ||
+            appName !== self.props.match.params.appName
+        ) {
+            return Promise.resolve(false)
+        }
+        if (saved?.needsRefresh) {
+            return self.reFetchData(true).then(function (refetched) {
+                return refetched ? self.onUpdateConfigAndSave(settings) : false
+            })
+        }
+        if (settings && saved?.app.appName !== appName) {
             return Promise.resolve(false)
         }
 
-        const refreshFirst =
-            self.savedAppDefinition?.needsRefresh ||
-            (settings && self.savedAppDefinition?.app.appName !== appName)
-
-        return (refreshFirst ? self.reFetchData(true) : Promise.resolve(true))
-            .then(function (ready) {
-                const current = self.state.apiData?.appDefinition
-                const saved = self.savedAppDefinition?.app
+        const base = settings ? saved!.app : current
+        const appDef = { ...Utils.copyObject(base), ...settings }
+        self.setState({ isLoading: true })
+        return self.apiManager
+            .updateConfigAndSave(appName, appDef)
+            .then(function () {
                 if (
-                    !ready ||
                     self.willUnmountSoon ||
-                    appName !== self.props.match.params.appName ||
-                    current?.appName !== appName
+                    appName !== self.props.match.params.appName
                 ) {
                     return false
                 }
-
-                const base = settings ? saved : current
-                if (!base || base.appName !== appName) return false
-
-                const appDef = { ...Utils.copyObject(base), ...settings }
-                self.setState({ isLoading: true })
-                return self.apiManager
-                    .updateConfigAndSave(appName, appDef)
-                    .then(function () {
-                        if (
-                            self.willUnmountSoon ||
-                            appName !== self.props.match.params.appName
-                        ) {
-                            return false
-                        }
-                        // The server can generate credentials or normalize inputs on save.
-                        // Fetch its definition before sending another complete update.
-                        self.savedAppDefinition = {
-                            app: settings ? base : appDef,
-                            needsRefresh: true,
-                        }
-                        return self.reFetchData(!!settings)
-                    })
+                // The server can generate credentials on save. Refresh before
+                // sending another full definition so they are preserved.
+                self.savedAppDefinition = {
+                    app: settings ? base : appDef,
+                    needsRefresh: true,
+                }
+                return self.reFetchData(!!settings)
             })
             .catch(Toaster.createCatcher())
             .then(function (refetched) {
@@ -835,59 +828,66 @@ export class AppDetails extends ApiComponent<
             self.apiManager.getAllProjects(),
             self.apiManager.getGoAccessInfo(),
         ])
-            .then(function ([getAppsResp, projectsResp, goAccessInfo]) {
+            .then(function (dataReturns: any) {
                 if (
                     self.willUnmountSoon ||
                     appName !== self.props.match.params.appName
                 ) {
                     return false
                 }
-                const projects = projectsResp.projects || []
+                const getAppsResp = dataReturns[0]
+                const projects = dataReturns[1].projects || []
+                const goAccessInfo = dataReturns[2]
                 const appDefinitions = getAppsResp.appDefinitions || []
 
                 // Build index from FULL list before filtering to current app
                 const volumeUsageIndex = buildVolumeUsageIndex(appDefinitions)
 
-                const app = appDefinitions.find(
-                    (definition) => definition.appName === appName
-                )
-                if (!app) {
-                    self.goBackToApps()
-                    return false
+                for (let index = 0; index < appDefinitions.length; index++) {
+                    const element: IAppDef = appDefinitions[index]
+                    if (element.appName === appName) {
+                        const saved = self.savedAppDefinition?.app
+                        const draft = self.state.apiData?.appDefinition
+                        const appDefinition =
+                            preserveDraft &&
+                            saved &&
+                            draft &&
+                            saved.appName === appName &&
+                            draft.appName === appName
+                                ? preserveDraftFields(saved, draft, element)
+                                : element
+                        self.savedAppDefinition = {
+                            app: element,
+                            needsRefresh: false,
+                        }
+                        return new Promise<boolean>((resolve) => {
+                            self.setState(
+                                {
+                                    isLoading: false,
+                                    volumeUsageIndex,
+                                    apiData: {
+                                        projects: projects,
+                                        appDefinition,
+                                        rootDomain: getAppsResp.rootDomain,
+                                        captainSubDomain:
+                                            getAppsResp.captainSubDomain,
+                                        defaultNginxConfig:
+                                            getAppsResp.defaultNginxConfig,
+                                        goAccessInfo,
+                                    },
+                                },
+                                () => {
+                                    self.refreshRuntime()
+                                    resolve(true)
+                                }
+                            )
+                        })
+                    }
                 }
 
-                const saved = self.savedAppDefinition?.app
-                const draft = self.state.apiData?.appDefinition
-                const appDefinition =
-                    preserveDraft &&
-                    saved &&
-                    draft &&
-                    saved.appName === appName &&
-                    draft.appName === appName
-                        ? preserveDraftFields(saved, draft, app)
-                        : app
-                self.savedAppDefinition = { app, needsRefresh: false }
-                return new Promise<boolean>((resolve) => {
-                    self.setState(
-                        {
-                            isLoading: false,
-                            volumeUsageIndex,
-                            apiData: {
-                                projects,
-                                appDefinition,
-                                rootDomain: getAppsResp.rootDomain,
-                                captainSubDomain: getAppsResp.captainSubDomain,
-                                defaultNginxConfig:
-                                    getAppsResp.defaultNginxConfig,
-                                goAccessInfo,
-                            },
-                        },
-                        () => {
-                            self.refreshRuntime()
-                            resolve(true)
-                        }
-                    )
-                })
+                // App Not Found!
+                self.goBackToApps()
+                return false
             })
             .catch(Toaster.createCatcher())
             .then(function (refetched) {

@@ -28,7 +28,7 @@ export interface RepoInfo {
     repo: string
     branch: string
     user: string
-    sshKey?: string
+    sshKey: string
     password: string
 }
 
@@ -63,7 +63,7 @@ interface IAppDefinitionBase {
     notExposeAsWebApp: boolean
     hasPersistentData: boolean
     hasDefaultSubDomainSsl: boolean
-    containerHttpPort?: number
+    containerHttpPort: number
     httpAuth?: {
         user: string
         password?: string

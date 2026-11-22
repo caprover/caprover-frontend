@@ -10,7 +10,6 @@ import {
     Typography,
 } from 'antd'
 import deepEqual from 'deep-equal'
-import { FocusEvent } from 'react'
 import DomUtils from '../../../../utils/DomUtils'
 import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
@@ -57,7 +56,6 @@ export default class Deployment extends ApiComponent<
         definitionPathDraft?: string
         buildLogRecreationId: string
         updatedVersions?: Pick<IAppDef, 'versions' | 'deployedVersion'>
-        versionRefreshFailed: boolean
     }
 > {
     constructor(props: DeploymentProps) {
@@ -68,7 +66,6 @@ export default class Deployment extends ApiComponent<
             manualMethod: ManualMethod.Archive,
             cliExpanded: false,
             buildLogRecreationId: '',
-            versionRefreshFailed: false,
         }
     }
 
@@ -76,14 +73,11 @@ export default class Deployment extends ApiComponent<
         const previous = previousProps.apiData.appDefinition
         const current = this.props.apiData.appDefinition
         if (
-            (this.state.updatedVersions || this.state.versionRefreshFailed) &&
+            this.state.updatedVersions &&
             (previous.deployedVersion !== current.deployedVersion ||
                 !deepEqual(previous.versions, current.versions))
         ) {
-            this.setState({
-                updatedVersions: undefined,
-                versionRefreshFailed: false,
-            })
+            this.setState({ updatedVersions: undefined })
         }
     }
 
@@ -99,33 +93,30 @@ export default class Deployment extends ApiComponent<
         self.apiManager
             .getAllApps()
             .then(function (data) {
-                if (self.willUnmountSoon) return
-                const app = data.appDefinitions?.find(
-                    (definition) =>
-                        definition.appName ===
+                const appDefs = data.appDefinitions as IAppDef[]
+                for (let index = 0; index < appDefs.length; index++) {
+                    const element = appDefs[index]
+                    if (
+                        element.appName ===
                         self.props.apiData.appDefinition.appName
-                )
-                if (!app || !Array.isArray(app.versions)) {
-                    throw new Error(
-                        localize(
-                            'apps.deploy_history_unavailable',
-                            'Deployment details unavailable'
-                        )
-                    )
+                    ) {
+                        return Utils.copyObject(element)
+                    }
                 }
-
+                throw new Error(
+                    localize('apps.deploy_app_not_found', 'App not found!')
+                )
+            })
+            .then(function (app) {
+                if (self.willUnmountSoon) return
                 self.setState({
                     updatedVersions: {
                         deployedVersion: app.deployedVersion,
                         versions: app.versions,
                     },
-                    versionRefreshFailed: false,
                 })
             })
-            .catch(function () {
-                if (!self.willUnmountSoon)
-                    self.setState({ versionRefreshFailed: true })
-            })
+            .catch(Toaster.createCatcher())
     }
 
     onVersionRollbackRequested(version: IAppVersion) {
@@ -148,32 +139,17 @@ export default class Deployment extends ApiComponent<
             .catch(Toaster.createCatcher())
     }
 
-    copyOnFocus(event: FocusEvent<HTMLInputElement>) {
-        event.target.select()
-        document.execCommand('copy')
-        message.info(
-            localize('apps.deploy_copied_to_clipboard', 'Copied to clipboard!')
-        )
-    }
-
     renderActiveDeployment(
         versions: IAppVersion[] | undefined,
         deployedVersion: number
     ) {
-        const active = versions?.find(
-            (version) =>
-                version.version === deployedVersion &&
-                !!version.deployedImageName
+        const record = versions?.find(
+            (version) => version.version === deployedVersion
         )
-        const knownVersion =
-            !!active ||
-            (Number.isInteger(deployedVersion) && deployedVersion > 0)
+        const active = record?.deployedImageName ? record : undefined
+        const knownVersion = !!active || deployedVersion > 0
         const noDeployment =
-            deployedVersion === 0 &&
-            !!versions &&
-            (versions.length === 0 ||
-                versions.some((version) => version.version === 0)) &&
-            !active
+            deployedVersion === 0 && (versions?.length === 0 || !!record)
         const gitHash = active?.gitHash?.trim()
         const { appName } = this.props.apiData.appDefinition
 
@@ -184,7 +160,7 @@ export default class Deployment extends ApiComponent<
                         onAppBuildFinished={() => this.onAppBuildFinished()}
                         appName={appName!}
                         buildLogRecreationId={this.state.buildLogRecreationId}
-                        key={this.state.buildLogRecreationId}
+                        key={`${appName}-${this.state.buildLogRecreationId}`}
                     >
                         <Flex
                             vertical
@@ -228,8 +204,8 @@ export default class Deployment extends ApiComponent<
                                     {gitHash && (
                                         <Typography.Text>
                                             {localize(
-                                                'apps.deploy_git_hash_label',
-                                                'Git Hash'
+                                                'apps.deploy_git_hash',
+                                                'git hash'
                                             )}{' '}
                                             <Typography.Text code>
                                                 {gitHash}
@@ -252,24 +228,6 @@ export default class Deployment extends ApiComponent<
                             )}
                         </Flex>
                     </BuildLogsView>
-                    {this.state.versionRefreshFailed && (
-                        <Alert
-                            type="warning"
-                            showIcon
-                            message={localize(
-                                'apps.deploy_refresh_failed',
-                                'Could not refresh deployment details. The information shown may be out of date.'
-                            )}
-                            action={
-                                <Button
-                                    size="small"
-                                    onClick={() => this.onAppBuildFinished()}
-                                >
-                                    {localize('apps.deploy_retry', 'Retry')}
-                                </Button>
-                            }
-                        />
-                    )}
                 </Flex>
             </Card>
         )
@@ -362,7 +320,18 @@ export default class Deployment extends ApiComponent<
                                 'apps.deploy_webhook_url',
                                 'Webhook URL'
                             )}
-                            onFocus={pushToken ? this.copyOnFocus : undefined}
+                            onFocus={(e) => {
+                                if (pushToken) {
+                                    e.target.select()
+                                    document.execCommand('copy')
+                                    message.info(
+                                        localize(
+                                            'apps.deploy_copied_to_clipboard',
+                                            'Copied to clipboard!'
+                                        )
+                                    )
+                                }
+                            }}
                             className="code-input"
                             readOnly
                             disabled={!pushToken}
@@ -517,7 +486,18 @@ export default class Deployment extends ApiComponent<
                                     'apps.deploy_app_token',
                                     'App token'
                                 )}
-                                onFocus={token ? this.copyOnFocus : undefined}
+                                onFocus={(e) => {
+                                    if (token) {
+                                        e.target.select()
+                                        document.execCommand('copy')
+                                        message.info(
+                                            localize(
+                                                'apps.deploy_copied_to_clipboard',
+                                                'Copied to clipboard!'
+                                            )
+                                        )
+                                    }
+                                }}
                                 className="code-input"
                                 readOnly
                                 disabled={!token}

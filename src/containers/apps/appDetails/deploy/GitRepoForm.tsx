@@ -12,20 +12,13 @@ export default class GitRepoForm extends Component<{
     render() {
         return (
             <div>
-                <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
+                <form action="/" autoComplete="off">
                     <Row gutter={20}>
                         <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                             <Input
                                 style={{ marginBottom: 20 }}
                                 value={this.props.gitRepoValues.repo}
-                                addonBefore={localize(
-                                    'apps.deploy_git_repo',
-                                    'Repository'
-                                )}
-                                aria-label={localize(
-                                    'apps.deploy_git_repo',
-                                    'Repository'
-                                )}
+                                addonBefore="Repository"
                                 placeholder="github.com/someone/something"
                                 type="url"
                                 spellCheck={false}
@@ -45,14 +38,9 @@ export default class GitRepoForm extends Component<{
                             <Input
                                 style={{ marginBottom: 20 }}
                                 value={this.props.gitRepoValues.branch}
-                                addonBefore={localize(
-                                    'apps.deploy_git_branch',
-                                    'Branch'
-                                )}
-                                aria-label={localize(
-                                    'apps.deploy_git_branch',
-                                    'Branch'
-                                )}
+                                addonBefore={
+                                    <span>Branch&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                }
                                 placeholder="master"
                                 type="text"
                                 spellCheck={false}
@@ -80,14 +68,7 @@ export default class GitRepoForm extends Component<{
                             <Input
                                 style={{ marginBottom: 20 }}
                                 value={this.props.gitRepoValues.user}
-                                addonBefore={localize(
-                                    'apps.deploy_git_username',
-                                    'Username'
-                                )}
-                                aria-label={localize(
-                                    'apps.deploy_git_username',
-                                    'Username'
-                                )}
+                                addonBefore={<span>Username&nbsp;</span>}
                                 placeholder="myemail@gmail.com"
                                 type="email"
                                 onChange={(e) => {
@@ -110,10 +91,7 @@ export default class GitRepoForm extends Component<{
                         >
                             <PasswordField
                                 defaultValue={this.props.gitRepoValues.password}
-                                addonBefore={localize(
-                                    'apps.deploy_git_password',
-                                    'Password'
-                                )}
+                                addonBefore="Password"
                                 placeholder="githubpassword"
                                 onChange={(e) => {
                                     const newObj = Utils.copyObject(
@@ -134,11 +112,7 @@ export default class GitRepoForm extends Component<{
                             <Input.TextArea
                                 style={{ marginBottom: 20 }}
                                 rows={4}
-                                aria-label={localize(
-                                    'apps.deploy_git_ssh_key',
-                                    'SSH Key'
-                                )}
-                                value={this.props.gitRepoValues.sshKey || ''}
+                                value={this.props.gitRepoValues.sshKey}
                                 placeholder={
                                     '-----BEGIN RSA PRIVATE KEY-----\nAABBBCCC'
                                 }

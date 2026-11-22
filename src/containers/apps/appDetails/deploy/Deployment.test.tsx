@@ -143,7 +143,7 @@ it('shows successful version zero as active after a newer unsuccessful attempt',
     expect(
         within(rows[0]).getByRole('img', { name: 'exclamation-circle' })
     ).toBeVisible()
-    expect(within(rows[0]).queryByRole('button')).toBeNull()
+    expect(within(rows[0]).queryByRole('img', { name: 'retweet' })).toBeNull()
     expect(
         within(rows[1]).getByRole('img', { name: 'check-circle' })
     ).toBeVisible()
@@ -212,9 +212,9 @@ it('paginates the latest five rows and only deploys an eligible image after conf
     fireEvent.click(screen.getByTitle('2'))
     expect(visibleVersions()).toEqual([44, 43, 42, 41, 40])
 
-    const revert = table.querySelector(
-        'button[aria-label="Revert to this version"]'
-    )!
+    const revert = within(table)
+        .getAllByRole('img', { name: 'retweet' })[0]
+        .closest('a')!
     fireEvent.click(revert)
     expect(confirm).toHaveBeenCalledWith(
         expect.objectContaining({ title: 'Rollback?' })
@@ -268,11 +268,10 @@ it('retains manual input through method switches, collapse and a refresh for the
     )
 })
 
-it('refreshes the active summary and history together, keeping prior details if the refresh fails', async () => {
+it('refreshes the active summary and history after a build finishes before the first log poll', async () => {
     const versions = [version(0, 'nginx:alpine')]
     const getAllApps = jest
         .spyOn(ApiManager.prototype, 'getAllApps')
-        .mockRejectedValueOnce(new Error('Could not load apps'))
         .mockResolvedValue({
             appDefinitions: [{ ...app, versions }],
             rootDomain: 'example.com',
@@ -293,26 +292,14 @@ it('refreshes the active summary and history together, keeping prior details if 
         fireEvent.click(screen.getByRole('button', { name: 'Deploy Now' }))
     })
 
-    expect(
-        screen.getByText(/information shown may be out of date/)
-    ).toBeVisible()
-    expect(screen.getByText('No active deployment yet')).toBeVisible()
-    expect(screen.getByText('No deployment history yet')).toBeVisible()
-    expect(button('Hide Build Logs')).toBeVisible()
-
-    await act(async () => {
-        fireEvent.click(button('Retry'))
-    })
+    expect(getAllApps).toHaveBeenCalledTimes(1)
     expect(screen.getByText('Version 0')).toBeVisible()
-    expect(getAllApps).toHaveBeenCalledTimes(2)
+    expect(button('Hide Build Logs')).toBeVisible()
     expect(
         within(screen.getByRole('table')).getByRole('img', {
             name: 'check-circle',
         })
     ).toBeVisible()
-    expect(
-        screen.queryByText(/information shown may be out of date/)
-    ).toBeNull()
     expect(button('Deploy a new version')).toHaveAttribute(
         'aria-expanded',
         'true'
@@ -348,7 +335,7 @@ it('saves only the selected settings row and retains a rejected Git draft', asyn
         target: { value: './unsubmitted' },
     })
     fireEvent.click(git.getByRole('button', { name: 'Edit' }))
-    fireEvent.change(git.getByRole('textbox', { name: 'Branch' }), {
+    fireEvent.change(git.getByPlaceholderText('master'), {
         target: { value: 'draft-branch' },
     })
 
@@ -378,8 +365,6 @@ it('saves only the selected settings row and retains a rejected Git draft', asyn
             },
         },
     })
-    expect(git.getByRole('textbox', { name: 'Branch' })).toHaveValue(
-        'draft-branch'
-    )
+    expect(git.getByPlaceholderText('master')).toHaveValue('draft-branch')
     expect(path.getByRole('textbox')).toHaveValue('./unsubmitted')
 })

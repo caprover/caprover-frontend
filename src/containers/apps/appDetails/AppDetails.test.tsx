@@ -102,7 +102,7 @@ class AppDetailsSaveTest extends AppDetails {
 }
 
 async function mountAppDetailsForSave() {
-    let savedApp = { ...apiData.appDefinition }
+    let savedApp: CapRoverModels.IAppDef = { ...apiData.appDefinition }
     const getAllApps = jest.spyOn(ApiManager.prototype, 'getAllApps')
     getAllApps.mockImplementation(async () => ({
         appDefinitions: [savedApp],
