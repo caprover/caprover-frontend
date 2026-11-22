@@ -56,6 +56,7 @@ export default class Deployment extends ApiComponent<
         definitionPathDraft?: string
         buildLogRecreationId: string
         updatedVersions?: Pick<IAppDef, 'versions' | 'deployedVersion'>
+        versionRefreshFailed: boolean
     }
 > {
     constructor(props: DeploymentProps) {
@@ -66,6 +67,7 @@ export default class Deployment extends ApiComponent<
             manualMethod: ManualMethod.Archive,
             cliExpanded: false,
             buildLogRecreationId: '',
+            versionRefreshFailed: false,
         }
     }
 
@@ -73,11 +75,14 @@ export default class Deployment extends ApiComponent<
         const previous = previousProps.apiData.appDefinition
         const current = this.props.apiData.appDefinition
         if (
-            this.state.updatedVersions &&
+            (this.state.updatedVersions || this.state.versionRefreshFailed) &&
             (previous.deployedVersion !== current.deployedVersion ||
                 !deepEqual(previous.versions, current.versions))
         ) {
-            this.setState({ updatedVersions: undefined })
+            this.setState({
+                updatedVersions: undefined,
+                versionRefreshFailed: false,
+            })
         }
     }
 
@@ -93,30 +98,33 @@ export default class Deployment extends ApiComponent<
         self.apiManager
             .getAllApps()
             .then(function (data) {
-                const appDefs = data.appDefinitions as IAppDef[]
-                for (let index = 0; index < appDefs.length; index++) {
-                    const element = appDefs[index]
-                    if (
-                        element.appName ===
-                        self.props.apiData.appDefinition.appName
-                    ) {
-                        return Utils.copyObject(element)
-                    }
-                }
-                throw new Error(
-                    localize('apps.deploy_app_not_found', 'App not found!')
-                )
-            })
-            .then(function (app) {
                 if (self.willUnmountSoon) return
+                const app = data.appDefinitions?.find(
+                    (definition) =>
+                        definition.appName ===
+                        self.props.apiData.appDefinition.appName
+                )
+                if (!app || !Array.isArray(app.versions)) {
+                    throw new Error(
+                        localize(
+                            'apps.deploy_history_unavailable',
+                            'Deployment details unavailable'
+                        )
+                    )
+                }
+
                 self.setState({
                     updatedVersions: {
                         deployedVersion: app.deployedVersion,
                         versions: app.versions,
                     },
+                    versionRefreshFailed: false,
                 })
             })
-            .catch(Toaster.createCatcher())
+            .catch(function () {
+                if (!self.willUnmountSoon)
+                    self.setState({ versionRefreshFailed: true })
+            })
     }
 
     onVersionRollbackRequested(version: IAppVersion) {
@@ -143,13 +151,20 @@ export default class Deployment extends ApiComponent<
         versions: IAppVersion[] | undefined,
         deployedVersion: number
     ) {
-        const record = versions?.find(
-            (version) => version.version === deployedVersion
+        const active = versions?.find(
+            (version) =>
+                version.version === deployedVersion &&
+                !!version.deployedImageName
         )
-        const active = record?.deployedImageName ? record : undefined
-        const knownVersion = !!active || deployedVersion > 0
+        const knownVersion =
+            !!active ||
+            (Number.isInteger(deployedVersion) && deployedVersion > 0)
         const noDeployment =
-            deployedVersion === 0 && (versions?.length === 0 || !!record)
+            deployedVersion === 0 &&
+            !!versions &&
+            (versions.length === 0 ||
+                versions.some((version) => version.version === 0)) &&
+            !active
         const gitHash = active?.gitHash?.trim()
         const { appName } = this.props.apiData.appDefinition
 
@@ -228,6 +243,24 @@ export default class Deployment extends ApiComponent<
                             )}
                         </Flex>
                     </BuildLogsView>
+                    {this.state.versionRefreshFailed && (
+                        <Alert
+                            type="warning"
+                            showIcon
+                            message={localize(
+                                'apps.deploy_refresh_failed',
+                                'Could not refresh deployment details. The information shown may be out of date.'
+                            )}
+                            action={
+                                <Button
+                                    size="small"
+                                    onClick={() => this.onAppBuildFinished()}
+                                >
+                                    {localize('apps.deploy_retry', 'Retry')}
+                                </Button>
+                            }
+                        />
+                    )}
                 </Flex>
             </Card>
         )

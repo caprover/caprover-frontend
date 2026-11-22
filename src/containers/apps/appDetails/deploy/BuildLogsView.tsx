@@ -136,11 +136,12 @@ export default class BuildLogsView extends ApiComponent<
                             this.state.isAppBuilding || this.state.expandedLogs
                         }
                         aria-controls="buildlog-text-id"
+                        disabled={this.state.isAppBuilding}
                         icon={
                             this.state.expandedLogs ? (
-                                <UpCircleOutlined />
+                                <UpCircleOutlined aria-hidden="true" />
                             ) : (
-                                <DownCircleOutlined />
+                                <DownCircleOutlined aria-hidden="true" />
                             )
                         }
                         onClick={() => self.onExpandLogClicked()}
@@ -179,8 +180,10 @@ export default class BuildLogsView extends ApiComponent<
                                         size="default"
                                     />
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    Building the image. This might take a few
-                                    minutes...
+                                    {localize(
+                                        'apps.deploy_build_in_progress',
+                                        'Building the image. This might take a few minutes...'
+                                    )}
                                 </span>
                             }
                             type="info"

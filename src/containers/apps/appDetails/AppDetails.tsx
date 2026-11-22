@@ -157,22 +157,27 @@ export class AppDetails extends ApiComponent<
 
     onUpdateConfigAndSave(settings?: DeploymentSettings): Promise<boolean> {
         const self = this
-        const current = self.state.apiData!.appDefinition
-        const appName = current.appName!
+        const current = self.state.apiData?.appDefinition
+        const appName = current?.appName
         const saved = self.savedAppDefinition
         if (
+            !current ||
+            !appName ||
             self.willUnmountSoon ||
             appName !== self.props.match.params.appName
         ) {
             return Promise.resolve(false)
         }
-        if (saved?.needsRefresh) {
+        if (
+            saved?.needsRefresh ||
+            (settings && saved?.app.appName !== appName)
+        ) {
             return self.reFetchData(true).then(function (refetched) {
-                return refetched ? self.onUpdateConfigAndSave(settings) : false
+                if (!refetched || appName !== self.props.match.params.appName) {
+                    return false
+                }
+                return self.onUpdateConfigAndSave(settings)
             })
-        }
-        if (settings && saved?.app.appName !== appName) {
-            return Promise.resolve(false)
         }
 
         const base = settings ? saved!.app : current

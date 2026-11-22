@@ -191,6 +191,8 @@ it('paginates the latest five rows and only deploys an eligible image after conf
     const versions = Array.from({ length: 50 }, (_, i) =>
         version(i, i === 49 ? undefined : 'example/image:' + i)
     )
+    // The highest version can arrive anywhere in the response.
+    versions.unshift({ ...versions.pop()!, timeStamp: '' })
     render(
         <Deployment
             {...tabProps({ ...app, deployedVersion: 48, versions })}
@@ -209,12 +211,16 @@ it('paginates the latest five rows and only deploys an eligible image after conf
                 Number(within(row).getAllByRole('cell')[1].textContent)
             )
     expect(visibleVersions()).toEqual([49, 48, 47, 46, 45])
+    const firstVersion = within(table).getAllByRole('row')[1]
+    expect(within(firstVersion).getAllByRole('cell')[2]).toBeEmptyDOMElement()
     fireEvent.click(screen.getByTitle('2'))
     expect(visibleVersions()).toEqual([44, 43, 42, 41, 40])
 
-    const revert = within(table)
-        .getAllByRole('img', { name: 'retweet' })[0]
-        .closest('a')!
+    const revert = within(table).getAllByRole('button', {
+        name: 'Revert to this version',
+    })[0]
+    revert.focus()
+    expect(revert).toHaveFocus()
     fireEvent.click(revert)
     expect(confirm).toHaveBeenCalledWith(
         expect.objectContaining({ title: 'Rollback?' })
@@ -268,10 +274,11 @@ it('retains manual input through method switches, collapse and a refresh for the
     )
 })
 
-it('refreshes the active summary and history after a build finishes before the first log poll', async () => {
+it('refreshes the active summary and history together, keeping prior details if the refresh fails', async () => {
     const versions = [version(0, 'nginx:alpine')]
     const getAllApps = jest
         .spyOn(ApiManager.prototype, 'getAllApps')
+        .mockRejectedValueOnce(new Error('Could not load apps'))
         .mockResolvedValue({
             appDefinitions: [{ ...app, versions }],
             rootDomain: 'example.com',
@@ -292,18 +299,46 @@ it('refreshes the active summary and history after a build finishes before the f
         fireEvent.click(screen.getByRole('button', { name: 'Deploy Now' }))
     })
 
-    expect(getAllApps).toHaveBeenCalledTimes(1)
-    expect(screen.getByText('Version 0')).toBeVisible()
+    expect(
+        screen.getByText(/information shown may be out of date/)
+    ).toBeVisible()
+    expect(screen.getByText('No active deployment yet')).toBeVisible()
+    expect(screen.getByText('No deployment history yet')).toBeVisible()
     expect(button('Hide Build Logs')).toBeVisible()
+
+    await act(async () => {
+        fireEvent.click(button('Retry'))
+    })
+    expect(screen.getByText('Version 0')).toBeVisible()
+    expect(getAllApps).toHaveBeenCalledTimes(2)
     expect(
         within(screen.getByRole('table')).getByRole('img', {
             name: 'check-circle',
         })
     ).toBeVisible()
+    expect(
+        screen.queryByText(/information shown may be out of date/)
+    ).toBeNull()
     expect(button('Deploy a new version')).toHaveAttribute(
         'aria-expanded',
         'true'
     )
+})
+
+it('keeps build logs open while a build is running', async () => {
+    jest.spyOn(ApiManager.prototype, 'fetchBuildLogs').mockResolvedValue({
+        isAppBuilding: true,
+        isBuildFailed: false,
+        logs: { firstLineNumber: 0, lines: ['Build output'] },
+    })
+    render(<Deployment {...tabProps()} />)
+
+    const toggle = await screen.findByRole('button', {
+        name: 'Hide Build Logs',
+    })
+    expect(toggle).toBeDisabled()
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByDisplayValue(/Build output/)).toBeVisible()
 })
 
 it('saves only the selected settings row and retains a rejected Git draft', async () => {
@@ -335,7 +370,7 @@ it('saves only the selected settings row and retains a rejected Git draft', asyn
         target: { value: './unsubmitted' },
     })
     fireEvent.click(git.getByRole('button', { name: 'Edit' }))
-    fireEvent.change(git.getByPlaceholderText('master'), {
+    fireEvent.change(git.getByRole('textbox', { name: 'Branch' }), {
         target: { value: 'draft-branch' },
     })
 
@@ -365,6 +400,8 @@ it('saves only the selected settings row and retains a rejected Git draft', asyn
             },
         },
     })
-    expect(git.getByPlaceholderText('master')).toHaveValue('draft-branch')
+    expect(git.getByRole('textbox', { name: 'Branch' })).toHaveValue(
+        'draft-branch'
+    )
     expect(path.getByRole('textbox')).toHaveValue('./unsubmitted')
 })

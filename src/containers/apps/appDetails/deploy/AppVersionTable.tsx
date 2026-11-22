@@ -3,12 +3,11 @@ import {
     ExclamationCircleOutlined,
     RetweetOutlined,
 } from '@ant-design/icons'
-import { Modal, Table, Tooltip } from 'antd'
+import { Button, Modal, Table, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { Component } from 'react'
 import { localize } from '../../../../utils/Language'
 import Utils from '../../../../utils/Utils'
-import ClickableLink from '../../../global/ClickableLink'
 import Timestamp from '../../../global/Timestamp'
 import { IAppVersion } from '../../AppDefinition'
 
@@ -36,8 +35,8 @@ export default class AppVersionTable extends Component<{
             return (
                 <Tooltip
                     title={localize(
-                        'apps.deploy_failed_deploy_tooltip',
-                        'Failed deploy'
+                        'apps.deploy_no_image_tooltip',
+                        'No deployed image'
                     )}
                 >
                     <ExclamationCircleOutlined />
@@ -46,20 +45,23 @@ export default class AppVersionTable extends Component<{
         }
 
         return (
-            <ClickableLink
-                onLinkClicked={() => this.onRollbackClicked(versionDetails)}
+            <Tooltip
+                title={localize(
+                    'apps.deploy_revert_to_version_tooltip',
+                    'Revert to this version'
+                )}
             >
-                <Tooltip
-                    title={localize(
+                <Button
+                    type="link"
+                    size="small"
+                    aria-label={localize(
                         'apps.deploy_revert_to_version_tooltip',
                         'Revert to this version'
                     )}
-                >
-                    <span>
-                        <RetweetOutlined />
-                    </span>
-                </Tooltip>
-            </ClickableLink>
+                    icon={<RetweetOutlined />}
+                    onClick={() => this.onRollbackClicked(versionDetails)}
+                />
+            </Tooltip>
         )
     }
     getCols() {
@@ -81,7 +83,9 @@ export default class AppVersionTable extends Component<{
                 title: localize('apps.deploy_time', 'Deploy Time'),
                 dataIndex: 'timeStamp' as 'timeStamp',
                 render: (timeStamp: string) => {
-                    return <Timestamp timestamp={timeStamp} />
+                    return timeStamp ? (
+                        <Timestamp timestamp={timeStamp} />
+                    ) : undefined
                 },
             },
             {
@@ -159,8 +163,9 @@ export default class AppVersionTable extends Component<{
     }
 
     render() {
-        const self = this
-        const versionsReversed = Utils.copyObject(self.props.versions).reverse()
+        const versions = [...this.props.versions].sort(
+            (a, b) => b.version - a.version
+        )
         const columns = this.getCols()
         return (
             <Table
@@ -169,7 +174,7 @@ export default class AppVersionTable extends Component<{
                 pagination={{ pageSize: 5, showSizeChanger: false }}
                 scroll={{ x: 680 }}
                 columns={columns}
-                dataSource={versionsReversed}
+                dataSource={versions}
                 locale={{
                     emptyText: localize(
                         'apps.deploy_history_empty',
