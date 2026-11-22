@@ -175,8 +175,19 @@ class AppsTable extends Component<
                 title: localize('apps_table.instances', 'Instances'),
                 dataIndex: 'instanceCount',
                 key: 'instanceCount',
-                width: 88,
+                width: 112,
                 align: 'center',
+                // Desired count first, so the order does not change on every runtime refresh
+                sorter: (a, b) => {
+                    const running = (app: TableData) =>
+                        self.getAppRuntime(app.appName || '')
+                            ?.runningInstances ?? app.instanceCount
+                    return (
+                        a.instanceCount - b.instanceCount ||
+                        running(a) - running(b)
+                    )
+                },
+                sortDirections: ['descend', 'ascend'],
                 render: (
                     instanceCount: number,
                     { appName = '' }: TableData
