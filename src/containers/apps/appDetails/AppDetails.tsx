@@ -690,6 +690,19 @@ export class AppDetails extends ApiComponent<
                             }
                         })
                         .then(() => {
+                            const saved = self.savedAppDefinition
+                            if (
+                                isNameChanged &&
+                                saved &&
+                                saved.app.appName ===
+                                    newData.appDefinition.appName
+                            ) {
+                                // The same saved definition is the draft baseline after rename.
+                                saved.app = {
+                                    ...saved.app,
+                                    appName: editAppDataForModalCopy.appName,
+                                }
+                            }
                             newData.appDefinition.appName =
                                 editAppDataForModalCopy.appName
                             newData.appDefinition.projectId =

@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
-import { act, render } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { CapRoverModels } from 'caprover-api'
 import { createMemoryHistory } from 'history'
 import { createRef } from 'react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, Route, Router } from 'react-router-dom'
 import ApiManager from '../../../api/ApiManager'
 import Toaster from '../../../utils/Toaster'
 import { IAppDef } from '../AppDefinition'
@@ -94,10 +94,10 @@ it("does not show a previous app's runtime beside a renamed app", () => {
     expect(container.querySelector('.ant-badge-status-dot')).not.toBeTruthy()
 })
 
-// Exercise the page's API lifecycle without mounting the full set of tabs.
+// Exercise the page's save lifecycle and edit dialog without mounting the tabs.
 class AppDetailsSaveTest extends AppDetails {
     render() {
-        return <div />
+        return this.createEditAppModal()
     }
 }
 
@@ -120,6 +120,12 @@ async function mountAppDetailsForSave() {
         new Error('Runtime unavailable')
     )
     jest.spyOn(Toaster, 'toastError').mockImplementation(() => {})
+    jest.spyOn(Toaster, 'toastInfo').mockImplementation(() => {})
+    const rename = jest
+        .spyOn(ApiManager.prototype, 'renameApp')
+        .mockImplementation(async (_oldName, newName) => {
+            savedApp = { ...savedApp, appName: newName }
+        })
     const save = jest
         .spyOn(ApiManager.prototype, 'updateConfigAndSave')
         .mockImplementation(async (_appName, definition) => {
@@ -140,19 +146,19 @@ async function mountAppDetailsForSave() {
     const history = createMemoryHistory({ initialEntries: [path] })
     await act(async () => {
         render(
-            <AppDetailsSaveTest
-                ref={ref}
-                history={history}
-                location={history.location}
-                match={{
-                    path,
-                    url: path,
-                    isExact: true,
-                    params: { appName: 'new-app' },
-                }}
-                mainContainer={createRef<HTMLDivElement>()}
-                isMobile={false}
-            />
+            <Router history={history}>
+                <Route
+                    path="/apps/details/:appName"
+                    render={(routeProps) => (
+                        <AppDetailsSaveTest
+                            {...routeProps}
+                            ref={ref}
+                            mainContainer={createRef<HTMLDivElement>()}
+                            isMobile={false}
+                        />
+                    )}
+                />
+            </Router>
         )
     })
     const details = ref.current!
@@ -166,7 +172,7 @@ async function mountAppDetailsForSave() {
                 },
             })
         })
-    return { details, draft, getAllApps, save }
+    return { details, draft, getAllApps, rename, save }
 }
 
 it('saves a deployment setting from the saved definition and keeps other tabs’ drafts for their own save', async () => {
@@ -238,6 +244,45 @@ it('recovers the accepted token after a failed refresh before saving another set
         'new-app',
         expect.objectContaining({
             captainDefinitionRelativeFilePath: path,
+            appDeployTokenConfig: {
+                enabled: true,
+                appDeployToken: 'server-token',
+            },
+        })
+    )
+})
+
+it('preserves the edit dialog’s metadata and the saved token when renaming after a failed settings refresh', async () => {
+    const { details, getAllApps, rename, save } = await mountAppDetailsForSave()
+    getAllApps.mockRejectedValueOnce(new Error('Refresh failed'))
+    await act(async () => {
+        expect(
+            await details.onUpdateConfigAndSave({
+                appDeployTokenConfig: { enabled: true },
+            })
+        ).toBe(false)
+    })
+
+    act(() => {
+        details.setState({
+            editAppDataForModal: {
+                appName: 'renamed-app',
+                description: 'Updated description',
+                parentProjectId: 'new-project',
+                tags: ['new-tag'],
+            },
+        })
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Save & Restart' }))
+
+    await waitFor(() => expect(save).toHaveBeenCalledTimes(2))
+    expect(rename).toHaveBeenCalledWith('new-app', 'renamed-app')
+    expect(save).toHaveBeenLastCalledWith(
+        'renamed-app',
+        expect.objectContaining({
+            description: 'Updated description',
+            projectId: 'new-project',
+            tags: [{ tagName: 'new-tag' }],
             appDeployTokenConfig: {
                 enabled: true,
                 appDeployToken: 'server-token',
