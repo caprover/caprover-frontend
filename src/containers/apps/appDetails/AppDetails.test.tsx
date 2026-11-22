@@ -1,7 +1,12 @@
 import '@testing-library/jest-dom'
-import { render } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { CapRoverModels } from 'caprover-api'
-import { MemoryRouter } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
+import { createRef } from 'react'
+import { MemoryRouter, Route, Router } from 'react-router-dom'
+import ApiManager from '../../../api/ApiManager'
+import Toaster from '../../../utils/Toaster'
+import { IAppDef } from '../AppDefinition'
 import { RuntimeDataStatus } from '../AppRuntimeStatus'
 import { SingleAppApiData, AppDetails } from './AppDetails'
 
@@ -23,6 +28,10 @@ beforeAll(() => {
             dispatchEvent: jest.fn(),
         }),
     })
+})
+
+afterEach(() => {
+    jest.restoreAllMocks()
 })
 
 const apiData: SingleAppApiData = {
@@ -83,4 +92,201 @@ it("does not show a previous app's runtime beside a renamed app", () => {
 
     expect(container).toHaveTextContent('new-app')
     expect(container.querySelector('.ant-badge-status-dot')).not.toBeTruthy()
+})
+
+// Exercise the page's save lifecycle and edit dialog without mounting the tabs.
+class AppDetailsSaveTest extends AppDetails {
+    render() {
+        return this.createEditAppModal()
+    }
+}
+
+async function mountAppDetailsForSave() {
+    let savedApp: CapRoverModels.IAppDef = { ...apiData.appDefinition }
+    const getAllApps = jest.spyOn(ApiManager.prototype, 'getAllApps')
+    getAllApps.mockImplementation(async () => ({
+        appDefinitions: [savedApp],
+        rootDomain: apiData.rootDomain,
+        captainSubDomain: apiData.captainSubDomain,
+        defaultNginxConfig: apiData.defaultNginxConfig,
+    }))
+    jest.spyOn(ApiManager.prototype, 'getAllProjects').mockResolvedValue({
+        projects: [],
+    })
+    jest.spyOn(ApiManager.prototype, 'getGoAccessInfo').mockResolvedValue(
+        apiData.goAccessInfo
+    )
+    jest.spyOn(ApiManager.prototype, 'getAppRuntime').mockRejectedValue(
+        new Error('Runtime unavailable')
+    )
+    jest.spyOn(Toaster, 'toastError').mockImplementation(() => {})
+    jest.spyOn(Toaster, 'toastInfo').mockImplementation(() => {})
+    const rename = jest
+        .spyOn(ApiManager.prototype, 'renameApp')
+        .mockImplementation(async (_oldName, newName) => {
+            savedApp = { ...savedApp, appName: newName }
+        })
+    const save = jest
+        .spyOn(ApiManager.prototype, 'updateConfigAndSave')
+        .mockImplementation(async (_appName, definition) => {
+            const token = definition.appDeployTokenConfig
+            savedApp = {
+                ...definition,
+                appDeployTokenConfig: token?.enabled
+                    ? {
+                          enabled: true,
+                          appDeployToken:
+                              token.appDeployToken || 'server-token',
+                      }
+                    : { enabled: false },
+            }
+        })
+    const ref = createRef<AppDetailsSaveTest>()
+    const path = '/apps/details/new-app'
+    const history = createMemoryHistory({ initialEntries: [path] })
+    await act(async () => {
+        render(
+            <Router history={history}>
+                <Route
+                    path="/apps/details/:appName"
+                    render={(routeProps) => (
+                        <AppDetailsSaveTest
+                            {...routeProps}
+                            ref={ref}
+                            mainContainer={createRef<HTMLDivElement>()}
+                            isMobile={false}
+                        />
+                    )}
+                />
+            </Router>
+        )
+    })
+    const details = ref.current!
+    const draft = (changes: Partial<IAppDef>) =>
+        act(() => {
+            const current = details.state.apiData!
+            details.setState({
+                apiData: {
+                    ...current,
+                    appDefinition: { ...current.appDefinition, ...changes },
+                },
+            })
+        })
+    return { details, draft, getAllApps, rename, save }
+}
+
+it('saves a deployment setting from the saved definition and keeps other tabs’ drafts for their own save', async () => {
+    const { details, draft, save } = await mountAppDetailsForSave()
+    const envVars = [{ key: 'EDITOR_DRAFT', value: 'unsaved' }]
+    draft({ envVars, forceSsl: true })
+    await act(async () => {
+        expect(
+            await details.onUpdateConfigAndSave({
+                captainDefinitionRelativeFilePath:
+                    './docker/captain-definition',
+            })
+        ).toBe(true)
+    })
+    expect(save).toHaveBeenLastCalledWith(
+        'new-app',
+        expect.objectContaining({
+            captainDefinitionRelativeFilePath: './docker/captain-definition',
+            envVars: [],
+            forceSsl: false,
+        })
+    )
+    expect(details.state.apiData?.appDefinition).toMatchObject({
+        envVars,
+        forceSsl: true,
+    })
+
+    await act(async () => {
+        expect(await details.onUpdateConfigAndSave()).toBe(true)
+    })
+    expect(save).toHaveBeenLastCalledWith(
+        'new-app',
+        expect.objectContaining({ envVars, forceSsl: true })
+    )
+})
+
+it('recovers the accepted token after a failed refresh before saving another setting', async () => {
+    const { details, getAllApps, save } = await mountAppDetailsForSave()
+    getAllApps.mockRejectedValueOnce(new Error('Refresh failed'))
+    await act(async () => {
+        expect(
+            await details.onUpdateConfigAndSave({
+                appDeployTokenConfig: { enabled: true },
+            })
+        ).toBe(false)
+    })
+    expect(save).toHaveBeenCalledTimes(1)
+
+    getAllApps.mockRejectedValueOnce(new Error('Still unavailable'))
+    const path = './docker/captain-definition'
+    await act(async () => {
+        expect(
+            await details.onUpdateConfigAndSave({
+                captainDefinitionRelativeFilePath: path,
+            })
+        ).toBe(false)
+    })
+    expect(save).toHaveBeenCalledTimes(1)
+
+    await act(async () => {
+        expect(
+            await details.onUpdateConfigAndSave({
+                captainDefinitionRelativeFilePath: path,
+            })
+        ).toBe(true)
+    })
+    expect(save).toHaveBeenCalledTimes(2)
+    expect(save).toHaveBeenLastCalledWith(
+        'new-app',
+        expect.objectContaining({
+            captainDefinitionRelativeFilePath: path,
+            appDeployTokenConfig: {
+                enabled: true,
+                appDeployToken: 'server-token',
+            },
+        })
+    )
+})
+
+it('preserves the edit dialog’s metadata and the saved token when renaming after a failed settings refresh', async () => {
+    const { details, getAllApps, rename, save } = await mountAppDetailsForSave()
+    getAllApps.mockRejectedValueOnce(new Error('Refresh failed'))
+    await act(async () => {
+        expect(
+            await details.onUpdateConfigAndSave({
+                appDeployTokenConfig: { enabled: true },
+            })
+        ).toBe(false)
+    })
+
+    act(() => {
+        details.setState({
+            editAppDataForModal: {
+                appName: 'renamed-app',
+                description: 'Updated description',
+                parentProjectId: 'new-project',
+                tags: ['new-tag'],
+            },
+        })
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Save & Restart' }))
+
+    await waitFor(() => expect(save).toHaveBeenCalledTimes(2))
+    expect(rename).toHaveBeenCalledWith('new-app', 'renamed-app')
+    expect(save).toHaveBeenLastCalledWith(
+        'renamed-app',
+        expect.objectContaining({
+            description: 'Updated description',
+            projectId: 'new-project',
+            tags: [{ tagName: 'new-tag' }],
+            appDeployTokenConfig: {
+                enabled: true,
+                appDeployToken: 'server-token',
+            },
+        })
+    )
 })

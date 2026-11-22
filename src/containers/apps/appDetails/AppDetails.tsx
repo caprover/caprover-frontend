@@ -22,6 +22,7 @@ import {
 } from 'antd'
 import classnames from 'classnames'
 import { CapRoverModels } from 'caprover-api'
+import deepEqual from 'deep-equal'
 import { History } from 'history'
 import { Fragment, RefObject } from 'react'
 import { connect } from 'react-redux'
@@ -66,12 +67,36 @@ export interface SingleAppApiData {
     goAccessInfo: IGoAccessInfo
 }
 
+type DeploymentSettings = Partial<
+    Pick<
+        IAppDef,
+        | 'appPushWebhook'
+        | 'appDeployTokenConfig'
+        | 'captainDefinitionRelativeFilePath'
+    >
+>
+
+function preserveDraftFields<T extends IAppDef>(
+    saved: T,
+    draft: T,
+    refreshed: T
+): T {
+    const appDefinition = { ...refreshed }
+    const fields = { ...saved, ...draft }
+    for (const key in fields) {
+        if (!deepEqual(saved[key], draft[key], { strict: true })) {
+            appDefinition[key] = draft[key]
+        }
+    }
+    return appDefinition
+}
+
 export interface AppDetailsTabProps {
     history: History
     apiData: SingleAppApiData
     apiManager: ApiManager
     updateApiData: Function
-    onUpdateConfigAndSave: () => void
+    onUpdateConfigAndSave: (settings?: DeploymentSettings) => Promise<boolean>
     reFetchData: () => void
     setLoading: (value: boolean) => void
     isMobile: boolean
@@ -106,6 +131,10 @@ export class AppDetails extends ApiComponent<
     private updateRuntimeInterval: any
     private confirmedAppNameToDelete: string = ''
     private volumesToDelete: IHashMapGeneric<boolean> = {}
+    private savedAppDefinition?: {
+        app: IAppDef
+        needsRefresh: boolean
+    }
 
     constructor(props: any) {
         super(props)
@@ -126,18 +155,60 @@ export class AppDetails extends ApiComponent<
         this.props.history.push('/apps')
     }
 
-    onUpdateConfigAndSave() {
+    onUpdateConfigAndSave(settings?: DeploymentSettings): Promise<boolean> {
         const self = this
-        const appDef = Utils.copyObject(self.state.apiData!.appDefinition)
+        const current = self.state.apiData?.appDefinition
+        const appName = current?.appName
+        const saved = self.savedAppDefinition
+        if (
+            !current ||
+            !appName ||
+            self.willUnmountSoon ||
+            appName !== self.props.match.params.appName
+        ) {
+            return Promise.resolve(false)
+        }
+        if (
+            saved?.needsRefresh ||
+            (settings && saved?.app.appName !== appName)
+        ) {
+            return self.reFetchData(true).then(function (refetched) {
+                if (!refetched || appName !== self.props.match.params.appName) {
+                    return false
+                }
+                return self.onUpdateConfigAndSave(settings)
+            })
+        }
+
+        const base = settings ? saved!.app : current
+        const appDef = { ...Utils.copyObject(base), ...settings }
         self.setState({ isLoading: true })
-        this.apiManager
-            .updateConfigAndSave(appDef.appName!, appDef)
+        return self.apiManager
+            .updateConfigAndSave(appName, appDef)
             .then(function () {
-                return self.reFetchData()
+                if (
+                    self.willUnmountSoon ||
+                    appName !== self.props.match.params.appName
+                ) {
+                    return false
+                }
+                // The server can generate credentials on save. Refresh before
+                // sending another full definition so they are preserved.
+                self.savedAppDefinition = {
+                    app: settings ? base : appDef,
+                    needsRefresh: true,
+                }
+                return self.reFetchData(!!settings)
             })
             .catch(Toaster.createCatcher())
-            .then(function () {
-                self.setState({ isLoading: false })
+            .then(function (refetched) {
+                if (
+                    !self.willUnmountSoon &&
+                    appName === self.props.match.params.appName
+                ) {
+                    self.setState({ isLoading: false })
+                }
+                return !!refetched
             })
     }
 
@@ -372,7 +443,8 @@ export class AppDetails extends ApiComponent<
                 this.setState({
                     apiData: newData,
                 }),
-            onUpdateConfigAndSave: () => self.onUpdateConfigAndSave(),
+            onUpdateConfigAndSave: (settings) =>
+                self.onUpdateConfigAndSave(settings),
         }
 
         return (
@@ -444,7 +516,22 @@ export class AppDetails extends ApiComponent<
                                             )}
                                         </span>
                                     ),
-                                    children: <Deployment {...tabProps} />,
+                                    children: (
+                                        <Deployment
+                                            key={
+                                                tabProps.apiData.appDefinition
+                                                    .appName
+                                            }
+                                            {...tabProps}
+                                            settingsNeedRefresh={
+                                                this.savedAppDefinition
+                                                    ?.needsRefresh
+                                            }
+                                            reFetchData={() =>
+                                                this.reFetchData(true)
+                                            }
+                                        />
+                                    ),
                                 },
                                 {
                                     key: LOGS,
@@ -603,6 +690,19 @@ export class AppDetails extends ApiComponent<
                             }
                         })
                         .then(() => {
+                            const saved = self.savedAppDefinition
+                            if (
+                                isNameChanged &&
+                                saved &&
+                                saved.app.appName ===
+                                    newData.appDefinition.appName
+                            ) {
+                                // The same saved definition is the draft baseline after rename.
+                                saved.app = {
+                                    ...saved.app,
+                                    appName: editAppDataForModalCopy.appName,
+                                }
+                            }
                             newData.appDefinition.appName =
                                 editAppDataForModalCopy.appName
                             newData.appDefinition.projectId =
@@ -737,8 +837,9 @@ export class AppDetails extends ApiComponent<
         }
     }
 
-    reFetchData() {
+    reFetchData(preserveDraft = false): Promise<boolean> {
         const self = this
+        const appName = self.props.match.params.appName
         self.setState({ isLoading: true })
         return Promise.all([
             self.apiManager.getAllApps(),
@@ -746,6 +847,12 @@ export class AppDetails extends ApiComponent<
             self.apiManager.getGoAccessInfo(),
         ])
             .then(function (dataReturns: any) {
+                if (
+                    self.willUnmountSoon ||
+                    appName !== self.props.match.params.appName
+                ) {
+                    return false
+                }
                 const getAppsResp = dataReturns[0]
                 const projects = dataReturns[1].projects || []
                 const goAccessInfo = dataReturns[2]
@@ -755,32 +862,60 @@ export class AppDetails extends ApiComponent<
                 const volumeUsageIndex = buildVolumeUsageIndex(appDefinitions)
 
                 for (let index = 0; index < appDefinitions.length; index++) {
-                    const element = appDefinitions[index]
-                    if (element.appName === self.props.match.params.appName) {
-                        self.setState({
-                            isLoading: false,
-                            volumeUsageIndex,
-                            apiData: {
-                                projects: projects,
-                                appDefinition: element,
-                                rootDomain: getAppsResp.rootDomain,
-                                captainSubDomain: getAppsResp.captainSubDomain,
-                                defaultNginxConfig:
-                                    getAppsResp.defaultNginxConfig,
-                                goAccessInfo,
-                            },
+                    const element: IAppDef = appDefinitions[index]
+                    if (element.appName === appName) {
+                        const saved = self.savedAppDefinition?.app
+                        const draft = self.state.apiData?.appDefinition
+                        const appDefinition =
+                            preserveDraft &&
+                            saved &&
+                            draft &&
+                            saved.appName === appName &&
+                            draft.appName === appName
+                                ? preserveDraftFields(saved, draft, element)
+                                : element
+                        self.savedAppDefinition = {
+                            app: element,
+                            needsRefresh: false,
+                        }
+                        return new Promise<boolean>((resolve) => {
+                            self.setState(
+                                {
+                                    isLoading: false,
+                                    volumeUsageIndex,
+                                    apiData: {
+                                        projects: projects,
+                                        appDefinition,
+                                        rootDomain: getAppsResp.rootDomain,
+                                        captainSubDomain:
+                                            getAppsResp.captainSubDomain,
+                                        defaultNginxConfig:
+                                            getAppsResp.defaultNginxConfig,
+                                        goAccessInfo,
+                                    },
+                                },
+                                () => {
+                                    self.refreshRuntime()
+                                    resolve(true)
+                                }
+                            )
                         })
-                        self.refreshRuntime()
-                        return
                     }
                 }
 
                 // App Not Found!
                 self.goBackToApps()
+                return false
             })
             .catch(Toaster.createCatcher())
-            .then(function () {
-                self.setState({ isLoading: false })
+            .then(function (refetched) {
+                if (
+                    !self.willUnmountSoon &&
+                    appName === self.props.match.params.appName
+                ) {
+                    self.setState({ isLoading: false })
+                }
+                return !!refetched
             })
     }
 

@@ -3,13 +3,11 @@ import {
     ExclamationCircleOutlined,
     RetweetOutlined,
 } from '@ant-design/icons'
-import { Card, Modal, Table, Tooltip } from 'antd'
+import { Button, Modal, Table, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
-import moment from 'moment'
-import { Component, Fragment } from 'react'
+import { Component } from 'react'
 import { localize } from '../../../../utils/Language'
 import Utils from '../../../../utils/Utils'
-import ClickableLink from '../../../global/ClickableLink'
 import Timestamp from '../../../global/Timestamp'
 import { IAppVersion } from '../../AppDefinition'
 
@@ -17,10 +15,10 @@ export default class AppVersionTable extends Component<{
     versions: IAppVersion[]
     deployedVersion: number
     onVersionRollbackRequested: (versionToRevert: IAppVersion) => void
-    isMobile: boolean
 }> {
     getStateRender(version: number, versionDetails: IAppVersion) {
-        if (version === this.props.deployedVersion) {
+        const imageName = versionDetails.deployedImageName
+        if (imageName && version === this.props.deployedVersion) {
             return (
                 <Tooltip
                     title={localize(
@@ -33,14 +31,12 @@ export default class AppVersionTable extends Component<{
             )
         }
 
-        const imageName = versionDetails.deployedImageName
-
         if (!imageName) {
             return (
                 <Tooltip
                     title={localize(
-                        'apps.deploy_failed_deploy_tooltip',
-                        'Failed deploy'
+                        'apps.deploy_no_image_tooltip',
+                        'No deployed image'
                     )}
                 >
                     <ExclamationCircleOutlined />
@@ -49,20 +45,23 @@ export default class AppVersionTable extends Component<{
         }
 
         return (
-            <ClickableLink
-                onLinkClicked={() => this.onRollbackClicked(versionDetails)}
+            <Tooltip
+                title={localize(
+                    'apps.deploy_revert_to_version_tooltip',
+                    'Revert to this version'
+                )}
             >
-                <Tooltip
-                    title={localize(
+                <Button
+                    type="link"
+                    size="small"
+                    aria-label={localize(
                         'apps.deploy_revert_to_version_tooltip',
                         'Revert to this version'
                     )}
-                >
-                    <span>
-                        <RetweetOutlined />
-                    </span>
-                </Tooltip>
-            </ClickableLink>
+                    icon={<RetweetOutlined />}
+                    onClick={() => this.onRollbackClicked(versionDetails)}
+                />
+            </Tooltip>
         )
     }
     getCols() {
@@ -84,7 +83,9 @@ export default class AppVersionTable extends Component<{
                 title: localize('apps.deploy_time', 'Deploy Time'),
                 dataIndex: 'timeStamp' as 'timeStamp',
                 render: (timeStamp: string) => {
-                    return <Timestamp timestamp={timeStamp} />
+                    return timeStamp ? (
+                        <Timestamp timestamp={timeStamp} />
+                    ) : undefined
                 },
             },
             {
@@ -162,91 +163,25 @@ export default class AppVersionTable extends Component<{
     }
 
     render() {
-        const self = this
-        const versionsReversed = Utils.copyObject(self.props.versions).reverse()
+        const versions = [...this.props.versions].sort(
+            (a, b) => b.version - a.version
+        )
         const columns = this.getCols()
         return (
-            <div>
-                <h3>
-                    {localize('apps.deploy_version_history', 'Version History')}
-                </h3>
-                <div>
-                    {this.props.isMobile ? (
-                        versionsReversed.map(
-                            (version, i) =>
-                                i <= 5 && (
-                                    <Card
-                                        type="inner"
-                                        key={i}
-                                        style={{ marginBottom: 8 }}
-                                        title={
-                                            <Fragment>
-                                                <Tooltip
-                                                    title={moment(
-                                                        new Date(
-                                                            version.timeStamp
-                                                        )
-                                                    ).fromNow()}
-                                                >
-                                                    <span>
-                                                        {new Date(
-                                                            version.timeStamp
-                                                        ).toLocaleString()}
-                                                    </span>
-                                                </Tooltip>
-                                                <div>
-                                                    {version.deployedImageName}
-                                                </div>
-                                            </Fragment>
-                                        }
-                                    >
-                                        <div>
-                                            <b>
-                                                {localize(
-                                                    'apps.deploy_version',
-                                                    'Version'
-                                                )}
-                                                :
-                                            </b>{' '}
-                                            {version.version}
-                                        </div>
-                                        <div>
-                                            <b>
-                                                {localize(
-                                                    'apps.deploy_git_hash',
-                                                    'git hash'
-                                                )}
-                                                :
-                                            </b>{' '}
-                                            {version.gitHash || 'n/a'}
-                                        </div>
-                                        <div>
-                                            <b>
-                                                {localize(
-                                                    'apps.deploy_state',
-                                                    'State'
-                                                )}
-                                                :
-                                            </b>{' '}
-                                            {this.getStateRender(
-                                                version.version,
-                                                version
-                                            )}
-                                        </div>
-                                    </Card>
-                                )
-                        )
-                    ) : (
-                        <Table
-                            size="small"
-                            rowKey="timeStamp"
-                            pagination={{ pageSize: 5 }}
-                            columns={columns}
-                            dataSource={versionsReversed}
-                        />
-                    )}
-                </div>
-            </div>
+            <Table
+                size="small"
+                rowKey="version"
+                pagination={{ pageSize: 5, showSizeChanger: false }}
+                scroll={{ x: 680 }}
+                columns={columns}
+                dataSource={versions}
+                locale={{
+                    emptyText: localize(
+                        'apps.deploy_history_empty',
+                        'No deployment history yet'
+                    ),
+                }}
+            />
         )
     }
 }
