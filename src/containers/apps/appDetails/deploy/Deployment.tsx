@@ -278,12 +278,15 @@ export default class Deployment extends ApiComponent<
         const repoInfo = { ...EMPTY_REPO, ...webhook?.repoInfo }
         const { gitDraft } = this.state
         const savedDraft = createGitRepoDraft(repoInfo)
-        const repoInfoForSave = gitDraft && getGitRepoInfoForSave(gitDraft)
+        const repoInfoForSave =
+            gitDraft && getGitRepoInfoForSave(gitDraft, repoInfo)
         const gitDirty =
             !!repoInfoForSave &&
-            !deepEqual(repoInfoForSave, getGitRepoInfoForSave(savedDraft), {
-                strict: true,
-            })
+            !deepEqual(
+                repoInfoForSave,
+                getGitRepoInfoForSave(savedDraft, repoInfo),
+                { strict: true }
+            )
         const pushToken = webhook?.pushWebhookToken
         const webhookPath = `/user/apps/webhooks/triggerbuild?namespace=captain&token=${pushToken}`
         const gitLabel = localize(

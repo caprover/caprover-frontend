@@ -6,6 +6,7 @@ import ApiManager from '../../../../api/ApiManager'
 import { IAppDef, IAppVersion } from '../../AppDefinition'
 import { AppDetailsTabProps } from '../AppDetails'
 import Deployment from './Deployment'
+import { createGitRepoDraft, getGitRepoInfoForSave } from './GitRepoForm'
 
 // Allow time for Ant Design to render the table in jsdom after async updates.
 jest.setTimeout(15000)
@@ -64,6 +65,13 @@ function tabProps(appDefinition = app): AppDetailsTabProps {
 }
 
 const button = (name: string) => screen.getByText(name).closest('button')!
+
+function selectGitAuthentication(name: string) {
+    fireEvent.mouseDown(
+        screen.getByRole('combobox', { name: 'Authentication' })
+    )
+    fireEvent.click(screen.getByRole('option', { name }))
+}
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
@@ -508,21 +516,15 @@ it('preserves legacy HTTPS credentials until saving an explicit switch to SSH', 
     expect(git.getByRole('textbox', { name: 'Username' })).toHaveValue('test')
     expect(git.queryByRole('textbox', { name: 'SSH private key' })).toBeNull()
 
-    const selectAuthentication = (name: string) => {
-        fireEvent.mouseDown(
-            git.getByRole('combobox', { name: 'Authentication' })
-        )
-        fireEvent.click(screen.getByRole('option', { name }))
-    }
-    selectAuthentication('SSH deploy key')
+    selectGitAuthentication('SSH deploy key')
     expect(git.queryByRole('textbox', { name: 'Username' })).toBeNull()
     fireEvent.change(git.getByRole('textbox', { name: 'SSH private key' }), {
         target: { value: 'fixture-key' },
     })
-    selectAuthentication('HTTPS credentials')
+    selectGitAuthentication('HTTPS credentials')
     expect(git.getByRole('textbox', { name: 'Username' })).toHaveValue('test')
     expect(git.getByRole('button', { name: 'Save & Restart' })).toBeDisabled()
-    selectAuthentication('SSH deploy key')
+    selectGitAuthentication('SSH deploy key')
     expect(git.getByRole('textbox', { name: 'SSH private key' })).toHaveValue(
         'fixture-key'
     )
@@ -550,13 +552,19 @@ it('preserves legacy HTTPS credentials until saving an explicit switch to SSH', 
     )
     fireEvent.click(git.getByRole('button', { name: 'Edit' }))
     expect(git.getByText('SSH deploy key')).toBeVisible()
-    selectAuthentication('HTTPS credentials')
+    selectGitAuthentication('HTTPS credentials')
     fireEvent.change(git.getByRole('textbox', { name: 'Username' }), {
         target: { value: 'git-user' },
     })
     fireEvent.change(git.getByPlaceholderText('Password or access token'), {
         target: { value: 'fixture-token' },
     })
+    selectGitAuthentication('Public repository')
+    selectGitAuthentication('HTTPS credentials')
+    fireEvent.click(git.getByRole('button', { name: 'Show Password' }))
+    expect(git.getByPlaceholderText('Password or access token')).toHaveValue(
+        'fixture-token'
+    )
     await act(async () => {
         fireEvent.click(git.getByRole('button', { name: 'Save & Restart' }))
     })
@@ -572,3 +580,95 @@ it('preserves legacy HTTPS credentials until saving an explicit switch to SSH', 
         },
     })
 }, 30000)
+
+it.each([
+    ['HTTPS credentials', ''],
+    ['SSH deploy key', 'fixture-key'],
+])(
+    'preserves saved %s on branch edits and switches to Public with the same webhook',
+    async (method, sshKey) => {
+        const save = jest.fn().mockResolvedValue(true)
+        const webhook = {
+            tokenVersion: '1',
+            pushWebhookToken: 'saved-token',
+            repoInfo: {
+                repo: sshKey
+                    ? 'git@github.com:example/project.git'
+                    : 'github.com/example/project',
+                branch: 'main',
+                user: 'git-user',
+                password: 'fixture-token',
+                sshKey,
+            },
+        }
+        const { rerender } = render(
+            <Deployment
+                {...tabProps({ ...app, appPushWebhook: webhook })}
+                onUpdateConfigAndSave={save}
+            />
+        )
+        const git = within(
+            screen.getByRole('region', { name: 'Git repository' })
+        )
+        fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+        expect(git.getByText(method)).toBeVisible()
+        expect(
+            git.getByRole('button', { name: 'Save & Restart' })
+        ).toBeDisabled()
+        fireEvent.change(git.getByRole('textbox', { name: 'Branch' }), {
+            target: { value: 'release' },
+        })
+        await act(async () => {
+            fireEvent.click(git.getByRole('button', { name: 'Save & Restart' }))
+        })
+        const updatedWebhook = {
+            ...webhook,
+            repoInfo: { ...webhook.repoInfo, branch: 'release' },
+        }
+        expect(save).toHaveBeenLastCalledWith({
+            appPushWebhook: updatedWebhook,
+        })
+
+        rerender(
+            <Deployment
+                {...tabProps({ ...app, appPushWebhook: updatedWebhook })}
+                onUpdateConfigAndSave={save}
+            />
+        )
+        fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+        selectGitAuthentication('Public repository')
+        fireEvent.change(git.getByRole('textbox', { name: 'Repository' }), {
+            target: { value: 'github.com/example/project' },
+        })
+        await act(async () => {
+            fireEvent.click(git.getByRole('button', { name: 'Save & Restart' }))
+        })
+        expect(save).toHaveBeenLastCalledWith({
+            appPushWebhook: {
+                ...updatedWebhook,
+                repoInfo: {
+                    repo: 'github.com/example/project',
+                    branch: 'release',
+                    user: 'caprover-public',
+                    password: 'caprover-public',
+                    sshKey: '',
+                },
+            },
+        })
+    },
+    30000
+)
+
+it('treats null repository and branch values as empty in an older config', () => {
+    const repoInfo = JSON.parse(
+        '{"repo":null,"branch":null,"user":"","password":"","sshKey":""}'
+    )
+    const draft = createGitRepoDraft(repoInfo)
+    expect(getGitRepoInfoForSave(draft, repoInfo)).toEqual({
+        repo: '',
+        branch: '',
+        user: '',
+        password: '',
+        sshKey: '',
+    })
+})

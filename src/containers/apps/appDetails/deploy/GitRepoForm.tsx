@@ -1,6 +1,7 @@
 import { Col, Input, Row, Select } from 'antd'
 import { Component } from 'react'
 import { localize } from '../../../../utils/Language'
+import Utils from '../../../../utils/Utils'
 import PasswordField from '../../../global/PasswordField'
 import { RepoInfo } from '../../AppDefinition'
 
@@ -10,7 +11,8 @@ enum GitAuthentication {
     Ssh = 'ssh',
 }
 
-// Existing servers require a non-empty credential pair for public repositories.
+// The existing API requires credentials. This exact username/password pair is
+// reserved to recognize Public repository settings when reopening the editor.
 const PUBLIC_REPO_PLACEHOLDER = 'caprover-public'
 
 export interface GitRepoDraft extends RepoInfo {
@@ -33,18 +35,31 @@ export function createGitRepoDraft(repoInfo: RepoInfo): GitRepoDraft {
 
     return {
         ...repoInfo,
+        repo: repoInfo.repo ?? '',
+        branch: repoInfo.branch ?? '',
         authentication,
-        user: hasPublicPlaceholder ? '' : user,
-        password: hasPublicPlaceholder ? '' : password,
+        user: hasPublicPlaceholder ? '' : (user ?? ''),
+        password: hasPublicPlaceholder ? '' : (password ?? ''),
     }
 }
 
-export function getGitRepoInfoForSave(draft: GitRepoDraft): RepoInfo {
+export function getGitRepoInfoForSave(
+    draft: GitRepoDraft,
+    savedRepoInfo: RepoInfo
+): RepoInfo {
     const { authentication, ...repoInfo } = draft
     switch (authentication) {
         case GitAuthentication.Https:
             return { ...repoInfo, sshKey: '' }
         case GitAuthentication.Ssh:
+            // Existing configurations can store both credentials and use SSH.
+            if (savedRepoInfo.sshKey && repoInfo.sshKey) {
+                return {
+                    ...repoInfo,
+                    user: savedRepoInfo.user ?? '',
+                    password: savedRepoInfo.password ?? '',
+                }
+            }
             return { ...repoInfo, user: '', password: '' }
         case GitAuthentication.Public: {
             const placeholder =
@@ -63,16 +78,14 @@ export function getGitRepoInfoForSave(draft: GitRepoDraft): RepoInfo {
 
 export default class GitRepoForm extends Component<{
     gitRepoValues: GitRepoDraft
-    updateRepoInfo: (draft: GitRepoDraft) => void
+    updateRepoInfo: (newRepoInfo: GitRepoDraft) => void
 }> {
     render() {
-        const { gitRepoValues, updateRepoInfo } = this.props
-        const { authentication } = gitRepoValues
+        const { authentication } = this.props.gitRepoValues
         const authenticationLabel = localize(
             'apps.deploy_git_authentication',
             'Authentication'
         )
-
         return (
             <div>
                 <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
@@ -80,7 +93,7 @@ export default class GitRepoForm extends Component<{
                         <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                             <Input
                                 style={{ marginBottom: 20 }}
-                                value={gitRepoValues.repo}
+                                value={this.props.gitRepoValues.repo}
                                 addonBefore={localize(
                                     'apps.deploy_git_repo',
                                     'Repository'
@@ -95,18 +108,19 @@ export default class GitRepoForm extends Component<{
                                 autoCorrect="off"
                                 autoComplete="off"
                                 autoCapitalize="off"
-                                onChange={(e) =>
-                                    updateRepoInfo({
-                                        ...gitRepoValues,
-                                        repo: e.target.value,
-                                    })
-                                }
+                                onChange={(e) => {
+                                    const newObj = Utils.copyObject(
+                                        this.props.gitRepoValues
+                                    )
+                                    newObj.repo = e.target.value
+                                    this.props.updateRepoInfo(newObj)
+                                }}
                             />
                         </Col>
                         <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                             <Input
                                 style={{ marginBottom: 20 }}
-                                value={gitRepoValues.branch}
+                                value={this.props.gitRepoValues.branch}
                                 addonBefore={localize(
                                     'apps.deploy_git_branch',
                                     'Branch'
@@ -121,12 +135,13 @@ export default class GitRepoForm extends Component<{
                                 autoCorrect="off"
                                 autoComplete="off"
                                 autoCapitalize="off"
-                                onChange={(e) =>
-                                    updateRepoInfo({
-                                        ...gitRepoValues,
-                                        branch: e.target.value,
-                                    })
-                                }
+                                onChange={(e) => {
+                                    const newObj = Utils.copyObject(
+                                        this.props.gitRepoValues
+                                    )
+                                    newObj.branch = e.target.value
+                                    this.props.updateRepoInfo(newObj)
+                                }}
                             />
                         </Col>
                         <Col xs={{ span: 24 }} lg={{ span: 12 }}>
@@ -138,6 +153,7 @@ export default class GitRepoForm extends Component<{
                                 aria-label={authenticationLabel}
                                 style={{ display: 'block', marginBottom: 20 }}
                                 value={authentication}
+                                // Expose all three options to screen readers.
                                 virtual={false}
                                 options={[
                                     {
@@ -162,63 +178,67 @@ export default class GitRepoForm extends Component<{
                                         ),
                                     },
                                 ]}
-                                onChange={(selected) =>
-                                    updateRepoInfo({
-                                        ...gitRepoValues,
-                                        authentication: selected,
-                                    })
-                                }
+                                onChange={(selected) => {
+                                    const newObj = Utils.copyObject(
+                                        this.props.gitRepoValues
+                                    )
+                                    newObj.authentication = selected
+                                    this.props.updateRepoInfo(newObj)
+                                }}
                             />
                         </Col>
-                        {authentication === GitAuthentication.Https && (
-                            <Col span={24}>
-                                <Row gutter={20}>
-                                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                                        <Input
-                                            style={{ marginBottom: 20 }}
-                                            value={gitRepoValues.user}
-                                            addonBefore={localize(
-                                                'apps.deploy_git_username',
-                                                'Username'
-                                            )}
-                                            aria-label={localize(
-                                                'apps.deploy_git_username',
-                                                'Username'
-                                            )}
-                                            autoComplete="off"
-                                            onChange={(e) =>
-                                                updateRepoInfo({
-                                                    ...gitRepoValues,
-                                                    user: e.target.value,
-                                                })
-                                            }
-                                        />
-                                    </Col>
-                                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                                        <PasswordField
-                                            defaultValue={
-                                                gitRepoValues.password
-                                            }
-                                            addonBefore={localize(
-                                                'apps.deploy_git_password',
-                                                'Password'
-                                            )}
-                                            placeholder={localize(
-                                                'apps.deploy_git_password_or_token',
-                                                'Password or access token'
-                                            )}
-                                            onChange={(e) =>
-                                                updateRepoInfo({
-                                                    ...gitRepoValues,
-                                                    password: e.target.value,
-                                                })
-                                            }
-                                        />
-                                    </Col>
-                                </Row>
+                    </Row>
+                    {authentication === GitAuthentication.Https && (
+                        <Row gutter={20}>
+                            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                                <Input
+                                    style={{ marginBottom: 20 }}
+                                    value={this.props.gitRepoValues.user}
+                                    addonBefore={localize(
+                                        'apps.deploy_git_username',
+                                        'Username'
+                                    )}
+                                    aria-label={localize(
+                                        'apps.deploy_git_username',
+                                        'Username'
+                                    )}
+                                    placeholder="myemail@gmail.com"
+                                    type="email"
+                                    onChange={(e) => {
+                                        const newObj = Utils.copyObject(
+                                            this.props.gitRepoValues
+                                        )
+                                        newObj.user = e.target.value
+                                        this.props.updateRepoInfo(newObj)
+                                    }}
+                                />
                             </Col>
-                        )}
-                        {authentication === GitAuthentication.Ssh && (
+                            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                                <PasswordField
+                                    defaultValue={
+                                        this.props.gitRepoValues.password
+                                    }
+                                    addonBefore={localize(
+                                        'apps.deploy_git_password',
+                                        'Password'
+                                    )}
+                                    placeholder={localize(
+                                        'apps.deploy_git_password_or_token',
+                                        'Password or access token'
+                                    )}
+                                    onChange={(e) => {
+                                        const newObj = Utils.copyObject(
+                                            this.props.gitRepoValues
+                                        )
+                                        newObj.password = e.target.value
+                                        this.props.updateRepoInfo(newObj)
+                                    }}
+                                />
+                            </Col>
+                        </Row>
+                    )}
+                    {authentication === GitAuthentication.Ssh && (
+                        <Row gutter={20}>
                             <Col span={24}>
                                 <label htmlFor="git-ssh-private-key">
                                     {localize(
@@ -230,20 +250,23 @@ export default class GitRepoForm extends Component<{
                                     id="git-ssh-private-key"
                                     style={{ marginBottom: 20 }}
                                     rows={4}
-                                    value={gitRepoValues.sshKey || ''}
+                                    value={
+                                        this.props.gitRepoValues.sshKey || ''
+                                    }
                                     placeholder={
                                         '-----BEGIN RSA PRIVATE KEY-----\nAABBBCCC'
                                     }
-                                    onChange={(e) =>
-                                        updateRepoInfo({
-                                            ...gitRepoValues,
-                                            sshKey: e.target.value,
-                                        })
-                                    }
+                                    onChange={(e) => {
+                                        const newObj = Utils.copyObject(
+                                            this.props.gitRepoValues
+                                        )
+                                        newObj.sshKey = e.target.value
+                                        this.props.updateRepoInfo(newObj)
+                                    }}
                                 />
                             </Col>
-                        )}
-                    </Row>
+                        </Row>
+                    )}
                 </form>
             </div>
         )
