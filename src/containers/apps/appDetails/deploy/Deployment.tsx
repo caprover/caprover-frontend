@@ -72,10 +72,7 @@ export default class Deployment extends ApiComponent<
         gitDraft?: GitRepoDraft
         definitionPathDraft?: string
         buildLogRecreationId: string
-        updatedVersions?: Pick<
-            IAppDef,
-            'versions' | 'deployedVersion' | 'isAppBuilding'
-        >
+        updatedVersions?: Pick<IAppDef, 'versions' | 'deployedVersion'>
         versionRefreshFailed: boolean
     }
 > {
@@ -137,7 +134,6 @@ export default class Deployment extends ApiComponent<
                     updatedVersions: {
                         deployedVersion: app.deployedVersion,
                         versions: app.versions,
-                        isAppBuilding: app.isAppBuilding,
                     },
                     versionRefreshFailed: false,
                 })
@@ -170,8 +166,7 @@ export default class Deployment extends ApiComponent<
 
     renderDeploymentHistory(
         versions: IAppVersion[] | undefined,
-        deployedVersion: number,
-        isAppBuilding: boolean
+        deployedVersion: number
     ) {
         const active = versions?.find(
             (version) =>
@@ -338,7 +333,6 @@ export default class Deployment extends ApiComponent<
                                 }
                                 versions={versions}
                                 deployedVersion={deployedVersion}
-                                isAppBuilding={isAppBuilding}
                             />
                         ) : (
                             <div className="deployment-history-unavailable">
@@ -804,69 +798,71 @@ export default class Deployment extends ApiComponent<
         }
         return (
             <Card className="deployment-card deployment-manual-card">
-                <div className="deployment-manual-header">
-                    <div className="deployment-manual-header-row">
-                        <div className="deployment-manual-header-copy">
-                            <div className="deployment-card-heading">
-                                <Box
-                                    size={16}
-                                    strokeWidth={1.85}
-                                    className="deployment-header-icon"
-                                    aria-hidden="true"
-                                />
-                                <h3 id="deployment-manual-title">
-                                    {localize(
-                                        'apps.deploy_new_version',
-                                        'Deploy a new version'
-                                    )}
-                                </h3>
-                            </div>
-                            <p
-                                id="deployment-manual-description"
-                                className="deployment-manual-description"
-                            >
+                <div
+                    className={
+                        manualExpanded
+                            ? 'deployment-manual-header deployment-manual-header-expanded'
+                            : 'deployment-manual-header'
+                    }
+                >
+                    <div className="deployment-manual-header-copy">
+                        <div className="deployment-card-heading">
+                            <Box
+                                size={16}
+                                strokeWidth={1.85}
+                                className="deployment-header-icon"
+                                aria-hidden="true"
+                            />
+                            <h3 id="deployment-manual-title">
                                 {localize(
-                                    'apps.deploy_manual_description',
-                                    'Upload a CapRover archive, use a Docker image, or build from a definition.'
+                                    'apps.deploy_new_version',
+                                    'Deploy a new version'
                                 )}
-                            </p>
+                            </h3>
                         </div>
-                        {manualExpanded && (
-                            <Button
-                                type="link"
-                                size="small"
-                                className="deployment-action-link"
-                                aria-expanded={true}
-                                aria-controls="deployment-manual-options"
-                                onClick={() =>
-                                    this.setState({ manualExpanded: false })
-                                }
-                            >
-                                {localize(
-                                    'apps.deploy_hide_methods',
-                                    'Hide deployment methods'
-                                )}
-                                <ChevronUp size={14} aria-hidden="true" />
-                            </Button>
-                        )}
+                        <p
+                            id="deployment-manual-description"
+                            className="deployment-manual-description"
+                        >
+                            {localize(
+                                'apps.deploy_manual_description',
+                                'Upload a CapRover archive, use a Docker image, or build from a definition.'
+                            )}
+                        </p>
                     </div>
-                    {!manualExpanded && (
-                        <div className="deployment-manual-trigger">
-                            <Button
-                                aria-expanded={false}
-                                aria-controls="deployment-manual-options"
-                                aria-describedby="deployment-manual-description"
-                                onClick={() =>
-                                    this.setState({ manualExpanded: true })
-                                }
-                            >
-                                {localize(
+                    <div className="deployment-manual-trigger">
+                        <Button
+                            size={manualExpanded ? 'small' : 'middle'}
+                            className={
+                                manualExpanded
+                                    ? 'deployment-action-link'
+                                    : undefined
+                            }
+                            aria-expanded={manualExpanded}
+                            aria-controls="deployment-manual-options"
+                            aria-describedby="deployment-manual-description"
+                            onClick={() =>
+                                this.setState({
+                                    manualExpanded: !manualExpanded,
+                                })
+                            }
+                        >
+                            {manualExpanded ? (
+                                <>
+                                    {localize(
+                                        'apps.deploy_hide_methods',
+                                        'Hide deployment methods'
+                                    )}
+                                    <ChevronUp size={14} aria-hidden="true" />
+                                </>
+                            ) : (
+                                localize(
                                     'apps.deploy_choose_method',
                                     'Choose deployment method'
-                                )}
-                            </Button>
-                        </div>
-                    )}
+                                )
+                            )}
+                        </Button>
+                    </div>
                 </div>
                 <div
                     id="deployment-manual-options"
@@ -948,8 +944,7 @@ export default class Deployment extends ApiComponent<
             <div className="deployment-tab">
                 {this.renderDeploymentHistory(
                     versions,
-                    snapshot.deployedVersion,
-                    !!snapshot.isAppBuilding
+                    snapshot.deployedVersion
                 )}
                 <Card
                     className="deployment-card deployment-settings-card"

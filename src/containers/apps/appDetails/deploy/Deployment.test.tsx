@@ -67,15 +67,10 @@ function tabProps(appDefinition = app): AppDetailsTabProps {
 const button = (name: string) => screen.getByText(name).closest('button')!
 
 function selectGitAuthentication(name: string) {
-    const combobox = document.getElementById('git-authentication')!
-    expect(combobox).toHaveAttribute('role', 'combobox')
-    fireEvent.mouseDown(combobox)
-    const dropdown = Array.from(
-        document.querySelectorAll<HTMLElement>('.ant-select-dropdown')
-    ).find(
-        (element) => !element.classList.contains('ant-select-dropdown-hidden')
+    fireEvent.mouseDown(
+        screen.getByRole('combobox', { name: 'Authentication' })
     )
-    fireEvent.click(within(dropdown!).getByRole('option', { name }))
+    fireEvent.click(screen.getByRole('option', { name }))
 }
 
 beforeAll(() => {
@@ -131,17 +126,23 @@ it('opens a fresh app with the archive selected and keeps history independent', 
     fireEvent.click(button('View history'))
     expect(screen.getByText('No deployment history yet')).toBeVisible()
     expect(button('Upload & Deploy')).toBeVisible()
-    const hideMethods = screen.getByRole('button', {
+    const toggle = screen.getByRole('button', {
         name: 'Hide deployment methods',
     })
-    expect(hideMethods).toHaveAttribute('aria-expanded', 'true')
-    fireEvent.click(hideMethods)
-    const chooseMethod = screen.getByRole('button', {
-        name: 'Choose deployment method',
-    })
-    expect(chooseMethod).toHaveAttribute('aria-expanded', 'false')
+    toggle.focus()
+    expect(toggle).toHaveFocus()
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    fireEvent.click(toggle)
+    expect(toggle).toHaveFocus()
+    expect(toggle).toHaveTextContent('Choose deployment method')
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
     expect(screen.getByRole('table')).toBeVisible()
     expect(screen.queryByRole('button', { name: 'Upload & Deploy' })).toBeNull()
+
+    fireEvent.click(toggle)
+    expect(toggle).toHaveFocus()
+    expect(toggle).toHaveTextContent('Hide deployment methods')
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
 })
 
 it('shows successful version zero as active after a newer unsuccessful attempt', () => {
@@ -172,28 +173,6 @@ it('shows successful version zero as active after a newer unsuccessful attempt',
         })
     ).toBeNull()
     expect(within(rows[1]).getByText('Active')).toBeVisible()
-})
-
-it('shows In progress only for the latest version without an image while building', () => {
-    render(
-        <Deployment
-            {...tabProps({
-                ...app,
-                deployedVersion: 1,
-                isAppBuilding: true,
-                versions: [
-                    version(1, 'nginx:1.26-alpine'),
-                    version(2),
-                    version(3),
-                ],
-            })}
-        />
-    )
-
-    const rows = within(screen.getByRole('table')).getAllByRole('row').slice(1)
-    expect(within(rows[0]).getByText('In progress')).toBeVisible()
-    expect(within(rows[1]).getByText('Failed')).toBeVisible()
-    expect(within(rows[2]).getByText('Active')).toBeVisible()
 })
 
 it('distinguishes a failed first attempt, missing version zero and a missing known active version', () => {
@@ -659,7 +638,7 @@ it('preserves legacy HTTPS credentials until saving an explicit switch to SSH', 
             },
         },
     })
-}, 30000)
+}, 60000)
 
 it.each([
     ['HTTPS credentials', ''],

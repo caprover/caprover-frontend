@@ -10,14 +10,9 @@ import { IAppVersion } from '../../AppDefinition'
 export default class AppVersionTable extends Component<{
     versions: IAppVersion[]
     deployedVersion: number
-    isAppBuilding?: boolean
     onVersionRollbackRequested: (versionToRevert: IAppVersion) => void
 }> {
-    renderStatus(
-        version: number,
-        versionDetails: IAppVersion,
-        latestVersion: number | undefined
-    ) {
+    renderStatus(version: number, versionDetails: IAppVersion) {
         const imageName = versionDetails.deployedImageName
         if (imageName && version === this.props.deployedVersion) {
             return (
@@ -32,20 +27,6 @@ export default class AppVersionTable extends Component<{
         }
 
         if (!imageName) {
-            if (this.props.isAppBuilding && version === latestVersion) {
-                return (
-                    <span className="deployment-status-pill deployment-status-building">
-                        <span
-                            className="deployment-status-dot"
-                            aria-hidden="true"
-                        />
-                        {localize(
-                            'apps.deploy_status_in_progress',
-                            'In progress'
-                        )}
-                    </span>
-                )
-            }
             return (
                 <Tooltip
                     title={localize(
@@ -93,7 +74,7 @@ export default class AppVersionTable extends Component<{
         )
     }
 
-    getCols(latestVersion: number | undefined) {
+    getCols() {
         const columns: ColumnProps<IAppVersion>[] = [
             {
                 title: localize('apps.deploy_version', 'Version'),
@@ -109,7 +90,7 @@ export default class AppVersionTable extends Component<{
                 key: 'status',
                 dataIndex: 'version' as 'version',
                 render: (version: number, versionDetails: IAppVersion) =>
-                    this.renderStatus(version, versionDetails, latestVersion),
+                    this.renderStatus(version, versionDetails),
             },
             {
                 title: localize('apps.deploy_image', 'Image'),
@@ -230,8 +211,7 @@ export default class AppVersionTable extends Component<{
         const versions = [...this.props.versions].sort(
             (a, b) => b.version - a.version
         )
-        const latestVersion = versions[0]?.version
-        const columns = this.getCols(latestVersion)
+        const columns = this.getCols()
         return (
             <Table
                 className="deployment-history-table"
