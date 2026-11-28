@@ -900,8 +900,16 @@ hr {
     white-space: normal;
 }
 
+.deployment-tab .deployment-history-card > .ant-card-head {
+    background: var(--ant-color-primary-bg);
+}
+
+.deployment-tab .deployment-settings-card > .ant-card-head {
+    background: var(--ant-color-bg-layout);
+}
+
 .deployment-tab .ant-card-head h3,
-.deployment-active-summary h3,
+.deployment-active-heading,
 .deployment-manual-title.ant-typography {
     margin: 0;
     font-size: var(--ant-font-size-lg, 16px);
@@ -924,19 +932,38 @@ hr {
     border-block-start: 1px solid var(--ant-color-border-secondary);
 }
 
+@media (min-width: 1024px) {
+    .deployment-settings-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .deployment-settings-grid > .deployment-settings-row {
+        min-width: 0;
+        padding: 0 12px;
+    }
+
+    .deployment-settings-grid > .deployment-settings-row:first-child {
+        padding-inline-start: 0;
+    }
+
+    .deployment-settings-grid > .deployment-settings-row:last-child {
+        padding-inline-end: 0;
+    }
+
+    .deployment-settings-grid > .deployment-settings-row + .deployment-settings-row {
+        border-block-start: 0;
+        border-inline-start: 1px solid var(--ant-color-border-secondary);
+    }
+}
+
 .deployment-settings-editor {
     margin-block-start: 12px;
 }
 
-.deployment-active-summary {
-    flex: 1 1 27rem;
-    min-width: 0;
-}
-
 .deployment-manual-toggle.ant-btn {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-start;
     width: 100%;
     height: auto;
     padding: 12px;
@@ -947,4 +974,9 @@ hr {
 .deployment-manual-toggle > span:first-child {
     display: grid;
     gap: 4px;
+}
+
+.deployment-manual-title .anticon {
+    margin-inline-start: 8px;
+    font-size: 0.8em;
 }
