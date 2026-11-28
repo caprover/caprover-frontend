@@ -192,6 +192,40 @@ export default class HttpSettings extends Component<
                             style={{ width: widthOfSelect }}
                             options={options}
                         />
+
+                        {app.redirectDomain ? (
+                            <Select
+                                size="small"
+                                defaultValue={
+                                    app.redirectDomainStatusCode || 302
+                                }
+                                onChange={(value) => {
+                                    const newApiData = Utils.copyObject(
+                                        self.props.apiData!
+                                    )
+                                    newApiData.appDefinition.redirectDomainStatusCode =
+                                        value
+                                    self.props.updateApiData(newApiData)
+                                }}
+                                style={{ marginInlineStart: 10 }}
+                                options={[
+                                    {
+                                        value: 302,
+                                        label: localize(
+                                            'apps.redirect_status_temporary',
+                                            '302 (temporary)'
+                                        ),
+                                    },
+                                    {
+                                        value: 301,
+                                        label: localize(
+                                            'apps.redirect_status_permanent',
+                                            '301 (permanent)'
+                                        ),
+                                    },
+                                ]}
+                            />
+                        ) : undefined}
                     </Row>
                     <br />
                 </Fragment>
