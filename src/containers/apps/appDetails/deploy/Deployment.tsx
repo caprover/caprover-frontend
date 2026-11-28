@@ -1,4 +1,3 @@
-import { DownOutlined, UpOutlined } from '@ant-design/icons'
 import {
     Alert,
     Button,
@@ -7,9 +6,21 @@ import {
     Input,
     message,
     Radio,
+    Tooltip,
     Typography,
 } from 'antd'
 import deepEqual from 'deep-equal'
+import {
+    Box,
+    ChevronDown,
+    ChevronUp,
+    ExternalLink,
+    FileText,
+    GitBranch,
+    History,
+    Settings,
+    SquareTerminal,
+} from 'lucide-react'
 import DomUtils from '../../../../utils/DomUtils'
 import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
@@ -45,7 +56,9 @@ const EMPTY_REPO: RepoInfo = {
     sshKey: '',
     repo: '',
 }
-const definitionFileName = <code>captain-definition</code>
+const definitionFileName = (
+    <code className="deployment-code">captain-definition</code>
+)
 
 type DeploymentProps = AppDetailsTabProps & { settingsNeedRefresh?: boolean }
 
@@ -59,7 +72,10 @@ export default class Deployment extends ApiComponent<
         gitDraft?: GitRepoDraft
         definitionPathDraft?: string
         buildLogRecreationId: string
-        updatedVersions?: Pick<IAppDef, 'versions' | 'deployedVersion'>
+        updatedVersions?: Pick<
+            IAppDef,
+            'versions' | 'deployedVersion' | 'isAppBuilding'
+        >
         versionRefreshFailed: boolean
     }
 > {
@@ -121,6 +137,7 @@ export default class Deployment extends ApiComponent<
                     updatedVersions: {
                         deployedVersion: app.deployedVersion,
                         versions: app.versions,
+                        isAppBuilding: app.isAppBuilding,
                     },
                     versionRefreshFailed: false,
                 })
@@ -153,7 +170,8 @@ export default class Deployment extends ApiComponent<
 
     renderDeploymentHistory(
         versions: IAppVersion[] | undefined,
-        deployedVersion: number
+        deployedVersion: number,
+        isAppBuilding: boolean
     ) {
         const active = versions?.find(
             (version) =>
@@ -175,112 +193,120 @@ export default class Deployment extends ApiComponent<
 
         return (
             <Card
-                size="small"
-                className="deployment-history-card"
+                className="deployment-card deployment-history-card"
                 title={
-                    <Flex align="center" wrap gap="small">
+                    <div className="deployment-card-heading">
+                        <History
+                            size={16}
+                            strokeWidth={1.9}
+                            className="deployment-header-icon deployment-header-icon-primary"
+                            aria-hidden="true"
+                        />
                         <h3>
                             {localize(
                                 'apps.deploy_history',
                                 'Deployment history'
                             )}
                         </h3>
-                        <Button
-                            type="link"
-                            size="small"
-                            aria-expanded={historyExpanded}
-                            aria-controls="deployment-history-table"
-                            onClick={() =>
-                                this.setState({
-                                    historyExpanded: !historyExpanded,
-                                })
-                            }
-                        >
-                            {historyExpanded
-                                ? localize(
-                                      'apps.deploy_hide_history',
-                                      'Hide history'
-                                  )
-                                : localize(
-                                      'apps.deploy_view_history',
-                                      'View history'
-                                  )}
-                        </Button>
-                    </Flex>
+                    </div>
                 }
-            >
-                <Flex vertical gap="small">
-                    <BuildLogsView
-                        onAppBuildFinished={() => this.onAppBuildFinished()}
-                        appName={appName!}
-                        buildLogRecreationId={this.state.buildLogRecreationId}
-                        key={`${appName}-${this.state.buildLogRecreationId}`}
-                        summaryHeading={
-                            <h4 className="deployment-active-heading">
-                                {localize(
-                                    'apps.deploy_active',
-                                    'Active deployment'
-                                )}
-                            </h4>
+                extra={
+                    <Button
+                        type="link"
+                        size="small"
+                        className="deployment-action-link"
+                        aria-expanded={historyExpanded}
+                        aria-controls="deployment-history-table"
+                        onClick={() =>
+                            this.setState({
+                                historyExpanded: !historyExpanded,
+                            })
                         }
                     >
-                        <Flex vertical gap={4}>
-                            {knownVersion && (
-                                <Typography.Text strong>
-                                    {localize('apps.deploy_version', 'Version')}{' '}
-                                    {deployedVersion}
-                                </Typography.Text>
+                        {historyExpanded
+                            ? localize(
+                                  'apps.deploy_hide_history',
+                                  'Hide history'
+                              )
+                            : localize(
+                                  'apps.deploy_view_history',
+                                  'View history'
+                              )}
+                        {historyExpanded ? (
+                            <ChevronUp size={14} aria-hidden="true" />
+                        ) : (
+                            <ChevronDown size={14} aria-hidden="true" />
+                        )}
+                    </Button>
+                }
+            >
+                <BuildLogsView
+                    onAppBuildFinished={() => this.onAppBuildFinished()}
+                    appName={appName!}
+                    buildLogRecreationId={this.state.buildLogRecreationId}
+                    key={`${appName}-${this.state.buildLogRecreationId}`}
+                >
+                    {active ? (
+                        <Flex
+                            align="center"
+                            wrap
+                            gap="6px 10px"
+                            className="deployment-active-meta"
+                        >
+                            <span className="deployment-version-label">
+                                {localize('apps.deploy_version', 'Version')}{' '}
+                                {deployedVersion}
+                            </span>
+                            <span className="deployment-status-pill deployment-status-active">
+                                <span
+                                    className="deployment-status-dot"
+                                    aria-hidden="true"
+                                />
+                                {localize(
+                                    'apps.deploy_status_active',
+                                    'Active'
+                                )}
+                            </span>
+                            <code className="deployment-code">
+                                {active.deployedImageName}
+                            </code>
+                            {active.timeStamp && (
+                                <span className="deployment-meta-text">
+                                    <Timestamp timestamp={active.timeStamp} />
+                                </span>
                             )}
-                            {active ? (
-                                <Flex wrap gap="4px 12px">
-                                    <Typography.Text>
-                                        {localize(
-                                            'apps.deploy_image_name',
-                                            'Image Name'
-                                        )}{' '}
-                                        <Typography.Text code>
-                                            {active.deployedImageName}
-                                        </Typography.Text>
-                                    </Typography.Text>
-                                    {active.timeStamp && (
-                                        <Typography.Text>
-                                            {localize(
-                                                'apps.deploy_time',
-                                                'Deploy Time'
-                                            )}{' '}
-                                            <Timestamp
-                                                timestamp={active.timeStamp}
-                                            />
-                                        </Typography.Text>
-                                    )}
-                                    {gitHash && (
-                                        <Typography.Text>
-                                            {localize(
-                                                'apps.deploy_git_hash',
-                                                'git hash'
-                                            )}{' '}
-                                            <Typography.Text code>
-                                                {gitHash}
-                                            </Typography.Text>
-                                        </Typography.Text>
-                                    )}
-                                </Flex>
-                            ) : (
-                                <Typography.Text type="secondary">
-                                    {noDeployment
-                                        ? localize(
-                                              'apps.deploy_no_active',
-                                              'No active deployment yet'
-                                          )
-                                        : localize(
-                                              'apps.deploy_history_unavailable',
-                                              'Deployment details unavailable'
-                                          )}
-                                </Typography.Text>
+                            {gitHash && (
+                                <Tooltip title={gitHash}>
+                                    <code className="deployment-code deployment-git-hash">
+                                        {gitHash}
+                                    </code>
+                                </Tooltip>
                             )}
                         </Flex>
-                    </BuildLogsView>
-                    {this.state.versionRefreshFailed && (
+                    ) : (
+                        <Flex align="center" wrap gap="6px 10px">
+                            {knownVersion && (
+                                <span className="deployment-version-label">
+                                    {localize('apps.deploy_version', 'Version')}{' '}
+                                    {deployedVersion}
+                                </span>
+                            )}
+                            <span className="deployment-meta-text">
+                                {noDeployment
+                                    ? localize(
+                                          'apps.deploy_no_active',
+                                          'No active deployment yet'
+                                      )
+                                    : localize(
+                                          'apps.deploy_history_unavailable',
+                                          'Deployment details unavailable'
+                                      )}
+                            </span>
+                        </Flex>
+                    )}
+                </BuildLogsView>
+                {this.state.versionRefreshFailed && (
+                    <div className="deployment-inline-alert">
                         <Alert
                             type="warning"
                             showIcon
@@ -297,30 +323,34 @@ export default class Deployment extends ApiComponent<
                                 </Button>
                             }
                         />
-                    )}
-                    <div
-                        id="deployment-history-table"
-                        hidden={!historyExpanded}
-                    >
-                        {historyExpanded &&
-                            (versions ? (
-                                <AppVersionTable
-                                    onVersionRollbackRequested={(version) =>
-                                        this.onVersionRollbackRequested(version)
-                                    }
-                                    versions={versions}
-                                    deployedVersion={deployedVersion}
-                                />
-                            ) : (
+                    </div>
+                )}
+                <div
+                    id="deployment-history-table"
+                    className="deployment-history-table-wrap"
+                    hidden={!historyExpanded}
+                >
+                    {historyExpanded &&
+                        (versions ? (
+                            <AppVersionTable
+                                onVersionRollbackRequested={(version) =>
+                                    this.onVersionRollbackRequested(version)
+                                }
+                                versions={versions}
+                                deployedVersion={deployedVersion}
+                                isAppBuilding={isAppBuilding}
+                            />
+                        ) : (
+                            <div className="deployment-history-unavailable">
                                 <Typography.Text type="secondary">
                                     {localize(
                                         'apps.deploy_history_unavailable',
                                         'Deployment details unavailable'
                                     )}
                                 </Typography.Text>
-                            ))}
-                    </div>
-                </Flex>
+                            </div>
+                        ))}
+                </div>
             </Card>
         )
     }
@@ -351,26 +381,51 @@ export default class Deployment extends ApiComponent<
 
         return (
             <section className="deployment-settings-row" aria-label={gitLabel}>
-                <Flex vertical align="start" gap="small">
-                    <div>
-                        <Typography.Text strong>{gitLabel}</Typography.Text>
-                        <div>
+                <div className="deployment-settings-summary">
+                    <div className="deployment-settings-info">
+                        <div className="deployment-subsection-heading">
+                            <GitBranch
+                                size={15}
+                                strokeWidth={1.85}
+                                className="deployment-subsection-icon"
+                                aria-hidden="true"
+                            />
+                            <span className="deployment-subsection-title">
+                                {gitLabel}
+                            </span>
+                        </div>
+                        <div className="deployment-settings-meta">
                             {repoInfo.repo ? (
-                                <Typography.Text type="secondary">
+                                <span className="deployment-meta-text deployment-repo-value">
                                     {repoInfo.repo}
                                     {repoInfo.branch && ` · ${repoInfo.branch}`}
-                                </Typography.Text>
+                                </span>
                             ) : (
-                                <Typography.Text type="secondary">
+                                <span className="deployment-meta-text">
                                     {localize(
                                         'apps.deploy_git_not_configured',
                                         'No repository configured'
                                     )}
-                                </Typography.Text>
+                                </span>
                             )}
                         </div>
                     </div>
-                    <Flex wrap gap="small">
+                    <Flex wrap gap={8} className="deployment-settings-actions">
+                        <Button
+                            aria-expanded={!!gitDraft}
+                            onClick={() =>
+                                this.setState({
+                                    gitDraft: gitDraft ? undefined : savedDraft,
+                                })
+                            }
+                        >
+                            {gitDraft
+                                ? localize('apps.deploy_cancel_edit', 'Cancel')
+                                : localize(
+                                      'apps.deploy_edit_repository',
+                                      'Edit repository'
+                                  )}
+                        </Button>
                         {repoInfo.repo && (
                             <Button
                                 disabled={
@@ -393,23 +448,11 @@ export default class Deployment extends ApiComponent<
                                 )}
                             </Button>
                         )}
-                        <Button
-                            aria-expanded={!!gitDraft}
-                            onClick={() =>
-                                this.setState({
-                                    gitDraft: gitDraft ? undefined : savedDraft,
-                                })
-                            }
-                        >
-                            {gitDraft
-                                ? localize('apps.deploy_cancel_edit', 'Cancel')
-                                : localize('apps.generic_edit_button', 'Edit')}
-                        </Button>
                     </Flex>
-                </Flex>
+                </div>
                 {gitDraft && (
                     <div className="deployment-settings-editor">
-                        <p>
+                        <p className="deployment-editor-description">
                             {localize(
                                 'apps.deploy_method_github_description',
                                 'Enter your repository information in the form and save. Then copy the URL in the box as a webhook on Github, Bitbucket, Gitlab and etc. Once you push a commit, CapRover starts a new build.'
@@ -490,11 +533,21 @@ export default class Deployment extends ApiComponent<
         const cliLabel = localize('apps.deploy_cli_ci', 'CLI & CI')
         return (
             <section className="deployment-settings-row" aria-label={cliLabel}>
-                <Flex vertical align="start" gap="small">
-                    <div>
-                        <Typography.Text strong>{cliLabel}</Typography.Text>
-                        <div>
-                            <Typography.Text type="secondary">
+                <div className="deployment-settings-summary">
+                    <div className="deployment-settings-info">
+                        <div className="deployment-subsection-heading">
+                            <SquareTerminal
+                                size={15}
+                                strokeWidth={1.85}
+                                className="deployment-subsection-icon"
+                                aria-hidden="true"
+                            />
+                            <span className="deployment-subsection-title">
+                                {cliLabel}
+                            </span>
+                        </div>
+                        <div className="deployment-settings-meta">
+                            <span className="deployment-meta-text">
                                 {tokenConfig?.enabled
                                     ? localize(
                                           'apps.deploy_app_token_enabled',
@@ -504,38 +557,44 @@ export default class Deployment extends ApiComponent<
                                           'apps.deploy_app_token_disabled',
                                           'App token disabled'
                                       )}
-                            </Typography.Text>
+                            </span>
                         </div>
                     </div>
-                    <Button
-                        aria-expanded={this.state.cliExpanded}
-                        onClick={() =>
-                            this.setState(({ cliExpanded }) => ({
-                                cliExpanded: !cliExpanded,
-                            }))
-                        }
-                    >
-                        {this.state.cliExpanded
-                            ? localize(
-                                  'apps.deploy_hide_token_settings',
-                                  'Hide token settings'
-                              )
-                            : localize(
-                                  'apps.deploy_manage_token',
-                                  'Manage token'
-                              )}
-                    </Button>
-                </Flex>
+                    <div className="deployment-settings-actions">
+                        <Button
+                            aria-expanded={this.state.cliExpanded}
+                            onClick={() =>
+                                this.setState(({ cliExpanded }) => ({
+                                    cliExpanded: !cliExpanded,
+                                }))
+                            }
+                        >
+                            {this.state.cliExpanded
+                                ? localize(
+                                      'apps.deploy_hide_token_settings',
+                                      'Hide token settings'
+                                  )
+                                : localize(
+                                      'apps.deploy_token_settings',
+                                      'Token settings'
+                                  )}
+                        </Button>
+                    </div>
+                </div>
                 {this.state.cliExpanded && (
                     <div className="deployment-settings-editor">
-                        <p>
+                        <p className="deployment-editor-description">
                             {Utils.formatText(
                                 localize(
                                     'apps.deploy_cli_description_part1',
                                     'Use CLI deploy command. This is the easiest method as it only requires a simple command like %s. Read more about it in the docs'
                                 ),
                                 ['%s'],
-                                [<code>caprover deploy</code>]
+                                [
+                                    <code className="deployment-code">
+                                        caprover deploy
+                                    </code>,
+                                ]
                             )}{' '}
                             <NewTabLink url="https://caprover.com/docs/get-started.html#step-4-deploy-the-test-app">
                                 {localize('apps.link_see_here', '(here)')}
@@ -547,7 +606,11 @@ export default class Deployment extends ApiComponent<
                                     "If you're using CI/CD to run %s and you do not wish to use your password, you can use app-specific tokens"
                                 ),
                                 ['%s'],
-                                [<code>caprover deploy</code>]
+                                [
+                                    <code className="deployment-code">
+                                        caprover deploy
+                                    </code>,
+                                ]
                             )}{' '}
                             <NewTabLink url="https://caprover.com/docs/ci-cd-integration.html#app-tokens">
                                 {localize('apps.link_see_here', '(here)')}
@@ -622,44 +685,54 @@ export default class Deployment extends ApiComponent<
             'apps.deploy_captain_definition_relative_path_hint',
             '%s path'
         )
+        const pathHeading = pathLabel.replace('%s', 'captain-definition')
         return (
             <section
                 className="deployment-settings-row"
-                aria-label={pathLabel.replace('%s', 'captain-definition')}
+                aria-label={pathHeading}
             >
-                <Flex vertical align="start" gap="small">
-                    <div>
-                        <Typography.Text strong>
-                            {Utils.formatText(
-                                pathLabel,
-                                ['%s'],
-                                [definitionFileName]
-                            )}
-                        </Typography.Text>
-                        <div>
-                            <Typography.Text type="secondary" code>
+                <div className="deployment-settings-summary">
+                    <div className="deployment-settings-info">
+                        <div className="deployment-subsection-heading">
+                            <FileText
+                                size={15}
+                                strokeWidth={1.85}
+                                className="deployment-subsection-icon"
+                                aria-hidden="true"
+                            />
+                            <span className="deployment-subsection-title">
+                                {pathHeading}
+                            </span>
+                        </div>
+                        <div className="deployment-settings-meta">
+                            <code className="deployment-code">
                                 {savedPath || './captain-definition'}
-                            </Typography.Text>
+                            </code>
                         </div>
                     </div>
-                    <Button
-                        aria-expanded={editing}
-                        onClick={() =>
-                            this.setState({
-                                definitionPathDraft: editing
-                                    ? undefined
-                                    : savedPath,
-                            })
-                        }
-                    >
-                        {editing
-                            ? localize('apps.deploy_cancel_edit', 'Cancel')
-                            : localize('apps.generic_edit_button', 'Edit')}
-                    </Button>
-                </Flex>
+                    <div className="deployment-settings-actions">
+                        <Button
+                            aria-expanded={editing}
+                            onClick={() =>
+                                this.setState({
+                                    definitionPathDraft: editing
+                                        ? undefined
+                                        : savedPath,
+                                })
+                            }
+                        >
+                            {editing
+                                ? localize('apps.deploy_cancel_edit', 'Cancel')
+                                : localize(
+                                      'apps.deploy_edit_path',
+                                      'Edit path'
+                                  )}
+                        </Button>
+                    </div>
+                </div>
                 {editing && (
                     <div className="deployment-settings-editor">
-                        <p>
+                        <p className="deployment-editor-description">
                             {Utils.formatText(
                                 localize(
                                     'apps.deploy_captain_definition_relative_path_hint_tooltip',
@@ -730,59 +803,78 @@ export default class Deployment extends ApiComponent<
             onUploadSucceeded: () => this.onUploadSuccess(),
         }
         return (
-            <Card
-                size="small"
-                className={
-                    manualExpanded ? undefined : 'deployment-card-collapsed'
-                }
-                styles={{ header: { padding: 0 } }}
-                title={
-                    <h3>
-                        <Button
-                            type="text"
-                            className="deployment-manual-toggle"
-                            aria-expanded={manualExpanded}
-                            aria-controls="deployment-manual-options"
-                            aria-labelledby="deployment-manual-title"
-                            aria-describedby="deployment-manual-description"
-                            onClick={() =>
-                                this.setState({
-                                    manualExpanded: !manualExpanded,
-                                })
-                            }
-                        >
-                            <span>
-                                <Typography.Text
-                                    strong
-                                    id="deployment-manual-title"
-                                    className="deployment-manual-title"
-                                >
+            <Card className="deployment-card deployment-manual-card">
+                <div className="deployment-manual-header">
+                    <div className="deployment-manual-header-row">
+                        <div className="deployment-manual-header-copy">
+                            <div className="deployment-card-heading">
+                                <Box
+                                    size={16}
+                                    strokeWidth={1.85}
+                                    className="deployment-header-icon"
+                                    aria-hidden="true"
+                                />
+                                <h3 id="deployment-manual-title">
                                     {localize(
                                         'apps.deploy_new_version',
                                         'Deploy a new version'
                                     )}
-                                    {manualExpanded ? (
-                                        <UpOutlined aria-hidden="true" />
-                                    ) : (
-                                        <DownOutlined aria-hidden="true" />
-                                    )}
-                                </Typography.Text>
-                                <Typography.Text
-                                    type="secondary"
-                                    id="deployment-manual-description"
-                                >
-                                    {localize(
-                                        'apps.deploy_manual_description',
-                                        'Upload a CapRover archive, use a Docker image, or build from a definition.'
-                                    )}
-                                </Typography.Text>
-                            </span>
-                        </Button>
-                    </h3>
-                }
-            >
-                <div id="deployment-manual-options" hidden={!manualExpanded}>
+                                </h3>
+                            </div>
+                            <p
+                                id="deployment-manual-description"
+                                className="deployment-manual-description"
+                            >
+                                {localize(
+                                    'apps.deploy_manual_description',
+                                    'Upload a CapRover archive, use a Docker image, or build from a definition.'
+                                )}
+                            </p>
+                        </div>
+                        {manualExpanded && (
+                            <Button
+                                type="link"
+                                size="small"
+                                className="deployment-action-link"
+                                aria-expanded={true}
+                                aria-controls="deployment-manual-options"
+                                onClick={() =>
+                                    this.setState({ manualExpanded: false })
+                                }
+                            >
+                                {localize(
+                                    'apps.deploy_hide_methods',
+                                    'Hide deployment methods'
+                                )}
+                                <ChevronUp size={14} aria-hidden="true" />
+                            </Button>
+                        )}
+                    </div>
+                    {!manualExpanded && (
+                        <div className="deployment-manual-trigger">
+                            <Button
+                                aria-expanded={false}
+                                aria-controls="deployment-manual-options"
+                                aria-describedby="deployment-manual-description"
+                                onClick={() =>
+                                    this.setState({ manualExpanded: true })
+                                }
+                            >
+                                {localize(
+                                    'apps.deploy_choose_method',
+                                    'Choose deployment method'
+                                )}
+                            </Button>
+                        </div>
+                    )}
+                </div>
+                <div
+                    id="deployment-manual-options"
+                    className="deployment-manual-options"
+                    hidden={!manualExpanded}
+                >
                     <Radio.Group
+                        className="deployment-method-group"
                         aria-label={localize(
                             'apps.deploy_method',
                             'Deployment method'
@@ -792,43 +884,47 @@ export default class Deployment extends ApiComponent<
                             this.setState({ manualMethod: event.target.value })
                         }
                     >
-                        <Flex wrap gap="small">
-                            <Radio.Button value={ManualMethod.Archive}>
-                                {localize(
-                                    'apps.deploy_archive',
-                                    'CapRover archive'
-                                )}
-                            </Radio.Button>
-                            <Radio.Button value={ManualMethod.Image}>
-                                {localize(
-                                    'apps.deploy_docker_image',
-                                    'Docker image'
-                                )}
-                            </Radio.Button>
-                            <Radio.Button value={ManualMethod.Dockerfile}>
-                                {localize(
-                                    'apps.deploy_dockerfile',
-                                    'Dockerfile'
-                                )}
-                            </Radio.Button>
-                            <Radio.Button value={ManualMethod.Definition}>
-                                {definitionFileName}
-                            </Radio.Button>
-                        </Flex>
+                        <Radio.Button value={ManualMethod.Archive}>
+                            {localize(
+                                'apps.deploy_archive',
+                                'CapRover archive'
+                            )}
+                        </Radio.Button>
+                        <Radio.Button value={ManualMethod.Image}>
+                            {localize(
+                                'apps.deploy_docker_image',
+                                'Docker image'
+                            )}
+                        </Radio.Button>
+                        <Radio.Button value={ManualMethod.Dockerfile}>
+                            {localize('apps.deploy_dockerfile', 'Dockerfile')}
+                        </Radio.Button>
+                        <Radio.Button value={ManualMethod.Definition}>
+                            captain-definition
+                        </Radio.Button>
                     </Radio.Group>
                     <div
-                        className="deployment-settings-editor"
+                        className="deployment-method-panel"
                         hidden={manualMethod !== ManualMethod.Archive}
                     >
                         <TarUploader {...uploaderProps} />
                     </div>
-                    <div hidden={manualMethod !== ManualMethod.Image}>
+                    <div
+                        className="deployment-method-panel"
+                        hidden={manualMethod !== ManualMethod.Image}
+                    >
                         <UploaderPlainTextImageName {...uploaderProps} />
                     </div>
-                    <div hidden={manualMethod !== ManualMethod.Dockerfile}>
+                    <div
+                        className="deployment-method-panel"
+                        hidden={manualMethod !== ManualMethod.Dockerfile}
+                    >
                         <UploaderPlainTextDockerfile {...uploaderProps} />
                     </div>
-                    <div hidden={manualMethod !== ManualMethod.Definition}>
+                    <div
+                        className="deployment-method-panel"
+                        hidden={manualMethod !== ManualMethod.Definition}
+                    >
                         <UploaderPlainTextCaptainDefinition
                             {...uploaderProps}
                         />
@@ -852,42 +948,52 @@ export default class Deployment extends ApiComponent<
             <div className="deployment-tab">
                 {this.renderDeploymentHistory(
                     versions,
-                    snapshot.deployedVersion
+                    snapshot.deployedVersion,
+                    !!snapshot.isAppBuilding
                 )}
                 <Card
-                    size="small"
-                    className="deployment-settings-card"
+                    className="deployment-card deployment-settings-card"
                     title={
-                        <h3>
-                            {localize(
-                                'apps.deploy_settings',
-                                'Deployment settings'
-                            )}
-                        </h3>
+                        <div className="deployment-card-heading">
+                            <Settings
+                                size={16}
+                                strokeWidth={1.85}
+                                className="deployment-header-icon"
+                                aria-hidden="true"
+                            />
+                            <h3>
+                                {localize(
+                                    'apps.deploy_settings',
+                                    'Deployment settings'
+                                )}
+                            </h3>
+                        </div>
                     }
                 >
                     {this.props.settingsNeedRefresh && (
-                        <Alert
-                            type="warning"
-                            showIcon
-                            message={localize(
-                                'apps.deploy_settings_refresh_failed',
-                                'Settings were saved, but the displayed values may be out of date.'
-                            )}
-                            action={
-                                <Button
-                                    size="small"
-                                    onClick={() => this.props.reFetchData()}
-                                >
-                                    {localize('apps.deploy_retry', 'Retry')}
-                                </Button>
-                            }
-                        />
+                        <div className="deployment-inline-alert">
+                            <Alert
+                                type="warning"
+                                showIcon
+                                message={localize(
+                                    'apps.deploy_settings_refresh_failed',
+                                    'Settings were saved, but the displayed values may be out of date.'
+                                )}
+                                action={
+                                    <Button
+                                        size="small"
+                                        onClick={() => this.props.reFetchData()}
+                                    >
+                                        {localize('apps.deploy_retry', 'Retry')}
+                                    </Button>
+                                }
+                            />
+                        </div>
                     )}
                     <div
                         className={
                             settingsExpanded
-                                ? undefined
+                                ? 'deployment-settings-stack'
                                 : 'deployment-settings-grid'
                         }
                     >
@@ -897,9 +1003,17 @@ export default class Deployment extends ApiComponent<
                     </div>
                 </Card>
                 {this.renderManualDeployment()}
-                <NewTabLink url="https://caprover.com/docs/deployment-methods.html">
-                    {localize('apps.deploy_methods_docs', 'Deployment methods')}
-                </NewTabLink>
+                <div className="deployment-docs-footer">
+                    <NewTabLink url="https://caprover.com/docs/deployment-methods.html">
+                        <span className="deployment-docs-link">
+                            {localize(
+                                'apps.deploy_methods_docs',
+                                'Deployment methods'
+                            )}
+                            <ExternalLink size={13} aria-hidden="true" />
+                        </span>
+                    </NewTabLink>
+                </div>
             </div>
         )
     }

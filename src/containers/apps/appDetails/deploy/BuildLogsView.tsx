@@ -1,10 +1,7 @@
-import {
-    DownCircleOutlined,
-    LoadingOutlined,
-    UpCircleOutlined,
-} from '@ant-design/icons'
-import { Alert, Button, Flex, Input, Row, Spin } from 'antd'
-import { PropsWithChildren, ReactNode } from 'react'
+import { LoadingOutlined } from '@ant-design/icons'
+import { Alert, Button, Flex, Input, Spin } from 'antd'
+import { SquareTerminal } from 'lucide-react'
+import { PropsWithChildren } from 'react'
 import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
@@ -15,7 +12,6 @@ export default class BuildLogsView extends ApiComponent<
         appName: string
         onAppBuildFinished: () => void
         buildLogRecreationId: string
-        summaryHeading: ReactNode
     }>,
     {
         isAppBuilding: boolean
@@ -128,23 +124,21 @@ export default class BuildLogsView extends ApiComponent<
 
     render() {
         const self = this
+        const showLogs = this.state.isAppBuilding || this.state.expandedLogs
         return (
-            <div>
-                <Flex align="center" wrap gap="small">
-                    {this.props.summaryHeading}
+            <div className="deployment-active-section">
+                <div className="deployment-active-bar">
+                    <div className="deployment-active-summary">
+                        {this.props.children}
+                    </div>
                     <Button
-                        aria-expanded={
-                            this.state.isAppBuilding || this.state.expandedLogs
-                        }
+                        type="link"
+                        size="small"
+                        className="deployment-action-link"
+                        aria-expanded={showLogs}
                         aria-controls="buildlog-text-id"
                         disabled={this.state.isAppBuilding}
-                        icon={
-                            this.state.expandedLogs ? (
-                                <UpCircleOutlined aria-hidden="true" />
-                            ) : (
-                                <DownCircleOutlined aria-hidden="true" />
-                            )
-                        }
+                        icon={<SquareTerminal size={14} aria-hidden="true" />}
                         onClick={() => self.onExpandLogClicked()}
                     >
                         {!this.state.expandedLogs
@@ -157,49 +151,42 @@ export default class BuildLogsView extends ApiComponent<
                                   'Hide Build Logs'
                               )}
                     </Button>
-                </Flex>
-                {this.props.children}
-                <Row>
-                    <div
-                        style={{
-                            width: '100%',
-                        }}
-                        className={
-                            this.state.isAppBuilding ? '' : 'hide-on-demand'
-                        }
-                    >
-                        <Alert
-                            message={
+                </div>
+                <div
+                    className={
+                        this.state.isAppBuilding
+                            ? 'deployment-build-banner'
+                            : 'hide-on-demand'
+                    }
+                >
+                    <Alert
+                        message={
+                            <Flex align="center" gap={10}>
+                                <Spin
+                                    indicator={
+                                        <LoadingOutlined
+                                            style={{ fontSize: 16 }}
+                                            spin
+                                        />
+                                    }
+                                    size="small"
+                                />
                                 <span>
-                                    &nbsp;&nbsp;
-                                    <Spin
-                                        indicator={
-                                            <LoadingOutlined
-                                                style={{ fontSize: 24 }}
-                                                spin
-                                            />
-                                        }
-                                        size="default"
-                                    />
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     {localize(
                                         'apps.deploy_build_in_progress',
                                         'Building the image. This might take a few minutes...'
                                     )}
                                 </span>
-                            }
-                            type="info"
-                        />
-                    </div>
-                </Row>
+                            </Flex>
+                        }
+                        type="info"
+                    />
+                </div>
 
                 <div
                     className={
-                        this.state.isAppBuilding || this.state.expandedLogs
-                            ? ''
-                            : 'hide-on-demand'
+                        showLogs ? 'deployment-build-logs' : 'hide-on-demand'
                     }
-                    style={{ padding: 5 }}
                 >
                     <Input.TextArea
                         id="buildlog-text-id"

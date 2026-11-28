@@ -1,5 +1,5 @@
 import { InboxOutlined } from '@ant-design/icons'
-import { Button, Col, message, Row, Upload } from 'antd'
+import { Button, message, Upload } from 'antd'
 import { UploadChangeParam, UploadFile } from 'antd/lib/upload/interface'
 import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
@@ -76,57 +76,55 @@ export default class TarUploader extends ApiComponent<
 
     render() {
         return (
-            <div>
-                <Row justify="center">
-                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        <Upload.Dragger
-                            name="files"
-                            accept="*/*"
-                            multiple={false}
-                            fileList={
-                                this.state.fileToBeUploaded
-                                    ? [this.state.fileToBeUploaded]
-                                    : undefined
-                            }
-                            listType="text"
-                            onChange={this.handleChange}
-                            beforeUpload={this.beforeUpload}
-                            action="//" // this is unused as beforeUpload always returns false
-                        >
-                            <p className="ant-upload-drag-icon">
-                                <InboxOutlined />
-                            </p>
-                            <p className="ant-upload-text">
-                                {localize(
-                                    'apps.deploy_upload_instructions',
-                                    'Click or drag TAR file to this area to upload'
-                                )}
-                            </p>
-                            <p className="ant-upload-hint">
-                                {localize(
-                                    'apps.deploy_upload_instructions_must_contain',
-                                    'Must contain this file:'
-                                )}{' '}
-                                <code>captain-definition</code>
-                            </p>
-                        </Upload.Dragger>
-                    </Col>
-                </Row>
+            <div className="deployment-manual-form">
+                <div className="deployment-tar-dropzone">
+                    <Upload.Dragger
+                        name="files"
+                        accept="*/*"
+                        multiple={false}
+                        fileList={
+                            this.state.fileToBeUploaded
+                                ? [this.state.fileToBeUploaded]
+                                : undefined
+                        }
+                        listType="text"
+                        onChange={this.handleChange}
+                        beforeUpload={this.beforeUpload}
+                        action="//" // this is unused as beforeUpload always returns false
+                    >
+                        <p className="ant-upload-drag-icon">
+                            <InboxOutlined />
+                        </p>
+                        <p className="ant-upload-text">
+                            {localize(
+                                'apps.deploy_upload_instructions',
+                                'Click or drag TAR file to this area to upload'
+                            )}
+                        </p>
+                        <p className="ant-upload-hint">
+                            {localize(
+                                'apps.deploy_upload_instructions_must_contain',
+                                'Must contain this file:'
+                            )}{' '}
+                            <code className="deployment-code">
+                                captain-definition
+                            </code>
+                        </p>
+                    </Upload.Dragger>
+                </div>
 
-                <Row justify="center">
+                <div className="deployment-form-actions">
                     <Button
-                        style={{ marginTop: 40 }}
                         disabled={!this.state.fileToBeUploaded}
                         onClick={() => this.startUploadAndDeploy()}
                         type="primary"
-                        size="large"
                     >
                         {localize(
                             'apps.deploy_upload_app_button',
                             'Upload & Deploy'
                         )}
                     </Button>
-                </Row>
+                </div>
             </div>
         )
     }

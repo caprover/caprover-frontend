@@ -448,7 +448,12 @@ export class AppDetails extends ApiComponent<
         }
 
         return (
-            <Row className="app-details-page">
+            <Row
+                className={classnames('app-details-page', {
+                    'app-details-deployment-active':
+                        self.state.activeTabKey === DEPLOYMENT,
+                })}
+            >
                 {self.createEditAppModal()}
                 <Col span={24}>
                     <Card

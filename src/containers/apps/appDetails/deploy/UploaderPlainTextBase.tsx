@@ -1,4 +1,4 @@
-import { Button, Input, Row } from 'antd'
+import { Button, Input } from 'antd'
 import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import ApiComponent from '../../../global/ApiComponent'
@@ -93,10 +93,17 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
     render() {
         const self = this
         return (
-            <div style={{ padding: 16 }}>
-                <Row>{self.createTextArea()}</Row>
-                <div style={{ height: 20 }} />
-                <Row justify="end">
+            <div className="deployment-manual-form">
+                <div
+                    className={
+                        self.isSingleLine()
+                            ? 'deployment-manual-single-input'
+                            : 'deployment-manual-code-input'
+                    }
+                >
+                    {self.createTextArea()}
+                </div>
+                <div className="deployment-form-actions">
                     <Button
                         disabled={
                             self.state.uploadInProcess ||
@@ -113,7 +120,7 @@ export default abstract class UploaderPlainTextBase extends ApiComponent<
                     >
                         {localize('apps.deploy_now_button', 'Deploy Now')}
                     </Button>
-                </Row>
+                </div>
             </div>
         )
     }
