@@ -21,7 +21,11 @@ import { IAppDef, IAppVersion, RepoInfo } from '../../AppDefinition'
 import { AppDetailsTabProps } from '../AppDetails'
 import AppVersionTable from './AppVersionTable'
 import BuildLogsView from './BuildLogsView'
-import GitRepoForm from './GitRepoForm'
+import GitRepoForm, {
+    createGitRepoDraft,
+    getGitRepoInfoForSave,
+    GitRepoDraft,
+} from './GitRepoForm'
 import TarUploader from './TarUploader'
 import UploaderPlainTextCaptainDefinition from './UploaderPlainTextCaptainDefinition'
 import UploaderPlainTextDockerfile from './UploaderPlainTextDockerfile'
@@ -52,7 +56,7 @@ export default class Deployment extends ApiComponent<
         manualExpanded: boolean
         manualMethod: ManualMethod
         cliExpanded: boolean
-        gitDraft?: RepoInfo
+        gitDraft?: GitRepoDraft
         definitionPathDraft?: string
         buildLogRecreationId: string
         updatedVersions?: Pick<IAppDef, 'versions' | 'deployedVersion'>
@@ -273,8 +277,13 @@ export default class Deployment extends ApiComponent<
         const webhook = appDefinition.appPushWebhook
         const repoInfo = { ...EMPTY_REPO, ...webhook?.repoInfo }
         const { gitDraft } = this.state
+        const savedDraft = createGitRepoDraft(repoInfo)
+        const repoInfoForSave = gitDraft && getGitRepoInfoForSave(gitDraft)
         const gitDirty =
-            !!gitDraft && !deepEqual(gitDraft, repoInfo, { strict: true })
+            !!repoInfoForSave &&
+            !deepEqual(repoInfoForSave, getGitRepoInfoForSave(savedDraft), {
+                strict: true,
+            })
         const pushToken = webhook?.pushWebhookToken
         const webhookPath = `/user/apps/webhooks/triggerbuild?namespace=captain&token=${pushToken}`
         const gitLabel = localize(
@@ -330,7 +339,7 @@ export default class Deployment extends ApiComponent<
                             aria-expanded={!!gitDraft}
                             onClick={() =>
                                 this.setState({
-                                    gitDraft: gitDraft ? undefined : repoInfo,
+                                    gitDraft: gitDraft ? undefined : savedDraft,
                                 })
                             }
                         >
@@ -389,6 +398,7 @@ export default class Deployment extends ApiComponent<
                                 disabled={!gitDirty}
                                 type="primary"
                                 onClick={() => {
+                                    if (!repoInfoForSave) return
                                     this.props
                                         .onUpdateConfigAndSave({
                                             appPushWebhook: {
@@ -396,7 +406,7 @@ export default class Deployment extends ApiComponent<
                                                     webhook?.tokenVersion || '',
                                                 pushWebhookToken:
                                                     pushToken || '',
-                                                repoInfo: gitDraft,
+                                                repoInfo: repoInfoForSave,
                                             },
                                         })
                                         .then((saved) => {

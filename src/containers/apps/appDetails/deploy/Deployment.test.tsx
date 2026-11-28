@@ -405,3 +405,170 @@ it('saves only the selected settings row and retains a rejected Git draft', asyn
     )
     expect(path.getByRole('textbox')).toHaveValue('./unsubmitted')
 })
+
+it('saves a public repository with the compatibility pair and clears it without credentials', async () => {
+    const save = jest.fn().mockResolvedValue(true)
+    const props = tabProps()
+    const { rerender } = render(
+        <Deployment {...props} onUpdateConfigAndSave={save} />
+    )
+    const git = within(screen.getByRole('region', { name: 'Git repository' }))
+    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    expect(git.getByText('Public repository')).toBeVisible()
+    expect(git.queryByRole('textbox', { name: 'Username' })).toBeNull()
+    expect(git.queryByRole('textbox', { name: 'SSH private key' })).toBeNull()
+    fireEvent.change(git.getByRole('textbox', { name: 'Repository' }), {
+        target: {
+            value: 'https://github.com/caprover/zero-downtime-example.git',
+        },
+    })
+    fireEvent.change(git.getByRole('textbox', { name: 'Branch' }), {
+        target: { value: 'master' },
+    })
+    await act(async () => {
+        fireEvent.click(git.getByRole('button', { name: 'Save & Restart' }))
+    })
+
+    const savedRepo = {
+        repo: 'https://github.com/caprover/zero-downtime-example.git',
+        branch: 'master',
+        user: 'caprover-public',
+        password: 'caprover-public',
+        sshKey: '',
+    }
+    expect(save).toHaveBeenLastCalledWith({
+        appPushWebhook: {
+            tokenVersion: '',
+            pushWebhookToken: '',
+            repoInfo: savedRepo,
+        },
+    })
+
+    rerender(
+        <Deployment
+            {...tabProps({
+                ...app,
+                appPushWebhook: {
+                    tokenVersion: '1',
+                    pushWebhookToken: 'saved-token',
+                    repoInfo: savedRepo,
+                },
+            })}
+            onUpdateConfigAndSave={save}
+        />
+    )
+    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    expect(git.getByText('Public repository')).toBeVisible()
+    expect(git.getByRole('button', { name: 'Save & Restart' })).toBeDisabled()
+    for (const name of ['Repository', 'Branch']) {
+        fireEvent.change(git.getByRole('textbox', { name }), {
+            target: { value: '' },
+        })
+    }
+    await act(async () => {
+        fireEvent.click(git.getByRole('button', { name: 'Save & Restart' }))
+    })
+    expect(save).toHaveBeenLastCalledWith({
+        appPushWebhook: {
+            tokenVersion: '1',
+            pushWebhookToken: 'saved-token',
+            repoInfo: {
+                repo: '',
+                branch: '',
+                user: '',
+                password: '',
+                sshKey: '',
+            },
+        },
+    })
+})
+
+it('preserves legacy HTTPS credentials until saving an explicit switch to SSH', async () => {
+    const save = jest.fn().mockResolvedValue(true)
+    const webhook = {
+        tokenVersion: '1',
+        pushWebhookToken: 'saved-token',
+        repoInfo: {
+            repo: 'git@github.com:example/project.git',
+            branch: 'main',
+            user: 'test',
+            password: 'test',
+            sshKey: '',
+        },
+    }
+    const { rerender } = render(
+        <Deployment
+            {...tabProps({ ...app, appPushWebhook: webhook })}
+            onUpdateConfigAndSave={save}
+        />
+    )
+    const git = within(screen.getByRole('region', { name: 'Git repository' }))
+    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    expect(git.getByText('HTTPS credentials')).toBeVisible()
+    expect(git.getByRole('textbox', { name: 'Username' })).toHaveValue('test')
+    expect(git.queryByRole('textbox', { name: 'SSH private key' })).toBeNull()
+
+    const selectAuthentication = (name: string) => {
+        fireEvent.mouseDown(
+            git.getByRole('combobox', { name: 'Authentication' })
+        )
+        fireEvent.click(screen.getByRole('option', { name }))
+    }
+    selectAuthentication('SSH deploy key')
+    expect(git.queryByRole('textbox', { name: 'Username' })).toBeNull()
+    fireEvent.change(git.getByRole('textbox', { name: 'SSH private key' }), {
+        target: { value: 'fixture-key' },
+    })
+    selectAuthentication('HTTPS credentials')
+    expect(git.getByRole('textbox', { name: 'Username' })).toHaveValue('test')
+    expect(git.getByRole('button', { name: 'Save & Restart' })).toBeDisabled()
+    selectAuthentication('SSH deploy key')
+    expect(git.getByRole('textbox', { name: 'SSH private key' })).toHaveValue(
+        'fixture-key'
+    )
+    await act(async () => {
+        fireEvent.click(git.getByRole('button', { name: 'Save & Restart' }))
+    })
+    const sshRepo = {
+        ...webhook.repoInfo,
+        user: '',
+        password: '',
+        sshKey: 'fixture-key',
+    }
+    expect(save).toHaveBeenLastCalledWith({
+        appPushWebhook: { ...webhook, repoInfo: sshRepo },
+    })
+
+    rerender(
+        <Deployment
+            {...tabProps({
+                ...app,
+                appPushWebhook: { ...webhook, repoInfo: sshRepo },
+            })}
+            onUpdateConfigAndSave={save}
+        />
+    )
+    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    expect(git.getByText('SSH deploy key')).toBeVisible()
+    selectAuthentication('HTTPS credentials')
+    fireEvent.change(git.getByRole('textbox', { name: 'Username' }), {
+        target: { value: 'git-user' },
+    })
+    fireEvent.change(git.getByPlaceholderText('Password or access token'), {
+        target: { value: 'fixture-token' },
+    })
+    await act(async () => {
+        fireEvent.click(git.getByRole('button', { name: 'Save & Restart' }))
+    })
+    expect(save).toHaveBeenLastCalledWith({
+        appPushWebhook: {
+            ...webhook,
+            repoInfo: {
+                ...sshRepo,
+                user: 'git-user',
+                password: 'fixture-token',
+                sshKey: '',
+            },
+        },
+    })
+}, 30000)
