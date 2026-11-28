@@ -885,98 +885,664 @@ hr {
     }
 }
 
-.deployment-tab {
-    display: grid;
-    gap: 16px;
-    min-width: 0;
-    overflow-wrap: anywhere;
+#main-content-layout:has(> .app-details-deployment-active),
+.deployment-tab,
+code.deployment-code {
+    --deployment-page-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-layout) 96%,
+        var(--ant-color-primary) 4%
+    );
+    --deployment-card-bg: var(--ant-color-bg-container);
+    --deployment-card-border: color-mix(
+        in srgb,
+        var(--ant-color-border-secondary) 90%,
+        var(--ant-color-primary) 10%
+    );
+    --deployment-card-shadow: var(
+        --caprover-surface-shadow,
+        0 1px 2px color-mix(in srgb, var(--ant-color-text) 6%, transparent)
+    );
+    --deployment-history-header-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-container) 89%,
+        var(--ant-color-primary) 11%
+    );
+    --deployment-settings-header-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-container) 95%,
+        var(--ant-color-text) 5%
+    );
+    --deployment-active-bar-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-container) 96%,
+        var(--ant-color-primary) 4%
+    );
+    --deployment-divider: color-mix(
+        in srgb,
+        var(--ant-color-border-secondary) 94%,
+        var(--ant-color-primary) 6%
+    );
+    --deployment-text-primary: var(--ant-color-text);
+    --deployment-text-secondary: var(--ant-color-text-secondary);
+    --deployment-icon-muted: var(--ant-color-text-secondary);
+    --deployment-code-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-container) 92%,
+        var(--ant-color-text) 8%
+    );
+    --deployment-code-text: color-mix(
+        in srgb,
+        var(--ant-color-text) 88%,
+        var(--ant-color-bg-container) 12%
+    );
+    --deployment-status-active-bg: color-mix(
+        in srgb,
+        var(--ant-color-success) 14%,
+        var(--ant-color-bg-container)
+    );
+    --deployment-status-active-text: color-mix(
+        in srgb,
+        var(--ant-color-success-text) 55%,
+        var(--ant-color-text) 45%
+    );
+    --deployment-status-active-dot: var(--ant-color-success);
+    --deployment-status-failed-bg: color-mix(
+        in srgb,
+        var(--ant-color-error) 14%,
+        var(--ant-color-bg-container)
+    );
+    --deployment-status-failed-text: color-mix(
+        in srgb,
+        var(--ant-color-error-text) 65%,
+        var(--ant-color-text) 35%
+    );
+    --deployment-status-succeeded-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-container) 91%,
+        var(--ant-color-primary) 9%
+    );
+    --deployment-status-succeeded-text: color-mix(
+        in srgb,
+        var(--ant-color-text-secondary) 85%,
+        var(--ant-color-text) 15%
+    );
+    --deployment-font-size-body: calc(var(--ant-font-size, 14px) - 1px);
 }
 
-.deployment-tab > .ant-card {
-    min-width: 0;
+#main-content-layout:has(> .app-details-deployment-active) {
+    padding: 0;
+    background: var(--deployment-page-bg);
+    display: flex;
+    flex-direction: column;
+    scrollbar-gutter: auto;
 }
 
-.deployment-tab .ant-card-head-title {
-    white-space: normal;
+html[data-caprover-dark='false']
+    #main-content-layout:has(> .app-details-deployment-active) {
+    color-scheme: light;
 }
 
-.deployment-tab .deployment-history-card > .ant-card-head {
-    background: var(--ant-color-primary-bg);
+html[data-caprover-dark='true']
+    #main-content-layout:has(> .app-details-deployment-active) {
+    color-scheme: dark;
 }
 
-.deployment-tab .deployment-settings-card > .ant-card-head {
-    background: var(--ant-color-bg-layout);
+#main-content-layout:has(> .app-details-deployment-active) > .app-details-page {
+    max-width: none;
+    width: 100%;
+    margin-inline: 0;
+    flex: 1;
 }
 
-.deployment-tab .ant-card-head h3,
-.deployment-active-heading,
-.deployment-manual-title.ant-typography {
-    margin: 0;
-    font-size: var(--ant-font-size-lg, 16px);
-    font-weight: 600;
+.app-details-deployment-active .app-details-card > .ant-card-head {
+    background: var(--ant-color-bg-container);
+    padding: 24px 24px 0;
 }
 
-.deployment-card-collapsed .ant-card-head {
-    border-block-end: 0;
+.app-details-deployment-active
+    .app-details-card
+    > .ant-card-body
+    > .ant-tabs
+    > .ant-tabs-nav {
+    background: var(--ant-color-bg-container);
+    padding-inline: 24px;
+    margin-bottom: 0;
 }
 
-.deployment-card-collapsed .ant-card-body {
+.app-details-deployment-active .app-actions-spacer {
     display: none;
 }
 
+.deployment-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 1188px;
+    padding: 24px 24px 36px;
+    box-sizing: border-box;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    background: var(--deployment-page-bg);
+}
+
+.deployment-card.ant-card {
+    min-width: 0;
+    background: var(--deployment-card-bg);
+    border: var(--caprover-border-width, 1px) solid
+        var(--deployment-card-border);
+    border-radius: var(--caprover-surface-radius, 10px);
+    box-shadow: var(--deployment-card-shadow);
+    overflow: hidden;
+}
+
+.deployment-card > .ant-card-head {
+    min-height: 50px;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--deployment-card-border);
+}
+
+.deployment-card > .ant-card-head .ant-card-head-title {
+    padding: 12px 0;
+    white-space: normal;
+}
+
+.deployment-card > .ant-card-head .ant-card-extra {
+    padding: 8px 0;
+}
+
+.deployment-history-card > .ant-card-head {
+    background: var(--deployment-history-header-bg);
+}
+
+.deployment-settings-card > .ant-card-head {
+    background: var(--deployment-settings-header-bg);
+}
+
+.deployment-history-card.ant-card > .ant-card-body,
+.deployment-settings-card.ant-card > .ant-card-body {
+    padding: 0;
+}
+
+.deployment-manual-card.ant-card > .ant-card-body {
+    padding: 18px 20px;
+}
+
+.deployment-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.deployment-card-heading h3 {
+    margin: 0;
+    font-size: var(--ant-font-size-lg, 16px);
+    font-weight: var(--caprover-heading-weight, 600);
+    line-height: 1.4;
+    color: var(--deployment-text-primary);
+    letter-spacing: var(--caprover-heading-tracking, -0.02em);
+}
+
+.deployment-header-icon,
+.deployment-subsection-icon {
+    flex-shrink: 0;
+    color: var(--deployment-icon-muted);
+}
+
+.deployment-header-icon-primary {
+    color: var(--ant-color-primary);
+}
+
+.deployment-tab code,
+code.deployment-code {
+    display: inline-block;
+    font-family:
+        'Noto Sans Mono', Menlo, Monaco, 'SFMono-Regular', Consolas,
+        'Liberation Mono', Courier, monospace;
+    font-size: var(--deployment-font-size-body);
+    line-height: 1.4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--deployment-code-bg);
+    color: var(--deployment-code-text);
+    border: 0;
+}
+
+.deployment-active-section {
+    min-width: 0;
+}
+
+.deployment-active-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding: 12px 18px;
+    background: var(--deployment-active-bar-bg);
+}
+
+.deployment-active-summary {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.deployment-version-label,
+.deployment-table-version {
+    font-size: var(--ant-font-size, 14px);
+    font-weight: var(--caprover-heading-weight, 600);
+    color: var(--deployment-text-primary);
+    white-space: nowrap;
+}
+
+.deployment-meta-text,
+.deployment-meta-muted,
+.deployment-empty-text {
+    font-size: var(--deployment-font-size-body);
+    color: var(--deployment-text-secondary);
+    line-height: 1.45;
+}
+
+.deployment-meta-muted {
+    opacity: 0.85;
+}
+
+.deployment-git-hash {
+    max-width: 104px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.deployment-build-banner {
+    padding: 0 18px 12px;
+    background: var(--deployment-active-bar-bg);
+}
+
+.deployment-build-logs {
+    padding: 0 18px 16px;
+    background: var(--deployment-active-bar-bg);
+}
+
+.deployment-inline-alert {
+    padding: 12px 18px;
+    border-top: 1px solid var(--deployment-divider);
+}
+
+.deployment-action-link.ant-btn {
+    padding: 0;
+    height: auto;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    font-size: var(--deployment-font-size-body);
+    font-weight: 500;
+    gap: 5px;
+}
+
+.deployment-action-link.ant-btn:not(:disabled) {
+    color: var(--ant-color-link);
+}
+
+.deployment-action-link.ant-btn:not(:disabled):hover {
+    color: var(--ant-color-primary-hover);
+    background: transparent;
+}
+
+.deployment-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: var(--ant-font-size-sm, 12px);
+    font-weight: 500;
+    line-height: 18px;
+    white-space: nowrap;
+}
+
+.deployment-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.deployment-status-active {
+    background: var(--deployment-status-active-bg);
+    color: var(--deployment-status-active-text);
+}
+
+.deployment-status-active .deployment-status-dot {
+    background: var(--deployment-status-active-dot);
+}
+
+.deployment-status-failed {
+    background: var(--deployment-status-failed-bg);
+    color: var(--deployment-status-failed-text);
+}
+
+.deployment-status-succeeded {
+    background: var(--deployment-status-succeeded-bg);
+    color: var(--deployment-status-succeeded-text);
+}
+
+.deployment-history-table-wrap:not([hidden]) {
+    border-top: 1px solid var(--deployment-divider);
+}
+
+.deployment-history-unavailable {
+    padding: 16px 18px;
+}
+
+.deployment-history-table.ant-table-wrapper .ant-table {
+    background: transparent;
+}
+
+.deployment-history-table.ant-table-wrapper .ant-table-container {
+    border-radius: 0;
+}
+
+.deployment-history-table.ant-table-wrapper .ant-table thead > tr > th {
+    background: var(--deployment-card-bg);
+    color: var(--deployment-text-secondary);
+    font-size: var(--ant-font-size-sm, 12px);
+    font-weight: 500;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--deployment-divider);
+    white-space: nowrap;
+}
+
+.deployment-history-table.ant-table-wrapper .ant-table thead > tr > th::before {
+    display: none;
+}
+
+.deployment-history-table.ant-table-wrapper .ant-table tbody > tr > td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--deployment-divider);
+    vertical-align: middle;
+}
+
+.deployment-history-table.ant-table-wrapper .ant-table thead > tr > th:first-child,
+.deployment-history-table.ant-table-wrapper .ant-table tbody > tr > td:first-child {
+    padding-inline-start: 18px;
+}
+
+.deployment-history-table.ant-table-wrapper .ant-table thead > tr > th:last-child,
+.deployment-history-table.ant-table-wrapper .ant-table tbody > tr > td:last-child {
+    padding-inline-end: 18px;
+}
+
+.deployment-history-table.ant-table-wrapper .ant-table tbody > tr:last-child > td {
+    border-bottom: 0;
+}
+
+.deployment-history-table.ant-table-wrapper .ant-table .ant-table-placeholder > td {
+    padding: 16px 18px;
+    border-bottom: 0;
+}
+
+.deployment-empty-text {
+    text-align: start;
+}
+
+.deployment-history-table.ant-table-wrapper .ant-table-pagination.ant-pagination {
+    margin: 0;
+    padding: 10px 18px;
+    border-top: 1px solid var(--deployment-divider);
+}
+
+.deployment-table-image {
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.deployment-table-time {
+    white-space: nowrap;
+}
+
+@media (max-width: 1199px) {
+    .deployment-history-table.ant-table-wrapper .ant-table thead > tr > th,
+    .deployment-history-table.ant-table-wrapper .ant-table tbody > tr > td {
+        padding-inline: 6px;
+    }
+
+    .deployment-history-table.ant-table-wrapper .ant-table thead > tr > th:first-child,
+    .deployment-history-table.ant-table-wrapper .ant-table tbody > tr > td:first-child {
+        padding-inline-start: 14px;
+    }
+
+    .deployment-history-table.ant-table-wrapper .ant-table thead > tr > th:last-child,
+    .deployment-history-table.ant-table-wrapper .ant-table tbody > tr > td:last-child {
+        padding-inline-end: 14px;
+    }
+
+    .deployment-table-image {
+        max-width: 136px;
+    }
+}
+
 .deployment-settings-row {
-    padding-block: 12px;
+    padding: 16px 18px;
+    min-width: 0;
 }
 
 .deployment-settings-row + .deployment-settings-row {
-    border-block-start: 1px solid var(--ant-color-border-secondary);
+    border-block-start: 1px solid var(--deployment-divider);
 }
 
-@media (min-width: 1024px) {
+.deployment-subsection-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.deployment-subsection-title {
+    font-size: var(--ant-font-size, 14px);
+    font-weight: var(--caprover-heading-weight, 600);
+    color: var(--deployment-text-primary);
+    line-height: 1.4;
+}
+
+.deployment-settings-meta {
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.deployment-settings-meta .deployment-code {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.deployment-repo-value {
+    overflow-wrap: anywhere;
+}
+
+.deployment-settings-actions {
+    margin-top: 12px;
+}
+
+.deployment-settings-actions .ant-btn,
+.deployment-manual-trigger .ant-btn:not(.deployment-action-link) {
+    height: 32px;
+    padding-inline: 12px;
+    font-size: var(--deployment-font-size-body);
+}
+
+@media (min-width: 1120px) {
     .deployment-settings-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .deployment-settings-grid > .deployment-settings-row {
-        min-width: 0;
-        padding: 0 12px;
-    }
-
-    .deployment-settings-grid > .deployment-settings-row:first-child {
-        padding-inline-start: 0;
-    }
-
-    .deployment-settings-grid > .deployment-settings-row:last-child {
-        padding-inline-end: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 18px;
     }
 
     .deployment-settings-grid > .deployment-settings-row + .deployment-settings-row {
         border-block-start: 0;
-        border-inline-start: 1px solid var(--ant-color-border-secondary);
+        border-inline-start: 1px solid var(--deployment-divider);
+    }
+
+    .deployment-settings-grid .deployment-settings-summary {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .deployment-settings-grid .deployment-settings-actions {
+        margin-top: auto;
+        padding-top: 12px;
     }
 }
 
 .deployment-settings-editor {
-    margin-block-start: 12px;
+    margin-block-start: 14px;
+    padding-block-start: 14px;
+    border-block-start: 1px solid var(--deployment-divider);
 }
 
-.deployment-manual-toggle.ant-btn {
+.deployment-editor-description,
+.deployment-manual-description {
+    font-size: var(--deployment-font-size-body);
+    line-height: 1.5;
+    color: var(--deployment-text-secondary);
+}
+
+.deployment-editor-description {
+    margin: 0 0 12px;
+}
+
+.deployment-settings-editor label {
+    display: inline-block;
+    margin-bottom: 4px;
+    font-size: var(--deployment-font-size-body);
+    font-weight: 500;
+    color: var(--deployment-text-primary);
+}
+
+.deployment-manual-header-expanded {
     display: flex;
-    justify-content: flex-start;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px 16px;
+    flex-wrap: wrap;
+}
+
+.deployment-manual-header-copy {
+    min-width: 0;
+    flex: 1 1 280px;
+}
+
+.deployment-manual-description {
+    margin: 5px 0 0;
+}
+
+.deployment-manual-trigger {
+    margin-top: 12px;
+}
+
+.deployment-manual-header-expanded .deployment-manual-trigger {
+    margin-top: 0;
+}
+
+.deployment-manual-options {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--deployment-divider);
+}
+
+.deployment-method-group.ant-radio-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+
+.deployment-method-panel {
+    margin-top: 14px;
+}
+
+.deployment-manual-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.deployment-tar-dropzone,
+.deployment-manual-code-input {
     width: 100%;
-    height: auto;
-    padding: 12px;
-    text-align: start;
-    white-space: normal;
 }
 
-.deployment-manual-toggle > span:first-child {
-    display: grid;
-    gap: 4px;
+.deployment-manual-single-input {
+    width: 100%;
+    max-width: 560px;
 }
 
-.deployment-manual-title .anticon {
-    margin-inline-start: 8px;
-    font-size: 0.8em;
+.deployment-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.deployment-docs-footer {
+    padding-inline: 2px;
+}
+
+.deployment-docs-footer a {
+    color: var(--deployment-text-secondary);
+    transition: color 0.15s ease;
+}
+
+.deployment-docs-footer a:hover {
+    color: var(--ant-color-link);
+}
+
+.deployment-docs-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--deployment-font-size-body);
+    font-weight: 500;
+}
+
+@media (max-width: 767px) {
+    .app-details-deployment-active .app-details-card > .ant-card-head {
+        padding: 20px 16px 0;
+    }
+
+    .app-details-deployment-active
+        .app-details-card
+        > .ant-card-body
+        > .ant-tabs
+        > .ant-tabs-nav {
+        padding-inline: 16px;
+    }
+
+    .deployment-tab {
+        padding: 16px 16px 28px;
+        gap: 14px;
+    }
+
+    .deployment-card > .ant-card-head {
+        padding: 0 14px;
+    }
+
+    .deployment-active-bar,
+    .deployment-settings-row,
+    .deployment-manual-card.ant-card > .ant-card-body {
+        padding: 14px;
+    }
+
+    .deployment-table-image {
+        max-width: 180px;
+    }
 }

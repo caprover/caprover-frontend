@@ -1,10 +1,6 @@
-import {
-    CheckCircleTwoTone,
-    ExclamationCircleOutlined,
-    RetweetOutlined,
-} from '@ant-design/icons'
-import { Button, Flex, Modal, Table, Tooltip } from 'antd'
+import { Button, Modal, Table, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
+import { RotateCcw } from 'lucide-react'
 import { Component } from 'react'
 import { localize } from '../../../../utils/Language'
 import Utils from '../../../../utils/Utils'
@@ -16,20 +12,17 @@ export default class AppVersionTable extends Component<{
     deployedVersion: number
     onVersionRollbackRequested: (versionToRevert: IAppVersion) => void
 }> {
-    getStateRender(version: number, versionDetails: IAppVersion) {
+    renderStatus(version: number, versionDetails: IAppVersion) {
         const imageName = versionDetails.deployedImageName
         if (imageName && version === this.props.deployedVersion) {
             return (
-                <Flex align="center" justify="center" gap={6}>
-                    <CheckCircleTwoTone
-                        twoToneColor="#52c41a"
+                <span className="deployment-status-pill deployment-status-active">
+                    <span
+                        className="deployment-status-dot"
                         aria-hidden="true"
                     />
-                    {localize(
-                        'apps.deploy_current_version_tooltip',
-                        'Current Version'
-                    )}
-                </Flex>
+                    {localize('apps.deploy_status_active', 'Active')}
+                </span>
             )
         }
 
@@ -41,76 +34,126 @@ export default class AppVersionTable extends Component<{
                         'No deployed image'
                     )}
                 >
-                    <ExclamationCircleOutlined />
+                    <span className="deployment-status-pill deployment-status-failed">
+                        {localize('apps.deploy_status_failed', 'Failed')}
+                    </span>
                 </Tooltip>
             )
         }
 
         return (
-            <Tooltip
-                title={localize(
-                    'apps.deploy_revert_to_version_tooltip',
-                    'Revert to this version'
-                )}
-            >
+            <span className="deployment-status-pill deployment-status-succeeded">
+                {localize('apps.deploy_status_succeeded', 'Succeeded')}
+            </span>
+        )
+    }
+
+    renderActions(version: number, versionDetails: IAppVersion) {
+        const imageName = versionDetails.deployedImageName
+        if (!imageName || version === this.props.deployedVersion) {
+            return undefined
+        }
+
+        const revertLabel = localize(
+            'apps.deploy_revert_to_version_tooltip',
+            'Revert to this version'
+        )
+        return (
+            <Tooltip title={revertLabel}>
                 <Button
                     type="link"
                     size="small"
-                    aria-label={localize(
-                        'apps.deploy_revert_to_version_tooltip',
-                        'Revert to this version'
-                    )}
-                    icon={<RetweetOutlined />}
+                    className="deployment-action-link"
+                    aria-label={revertLabel}
+                    icon={<RotateCcw size={13} aria-hidden="true" />}
                     onClick={() => this.onRollbackClicked(versionDetails)}
-                />
+                >
+                    {localize('apps.deploy_revert_action', 'Revert')}
+                </Button>
             </Tooltip>
         )
     }
+
     getCols() {
         const columns: ColumnProps<IAppVersion>[] = [
             {
-                title: localize('apps.deploy_state', 'State'),
-                key: 'revertColumn', // arbitrary unique name for the column
-                align: 'center',
+                title: localize('apps.deploy_version', 'Version'),
+                dataIndex: 'version' as 'version',
+                render: (version: number) => (
+                    <span className="deployment-table-version">
+                        {localize('apps.deploy_version', 'Version')} {version}
+                    </span>
+                ),
+            },
+            {
+                title: localize('apps.deploy_status', 'Status'),
+                key: 'status',
                 dataIndex: 'version' as 'version',
                 render: (version: number, versionDetails: IAppVersion) =>
-                    this.getStateRender(version, versionDetails),
+                    this.renderStatus(version, versionDetails),
             },
             {
-                title: localize('apps.deploy_version', 'Version'),
-                align: 'center',
-                dataIndex: 'version' as 'version',
+                title: localize('apps.deploy_image', 'Image'),
+                dataIndex: 'deployedImageName' as 'deployedImageName',
+                render: (imageName?: string) =>
+                    imageName ? (
+                        <Tooltip title={imageName}>
+                            <code className="deployment-code deployment-table-image">
+                                {imageName}
+                            </code>
+                        </Tooltip>
+                    ) : (
+                        <span
+                            className="deployment-meta-muted"
+                            aria-hidden="true"
+                        >
+                            —
+                        </span>
+                    ),
             },
             {
-                title: localize('apps.deploy_time', 'Deploy Time'),
+                title: localize('apps.deploy_deployed', 'Deployed'),
                 dataIndex: 'timeStamp' as 'timeStamp',
                 render: (timeStamp: string) => {
                     return timeStamp ? (
-                        <Timestamp timestamp={timeStamp} />
+                        <span className="deployment-meta-text deployment-table-time">
+                            <Timestamp timestamp={timeStamp} />
+                        </span>
                     ) : undefined
                 },
             },
             {
-                title: localize('apps.deploy_image_name', 'Image Name'),
-                dataIndex: 'deployedImageName' as 'deployedImageName',
-            },
-            {
-                title: localize('apps.deploy_git_hash', 'git hash'),
+                title: localize('apps.deploy_git_hash_title', 'Git hash'),
                 dataIndex: 'gitHash' as 'gitHash',
-                render: (
-                    gitHashOriginal: string,
-                    versionDetails: IAppVersion
-                ) => {
-                    let gitHash = gitHashOriginal || ''
-                    if (gitHash.length > 12) {
-                        gitHash = gitHash.substr(0, 10) + '...'
+                render: (gitHashOriginal: string) => {
+                    if (!gitHashOriginal) {
+                        return (
+                            <span
+                                className="deployment-meta-muted"
+                                aria-hidden="true"
+                            >
+                                —
+                            </span>
+                        )
                     }
+                    const gitHash =
+                        gitHashOriginal.length > 12
+                            ? gitHashOriginal.substr(0, 10) + '...'
+                            : gitHashOriginal
                     return (
                         <Tooltip title={gitHashOriginal}>
-                            <div className="code-input">{gitHash || 'n/a'}</div>
+                            <code className="deployment-code">{gitHash}</code>
                         </Tooltip>
                     )
                 },
+            },
+            {
+                title: localize('apps.deploy_actions', 'Actions'),
+                key: 'actions',
+                align: 'right',
+                dataIndex: 'version' as 'version',
+                render: (version: number, versionDetails: IAppVersion) =>
+                    this.renderActions(version, versionDetails),
             },
         ]
         return columns
@@ -131,7 +174,7 @@ export default class AppVersionTable extends Component<{
                     'apps.deploy_rollback_warning_body',
                     'Do you want to continue with rolling back your app to this image: '
                 )}
-                <code>{imageName}</code>?
+                <code className="deployment-code">{imageName}</code>?
             </span>
         )
         if (imageName.indexOf('/') > 0) {
@@ -151,7 +194,7 @@ export default class AppVersionTable extends Component<{
                         'apps.deploy_rollback_warning_body',
                         'Do you want to continue with rolling back your app to this image: '
                     )}
-                    <code>{imageName}</code>?
+                    <code className="deployment-code">{imageName}</code>?
                 </span>
             )
         }
@@ -171,16 +214,25 @@ export default class AppVersionTable extends Component<{
         const columns = this.getCols()
         return (
             <Table
-                size="small"
+                className="deployment-history-table"
                 rowKey="version"
-                pagination={{ pageSize: 5, showSizeChanger: false }}
-                scroll={{ x: 680 }}
+                showHeader={versions.length > 0}
+                pagination={{
+                    pageSize: 5,
+                    showSizeChanger: false,
+                    hideOnSinglePage: true,
+                }}
+                scroll={versions.length > 0 ? { x: 600 } : undefined}
                 columns={columns}
                 dataSource={versions}
                 locale={{
-                    emptyText: localize(
-                        'apps.deploy_history_empty',
-                        'No deployment history yet'
+                    emptyText: (
+                        <div className="deployment-empty-text">
+                            {localize(
+                                'apps.deploy_history_empty',
+                                'No deployment history yet'
+                            )}
+                        </div>
                     ),
                 }}
             />

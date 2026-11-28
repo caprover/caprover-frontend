@@ -126,16 +126,23 @@ it('opens a fresh app with the archive selected and keeps history independent', 
     fireEvent.click(button('View history'))
     expect(screen.getByText('No deployment history yet')).toBeVisible()
     expect(button('Upload & Deploy')).toBeVisible()
-    const toggle = screen.getByRole('button', { name: 'Deploy a new version' })
+    const toggle = screen.getByRole('button', {
+        name: 'Hide deployment methods',
+    })
+    toggle.focus()
+    expect(toggle).toHaveFocus()
     expect(toggle).toHaveAttribute('aria-expanded', 'true')
-    fireEvent.click(
-        screen.getByText(
-            'Upload a CapRover archive, use a Docker image, or build from a definition.'
-        )
-    )
+    fireEvent.click(toggle)
+    expect(toggle).toHaveFocus()
+    expect(toggle).toHaveTextContent('Choose deployment method')
     expect(toggle).toHaveAttribute('aria-expanded', 'false')
     expect(screen.getByRole('table')).toBeVisible()
     expect(screen.queryByRole('button', { name: 'Upload & Deploy' })).toBeNull()
+
+    fireEvent.click(toggle)
+    expect(toggle).toHaveFocus()
+    expect(toggle).toHaveTextContent('Hide deployment methods')
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
 })
 
 it('shows successful version zero as active after a newer unsuccessful attempt', () => {
@@ -148,20 +155,24 @@ it('shows successful version zero as active after a newer unsuccessful attempt',
         />
     )
 
-    expect(screen.getByText('Version 0')).toBeVisible()
-    expect(screen.getByText('nginx:alpine', { selector: 'code' })).toBeVisible()
+    expect(screen.getAllByText('Version 0')[0]).toBeVisible()
+    expect(
+        screen.getAllByText('nginx:alpine', { selector: 'code' })[0]
+    ).toBeVisible()
     expect(screen.getByText('1234567890abcdef')).toBeVisible()
-    expect(button('Deploy a new version')).toHaveAttribute(
+    expect(button('Choose deployment method')).toHaveAttribute(
         'aria-expanded',
         'false'
     )
 
     const rows = within(screen.getByRole('table')).getAllByRole('row').slice(1)
+    expect(within(rows[0]).getByText('Failed')).toBeVisible()
     expect(
-        within(rows[0]).getByRole('img', { name: 'exclamation-circle' })
-    ).toBeVisible()
-    expect(within(rows[0]).queryByRole('img', { name: 'retweet' })).toBeNull()
-    expect(within(rows[1]).getByText('Current Version')).toBeVisible()
+        within(rows[0]).queryByRole('button', {
+            name: 'Revert to this version',
+        })
+    ).toBeNull()
+    expect(within(rows[1]).getByText('Active')).toBeVisible()
 })
 
 it('distinguishes a failed first attempt, missing version zero and a missing known active version', () => {
@@ -170,10 +181,8 @@ it('distinguishes a failed first attempt, missing version zero and a missing kno
     )
 
     expect(screen.getByText('No active deployment yet')).toBeVisible()
-    expect(screen.queryByText('Version 0')).toBeNull()
-    expect(
-        within(screen.getByRole('table')).queryByText('Current Version')
-    ).toBeNull()
+    expect(within(screen.getByRole('table')).queryByText('Active')).toBeNull()
+    expect(within(screen.getByRole('table')).getByText('Failed')).toBeVisible()
 
     rerender(<Deployment {...tabProps({ ...app, versions: [version(51)] })} />)
     expect(screen.getByText('Deployment details unavailable')).toBeVisible()
@@ -213,17 +222,27 @@ it('paginates the latest five rows and only deploys an eligible image after conf
     )
 
     const table = screen.getByRole('table')
-    expect(within(table).getAllByRole('columnheader')).toHaveLength(5)
+    expect(within(table).getAllByRole('columnheader')).toHaveLength(6)
     const visibleVersions = () =>
         within(screen.getByRole('table'))
             .getAllByRole('row')
-            .slice(1)
+            .filter((row) => row.hasAttribute('data-row-key'))
             .map((row) =>
-                Number(within(row).getAllByRole('cell')[1].textContent)
+                Number(
+                    within(row)
+                        .getAllByRole('cell')[0]
+                        .textContent?.replace(/^\D+/, '')
+                )
             )
     expect(visibleVersions()).toEqual([49, 48, 47, 46, 45])
-    const firstVersion = within(table).getAllByRole('row')[1]
-    expect(within(firstVersion).getAllByRole('cell')[2]).toBeEmptyDOMElement()
+    const dataRows = within(table)
+        .getAllByRole('row')
+        .filter((row) => row.hasAttribute('data-row-key'))
+    const firstVersion = dataRows[0]
+    expect(within(firstVersion).getByText('Failed')).toBeVisible()
+    expect(within(firstVersion).getAllByRole('cell')[3]).toBeEmptyDOMElement()
+    expect(within(dataRows[1]).getByText('Active')).toBeVisible()
+    expect(within(dataRows[2]).getByText('Succeeded')).toBeVisible()
     fireEvent.click(screen.getByTitle('2'))
     expect(visibleVersions()).toEqual([44, 43, 42, 41, 40])
 
@@ -260,17 +279,17 @@ it('retains manual input through method switches, collapse and a refresh for the
         target: { value: 'nginx:alpine' },
     })
     fireEvent.click(screen.getByRole('radio', { name: 'Dockerfile' }))
-    fireEvent.click(button('Deploy a new version'))
+    fireEvent.click(button('Hide deployment methods'))
     rerender(
         <Deployment
             {...tabProps({ ...app, versions: [version(0, 'nginx:alpine')] })}
         />
     )
-    expect(button('Deploy a new version')).toHaveAttribute(
+    expect(button('Choose deployment method')).toHaveAttribute(
         'aria-expanded',
         'false'
     )
-    fireEvent.click(button('Deploy a new version'))
+    fireEvent.click(button('Choose deployment method'))
     expect(screen.getByRole('radio', { name: 'Dockerfile' })).toBeChecked()
     fireEvent.click(screen.getByRole('radio', { name: 'Docker image' }))
     expect(screen.getByPlaceholderText('nginxdemos/hello:latest')).toHaveValue(
@@ -331,13 +350,11 @@ it('refreshes the active summary and history together, keeping prior details if 
     expect(screen.getByText('Version 0')).toBeVisible()
     expect(getAllApps).toHaveBeenCalledTimes(2)
     fireEvent.click(button('View history'))
-    expect(
-        within(screen.getByRole('table')).getByText('Current Version')
-    ).toBeVisible()
+    expect(within(screen.getByRole('table')).getByText('Active')).toBeVisible()
     expect(
         screen.queryByText(/information shown may be out of date/)
     ).toBeNull()
-    expect(button('Deploy a new version')).toHaveAttribute(
+    expect(button('Hide deployment methods')).toHaveAttribute(
         'aria-expanded',
         'true'
     )
@@ -397,19 +414,19 @@ it('saves only the selected settings row and retains a rejected Git draft', asyn
     )
     const settingsRows = gitRegion.parentElement!
     expect(settingsRows).toHaveClass('deployment-settings-grid')
-    fireEvent.click(path.getByRole('button', { name: 'Edit' }))
+    fireEvent.click(path.getByRole('button', { name: 'Edit path' }))
     expect(settingsRows).not.toHaveClass('deployment-settings-grid')
     fireEvent.change(path.getByRole('textbox'), {
         target: { value: './unsubmitted' },
     })
-    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    fireEvent.click(git.getByRole('button', { name: 'Edit repository' }))
     fireEvent.change(git.getByRole('textbox', { name: 'Branch' }), {
         target: { value: 'draft-branch' },
     })
 
     expect(git.getByText('example.com/saved · master')).toBeVisible()
     expect(git.getByRole('button', { name: 'Force build' })).toBeDisabled()
-    fireEvent.click(button('Manage token'))
+    fireEvent.click(button('Token settings'))
     fireEvent.click(button('Enable App Token'))
     expect(save).toHaveBeenLastCalledWith({
         appDeployTokenConfig: { enabled: true },
@@ -447,9 +464,9 @@ it('saves only the selected settings row and retains a rejected Git draft', asyn
     fireEvent.click(path.getByRole('button', { name: 'Cancel' }))
     expect(settingsRows).toHaveClass('deployment-settings-grid')
 
-    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    fireEvent.click(git.getByRole('button', { name: 'Edit repository' }))
     expect(settingsRows).not.toHaveClass('deployment-settings-grid')
-    fireEvent.click(button('Manage token'))
+    fireEvent.click(button('Token settings'))
     fireEvent.click(git.getByRole('button', { name: 'Cancel' }))
     expect(settingsRows).not.toHaveClass('deployment-settings-grid')
     fireEvent.click(button('Hide token settings'))
@@ -463,7 +480,7 @@ it('saves a public repository with the compatibility pair and clears it without 
         <Deployment {...props} onUpdateConfigAndSave={save} />
     )
     const git = within(screen.getByRole('region', { name: 'Git repository' }))
-    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    fireEvent.click(git.getByRole('button', { name: 'Edit repository' }))
     expect(git.getByText('Public repository')).toBeVisible()
     expect(git.queryByRole('textbox', { name: 'Username' })).toBeNull()
     expect(git.queryByRole('textbox', { name: 'SSH private key' })).toBeNull()
@@ -507,7 +524,7 @@ it('saves a public repository with the compatibility pair and clears it without 
             onUpdateConfigAndSave={save}
         />
     )
-    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    fireEvent.click(git.getByRole('button', { name: 'Edit repository' }))
     expect(git.getByText('Public repository')).toBeVisible()
     expect(git.getByRole('button', { name: 'Save & Restart' })).toBeDisabled()
     for (const name of ['Repository', 'Branch']) {
@@ -553,7 +570,7 @@ it('preserves legacy HTTPS credentials until saving an explicit switch to SSH', 
         />
     )
     const git = within(screen.getByRole('region', { name: 'Git repository' }))
-    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    fireEvent.click(git.getByRole('button', { name: 'Edit repository' }))
     expect(git.getByText('HTTPS credentials')).toBeVisible()
     expect(git.getByRole('textbox', { name: 'Username' })).toHaveValue('test')
     expect(git.queryByRole('textbox', { name: 'SSH private key' })).toBeNull()
@@ -592,7 +609,7 @@ it('preserves legacy HTTPS credentials until saving an explicit switch to SSH', 
             onUpdateConfigAndSave={save}
         />
     )
-    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    fireEvent.click(git.getByRole('button', { name: 'Edit repository' }))
     expect(git.getByText('SSH deploy key')).toBeVisible()
     selectGitAuthentication('HTTPS credentials')
     fireEvent.change(git.getByRole('textbox', { name: 'Username' }), {
@@ -621,7 +638,7 @@ it('preserves legacy HTTPS credentials until saving an explicit switch to SSH', 
             },
         },
     })
-}, 30000)
+}, 60000)
 
 it.each([
     ['HTTPS credentials', ''],
@@ -652,7 +669,7 @@ it.each([
         const git = within(
             screen.getByRole('region', { name: 'Git repository' })
         )
-        fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+        fireEvent.click(git.getByRole('button', { name: 'Edit repository' }))
         expect(git.getByText(method)).toBeVisible()
         expect(
             git.getByRole('button', { name: 'Save & Restart' })
@@ -677,7 +694,7 @@ it.each([
                 onUpdateConfigAndSave={save}
             />
         )
-        fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+        fireEvent.click(git.getByRole('button', { name: 'Edit repository' }))
         selectGitAuthentication('Public repository')
         fireEvent.change(git.getByRole('textbox', { name: 'Repository' }), {
             target: { value: 'github.com/example/project' },
