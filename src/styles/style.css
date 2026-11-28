@@ -885,72 +885,89 @@ hr {
     }
 }
 
-:root {
-    --deployment-page-bg: #f5f4f8;
-    --deployment-card-bg: var(--ant-color-bg-container, #ffffff);
-    --deployment-card-border: #dedbe7;
-    --deployment-card-shadow: var(
-        --caprover-surface-shadow,
-        0 1px 2px rgba(24, 24, 38, 0.04)
+#main-content-layout:has(> .app-details-deployment-active),
+.deployment-tab,
+code.deployment-code {
+    --deployment-page-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-layout) 96%,
+        var(--ant-color-primary) 4%
     );
-    --deployment-history-header-bg: #eee9fc;
-    --deployment-settings-header-bg: #f5f4f8;
-    --deployment-active-bar-bg: #faf9fd;
-    --deployment-divider: #e4e1ed;
-    --deployment-text-primary: #252431;
-    --deployment-text-secondary: #6a687c;
-    --deployment-icon-muted: #7b7591;
-    --deployment-code-bg: #ece9f3;
-    --deployment-code-text: #383443;
-    --deployment-status-active-bg: #e7f7ed;
-    --deployment-status-active-text: #18794e;
-    --deployment-status-active-dot: #22a06b;
-    --deployment-status-failed-bg: #fdecee;
-    --deployment-status-failed-text: #c5293e;
-    --deployment-status-succeeded-bg: #efedf5;
-    --deployment-status-succeeded-text: #564e6b;
-    --deployment-font-size-body: calc(var(--ant-font-size, 14px) - 1px);
-}
-
-html[data-caprover-dark='true'] {
-    --deployment-page-bg: #101014;
-    --deployment-card-bg: #18181d;
-    --deployment-card-border: #2c2b36;
-    --deployment-card-shadow: var(
-        --caprover-surface-shadow,
-        0 1px 3px rgba(0, 0, 0, 0.32)
-    );
-    --deployment-history-header-bg: #231f33;
-    --deployment-settings-header-bg: #1d1d24;
-    --deployment-active-bar-bg: #1b1a23;
-    --deployment-divider: #2c2b37;
-    --deployment-text-primary: var(--ant-color-text, #f4f4f7);
-    --deployment-text-secondary: #a8a4b8;
-    --deployment-icon-muted: #a19bb8;
-    --deployment-code-bg: #262432;
-    --deployment-code-text: #e2def0;
-    --deployment-status-active-bg: rgba(34, 160, 107, 0.18);
-    --deployment-status-active-text: #6ee7b7;
-    --deployment-status-active-dot: #34d399;
-    --deployment-status-failed-bg: rgba(244, 63, 94, 0.2);
-    --deployment-status-failed-text: #fecdd3;
-    --deployment-status-succeeded-bg: rgba(167, 156, 209, 0.18);
-    --deployment-status-succeeded-text: #e0daf4;
-}
-
-html[data-caprover-theme]:not([data-caprover-theme='default']) {
-    --deployment-page-bg: var(--ant-color-bg-layout);
     --deployment-card-bg: var(--ant-color-bg-container);
-    --deployment-card-border: var(--ant-color-border-secondary);
-    --deployment-history-header-bg: var(--ant-color-primary-bg);
-    --deployment-settings-header-bg: var(--ant-color-bg-layout);
-    --deployment-active-bar-bg: var(--ant-color-fill-quaternary);
-    --deployment-divider: var(--ant-color-border-secondary);
+    --deployment-card-border: color-mix(
+        in srgb,
+        var(--ant-color-border-secondary) 90%,
+        var(--ant-color-primary) 10%
+    );
+    --deployment-card-shadow: var(
+        --caprover-surface-shadow,
+        0 1px 2px color-mix(in srgb, var(--ant-color-text) 6%, transparent)
+    );
+    --deployment-history-header-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-container) 89%,
+        var(--ant-color-primary) 11%
+    );
+    --deployment-settings-header-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-container) 95%,
+        var(--ant-color-text) 5%
+    );
+    --deployment-active-bar-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-container) 96%,
+        var(--ant-color-primary) 4%
+    );
+    --deployment-divider: color-mix(
+        in srgb,
+        var(--ant-color-border-secondary) 94%,
+        var(--ant-color-primary) 6%
+    );
     --deployment-text-primary: var(--ant-color-text);
     --deployment-text-secondary: var(--ant-color-text-secondary);
     --deployment-icon-muted: var(--ant-color-text-secondary);
-    --deployment-code-bg: var(--ant-color-fill-tertiary);
-    --deployment-code-text: var(--ant-color-text);
+    --deployment-code-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-container) 92%,
+        var(--ant-color-text) 8%
+    );
+    --deployment-code-text: color-mix(
+        in srgb,
+        var(--ant-color-text) 88%,
+        var(--ant-color-bg-container) 12%
+    );
+    --deployment-status-active-bg: color-mix(
+        in srgb,
+        var(--ant-color-success) 14%,
+        var(--ant-color-bg-container)
+    );
+    --deployment-status-active-text: color-mix(
+        in srgb,
+        var(--ant-color-success-text) 55%,
+        var(--ant-color-text) 45%
+    );
+    --deployment-status-active-dot: var(--ant-color-success);
+    --deployment-status-failed-bg: color-mix(
+        in srgb,
+        var(--ant-color-error) 14%,
+        var(--ant-color-bg-container)
+    );
+    --deployment-status-failed-text: color-mix(
+        in srgb,
+        var(--ant-color-error-text) 65%,
+        var(--ant-color-text) 35%
+    );
+    --deployment-status-succeeded-bg: color-mix(
+        in srgb,
+        var(--ant-color-bg-container) 91%,
+        var(--ant-color-primary) 9%
+    );
+    --deployment-status-succeeded-text: color-mix(
+        in srgb,
+        var(--ant-color-text-secondary) 85%,
+        var(--ant-color-text) 15%
+    );
+    --deployment-font-size-body: calc(var(--ant-font-size, 14px) - 1px);
 }
 
 #main-content-layout:has(> .app-details-deployment-active) {
