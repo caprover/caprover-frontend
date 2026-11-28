@@ -184,6 +184,8 @@
   "apps.http_warning_ip_address_hint": "Make sure the new domain points to this IP, otherwise verification will fail.",
   "apps.link_see_here": "(here)",
   "apps.parent_project": "Parent project",
+  "apps.redirect_status_permanent": "301 (permanent)",
+  "apps.redirect_status_temporary": "302 (temporary)",
   "apps.rename_warning": "If you rename the app that is used internally by other apps, make sure to update the address as well to avoid problems.",
   "apps.select_parent_project": "Select a parent project",
   "apps.websock_support_text": "Websocket Support",
