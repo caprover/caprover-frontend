@@ -1,4 +1,5 @@
-import { LockOutlined } from '@ant-design/icons'
+import { KeyOutlined, LockOutlined } from '@ant-design/icons'
+import { browserSupportsWebAuthn } from '@simplewebauthn/browser'
 import { Button, Card, Collapse, Input, Layout, Radio, Row } from 'antd'
 import React from 'react'
 import { Redirect, RouteComponentProps } from 'react-router'
@@ -37,10 +38,23 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
     }
 
     onLoginRequested(password: string, otp: string, loginOption: number) {
-        const self = this
         Logger.dev(`Submitting login with Remember Me option: ${loginOption}`)
-        this.apiManager
-            .loginAndSavePassword(password, otp)
+        this.completeLogin(
+            this.apiManager.loginAndSavePassword(password, otp),
+            loginOption
+        )
+    }
+
+    onPasskeyLoginRequested(otp: string, loginOption: number) {
+        Logger.dev(
+            `Submitting passkey login with Remember Me option: ${loginOption}`
+        )
+        this.completeLogin(this.apiManager.loginWithPasskey(otp), loginOption)
+    }
+
+    completeLogin(loginPromise: Promise<string>, loginOption: number) {
+        const self = this
+        loginPromise
             .then(function (token) {
                 Logger.dev(
                     `Login succeeded with Remember Me option: ${loginOption}`
@@ -100,6 +114,12 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
                                     loginOption
                                 )
                             }}
+                            onPasskeyLoginRequested={(
+                                otp: string,
+                                loginOption: number
+                            ) => {
+                                self.onPasskeyLoginRequested(otp, loginOption)
+                            }}
                             hasOtp={self.state.hasOtp}
                         />
                     </Card>
@@ -150,6 +170,16 @@ export class NormalLoginForm extends React.Component<
             passwordEntered: this.getDefaultPassword(),
             otpEntered: ``,
         }
+    }
+
+    handlePasskeyLogin = (): void => {
+        const now = new Date().getTime()
+        if (now - lastSubmittedTime < 300) return // avoid duplicate clicks
+        lastSubmittedTime = now
+        this.props.onPasskeyLoginRequested(
+            this.state.otpEntered,
+            this.state.loginOption
+        )
     }
 
     handleSubmit = (e?: React.FormEvent): void => {
@@ -225,6 +255,20 @@ export class NormalLoginForm extends React.Component<
 
                 <div style={{ marginTop: 20, marginBottom: 20 }}>
                     <Row justify="end">
+                        {self.props.onPasskeyLoginRequested &&
+                        browserSupportsWebAuthn() ? (
+                            <Button
+                                htmlType="button"
+                                icon={<KeyOutlined />}
+                                style={{ marginInlineEnd: 10 }}
+                                onClick={self.handlePasskeyLogin}
+                            >
+                                {localize(
+                                    'login_form.login_with_passkey',
+                                    'Sign in with passkey'
+                                )}
+                            </Button>
+                        ) : undefined}
                         <Button
                             type="primary"
                             htmlType="submit"
