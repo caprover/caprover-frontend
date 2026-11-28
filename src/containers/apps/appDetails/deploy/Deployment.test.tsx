@@ -105,6 +105,11 @@ afterEach(() => {
 it('opens a fresh app with the archive selected and keeps history independent', () => {
     render(<Deployment {...tabProps()} />)
 
+    const headings = screen.getAllByRole('heading', { level: 3 })
+    expect(headings.slice(0, 2).map((heading) => heading.textContent)).toEqual([
+        'Deployment history',
+        'Deployment settings',
+    ])
     expect(screen.getByText('No active deployment yet')).toBeVisible()
     expect(
         screen.getByRole('radio', { name: 'CapRover archive' })
@@ -353,6 +358,13 @@ it('keeps build logs open while a build is running', async () => {
     expect(toggle).toHaveAttribute('aria-expanded', 'true')
     const output = screen.getByDisplayValue(/Build output/)
     expect(output).toBeVisible()
+    const summary = screen.getByText('No active deployment yet')
+    expect(summary.compareDocumentPosition(output)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING
+    )
+    expect(output.compareDocumentPosition(screen.getByRole('table'))).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING
+    )
 
     fireEvent.click(button('Hide history'))
     expect(output).toBeVisible()
@@ -378,11 +390,15 @@ it('saves only the selected settings row and retains a rejected Git draft', asyn
         .mockResolvedValueOnce(true)
         .mockResolvedValueOnce(false)
     render(<Deployment {...props} onUpdateConfigAndSave={save} />)
-    const git = within(screen.getByRole('region', { name: 'Git repository' }))
+    const gitRegion = screen.getByRole('region', { name: 'Git repository' })
+    const git = within(gitRegion)
     const path = within(
         screen.getByRole('region', { name: 'captain-definition path' })
     )
+    const settingsRows = gitRegion.parentElement!
+    expect(settingsRows).toHaveClass('deployment-settings-grid')
     fireEvent.click(path.getByRole('button', { name: 'Edit' }))
+    expect(settingsRows).not.toHaveClass('deployment-settings-grid')
     fireEvent.change(path.getByRole('textbox'), {
         target: { value: './unsubmitted' },
     })
@@ -421,6 +437,23 @@ it('saves only the selected settings row and retains a rejected Git draft', asyn
         'draft-branch'
     )
     expect(path.getByRole('textbox')).toHaveValue('./unsubmitted')
+
+    fireEvent.change(path.getByRole('textbox'), { target: { value: '' } })
+    fireEvent.click(git.getByRole('button', { name: 'Cancel' }))
+    expect(settingsRows).not.toHaveClass('deployment-settings-grid')
+    fireEvent.click(button('Hide token settings'))
+    expect(path.getByRole('textbox')).toHaveValue('')
+    expect(settingsRows).not.toHaveClass('deployment-settings-grid')
+    fireEvent.click(path.getByRole('button', { name: 'Cancel' }))
+    expect(settingsRows).toHaveClass('deployment-settings-grid')
+
+    fireEvent.click(git.getByRole('button', { name: 'Edit' }))
+    expect(settingsRows).not.toHaveClass('deployment-settings-grid')
+    fireEvent.click(button('Manage token'))
+    fireEvent.click(git.getByRole('button', { name: 'Cancel' }))
+    expect(settingsRows).not.toHaveClass('deployment-settings-grid')
+    fireEvent.click(button('Hide token settings'))
+    expect(settingsRows).toHaveClass('deployment-settings-grid')
 })
 
 it('saves a public repository with the compatibility pair and clears it without credentials', async () => {

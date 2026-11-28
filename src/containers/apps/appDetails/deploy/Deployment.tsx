@@ -451,36 +451,30 @@ export default class Deployment extends ApiComponent<
                                 this.setState({ gitDraft: newRepo })
                             }
                         />
-                        <Flex>
-                            <Button
-                                disabled={!gitDirty}
-                                type="primary"
-                                onClick={() => {
-                                    if (!repoInfoForSave) return
-                                    this.props
-                                        .onUpdateConfigAndSave({
-                                            appPushWebhook: {
-                                                tokenVersion:
-                                                    webhook?.tokenVersion || '',
-                                                pushWebhookToken:
-                                                    pushToken || '',
-                                                repoInfo: repoInfoForSave,
-                                            },
-                                        })
-                                        .then((saved) => {
-                                            if (saved && !this.willUnmountSoon)
-                                                this.setState({
-                                                    gitDraft: undefined,
-                                                })
-                                        })
-                                }}
-                            >
-                                {localize(
-                                    'apps.edit_app_config',
-                                    'Save & Restart'
-                                )}
-                            </Button>
-                        </Flex>
+                        <Button
+                            disabled={!gitDirty}
+                            type="primary"
+                            onClick={() => {
+                                if (!repoInfoForSave) return
+                                this.props
+                                    .onUpdateConfigAndSave({
+                                        appPushWebhook: {
+                                            tokenVersion:
+                                                webhook?.tokenVersion || '',
+                                            pushWebhookToken: pushToken || '',
+                                            repoInfo: repoInfoForSave,
+                                        },
+                                    })
+                                    .then((saved) => {
+                                        if (saved && !this.willUnmountSoon)
+                                            this.setState({
+                                                gitDraft: undefined,
+                                            })
+                                    })
+                            }}
+                        >
+                            {localize('apps.edit_app_config', 'Save & Restart')}
+                        </Button>
                     </div>
                 )}
             </section>
@@ -684,7 +678,7 @@ export default class Deployment extends ApiComponent<
                                 [definitionFileName, definitionFileName]
                             )}
                         </p>
-                        <Flex wrap gap="small" justify="end">
+                        <Flex wrap gap="small">
                             <Input
                                 aria-label={pathLabel.replace(
                                     '%s',
