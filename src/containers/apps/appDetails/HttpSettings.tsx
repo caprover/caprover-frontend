@@ -196,9 +196,7 @@ export default class HttpSettings extends Component<
                         {app.redirectDomain ? (
                             <Select
                                 size="small"
-                                defaultValue={
-                                    app.redirectDomainStatusCode || 302
-                                }
+                                value={app.redirectDomainStatusCode || 302}
                                 onChange={(value) => {
                                     const newApiData = Utils.copyObject(
                                         self.props.apiData!

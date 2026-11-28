@@ -113,3 +113,21 @@ it('shows a stored 301 status code', () => {
 
     expect(screen.getByText('301 (permanent)')).toBeInTheDocument()
 })
+
+it('follows the draft when it is replaced by refetched data', () => {
+    const props = tabProps({
+        ...app,
+        redirectDomain: 'www.example.com',
+        redirectDomainStatusCode: 301,
+    })
+    const { rerender } = render(<HttpSettings {...props} />)
+
+    rerender(
+        <HttpSettings
+            {...tabProps({ ...app, redirectDomain: 'www.example.com' })}
+        />
+    )
+
+    expect(screen.getByText('302 (temporary)')).toBeInTheDocument()
+    expect(screen.queryByText('301 (permanent)')).not.toBeInTheDocument()
+})
