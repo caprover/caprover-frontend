@@ -231,6 +231,9 @@ export default class GitRepoForm extends Component<{
                                     style={{ marginBottom: 20 }}
                                     rows={4}
                                     value={gitRepoValues.sshKey || ''}
+                                    placeholder={
+                                        '-----BEGIN RSA PRIVATE KEY-----\nAABBBCCC'
+                                    }
                                     onChange={(e) =>
                                         updateRepoInfo({
                                             ...gitRepoValues,
