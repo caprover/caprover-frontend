@@ -66,7 +66,7 @@ export default class Deployment extends ApiComponent<
     constructor(props: DeploymentProps) {
         super(props)
         this.state = {
-            historyExpanded: false,
+            historyExpanded: true,
             manualExpanded: !props.apiData.appDefinition.versions?.length,
             manualMethod: ManualMethod.Archive,
             cliExpanded: false,
@@ -151,7 +151,7 @@ export default class Deployment extends ApiComponent<
             .catch(Toaster.createCatcher())
     }
 
-    renderActiveDeployment(
+    renderDeploymentHistory(
         versions: IAppVersion[] | undefined,
         deployedVersion: number
     ) {
@@ -171,27 +171,60 @@ export default class Deployment extends ApiComponent<
             !active
         const gitHash = active?.gitHash?.trim()
         const { appName } = this.props.apiData.appDefinition
+        const { historyExpanded } = this.state
 
         return (
-            <Card size="small">
+            <Card
+                size="small"
+                className="deployment-history-card"
+                title={
+                    <Flex align="center" wrap gap="small">
+                        <h3>
+                            {localize(
+                                'apps.deploy_history',
+                                'Deployment history'
+                            )}
+                        </h3>
+                        <Button
+                            type="link"
+                            size="small"
+                            aria-expanded={historyExpanded}
+                            aria-controls="deployment-history-table"
+                            onClick={() =>
+                                this.setState({
+                                    historyExpanded: !historyExpanded,
+                                })
+                            }
+                        >
+                            {historyExpanded
+                                ? localize(
+                                      'apps.deploy_hide_history',
+                                      'Hide history'
+                                  )
+                                : localize(
+                                      'apps.deploy_view_history',
+                                      'View history'
+                                  )}
+                        </Button>
+                    </Flex>
+                }
+            >
                 <Flex vertical gap="small">
                     <BuildLogsView
                         onAppBuildFinished={() => this.onAppBuildFinished()}
                         appName={appName!}
                         buildLogRecreationId={this.state.buildLogRecreationId}
                         key={`${appName}-${this.state.buildLogRecreationId}`}
-                    >
-                        <Flex
-                            vertical
-                            gap={4}
-                            className="deployment-active-summary"
-                        >
-                            <h3>
+                        summaryHeading={
+                            <h4 className="deployment-active-heading">
                                 {localize(
                                     'apps.deploy_active',
                                     'Active deployment'
                                 )}
-                            </h3>
+                            </h4>
+                        }
+                    >
+                        <Flex vertical gap={4}>
                             {knownVersion && (
                                 <Typography.Text strong>
                                     {localize('apps.deploy_version', 'Version')}{' '}
@@ -265,6 +298,28 @@ export default class Deployment extends ApiComponent<
                             }
                         />
                     )}
+                    <div
+                        id="deployment-history-table"
+                        hidden={!historyExpanded}
+                    >
+                        {historyExpanded &&
+                            (versions ? (
+                                <AppVersionTable
+                                    onVersionRollbackRequested={(version) =>
+                                        this.onVersionRollbackRequested(version)
+                                    }
+                                    versions={versions}
+                                    deployedVersion={deployedVersion}
+                                />
+                            ) : (
+                                <Typography.Text type="secondary">
+                                    {localize(
+                                        'apps.deploy_history_unavailable',
+                                        'Deployment details unavailable'
+                                    )}
+                                </Typography.Text>
+                            ))}
+                    </div>
                 </Flex>
             </Card>
         )
@@ -296,7 +351,7 @@ export default class Deployment extends ApiComponent<
 
         return (
             <section className="deployment-settings-row" aria-label={gitLabel}>
-                <Flex align="center" justify="space-between" wrap gap="small">
+                <Flex vertical align="start" gap="small">
                     <div>
                         <Typography.Text strong>{gitLabel}</Typography.Text>
                         <div>
@@ -396,7 +451,7 @@ export default class Deployment extends ApiComponent<
                                 this.setState({ gitDraft: newRepo })
                             }
                         />
-                        <Flex justify="end">
+                        <Flex>
                             <Button
                                 disabled={!gitDirty}
                                 type="primary"
@@ -441,7 +496,7 @@ export default class Deployment extends ApiComponent<
         const cliLabel = localize('apps.deploy_cli_ci', 'CLI & CI')
         return (
             <section className="deployment-settings-row" aria-label={cliLabel}>
-                <Flex align="center" justify="space-between" wrap gap="small">
+                <Flex vertical align="start" gap="small">
                     <div>
                         <Typography.Text strong>{cliLabel}</Typography.Text>
                         <div>
@@ -578,7 +633,7 @@ export default class Deployment extends ApiComponent<
                 className="deployment-settings-row"
                 aria-label={pathLabel.replace('%s', 'captain-definition')}
             >
-                <Flex align="center" justify="space-between" wrap gap="small">
+                <Flex vertical align="start" gap="small">
                     <div>
                         <Typography.Text strong>
                             {Utils.formatText(
@@ -712,6 +767,11 @@ export default class Deployment extends ApiComponent<
                                         'apps.deploy_new_version',
                                         'Deploy a new version'
                                     )}
+                                    {manualExpanded ? (
+                                        <UpOutlined aria-hidden="true" />
+                                    ) : (
+                                        <DownOutlined aria-hidden="true" />
+                                    )}
                                 </Typography.Text>
                                 <Typography.Text
                                     type="secondary"
@@ -723,7 +783,6 @@ export default class Deployment extends ApiComponent<
                                     )}
                                 </Typography.Text>
                             </span>
-                            {manualExpanded ? <UpOutlined /> : <DownOutlined />}
                         </Button>
                     </h3>
                 }
@@ -787,7 +846,9 @@ export default class Deployment extends ApiComponent<
 
     render() {
         const app = this.props.apiData.appDefinition
-        const { historyExpanded } = this.state
+        const { gitDraft, cliExpanded, definitionPathDraft } = this.state
+        const settingsExpanded =
+            !!gitDraft || cliExpanded || definitionPathDraft !== undefined
         const snapshot = this.state.updatedVersions || app
         const versions = Array.isArray(snapshot.versions)
             ? snapshot.versions
@@ -795,68 +856,13 @@ export default class Deployment extends ApiComponent<
 
         return (
             <div className="deployment-tab">
-                {this.renderActiveDeployment(
+                {this.renderDeploymentHistory(
                     versions,
                     snapshot.deployedVersion
                 )}
                 <Card
                     size="small"
-                    title={
-                        <h3>
-                            {localize(
-                                'apps.deploy_history',
-                                'Deployment history'
-                            )}
-                        </h3>
-                    }
-                    className={
-                        historyExpanded
-                            ? undefined
-                            : 'deployment-card-collapsed'
-                    }
-                    extra={
-                        <Button
-                            type="link"
-                            size="small"
-                            aria-expanded={historyExpanded}
-                            onClick={() =>
-                                this.setState({
-                                    historyExpanded: !historyExpanded,
-                                })
-                            }
-                        >
-                            {historyExpanded
-                                ? localize(
-                                      'apps.deploy_hide_history',
-                                      'Hide history'
-                                  )
-                                : localize(
-                                      'apps.deploy_view_history',
-                                      'View history'
-                                  )}
-                        </Button>
-                    }
-                >
-                    {historyExpanded && versions && (
-                        <AppVersionTable
-                            onVersionRollbackRequested={(version) =>
-                                this.onVersionRollbackRequested(version)
-                            }
-                            versions={versions}
-                            deployedVersion={snapshot.deployedVersion}
-                        />
-                    )}
-                    {historyExpanded && !versions && (
-                        <Typography.Text type="secondary">
-                            {localize(
-                                'apps.deploy_history_unavailable',
-                                'Deployment details unavailable'
-                            )}
-                        </Typography.Text>
-                    )}
-                </Card>
-                <Card
-                    size="small"
+                    className="deployment-settings-card"
                     title={
                         <h3>
                             {localize(
@@ -884,9 +890,17 @@ export default class Deployment extends ApiComponent<
                             }
                         />
                     )}
-                    {this.renderGitSettings()}
-                    {this.renderCliSettings()}
-                    {this.renderDefinitionPath()}
+                    <div
+                        className={
+                            settingsExpanded
+                                ? undefined
+                                : 'deployment-settings-grid'
+                        }
+                    >
+                        {this.renderGitSettings()}
+                        {this.renderCliSettings()}
+                        {this.renderDefinitionPath()}
+                    </div>
                 </Card>
                 {this.renderManualDeployment()}
                 <NewTabLink url="https://caprover.com/docs/deployment-methods.html">

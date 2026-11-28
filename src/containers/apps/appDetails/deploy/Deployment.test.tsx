@@ -110,7 +110,13 @@ it('opens a fresh app with the archive selected and keeps history independent', 
         screen.getByRole('radio', { name: 'CapRover archive' })
     ).toBeChecked()
     expect(button('Upload & Deploy')).toBeVisible()
+    expect(button('Hide history')).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByText('No deployment history yet')).toBeVisible()
+
+    fireEvent.click(button('Hide history'))
     expect(screen.queryByRole('table')).toBeNull()
+    expect(screen.getByText('No active deployment yet')).toBeVisible()
+    expect(button('Upload & Deploy')).toBeVisible()
 
     fireEvent.click(button('View history'))
     expect(screen.getByText('No deployment history yet')).toBeVisible()
@@ -138,23 +144,19 @@ it('shows successful version zero as active after a newer unsuccessful attempt',
     )
 
     expect(screen.getByText('Version 0')).toBeVisible()
-    expect(screen.getByText('nginx:alpine')).toBeVisible()
+    expect(screen.getByText('nginx:alpine', { selector: 'code' })).toBeVisible()
     expect(screen.getByText('1234567890abcdef')).toBeVisible()
     expect(button('Deploy a new version')).toHaveAttribute(
         'aria-expanded',
         'false'
     )
-    expect(button('View history')).toBeVisible()
 
-    fireEvent.click(button('View history'))
     const rows = within(screen.getByRole('table')).getAllByRole('row').slice(1)
     expect(
         within(rows[0]).getByRole('img', { name: 'exclamation-circle' })
     ).toBeVisible()
     expect(within(rows[0]).queryByRole('img', { name: 'retweet' })).toBeNull()
-    expect(
-        within(rows[1]).getByRole('img', { name: 'check-circle' })
-    ).toBeVisible()
+    expect(within(rows[1]).getByText('Current Version')).toBeVisible()
 })
 
 it('distinguishes a failed first attempt, missing version zero and a missing known active version', () => {
@@ -164,11 +166,8 @@ it('distinguishes a failed first attempt, missing version zero and a missing kno
 
     expect(screen.getByText('No active deployment yet')).toBeVisible()
     expect(screen.queryByText('Version 0')).toBeNull()
-    fireEvent.click(button('View history'))
     expect(
-        within(screen.getByRole('table')).queryByRole('img', {
-            name: 'check-circle',
-        })
+        within(screen.getByRole('table')).queryByText('Current Version')
     ).toBeNull()
 
     rerender(<Deployment {...tabProps({ ...app, versions: [version(51)] })} />)
@@ -208,11 +207,10 @@ it('paginates the latest five rows and only deploys an eligible image after conf
         />
     )
 
-    fireEvent.click(button('View history'))
     const table = screen.getByRole('table')
     expect(within(table).getAllByRole('columnheader')).toHaveLength(5)
     const visibleVersions = () =>
-        within(table)
+        within(screen.getByRole('table'))
             .getAllByRole('row')
             .slice(1)
             .map((row) =>
@@ -242,6 +240,12 @@ it('paginates the latest five rows and only deploys an eligible image after conf
         '1234567890abcdef',
         true
     )
+
+    fireEvent.click(button('Hide history'))
+    expect(screen.getByText('Version 48')).toBeVisible()
+    expect(screen.queryByRole('table')).toBeNull()
+    fireEvent.click(button('View history'))
+    expect(visibleVersions()).toEqual([49, 48, 47, 46, 45])
 })
 
 it('retains manual input through method switches, collapse and a refresh for the same app', () => {
@@ -298,7 +302,6 @@ it('refreshes the active summary and history together, keeping prior details if 
         'uploadCaptainDefinitionContent'
     ).mockResolvedValue(undefined)
     render(<Deployment {...tabProps()} />)
-    fireEvent.click(button('View history'))
     fireEvent.click(screen.getByRole('radio', { name: 'Docker image' }))
     fireEvent.change(screen.getByPlaceholderText('nginxdemos/hello:latest'), {
         target: { value: 'nginx:alpine' },
@@ -314,15 +317,17 @@ it('refreshes the active summary and history together, keeping prior details if 
     expect(screen.getByText('No deployment history yet')).toBeVisible()
     expect(button('Hide Build Logs')).toBeVisible()
 
+    fireEvent.click(button('Hide history'))
+    expect(screen.queryByRole('table')).toBeNull()
+    expect(button('Hide Build Logs')).toBeVisible()
     await act(async () => {
         fireEvent.click(button('Retry'))
     })
     expect(screen.getByText('Version 0')).toBeVisible()
     expect(getAllApps).toHaveBeenCalledTimes(2)
+    fireEvent.click(button('View history'))
     expect(
-        within(screen.getByRole('table')).getByRole('img', {
-            name: 'check-circle',
-        })
+        within(screen.getByRole('table')).getByText('Current Version')
     ).toBeVisible()
     expect(
         screen.queryByText(/information shown may be out of date/)
@@ -346,7 +351,11 @@ it('keeps build logs open while a build is running', async () => {
     })
     expect(toggle).toBeDisabled()
     expect(toggle).toHaveAttribute('aria-expanded', 'true')
-    expect(screen.getByDisplayValue(/Build output/)).toBeVisible()
+    const output = screen.getByDisplayValue(/Build output/)
+    expect(output).toBeVisible()
+
+    fireEvent.click(button('Hide history'))
+    expect(output).toBeVisible()
 })
 
 it('saves only the selected settings row and retains a rejected Git draft', async () => {

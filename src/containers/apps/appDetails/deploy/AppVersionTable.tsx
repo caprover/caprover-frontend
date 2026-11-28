@@ -3,7 +3,7 @@ import {
     ExclamationCircleOutlined,
     RetweetOutlined,
 } from '@ant-design/icons'
-import { Button, Modal, Table, Tooltip } from 'antd'
+import { Button, Flex, Modal, Table, Tooltip } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 import { Component } from 'react'
 import { localize } from '../../../../utils/Language'
@@ -20,14 +20,16 @@ export default class AppVersionTable extends Component<{
         const imageName = versionDetails.deployedImageName
         if (imageName && version === this.props.deployedVersion) {
             return (
-                <Tooltip
-                    title={localize(
+                <Flex align="center" justify="center" gap={6}>
+                    <CheckCircleTwoTone
+                        twoToneColor="#52c41a"
+                        aria-hidden="true"
+                    />
+                    {localize(
                         'apps.deploy_current_version_tooltip',
                         'Current Version'
                     )}
-                >
-                    <CheckCircleTwoTone twoToneColor="#52c41a" />
-                </Tooltip>
+                </Flex>
             )
         }
 

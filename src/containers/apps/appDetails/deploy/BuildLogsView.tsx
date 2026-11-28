@@ -4,7 +4,7 @@ import {
     UpCircleOutlined,
 } from '@ant-design/icons'
 import { Alert, Button, Flex, Input, Row, Spin } from 'antd'
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, ReactNode } from 'react'
 import { localize } from '../../../../utils/Language'
 import Toaster from '../../../../utils/Toaster'
 import Utils from '../../../../utils/Utils'
@@ -15,6 +15,7 @@ export default class BuildLogsView extends ApiComponent<
         appName: string
         onAppBuildFinished: () => void
         buildLogRecreationId: string
+        summaryHeading: ReactNode
     }>,
     {
         isAppBuilding: boolean
@@ -129,8 +130,8 @@ export default class BuildLogsView extends ApiComponent<
         const self = this
         return (
             <div>
-                <Flex align="start" justify="space-between" wrap gap="small">
-                    {this.props.children}
+                <Flex align="center" wrap gap="small">
+                    {this.props.summaryHeading}
                     <Button
                         aria-expanded={
                             this.state.isAppBuilding || this.state.expandedLogs
@@ -157,6 +158,7 @@ export default class BuildLogsView extends ApiComponent<
                               )}
                     </Button>
                 </Flex>
+                {this.props.children}
                 <Row>
                     <div
                         style={{
